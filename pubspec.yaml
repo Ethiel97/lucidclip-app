@@ -64,6 +64,7 @@ dependencies:
 
   # Navigation
   auto_route: ^9.2.2
+  melos: ^6.3.2
 
 
 dev_dependencies:
@@ -90,3 +91,11 @@ flutter:
   assets:
     - .env
     - assets/images/
+
+flutter_gen:
+  output: lib/generated/
+  line_length: 80
+
+
+melos:
+  useRootAsPackage: true

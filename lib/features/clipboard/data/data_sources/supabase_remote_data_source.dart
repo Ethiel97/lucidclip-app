@@ -4,7 +4,10 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 @LazySingleton(as: ClipboardRemoteDataSource)
 class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
   @override
-  Future<void> deleteClipboardItem({required String column, required value}) {
+  Future<void> deleteClipboardItem({
+    required String column,
+    required value,
+  }) {
     // TODO: implement deleteClipboardItem
     throw UnimplementedError();
   }

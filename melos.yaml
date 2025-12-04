@@ -1,0 +1,97 @@
+name: lucid_clip
+packages:
+  - .
+  - packages/**
+  - ../../tool # need access to tools package for use when compiling
+
+scripts:
+  alpha-copy:
+    description: Alphabetize root project's dictionary
+    exec:
+      failFast: true
+    name: Alphabetize Copy
+    packageFilters:
+      scope: lucid_clip
+    run: arb_utils sort -n lib/l10n/arb/app_en.arb
+
+  # CI/CD scripts
+  ci-analyze:
+    description: CI Script - Analyze Gather App and all local dependencies
+    exec:
+      failFast: true
+    name: Analyze Gather App
+    packageFilters:
+      ignore: marketplace_tools
+    run: dart analyze --fatal-infos --fatal-warnings
+
+  ci-format:
+    description: CI Script - Check code formatting for Gather App and all local dependencies
+    exec:
+      failFast: true
+    name: Format Gather App
+    packageFilters:
+      ignore: marketplace_tools
+    run: dart format . --line-length 80 --output none --set-exit-if-changed
+
+
+  ci-trigger:
+    description: Recreate the last commit and force push to trigger CI
+    run: |
+      git reset --soft HEAD~1
+      git commit -c ORIG_HEAD --no-edit
+      git push -f
+
+  ## UTILITY SCRIPTS
+  check-coverage:
+    description: Check test coverage of Gather App and its dependencies
+    exec:
+      failFast: true
+    name: Local Unit Tests Coverage
+    packageFilters:
+      dirExists: test
+      ignore: marketplace_tools
+    run: MELOS_ROOT_PATH/../../scripts/check_coverage.sh . --ignore-file MELOS_ROOT_PATH/.coverageignore --min-coverage 100 --name MELOS_PACKAGE_NAME
+
+  clean-ios:
+    description: Clean the iOS project and update native dependencies
+    exec:
+      failFast: true
+    name: Clean iOS Project
+    run: |
+      melos clean && flutter clean
+      cd ios/
+      rm -rf .symlinks/ && rm -rf Pods/ && rm Podfile.lock && rm -rf Runner.xcworkspace
+      cd ../
+      melos run ci-install
+      cd ios/
+      pod repo update --verbose && pod install --verbose
+      cd ../
+
+  # generate native dictionary script
+  generate-dictionaries:
+    description: Generate the native dictionaries used for Push Notifications
+    exec:
+      failFast: true
+    name: Generate Native Dictionaries
+    packageFilters:
+      scope: lucid_clip
+    run: dart run MELOS_ROOT_PATH/../../tool/arb_converter/bin/arb_converter.dart --inputPath ./lib/l10n/arb/app_en.arb --androidOutput android/app/src/main/res/values/strings.xml --iosOutput ios/Localizable.xcstrings --l10nByTextOutput ./lib/l10n/generated/l10n_by_text.g.dart
+
+  # generate route scripts
+  generate-routes:
+    description: Generate the AutoRouter routes for Project
+    exec: flutter pub run build_runner build --delete-conflicting-outputs
+    name: Generate Routes for AutoRouter
+    packageFilters:
+      scope: lucid_clip
+
+  install-all:
+    description: Install Gather App project while enforcing lockfile, then install its packages
+    exec:
+      failFast: true
+    name: Install Dependencies
+    packageFilters:
+      dirExists: lib
+      includeDependencies: true
+      scope: lucid_clip
+    run: very_good packages get

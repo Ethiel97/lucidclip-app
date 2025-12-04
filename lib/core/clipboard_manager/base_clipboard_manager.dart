@@ -1,5 +1,7 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
 abstract class BaseClipboardManager {
+
+  static const clipboardPollingInterval = Duration(milliseconds: 500);
   Future<void> initialize();
 
   Future<ClipboardData?> getClipboardContent();

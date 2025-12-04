@@ -16,7 +16,6 @@ dependencies:
   supabase_flutter: ^2.10.3
   clipboard: ^2.0.2
   pasteboard: ^0.4.0
-  rx_dart: ^0.28.0
 
   # State Management
   bloc: ^8.1.4

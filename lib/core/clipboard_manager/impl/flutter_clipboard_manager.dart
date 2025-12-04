@@ -21,7 +21,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   void _startPolling() {
     _pollingTimer?.cancel();
     _pollingTimer = Timer.periodic(
-      const Duration(milliseconds: 500),
+      BaseClipboardManager.clipboardPollingInterval,
       (_) => _checkClipboardChange(),
     );
   }

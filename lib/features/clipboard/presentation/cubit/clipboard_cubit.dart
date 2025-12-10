@@ -31,6 +31,21 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   void watchClipboard() {
     clipboardManager.watchClipboard().listen((clipboardData) {
       emit(state.copyWith(currentClipboardData: clipboardData));
+
+      final currentItems = state.localClipboardItems;
+
+      final isDuplicate = currentItems.any(
+        (item) => item.contentHash == clipboardData.contentHash,
+      );
+
+      final updated = [
+        if (!isDuplicate) clipboardData,
+        ...currentItems,
+      ];
+
+      emit(
+        state.copyWith(localClipboardItems: updated),
+      );
     });
   }
 

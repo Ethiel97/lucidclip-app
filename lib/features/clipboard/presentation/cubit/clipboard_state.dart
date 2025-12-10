@@ -6,6 +6,7 @@ class ClipboardState extends Equatable {
     this.clipboardItems = const ValueWrapper(value: []),
     this.clipboardItemTags = const ValueWrapper(value: []),
     this.currentClipboardData,
+    this.localClipboardItems = const [],
     this.tags = const ValueWrapper(value: []),
   });
 
@@ -42,23 +43,27 @@ class ClipboardState extends Equatable {
   final ValueWrapper<ClipboardItems> clipboardItems;
 
   final ClipboardData? currentClipboardData;
-  final ValueWrapper<Tags> tags;
 
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
+
+  final List<ClipboardData> localClipboardItems;
+  final ValueWrapper<Tags> tags;
 
   ClipboardState copyWith({
     ValueWrapper<ClipboardHistories>? clipboardHistory,
     ValueWrapper<ClipboardItems>? clipboardItems,
     ClipboardData? currentClipboardData,
-    ValueWrapper<Tags>? tags,
     ValueWrapper<ClipboardItemTags>? clipboardItemTags,
+    List<ClipboardData>? localClipboardItems,
+    ValueWrapper<Tags>? tags,
   }) {
     return ClipboardState(
       clipboardHistory: clipboardHistory ?? this.clipboardHistory,
       clipboardItems: clipboardItems ?? this.clipboardItems,
       currentClipboardData: currentClipboardData ?? this.currentClipboardData,
-      tags: tags ?? this.tags,
       clipboardItemTags: clipboardItemTags ?? this.clipboardItemTags,
+      localClipboardItems: localClipboardItems ?? this.localClipboardItems,
+      tags: tags ?? this.tags,
     );
   }
 
@@ -79,7 +84,8 @@ class ClipboardState extends Equatable {
         clipboardHistory,
         clipboardItems,
         currentClipboardData,
-        tags,
         clipboardItemTags,
+        localClipboardItems,
+        tags,
       ];
 }

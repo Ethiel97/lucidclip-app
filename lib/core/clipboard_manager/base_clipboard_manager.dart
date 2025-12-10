@@ -1,7 +1,7 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
 abstract class BaseClipboardManager {
-
   static const clipboardPollingInterval = Duration(milliseconds: 500);
+
   Future<void> initialize();
 
   Future<ClipboardData?> getClipboardContent();
@@ -22,6 +22,7 @@ abstract class BaseClipboardManager {
 class ClipboardData {
   const ClipboardData({
     required this.type,
+    this.contentHash,
     this.filePaths,
     this.html,
     this.imageBytes,
@@ -30,6 +31,7 @@ class ClipboardData {
     this.timestamp,
   });
 
+  final String? contentHash;
   final List<String>? filePaths;
   final String? html;
   final List<int>? imageBytes;
@@ -38,16 +40,22 @@ class ClipboardData {
   final DateTime? timestamp;
   final ClipboardContentType type;
 
+  set contentHash(String? value) {
+    contentHash = value;
+  }
+
   ClipboardData copyWith({
-    ClipboardContentType? type,
+    String? contentHash,
     List<String>? filePaths,
     String? html,
     List<int>? imageBytes,
     Map<String, dynamic>? metadata,
     String? text,
     DateTime? timestamp,
+    ClipboardContentType? type,
   }) {
     return ClipboardData(
+      contentHash: contentHash ?? this.contentHash,
       type: type ?? this.type,
       filePaths: filePaths ?? this.filePaths,
       html: html ?? this.html,
@@ -60,10 +68,10 @@ class ClipboardData {
 }
 
 enum ClipboardContentType {
-  text,
-  image,
   file,
-  url,
   html,
+  image,
+  text,
   unknown,
+  url,
 }

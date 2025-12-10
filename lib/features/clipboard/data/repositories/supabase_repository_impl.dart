@@ -1,6 +1,8 @@
+import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
+@LazySingleton(as: ClipboardRepository)
 class SupabaseRepositoryImpl implements ClipboardRepository {
   SupabaseRepositoryImpl({required this.remoteDataSource});
 

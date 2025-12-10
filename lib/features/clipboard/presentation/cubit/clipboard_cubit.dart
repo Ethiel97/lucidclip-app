@@ -8,7 +8,7 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 part 'clipboard_state.dart';
 
-@injectable
+@lazySingleton
 class ClipboardCubit extends HydratedCubit<ClipboardState> {
   ClipboardCubit({
     required this.clipboardManager,
@@ -189,6 +189,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() {
     clipboardManager.dispose();

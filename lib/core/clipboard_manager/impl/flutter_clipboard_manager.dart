@@ -137,6 +137,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
     _lastContent = null;
   }
 
+  @disposeMethod
   @override
   Future<void> dispose() async {
     _pollingTimer?.cancel();

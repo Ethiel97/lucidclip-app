@@ -3,6 +3,8 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 part 'clipboard_item_model.g.dart';
 
+typedef ClipboardItemModels = List<ClipboardItemModel>;
+
 @JsonSerializable(
   explicitToJson: true,
 )

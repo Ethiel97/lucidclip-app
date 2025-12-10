@@ -1,3 +1,5 @@
+typedef ClipboardHistories = List<ClipboardHistory>;
+
 class ClipboardHistory {
   ClipboardHistory({
     required this.action,
@@ -36,6 +38,17 @@ class ClipboardHistory {
       updatedAt: updatedAt ?? this.updatedAt,
       userId: userId ?? this.userId,
     );
+  }
+
+  Map<String, String> toMap() {
+    return {
+      'action': action.name,
+      'clipboardItemId': clipboardItemId,
+      'createdAt': createdAt.toIso8601String(),
+      'id': id,
+      'updatedAt': updatedAt.toIso8601String(),
+      'userId': userId,
+    };
   }
 }
 

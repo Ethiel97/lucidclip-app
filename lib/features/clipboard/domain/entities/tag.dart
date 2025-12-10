@@ -1,3 +1,4 @@
+typedef Tags = List<Tag>;
 
 class Tag {
   Tag({
@@ -8,7 +9,6 @@ class Tag {
     required this.updatedAt,
     required this.userId,
   });
-
 
   final String color;
 
@@ -21,7 +21,6 @@ class Tag {
   final String userId;
 
   final String name;
-
 
   Tag copyWith({
     String? color,

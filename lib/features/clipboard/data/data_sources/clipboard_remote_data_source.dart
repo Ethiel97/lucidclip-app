@@ -1,3 +1,5 @@
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
+
 abstract class ClipboardRemoteDataSource {
   Future<void> upsertClipboardItem({
     required Map<String, dynamic> data,
@@ -7,7 +9,7 @@ abstract class ClipboardRemoteDataSource {
     required List<Map<String, dynamic>> data,
   });
 
-  Future<List<Map<String, dynamic>>> fetchClipboardItems({
+  Future<ClipboardItemModels> fetchClipboardItems({
     Map<String, dynamic>? filters,
     String? orderBy,
     int? limit,
@@ -19,7 +21,34 @@ abstract class ClipboardRemoteDataSource {
     required Map<String, dynamic> data,
   });
 
-  Stream<List<Map<String, dynamic>>> watchClipboardItems({
+  Future<ClipboardHistoryModels> fetchClipboardHistory({
+    Map<String, dynamic>? filters,
+    String? orderBy,
+    int? limit,
+  });
+
+  Future<void> createTag({
+    required Map<String, dynamic> data,
+  });
+
+  Future<void> deleteTag({
+    required String column,
+    required dynamic value,
+  });
+
+  Future<TagModels> fetchTags({
+    Map<String, dynamic>? filters,
+    String? orderBy,
+    int? limit,
+  });
+
+  Future<ClipboardItemTagModels> fetchClipboardItemTags({
+    Map<String, dynamic>? filters,
+    String? orderBy,
+    int? limit,
+  });
+
+  Stream<ClipboardItemModels> watchClipboardItems({
     Map<String, dynamic>? filters,
   });
 

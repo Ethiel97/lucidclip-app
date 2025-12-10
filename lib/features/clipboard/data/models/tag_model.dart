@@ -3,6 +3,8 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 part 'tag_model.g.dart';
 
+typedef TagModels = List<TagModel>;
+
 @JsonSerializable(
   explicitToJson: true,
 )

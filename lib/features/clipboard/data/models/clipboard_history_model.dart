@@ -3,6 +3,8 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 part 'clipboard_history_model.g.dart';
 
+typedef ClipboardHistoryModels = List<ClipboardHistoryModel>;
+
 @JsonSerializable(
   explicitToJson: true,
 )

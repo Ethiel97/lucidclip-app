@@ -1,3 +1,5 @@
+typedef ClipboardItemTags = List<ClipboardItemTag>;
+
 class ClipboardItemTag {
   ClipboardItemTag({
     required this.clipboardItemId,

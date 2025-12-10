@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+typedef ClipboardItems = List<ClipboardItem>;
 class ClipboardItem {
   ClipboardItem({
     required this.content,

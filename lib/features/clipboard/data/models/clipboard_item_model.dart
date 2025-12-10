@@ -21,9 +21,28 @@ class ClipboardItemModel {
     this.filePaths = const [],
     this.isPinned = false,
     this.isSnippet = false,
+    this.isSynced = false,
     this.metadata = const {},
     this.htmlContent,
   });
+
+  factory ClipboardItemModel.fromEntity(ClipboardItem item) {
+    return ClipboardItemModel(
+      content: item.content,
+      contentHash: item.contentHash,
+      createdAt: item.createdAt,
+      filePaths: item.filePaths,
+      htmlContent: item.htmlContent,
+      id: item.id,
+      imageUrl: item.imageUrl,
+      isPinned: item.isPinned,
+      isSnippet: item.isSnippet,
+      metadata: item.metadata,
+      type: ClipboardItemTypeModel.values[item.type.index],
+      updatedAt: item.updatedAt,
+      userId: item.userId,
+    );
+  }
 
   factory ClipboardItemModel.fromJson(Map<String, dynamic> json) =>
       _$ClipboardItemModelFromJson(json);
@@ -50,6 +69,10 @@ class ClipboardItemModel {
 
   @JsonKey(name: 'is_snippet')
   final bool isSnippet;
+
+  @JsonKey(name: 'is_synced', defaultValue: false)
+  final bool isSynced;
+
   final Map<String, dynamic> metadata;
 
   @JsonKey(
@@ -77,6 +100,7 @@ class ClipboardItemModel {
     String? imageUrl,
     bool? isPinned,
     bool? isSnippet,
+    bool? isSynced,
     Map<String, dynamic>? metadata,
     ClipboardItemTypeModel? type,
     DateTime? updatedAt,
@@ -92,6 +116,7 @@ class ClipboardItemModel {
       imageUrl: imageUrl ?? this.imageUrl,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
+      isSynced: isSynced ?? this.isSynced,
       metadata: metadata ?? this.metadata,
       type: type ?? this.type,
       updatedAt: updatedAt ?? this.updatedAt,

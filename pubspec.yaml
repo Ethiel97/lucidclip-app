@@ -6,6 +6,8 @@ publish_to: none
 environment:
   sdk: ^3.5.0
 
+drift_version: &drift_version ^2.22.1
+
 dependencies:
   # Core
   flutter:
@@ -17,6 +19,9 @@ dependencies:
   clipboard: ^2.0.2
   crypto: ^3.0.3
   pasteboard: ^0.4.0
+  drift: *drift_version
+  drift_flutter:  ^0.2.7
+
 
   # State Management
   bloc: ^8.1.4
@@ -24,6 +29,7 @@ dependencies:
   hydrated_bloc: ^8.1.0
   equatable: ^2.0.5
   iconsax: ^0.0.8
+  window_manager: ^0.5.1
 
   # Dependency Injection
   get_it: ^7.7.0
@@ -74,12 +80,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4
+  drift_dev: *drift_version
 
   # Code Generation
   build_runner: ^2.4.9
   injectable_generator: ^2.6.2
   json_serializable: ^6.8.0
-  hive_generator: ^2.0.1
+#  hive_generator: ^2.0.1
   auto_route_generator: ^9.0.0
   flutter_launcher_icons: ^0.14.4
   # Static Analysis

@@ -24,6 +24,7 @@ ClipboardItemModel _$ClipboardItemModelFromJson(Map<String, dynamic> json) =>
           const [],
       isPinned: json['is_pinned'] as bool? ?? false,
       isSnippet: json['is_snippet'] as bool? ?? false,
+      isSynced: json['is_synced'] as bool? ?? false,
       metadata: json['metadata'] as Map<String, dynamic>? ?? const {},
       htmlContent: json['html_content'] as String?,
     );
@@ -39,6 +40,7 @@ Map<String, dynamic> _$ClipboardItemModelToJson(ClipboardItemModel instance) =>
       'image_url': instance.imageUrl,
       'is_pinned': instance.isPinned,
       'is_snippet': instance.isSnippet,
+      'is_synced': instance.isSynced,
       'metadata': instance.metadata,
       'type': _$ClipboardItemTypeModelEnumMap[instance.type]!,
       'updated_at': instance.updatedAt.toIso8601String(),

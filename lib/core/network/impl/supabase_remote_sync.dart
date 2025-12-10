@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/network/remote_sync_client.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SupabaseClient implements RemoteSyncClient {
-  SupabaseClient();
+@Singleton(as: RemoteSyncClient)
+class SupabaseRemoteSync implements RemoteSyncClient {
+  SupabaseRemoteSync({
+    required SupabaseClient supabase,
+  }) : _supabase = supabase;
 
-  final supabase = Supabase.instance.client;
+  final SupabaseClient _supabase;
 
   @override
   Future<void> delete({
@@ -14,7 +18,7 @@ class SupabaseClient implements RemoteSyncClient {
     required String column,
     required dynamic value,
   }) async {
-    await supabase.from(table).delete().eq(column, value as Object);
+    await _supabase.from(table).delete().eq(column, value as Object);
   }
 
   @override
@@ -25,7 +29,7 @@ class SupabaseClient implements RemoteSyncClient {
     String? orderBy,
     int? limit,
   }) async {
-    final query = supabase.from(table).select(selectOptions ?? '*');
+    final query = _supabase.from(table).select(selectOptions ?? '*');
 
     if (filters != null) {
       filters.forEach((key, value) {
@@ -50,7 +54,7 @@ class SupabaseClient implements RemoteSyncClient {
     required String table,
     required Map<String, dynamic> data,
   }) async {
-    await supabase.from(table).upsert(data);
+    await _supabase.from(table).upsert(data, onConflict: 'id');
   }
 
   @override
@@ -58,7 +62,7 @@ class SupabaseClient implements RemoteSyncClient {
     required String table,
     required List<Map<String, dynamic>> data,
   }) async {
-    await supabase.from(table).upsert(data);
+    await _supabase.from(table).upsert(data, onConflict: 'id');
   }
 
   @override
@@ -66,7 +70,7 @@ class SupabaseClient implements RemoteSyncClient {
     required String table,
     Map<String, dynamic>? filters,
   }) {
-    final stream = supabase.from(table).stream(primaryKey: ['id']);
+    final stream = _supabase.from(table).stream(primaryKey: ['id']);
 
     if (filters != null) {
       filters.forEach((key, value) {
@@ -86,6 +90,6 @@ class SupabaseClient implements RemoteSyncClient {
     required dynamic value,
     required Map<String, dynamic> data,
   }) async {
-    await supabase.from(table).update(data).eq(column, value as Object);
+    await _supabase.from(table).update(data).eq(column, value as Object);
   }
 }

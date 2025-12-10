@@ -1,8 +1,9 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 typedef ClipboardItems = List<ClipboardItem>;
-class ClipboardItem {
-  ClipboardItem({
+
+class ClipboardItem extends Equatable {
+  const ClipboardItem({
     required this.content,
     required this.contentHash,
     required this.createdAt,
@@ -14,6 +15,7 @@ class ClipboardItem {
     this.filePaths = const [],
     this.isPinned = false,
     this.isSnippet = false,
+    this.isSynced = false,
     this.metadata = const {},
     this.htmlContent,
   });
@@ -31,20 +33,14 @@ class ClipboardItem {
   final bool isPinned;
 
   final bool isSnippet;
+  final bool isSynced;
   final Map<String, dynamic> metadata;
 
-  @JsonKey(
-    defaultValue: ClipboardItemType.unknown,
-    unknownEnumValue: ClipboardItemType.unknown,
-  )
   final ClipboardItemType type;
 
-  @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
-  @JsonKey(name: 'user_id')
   final String userId;
-
 
   //copyWith method
   ClipboardItem copyWith({
@@ -57,6 +53,7 @@ class ClipboardItem {
     String? imageUrl,
     bool? isPinned,
     bool? isSnippet,
+    bool? isSynced,
     Map<String, dynamic>? metadata,
     ClipboardItemType? type,
     DateTime? updatedAt,
@@ -72,12 +69,31 @@ class ClipboardItem {
       imageUrl: imageUrl ?? this.imageUrl,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
+      isSynced: isSynced ?? this.isSynced,
       metadata: metadata ?? this.metadata,
       type: type ?? this.type,
       updatedAt: updatedAt ?? this.updatedAt,
       userId: userId ?? this.userId,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        content,
+        contentHash,
+        createdAt,
+        filePaths,
+        htmlContent,
+        id,
+        imageUrl,
+        isPinned,
+        isSnippet,
+        isSynced,
+        metadata,
+        type,
+        updatedAt,
+        userId,
+      ];
 }
 
 enum ClipboardItemType {

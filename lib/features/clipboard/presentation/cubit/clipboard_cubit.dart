@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer' as developer;
 
+import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -102,17 +105,24 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   String _generateId() {
-    // Generate a unique ID using timestamp and random string
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final random = timestamp.hashCode.toRadixString(36);
-    return '$timestamp-$random';
+    // Generate a unique ID using timestamp and hash
+    final timestamp = DateTime.now().microsecondsSinceEpoch;
+    final randomData = '$timestamp-${DateTime.now().hashCode}';
+    final bytes = utf8.encode(randomData);
+    final hash = sha256.convert(bytes);
+    return '${timestamp}_${hash.toString().substring(0, 16)}';
   }
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
     try {
       await localClipboardRepository.upsert(item);
-    } catch (e) {
-      // Log error but don't prevent the clipboard from working
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to upsert clipboard item to local repository',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
       // The item is still added to the in-memory list
     }
   }
@@ -128,11 +138,19 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         updatedAt: DateTime.now(),
       );
       
+      // Create history record using the clipboard repository
+      // Note: This uses upsertClipboardItem as there's no dedicated history creation method
       await clipboardRepository.upsertClipboardItem(
         data: history.toMap(),
       );
-    } catch (e) {
-      // Log error but don't prevent the clipboard from working
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to create clipboard history record',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+      // Continue working even if history creation fails
     }
   }
 
@@ -144,7 +162,13 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       emit(
         state.copyWith(localClipboardItems: clipboardDataList),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to load clipboard items from local repository',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
       // Continue with empty list if loading fails
     }
   }

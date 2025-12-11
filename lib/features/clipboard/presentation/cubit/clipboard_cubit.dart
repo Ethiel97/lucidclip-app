@@ -15,6 +15,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.clipboardRepository,
   }) : super(const ClipboardState()) {
     _loadData();
+    _startWatchingClipboard();
   }
 
   Future<void> _loadData() async {
@@ -28,7 +29,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final BaseClipboardManager clipboardManager;
   final ClipboardRepository clipboardRepository;
 
-  void watchClipboard() {
+  void _startWatchingClipboard() {
     clipboardManager.watchClipboard().listen((clipboardData) {
       emit(state.copyWith(currentClipboardData: clipboardData));
 

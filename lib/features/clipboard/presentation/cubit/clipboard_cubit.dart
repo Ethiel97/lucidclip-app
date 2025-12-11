@@ -15,6 +15,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   ClipboardCubit({
     required this.clipboardManager,
     required this.clipboardRepository,
+    required this.localClipboardRepository,
   }) : super(const ClipboardState()) {
     _loadData();
     _startWatchingClipboard();
@@ -25,15 +26,17 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       loadClipboardItems(),
       loadClipboardHistory(),
       loadTags(),
+      _loadLocalClipboardItems(),
     ]);
   }
 
   final BaseClipboardManager clipboardManager;
   final ClipboardRepository clipboardRepository;
+  final LocalClipboardRepository localClipboardRepository;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
 
   void _startWatchingClipboard() {
-    _clipboardSubscription = clipboardManager.watchClipboard().listen((clipboardData) {
+    _clipboardSubscription = clipboardManager.watchClipboard().listen((clipboardData) async {
       emit(state.copyWith(currentClipboardData: clipboardData));
 
       final currentItems = state.localClipboardItems;
@@ -41,6 +44,15 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       final isDuplicate = currentItems.any(
         (item) => item.contentHash == clipboardData.contentHash,
       );
+
+      if (!isDuplicate) {
+        // Convert ClipboardData to ClipboardItem and upsert to local repository
+        final clipboardItem = _convertToClipboardItem(clipboardData);
+        await _upsertClipboardItem(clipboardItem);
+        
+        // Create clipboard history record
+        await _createClipboardHistory(clipboardItem.id);
+      }
 
       final updated = [
         if (!isDuplicate) clipboardData,
@@ -51,6 +63,120 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         state.copyWith(localClipboardItems: updated),
       );
     });
+  }
+
+  ClipboardItem _convertToClipboardItem(ClipboardData clipboardData) {
+    final now = DateTime.now();
+    final itemType = _mapContentTypeToItemType(clipboardData.type);
+    
+    return ClipboardItem(
+      id: _generateId(),
+      content: clipboardData.text ?? '',
+      contentHash: clipboardData.contentHash ?? '',
+      type: itemType,
+      userId: '', // Will be set by auth context
+      createdAt: clipboardData.timestamp ?? now,
+      updatedAt: now,
+      imageUrl: clipboardData.imageBytes != null ? 'local' : null,
+      filePaths: clipboardData.filePaths ?? [],
+      htmlContent: clipboardData.html,
+      isSynced: false,
+    );
+  }
+
+  ClipboardItemType _mapContentTypeToItemType(ClipboardContentType type) {
+    switch (type) {
+      case ClipboardContentType.text:
+        return ClipboardItemType.text;
+      case ClipboardContentType.image:
+        return ClipboardItemType.image;
+      case ClipboardContentType.file:
+        return ClipboardItemType.file;
+      case ClipboardContentType.url:
+        return ClipboardItemType.url;
+      case ClipboardContentType.html:
+        return ClipboardItemType.html;
+      case ClipboardContentType.unknown:
+        return ClipboardItemType.unknown;
+    }
+  }
+
+  String _generateId() {
+    // Generate a unique ID using timestamp and random string
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final random = timestamp.hashCode.toRadixString(36);
+    return '$timestamp-$random';
+  }
+
+  Future<void> _upsertClipboardItem(ClipboardItem item) async {
+    try {
+      await localClipboardRepository.upsert(item);
+    } catch (e) {
+      // Log error but don't prevent the clipboard from working
+      // The item is still added to the in-memory list
+    }
+  }
+
+  Future<void> _createClipboardHistory(String clipboardItemId) async {
+    try {
+      final history = ClipboardHistory(
+        id: _generateId(),
+        clipboardItemId: clipboardItemId,
+        action: ClipboardAction.copy,
+        userId: '', // Will be set by auth context
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      
+      await clipboardRepository.upsertClipboardItem(
+        data: history.toMap(),
+      );
+    } catch (e) {
+      // Log error but don't prevent the clipboard from working
+    }
+  }
+
+  Future<void> _loadLocalClipboardItems() async {
+    try {
+      final items = await localClipboardRepository.getAll();
+      // Convert to ClipboardData for display in the UI
+      final clipboardDataList = items.map(_convertToClipboardData).toList();
+      emit(
+        state.copyWith(localClipboardItems: clipboardDataList),
+      );
+    } catch (e) {
+      // Continue with empty list if loading fails
+    }
+  }
+
+  ClipboardData _convertToClipboardData(ClipboardItem item) {
+    final contentType = _mapItemTypeToContentType(item.type);
+    
+    return ClipboardData(
+      type: contentType,
+      text: item.content,
+      contentHash: item.contentHash,
+      timestamp: item.createdAt,
+      html: item.htmlContent,
+      filePaths: item.filePaths.isNotEmpty ? item.filePaths : null,
+    );
+  }
+
+  ClipboardContentType _mapItemTypeToContentType(ClipboardItemType type) {
+    switch (type) {
+      case ClipboardItemType.text:
+        return ClipboardContentType.text;
+      case ClipboardItemType.image:
+        return ClipboardContentType.image;
+      case ClipboardItemType.file:
+        return ClipboardContentType.file;
+      case ClipboardItemType.url:
+        return ClipboardContentType.url;
+      case ClipboardItemType.html:
+        return ClipboardContentType.html;
+      case ClipboardItemType.unknown:
+        return ClipboardContentType.unknown;
+    }
   }
 
   Future<void> loadClipboardItems() async {

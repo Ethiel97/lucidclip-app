@@ -37,6 +37,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final ClipboardRepository clipboardRepository;
   final LocalClipboardRepository localClipboardRepository;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
+  
+  // Placeholder for userId until auth context is available
+  static const String _pendingUserId = '';
 
   void _startWatchingClipboard() {
     _clipboardSubscription = clipboardManager.watchClipboard().listen((clipboardData) async {
@@ -77,7 +80,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       content: clipboardData.text ?? '',
       contentHash: clipboardData.contentHash ?? '',
       type: itemType,
-      userId: '', // Will be set by auth context
+      userId: _pendingUserId,
       createdAt: clipboardData.timestamp ?? now,
       updatedAt: now,
       imageUrl: clipboardData.imageBytes != null ? 'local' : null,
@@ -133,13 +136,14 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         id: _generateId(),
         clipboardItemId: clipboardItemId,
         action: ClipboardAction.copy,
-        userId: '', // Will be set by auth context
+        userId: _pendingUserId,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
       
-      // Create history record using the clipboard repository
-      // Note: This uses upsertClipboardItem as there's no dedicated history creation method
+      // TODO: This is using upsertClipboardItem for history records due to missing
+      // dedicated history creation method in ClipboardRepository. This should be
+      // refactored when a proper createClipboardHistory method is added.
       await clipboardRepository.upsertClipboardItem(
         data: history.toMap(),
       );

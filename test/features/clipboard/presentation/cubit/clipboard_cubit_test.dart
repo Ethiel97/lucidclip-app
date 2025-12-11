@@ -35,7 +35,7 @@ void main() {
   });
 
   group('ClipboardCubit', () {
-    test('initial state has empty clipboard items', () {
+    test('initial state has empty clipboard items', () async {
       final cubit = ClipboardCubit(
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
@@ -44,16 +44,18 @@ void main() {
       expect(cubit.state.localClipboardItems, isEmpty);
       expect(cubit.state.currentClipboardData, isNull);
 
-      cubit.close();
+      await cubit.close();
     });
 
-    test('automatically starts watching clipboard on initialization', () {
-      ClipboardCubit(
+    test('automatically starts watching clipboard on initialization', () async {
+      final cubit = ClipboardCubit(
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
       );
 
       verify(() => mockClipboardManager.watchClipboard()).called(1);
+
+      await cubit.close();
     });
 
     blocTest<ClipboardCubit, ClipboardState>(

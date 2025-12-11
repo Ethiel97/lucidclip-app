@@ -186,5 +186,17 @@ void main() {
         );
       },
     );
+
+    test('properly cancels subscription on close', () async {
+      final cubit = ClipboardCubit(
+        clipboardManager: mockClipboardManager,
+        clipboardRepository: mockClipboardRepository,
+      );
+
+      await cubit.close();
+
+      // Verify that dispose was called on the clipboard manager
+      verify(() => mockClipboardManager.dispose()).called(1);
+    });
   });
 }

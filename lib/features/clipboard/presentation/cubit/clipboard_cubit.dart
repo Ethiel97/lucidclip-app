@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -28,9 +30,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   final BaseClipboardManager clipboardManager;
   final ClipboardRepository clipboardRepository;
+  StreamSubscription<ClipboardData>? _clipboardSubscription;
 
   void _startWatchingClipboard() {
-    clipboardManager.watchClipboard().listen((clipboardData) {
+    _clipboardSubscription = clipboardManager.watchClipboard().listen((clipboardData) {
       emit(state.copyWith(currentClipboardData: clipboardData));
 
       final currentItems = state.localClipboardItems;
@@ -207,8 +210,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   @disposeMethod
   @override
-  Future<void> close() {
-    clipboardManager.dispose();
+  Future<void> close() async {
+    await _clipboardSubscription?.cancel();
+    await clipboardManager.dispose();
     return super.close();
   }
 }

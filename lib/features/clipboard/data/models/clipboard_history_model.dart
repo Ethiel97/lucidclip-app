@@ -71,6 +71,17 @@ class ClipboardHistoryModel {
       userId: userId,
     );
   }
+
+  factory ClipboardHistoryModel.fromEntity(ClipboardHistory entity) {
+    return ClipboardHistoryModel(
+      action: ClipboardActionModel.values[entity.action.index],
+      clipboardItemId: entity.clipboardItemId,
+      createdAt: entity.createdAt,
+      id: entity.id,
+      updatedAt: entity.updatedAt,
+      userId: entity.userId,
+    );
+  }
 }
 
 enum ClipboardActionModel {

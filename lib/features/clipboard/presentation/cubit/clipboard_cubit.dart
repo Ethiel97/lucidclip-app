@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer' as developer;
 
-import 'package:crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -19,6 +17,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.clipboardManager,
     required this.clipboardRepository,
     required this.localClipboardRepository,
+    required this.localClipboardHistoryRepository,
   }) : super(const ClipboardState()) {
     _loadData();
     _startWatchingClipboard();
@@ -36,6 +35,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final BaseClipboardManager clipboardManager;
   final ClipboardRepository clipboardRepository;
   final LocalClipboardRepository localClipboardRepository;
+  final LocalClipboardHistoryRepository localClipboardHistoryRepository;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
   
   // Placeholder for userId until auth context is available
@@ -76,7 +76,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     final itemType = _mapContentTypeToItemType(clipboardData.type);
     
     return ClipboardItem(
-      id: _generateId(),
+      id: IdGenerator.generate(),
       content: clipboardData.text ?? '',
       contentHash: clipboardData.contentHash ?? '',
       type: itemType,
@@ -107,14 +107,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     }
   }
 
-  String _generateId() {
-    // Generate a unique ID using timestamp and hash
-    final timestamp = DateTime.now().microsecondsSinceEpoch;
-    final randomData = '$timestamp-${DateTime.now().hashCode}';
-    final bytes = utf8.encode(randomData);
-    final hash = sha256.convert(bytes);
-    return '${timestamp}_${hash.toString().substring(0, 16)}';
-  }
+
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
     try {
@@ -133,7 +126,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   Future<void> _createClipboardHistory(String clipboardItemId) async {
     try {
       final history = ClipboardHistory(
-        id: _generateId(),
+        id: IdGenerator.generate(),
         clipboardItemId: clipboardItemId,
         action: ClipboardAction.copy,
         userId: _pendingUserId,
@@ -141,12 +134,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         updatedAt: DateTime.now(),
       );
       
-      // TODO: This is using upsertClipboardItem for history records due to missing
-      // dedicated history creation method in ClipboardRepository. This should be
-      // refactored when a proper createClipboardHistory method is added.
-      await clipboardRepository.upsertClipboardItem(
-        data: history.toMap(),
-      );
+      // Store history locally
+      await localClipboardHistoryRepository.upsert(history);
     } catch (e, stackTrace) {
       developer.log(
         'Failed to create clipboard history record',
@@ -178,33 +167,14 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   ClipboardData _convertToClipboardData(ClipboardItem item) {
-    final contentType = _mapItemTypeToContentType(item.type);
-    
     return ClipboardData(
-      type: contentType,
+      type: item.contentType, // Using the extension
       text: item.content,
       contentHash: item.contentHash,
       timestamp: item.createdAt,
       html: item.htmlContent,
       filePaths: item.filePaths.isNotEmpty ? item.filePaths : null,
     );
-  }
-
-  ClipboardContentType _mapItemTypeToContentType(ClipboardItemType type) {
-    switch (type) {
-      case ClipboardItemType.text:
-        return ClipboardContentType.text;
-      case ClipboardItemType.image:
-        return ClipboardContentType.image;
-      case ClipboardItemType.file:
-        return ClipboardContentType.file;
-      case ClipboardItemType.url:
-        return ClipboardContentType.url;
-      case ClipboardItemType.html:
-        return ClipboardContentType.html;
-      case ClipboardItemType.unknown:
-        return ClipboardContentType.unknown;
-    }
   }
 
   Future<void> loadClipboardItems() async {

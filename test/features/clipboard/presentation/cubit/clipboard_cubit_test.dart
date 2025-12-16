@@ -14,16 +14,22 @@ class MockClipboardRepository extends Mock implements ClipboardRepository {}
 class MockLocalClipboardRepository extends Mock
     implements LocalClipboardRepository {}
 
+class MockLocalClipboardHistoryRepository extends Mock
+    implements LocalClipboardHistoryRepository {}
+
 void main() {
   late MockClipboardManager mockClipboardManager;
   late MockClipboardRepository mockClipboardRepository;
   late MockLocalClipboardRepository mockLocalClipboardRepository;
+  late MockLocalClipboardHistoryRepository
+      mockLocalClipboardHistoryRepository;
   late StreamController<ClipboardData> clipboardStreamController;
 
   setUp(() {
     mockClipboardManager = MockClipboardManager();
     mockClipboardRepository = MockClipboardRepository();
     mockLocalClipboardRepository = MockLocalClipboardRepository();
+    mockLocalClipboardHistoryRepository = MockLocalClipboardHistoryRepository();
     clipboardStreamController = StreamController<ClipboardData>.broadcast();
 
     // Setup default mock behaviors
@@ -37,6 +43,8 @@ void main() {
         .thenAnswer((_) async => []);
     when(() => mockLocalClipboardRepository.upsert(any()))
         .thenAnswer((_) async {});
+    when(() => mockLocalClipboardHistoryRepository.upsert(any()))
+        .thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -49,6 +57,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       );
 
       expect(cubit.state.localClipboardItems, isEmpty);
@@ -62,6 +71,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       );
 
       verify(() => mockClipboardManager.watchClipboard()).called(1);
@@ -75,6 +85,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
       act: (cubit) {
         final clipboardData = ClipboardData(
@@ -105,6 +116,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
       act: (cubit) {
         final clipboardData = ClipboardData(
@@ -130,6 +142,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
       act: (cubit) {
         final clipboardData1 = ClipboardData(
@@ -162,6 +175,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
       act: (cubit) {
         final textData = ClipboardData(
@@ -209,6 +223,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       );
 
       await cubit.close();
@@ -223,6 +238,7 @@ void main() {
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       );
 
       final clipboardData = ClipboardData(
@@ -239,6 +255,7 @@ void main() {
 
       // Verify upsert was called
       verify(() => mockLocalClipboardRepository.upsert(any())).called(1);
+      verify(() => mockLocalClipboardHistoryRepository.upsert(any())).called(1);
 
       await cubit.close();
     });

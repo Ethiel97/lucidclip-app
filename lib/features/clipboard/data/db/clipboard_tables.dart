@@ -37,3 +37,20 @@ class ClipboardItemEntries extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+class ClipboardHistoryEntries extends Table {
+  TextColumn get id => text()();
+
+  TextColumn get clipboardItemId => text().named('clipboard_item_id')();
+
+  TextColumn get userId => text().named('user_id')();
+
+  TextColumn get action => text()();
+
+  DateTimeColumn get createdAt => dateTime().named('created_at')();
+
+  DateTimeColumn get updatedAt => dateTime().named('updated_at')();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

@@ -73,7 +73,7 @@ class ClipboardHistoryModel {
       developer.log(
         'Enum mismatch: ClipboardActionModel.${action.name} not found in ClipboardAction. Using copy as fallback.',
         name: 'ClipboardHistoryModel',
-        level: 900, // WARNING level
+        level: 900, // WARNING: 900 is standard warning level in dart:developer
       );
       actionEntity = ClipboardAction.copy;
     }
@@ -98,7 +98,7 @@ class ClipboardHistoryModel {
       developer.log(
         'Enum mismatch: ClipboardAction.${entity.action.name} not found in ClipboardActionModel. Using copy as fallback.',
         name: 'ClipboardHistoryModel',
-        level: 900, // WARNING level
+        level: 900, // WARNING: 900 is standard warning level in dart:developer
       );
       actionModel = ClipboardActionModel.copy;
     }

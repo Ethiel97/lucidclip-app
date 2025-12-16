@@ -120,7 +120,7 @@ class DriftClipboardHistoryLocalDataSource
       developer.log(
         'Enum mismatch: action "${entry.action}" from database not found in ClipboardActionModel. Using copy as fallback.',
         name: 'DriftClipboardHistoryLocalDataSource',
-        level: 900, // WARNING level
+        level: 900, // WARNING: 900 is standard warning level in dart:developer
       );
       action = ClipboardActionModel.copy;
     }

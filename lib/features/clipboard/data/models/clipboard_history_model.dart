@@ -62,8 +62,13 @@ class ClipboardHistoryModel {
   }
 
   ClipboardHistory toEntity() {
+    final actionEntity = ClipboardAction.values.firstWhere(
+      (entity) => entity.name == action.name,
+      orElse: () => ClipboardAction.copy,
+    );
+    
     return ClipboardHistory(
-      action: ClipboardAction.values[action.index],
+      action: actionEntity,
       clipboardItemId: clipboardItemId,
       createdAt: createdAt,
       id: id,
@@ -73,8 +78,13 @@ class ClipboardHistoryModel {
   }
 
   factory ClipboardHistoryModel.fromEntity(ClipboardHistory entity) {
+    final actionModel = ClipboardActionModel.values.firstWhere(
+      (model) => model.name == entity.action.name,
+      orElse: () => ClipboardActionModel.copy,
+    );
+    
     return ClipboardHistoryModel(
-      action: ClipboardActionModel.values[entity.action.index],
+      action: actionModel,
       clipboardItemId: entity.clipboardItemId,
       createdAt: entity.createdAt,
       id: entity.id,

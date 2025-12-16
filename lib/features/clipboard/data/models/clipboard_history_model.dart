@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
@@ -62,10 +64,19 @@ class ClipboardHistoryModel {
   }
 
   ClipboardHistory toEntity() {
-    final actionEntity = ClipboardAction.values.firstWhere(
-      (entity) => entity.name == action.name,
-      orElse: () => ClipboardAction.copy,
-    );
+    ClipboardAction? actionEntity;
+    try {
+      actionEntity = ClipboardAction.values.firstWhere(
+        (entity) => entity.name == action.name,
+      );
+    } catch (e) {
+      developer.log(
+        'Enum mismatch: ClipboardActionModel.${action.name} not found in ClipboardAction. Using copy as fallback.',
+        name: 'ClipboardHistoryModel',
+        level: 900, // WARNING level
+      );
+      actionEntity = ClipboardAction.copy;
+    }
     
     return ClipboardHistory(
       action: actionEntity,
@@ -78,10 +89,19 @@ class ClipboardHistoryModel {
   }
 
   factory ClipboardHistoryModel.fromEntity(ClipboardHistory entity) {
-    final actionModel = ClipboardActionModel.values.firstWhere(
-      (model) => model.name == entity.action.name,
-      orElse: () => ClipboardActionModel.copy,
-    );
+    ClipboardActionModel? actionModel;
+    try {
+      actionModel = ClipboardActionModel.values.firstWhere(
+        (model) => model.name == entity.action.name,
+      );
+    } catch (e) {
+      developer.log(
+        'Enum mismatch: ClipboardAction.${entity.action.name} not found in ClipboardActionModel. Using copy as fallback.',
+        name: 'ClipboardHistoryModel',
+        level: 900, // WARNING level
+      );
+      actionModel = ClipboardActionModel.copy;
+    }
     
     return ClipboardHistoryModel(
       action: actionModel,

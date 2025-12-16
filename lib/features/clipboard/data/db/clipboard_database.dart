@@ -20,6 +20,19 @@ class ClipboardDatabase extends _$ClipboardDatabase {
   @override
   int get schemaVersion => 2;
 
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) async {
+          await m.createAll();
+        },
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from == 1 && to == 2) {
+            // Add ClipboardHistoryEntries table
+            await m.createTable(clipboardHistoryEntries);
+          }
+        },
+      );
+
   Future<void> upsertItem(ClipboardItemEntriesCompanion companion) =>
       into(clipboardItemEntries).insertOnConflictUpdate(companion);
 

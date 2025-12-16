@@ -1,4 +1,6 @@
 // dart
+import 'dart:developer' as developer;
+
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
@@ -109,10 +111,19 @@ class DriftClipboardHistoryLocalDataSource
   // Helper methods for mapping
 
   ClipboardHistoryModel _historyEntryToModel(ClipboardHistoryEntry entry) {
-    final action = ClipboardActionModel.values.firstWhere(
-      (v) => v.name == entry.action,
-      orElse: () => ClipboardActionModel.copy,
-    );
+    ClipboardActionModel? action;
+    try {
+      action = ClipboardActionModel.values.firstWhere(
+        (v) => v.name == entry.action,
+      );
+    } catch (e) {
+      developer.log(
+        'Enum mismatch: action "${entry.action}" from database not found in ClipboardActionModel. Using copy as fallback.',
+        name: 'DriftClipboardHistoryLocalDataSource',
+        level: 900, // WARNING level
+      );
+      action = ClipboardActionModel.copy;
+    }
 
     return ClipboardHistoryModel(
       id: entry.id,

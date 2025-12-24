@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 
 typedef ClipboardItems = List<ClipboardItem>;
 
@@ -115,4 +116,25 @@ enum ClipboardItemType {
   bool get isHtml => this == ClipboardItemType.html;
 
   bool get isUnknown => this == ClipboardItemType.unknown;
+}
+
+/// Extension to map ClipboardItem to ClipboardContentType for reusability
+extension ClipboardItemTypeMapping on ClipboardItem {
+  /// Maps the ClipboardItem type to ClipboardContentType
+  ClipboardContentType get contentType {
+    switch (type) {
+      case ClipboardItemType.text:
+        return ClipboardContentType.text;
+      case ClipboardItemType.image:
+        return ClipboardContentType.image;
+      case ClipboardItemType.file:
+        return ClipboardContentType.file;
+      case ClipboardItemType.url:
+        return ClipboardContentType.url;
+      case ClipboardItemType.html:
+        return ClipboardContentType.html;
+      case ClipboardItemType.unknown:
+        return ClipboardContentType.unknown;
+    }
+  }
 }

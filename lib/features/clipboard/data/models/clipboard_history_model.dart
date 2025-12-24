@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
@@ -62,13 +64,52 @@ class ClipboardHistoryModel {
   }
 
   ClipboardHistory toEntity() {
+    ClipboardAction? actionEntity;
+    try {
+      actionEntity = ClipboardAction.values.firstWhere(
+        (entity) => entity.name == action.name,
+      );
+    } catch (e) {
+      developer.log(
+        'Enum mismatch: ClipboardActionModel.${action.name} not found in ClipboardAction. Using copy as fallback.',
+        name: 'ClipboardHistoryModel',
+        level: 900, // WARNING: 900 is standard warning level in dart:developer
+      );
+      actionEntity = ClipboardAction.copy;
+    }
+    
     return ClipboardHistory(
-      action: ClipboardAction.values[action.index],
+      action: actionEntity,
       clipboardItemId: clipboardItemId,
       createdAt: createdAt,
       id: id,
       updatedAt: updatedAt,
       userId: userId,
+    );
+  }
+
+  factory ClipboardHistoryModel.fromEntity(ClipboardHistory entity) {
+    ClipboardActionModel? actionModel;
+    try {
+      actionModel = ClipboardActionModel.values.firstWhere(
+        (model) => model.name == entity.action.name,
+      );
+    } catch (e) {
+      developer.log(
+        'Enum mismatch: ClipboardAction.${entity.action.name} not found in ClipboardActionModel. Using copy as fallback.',
+        name: 'ClipboardHistoryModel',
+        level: 900, // WARNING: 900 is standard warning level in dart:developer
+      );
+      actionModel = ClipboardActionModel.copy;
+    }
+    
+    return ClipboardHistoryModel(
+      action: actionModel,
+      clipboardItemId: entity.clipboardItemId,
+      createdAt: entity.createdAt,
+      id: entity.id,
+      updatedAt: entity.updatedAt,
+      userId: entity.userId,
     );
   }
 }

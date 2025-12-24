@@ -6,7 +6,7 @@ import 'package:lucid_clip/features/clipboard/data/data.dart'; // pour Clipboard
 
 part 'clipboard_database.g.dart';
 
-@DriftDatabase(tables: [ClipboardItemEntries])
+@DriftDatabase(tables: [ClipboardItemEntries, ClipboardHistoryEntries])
 class ClipboardDatabase extends _$ClipboardDatabase {
   ClipboardDatabase([QueryExecutor? executor])
       : super(executor ?? _openConnection());
@@ -18,7 +18,20 @@ class ClipboardDatabase extends _$ClipboardDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (Migrator m) async {
+          await m.createAll();
+        },
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from == 1 && to == 2) {
+            // Add ClipboardHistoryEntries table
+            await m.createTable(clipboardHistoryEntries);
+          }
+        },
+      );
 
   Future<void> upsertItem(ClipboardItemEntriesCompanion companion) =>
       into(clipboardItemEntries).insertOnConflictUpdate(companion);
@@ -135,4 +148,73 @@ class ClipboardDatabase extends _$ClipboardDatabase {
           Value(m.metadata.isNotEmpty ? jsonEncode(m.metadata) : null),
     );
   }
+
+  // Clipboard History methods
+
+  Future<void> upsertHistory(ClipboardHistoryEntriesCompanion companion) =>
+      into(clipboardHistoryEntries).insertOnConflictUpdate(companion);
+
+  Future<void> upsertHistoriesBatch(
+          List<ClipboardHistoryEntriesCompanion> comps) =>
+      batch((b) => b.insertAllOnConflictUpdate(clipboardHistoryEntries, comps));
+
+  Future<ClipboardHistoryEntry?> getHistoryById(String id) =>
+      (select(clipboardHistoryEntries)..where((t) => t.id.equals(id)))
+          .getSingleOrNull();
+
+  Future<List<ClipboardHistoryEntry>> getHistoriesByClipboardItemId(
+    String clipboardItemId,
+  ) =>
+      (select(clipboardHistoryEntries)
+            ..where((t) => t.clipboardItemId.equals(clipboardItemId))
+            ..orderBy([
+              (t) => OrderingTerm(
+                    expression: t.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+            ]))
+          .get();
+
+  Future<List<ClipboardHistoryEntry>> getAllHistories() =>
+      (select(clipboardHistoryEntries)
+            ..orderBy([
+              (t) => OrderingTerm(
+                    expression: t.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+            ]))
+          .get();
+
+  Future<List<ClipboardHistoryEntry>> getHistoriesByAction(String action) =>
+      (select(clipboardHistoryEntries)
+            ..where((t) => t.action.equals(action))
+            ..orderBy([
+              (t) => OrderingTerm(
+                    expression: t.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+            ]))
+          .get();
+
+  Stream<List<ClipboardHistoryEntry>> watchAllHistories() =>
+      (select(clipboardHistoryEntries)
+            ..orderBy([
+              (t) => OrderingTerm(
+                    expression: t.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+            ]))
+          .watch();
+
+  Future<void> deleteHistoryById(String id) async {
+    await (delete(clipboardHistoryEntries)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<void> deleteHistoriesByClipboardItemId(String clipboardItemId) async {
+    await (delete(clipboardHistoryEntries)
+          ..where((t) => t.clipboardItemId.equals(clipboardItemId)))
+        .go();
+  }
+
+  Future<void> clearAllHistories() => delete(clipboardHistoryEntries).go();
 }

@@ -77,11 +77,11 @@ scripts:
       scope: lucid_clip
     run: dart run MELOS_ROOT_PATH/../../tool/arb_converter/bin/arb_converter.dart --inputPath ./lib/l10n/arb/app_en.arb --androidOutput android/app/src/main/res/values/strings.xml --iosOutput ios/Localizable.xcstrings --l10nByTextOutput ./lib/l10n/generated/l10n_by_text.g.dart
 
-  # generate route scripts
-  generate-routes:
-    description: Generate the AutoRouter routes for Project
+  # generate files scripts
+  generate-files:
+    description: Generate the files (autoroute,builder configuration) for Project
     exec: flutter pub run build_runner build --delete-conflicting-outputs
-    name: Generate Routes for AutoRouter
+    name: Generate files for Project
     packageFilters:
       scope: lucid_clip
 

@@ -302,6 +302,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
+  color:
+    dependency: transitive
+    description:
+      name: color
+      sha256: ddcdf1b3badd7008233f5acffaf20ca9f5dc2cd0172b75f68f24526a5f5725cb
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   conventional_commit:
     dependency: transitive
     description:
@@ -350,6 +358,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.8"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      sha256: "8b25435617027257d43e6508b5fe061012880ddfdaa75a71d607c3de2a13d244"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -547,6 +563,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
+  flutter_gen_core:
+    dependency: transitive
+    description:
+      name: flutter_gen_core
+      sha256: "3eaa2d3d8be58267ac4cd5e215ac965dd23cae0410dc073de2e82e227be32bfc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.10.0"
+  flutter_gen_runner:
+    dependency: "direct dev"
+    description:
+      name: flutter_gen_runner
+      sha256: e74b4ead01df3e8f02e73a26ca856759dbbe8cb3fd60941ba9f4005cd0cd19c9
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.10.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -616,6 +648,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
+  flutter_svg:
+    dependency: transitive
+    description:
+      name: flutter_svg
+      sha256: cd57f7969b4679317c17af6fd16ee233c1e60a82ed209d8a475c54fd6fd6f845
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -690,6 +730,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  hashcodes:
+    dependency: transitive
+    description:
+      name: hashcodes
+      sha256: "80f9410a5b3c8e110c4b7604546034749259f5d6dcca63e0d3c17c9258f1a651"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   hive:
     dependency: "direct main"
     description:
@@ -730,6 +778,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  hugeicons:
+    dependency: "direct main"
+    description:
+      name: hugeicons
+      sha256: "786fe107c037f54dd115e2c15a19dc6903ec5ded763463c50ed42eebf0ff84ec"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   hydrated_bloc:
     dependency: "direct main"
     description:
@@ -754,6 +810,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.4"
+  image_size_getter:
+    dependency: transitive
+    description:
+      name: image_size_getter
+      sha256: "7c26937e0ae341ca558b7556591fd0cc456fcc454583b7cb665d2f03e93e590f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   injectable:
     dependency: "direct main"
     description:
@@ -978,6 +1042,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
+  path_parsing:
+    dependency: transitive
+    description:
+      name: path_parsing
+      sha256: "883402936929eac138ee0a45da5b0f2c80f89913e6dc3bf77eb65b84b409c6ca"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   path_provider:
     dependency: "direct main"
     description:
@@ -1187,7 +1259,7 @@ packages:
     source: hosted
     version: "2.6.0"
   recase:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: recase
       sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
@@ -1567,6 +1639,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.5"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      sha256: "46187cf30bffdab28c56be9a63861b36e4ab7347bf403297595d6a97e10c789f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.6"
   timing:
     dependency: transitive
     description:
@@ -1656,13 +1736,37 @@ packages:
     source: hosted
     version: "3.1.4"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: a11b666489b1954e01d992f3d601b1804a33937b5a8fe677bd26b8a9f96f96e8
       url: "https://pub.dev"
     source: hosted
     version: "4.5.2"
+  vector_graphics:
+    dependency: transitive
+    description:
+      name: vector_graphics
+      sha256: a4f059dc26fc8295b5921376600a194c4ec7d55e72f2fe4c7d2831e103d461e6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.19"
+  vector_graphics_codec:
+    dependency: transitive
+    description:
+      name: vector_graphics_codec
+      sha256: "99fd9fbd34d9f9a32efd7b6a6aae14125d8237b10403b422a6a6dfeac2806146"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.13"
+  vector_graphics_compiler:
+    dependency: transitive
+    description:
+      name: vector_graphics_compiler
+      sha256: ca81fdfaf62a5ab45d7296614aea108d2c7d0efca8393e96174bf4d51e6725b0
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.18"
   vector_math:
     dependency: transitive
     description:

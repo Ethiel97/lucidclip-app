@@ -31,10 +31,14 @@ import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
 import 'package:lucid_clip/features/clipboard/clipboard.dart' as _i42;
 import 'package:lucid_clip/features/clipboard/data/data.dart' as _i669;
+import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_history_local_data_source.dart'
+    as _i988;
 import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_local_data_source.dart'
     as _i158;
 import 'package:lucid_clip/features/clipboard/data/data_sources/supabase_remote_data_source.dart'
     as _i272;
+import 'package:lucid_clip/features/clipboard/data/repositories/local_clipboard_history_repository_impl.dart'
+    as _i354;
 import 'package:lucid_clip/features/clipboard/data/repositories/local_repository_impl.dart'
     as _i752;
 import 'package:lucid_clip/features/clipboard/data/repositories/supabase_repository_impl.dart'
@@ -78,12 +82,26 @@ extension GetItInjectableX on _i174.GetIt {
       },
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i669.ClipboardLocalDataSource>(() =>
-        _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()));
+    gh.lazySingleton<_i669.ClipboardLocalDataSource>(
+      () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
+      dispose: (i) => i.clear(),
+    );
+    gh.lazySingleton<_i669.ClipboardHistoryLocalDataSource>(
+      () => _i988.DriftClipboardHistoryLocalDataSource(
+          gh<_i669.ClipboardDatabase>()),
+      dispose: (i) => i.clear(),
+    );
     gh.singleton<_i70.RemoteSyncClient>(
         () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()));
-    gh.lazySingleton<_i782.LocalClipboardRepository>(() =>
-        _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()));
+    gh.lazySingleton<_i782.LocalClipboardHistoryRepository>(
+      () => _i354.LocalClipboardHistoryStoreImpl(
+          gh<_i669.ClipboardHistoryLocalDataSource>()),
+      dispose: (i) => i.clear(),
+    );
+    gh.lazySingleton<_i782.LocalClipboardRepository>(
+      () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
+      dispose: (i) => i.clear(),
+    );
     gh.lazySingleton<_i42.ClipboardRemoteDataSource>(() =>
         _i272.SupabaseRemoteDataSource(
             networkClient: gh<_i183.RemoteSyncClient>()));
@@ -94,6 +112,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i958.ClipboardCubit(
         clipboardManager: gh<_i108.BaseClipboardManager>(),
         clipboardRepository: gh<_i42.ClipboardRepository>(),
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        localClipboardHistoryRepository:
+            gh<_i42.LocalClipboardHistoryRepository>(),
       ),
       dispose: (i) => i.close(),
     );

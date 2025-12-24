@@ -689,16 +689,372 @@ class ClipboardItemEntriesCompanion
   }
 }
 
+class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
+    with TableInfo<$ClipboardHistoryEntriesTable, ClipboardHistoryEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ClipboardHistoryEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _clipboardItemIdMeta =
+      const VerificationMeta('clipboardItemId');
+  @override
+  late final GeneratedColumn<String> clipboardItemId = GeneratedColumn<String>(
+      'clipboard_item_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+      'user_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _actionMeta = const VerificationMeta('action');
+  @override
+  late final GeneratedColumn<String> action = GeneratedColumn<String>(
+      'action', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, clipboardItemId, userId, action, createdAt, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'clipboard_history_entries';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<ClipboardHistoryEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('clipboard_item_id')) {
+      context.handle(
+          _clipboardItemIdMeta,
+          clipboardItemId.isAcceptableOrUnknown(
+              data['clipboard_item_id']!, _clipboardItemIdMeta));
+    } else if (isInserting) {
+      context.missing(_clipboardItemIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('action')) {
+      context.handle(_actionMeta,
+          action.isAcceptableOrUnknown(data['action']!, _actionMeta));
+    } else if (isInserting) {
+      context.missing(_actionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ClipboardHistoryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ClipboardHistoryEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      clipboardItemId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}clipboard_item_id'])!,
+      userId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
+      action: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}action'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+    );
+  }
+
+  @override
+  $ClipboardHistoryEntriesTable createAlias(String alias) {
+    return $ClipboardHistoryEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class ClipboardHistoryEntry extends DataClass
+    implements Insertable<ClipboardHistoryEntry> {
+  final String id;
+  final String clipboardItemId;
+  final String userId;
+  final String action;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ClipboardHistoryEntry(
+      {required this.id,
+      required this.clipboardItemId,
+      required this.userId,
+      required this.action,
+      required this.createdAt,
+      required this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['clipboard_item_id'] = Variable<String>(clipboardItemId);
+    map['user_id'] = Variable<String>(userId);
+    map['action'] = Variable<String>(action);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ClipboardHistoryEntriesCompanion toCompanion(bool nullToAbsent) {
+    return ClipboardHistoryEntriesCompanion(
+      id: Value(id),
+      clipboardItemId: Value(clipboardItemId),
+      userId: Value(userId),
+      action: Value(action),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ClipboardHistoryEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ClipboardHistoryEntry(
+      id: serializer.fromJson<String>(json['id']),
+      clipboardItemId: serializer.fromJson<String>(json['clipboardItemId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      action: serializer.fromJson<String>(json['action']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clipboardItemId': serializer.toJson<String>(clipboardItemId),
+      'userId': serializer.toJson<String>(userId),
+      'action': serializer.toJson<String>(action),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ClipboardHistoryEntry copyWith(
+          {String? id,
+          String? clipboardItemId,
+          String? userId,
+          String? action,
+          DateTime? createdAt,
+          DateTime? updatedAt}) =>
+      ClipboardHistoryEntry(
+        id: id ?? this.id,
+        clipboardItemId: clipboardItemId ?? this.clipboardItemId,
+        userId: userId ?? this.userId,
+        action: action ?? this.action,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  ClipboardHistoryEntry copyWithCompanion(
+      ClipboardHistoryEntriesCompanion data) {
+    return ClipboardHistoryEntry(
+      id: data.id.present ? data.id.value : this.id,
+      clipboardItemId: data.clipboardItemId.present
+          ? data.clipboardItemId.value
+          : this.clipboardItemId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      action: data.action.present ? data.action.value : this.action,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClipboardHistoryEntry(')
+          ..write('id: $id, ')
+          ..write('clipboardItemId: $clipboardItemId, ')
+          ..write('userId: $userId, ')
+          ..write('action: $action, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, clipboardItemId, userId, action, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ClipboardHistoryEntry &&
+          other.id == this.id &&
+          other.clipboardItemId == this.clipboardItemId &&
+          other.userId == this.userId &&
+          other.action == this.action &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ClipboardHistoryEntriesCompanion
+    extends UpdateCompanion<ClipboardHistoryEntry> {
+  final Value<String> id;
+  final Value<String> clipboardItemId;
+  final Value<String> userId;
+  final Value<String> action;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ClipboardHistoryEntriesCompanion({
+    this.id = const Value.absent(),
+    this.clipboardItemId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.action = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ClipboardHistoryEntriesCompanion.insert({
+    required String id,
+    required String clipboardItemId,
+    required String userId,
+    required String action,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        clipboardItemId = Value(clipboardItemId),
+        userId = Value(userId),
+        action = Value(action),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
+  static Insertable<ClipboardHistoryEntry> custom({
+    Expression<String>? id,
+    Expression<String>? clipboardItemId,
+    Expression<String>? userId,
+    Expression<String>? action,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clipboardItemId != null) 'clipboard_item_id': clipboardItemId,
+      if (userId != null) 'user_id': userId,
+      if (action != null) 'action': action,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ClipboardHistoryEntriesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? clipboardItemId,
+      Value<String>? userId,
+      Value<String>? action,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<int>? rowid}) {
+    return ClipboardHistoryEntriesCompanion(
+      id: id ?? this.id,
+      clipboardItemId: clipboardItemId ?? this.clipboardItemId,
+      userId: userId ?? this.userId,
+      action: action ?? this.action,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clipboardItemId.present) {
+      map['clipboard_item_id'] = Variable<String>(clipboardItemId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (action.present) {
+      map['action'] = Variable<String>(action.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClipboardHistoryEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('clipboardItemId: $clipboardItemId, ')
+          ..write('userId: $userId, ')
+          ..write('action: $action, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ClipboardDatabase extends GeneratedDatabase {
   _$ClipboardDatabase(QueryExecutor e) : super(e);
   $ClipboardDatabaseManager get managers => $ClipboardDatabaseManager(this);
   late final $ClipboardItemEntriesTable clipboardItemEntries =
       $ClipboardItemEntriesTable(this);
+  late final $ClipboardHistoryEntriesTable clipboardHistoryEntries =
+      $ClipboardHistoryEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [clipboardItemEntries];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [clipboardItemEntries, clipboardHistoryEntries];
 }
 
 typedef $$ClipboardItemEntriesTableCreateCompanionBuilder
@@ -1016,10 +1372,210 @@ typedef $$ClipboardItemEntriesTableProcessedTableManager
         ),
         ClipboardItemEntry,
         PrefetchHooks Function()>;
+typedef $$ClipboardHistoryEntriesTableCreateCompanionBuilder
+    = ClipboardHistoryEntriesCompanion Function({
+  required String id,
+  required String clipboardItemId,
+  required String userId,
+  required String action,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<int> rowid,
+});
+typedef $$ClipboardHistoryEntriesTableUpdateCompanionBuilder
+    = ClipboardHistoryEntriesCompanion Function({
+  Value<String> id,
+  Value<String> clipboardItemId,
+  Value<String> userId,
+  Value<String> action,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<int> rowid,
+});
+
+class $$ClipboardHistoryEntriesTableFilterComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
+  $$ClipboardHistoryEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get clipboardItemId => $composableBuilder(
+      column: $table.clipboardItemId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get action => $composableBuilder(
+      column: $table.action, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$ClipboardHistoryEntriesTableOrderingComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
+  $$ClipboardHistoryEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get clipboardItemId => $composableBuilder(
+      column: $table.clipboardItemId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+      column: $table.userId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get action => $composableBuilder(
+      column: $table.action, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ClipboardHistoryEntriesTableAnnotationComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
+  $$ClipboardHistoryEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clipboardItemId => $composableBuilder(
+      column: $table.clipboardItemId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get action =>
+      $composableBuilder(column: $table.action, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ClipboardHistoryEntriesTableTableManager extends RootTableManager<
+    _$ClipboardDatabase,
+    $ClipboardHistoryEntriesTable,
+    ClipboardHistoryEntry,
+    $$ClipboardHistoryEntriesTableFilterComposer,
+    $$ClipboardHistoryEntriesTableOrderingComposer,
+    $$ClipboardHistoryEntriesTableAnnotationComposer,
+    $$ClipboardHistoryEntriesTableCreateCompanionBuilder,
+    $$ClipboardHistoryEntriesTableUpdateCompanionBuilder,
+    (
+      ClipboardHistoryEntry,
+      BaseReferences<_$ClipboardDatabase, $ClipboardHistoryEntriesTable,
+          ClipboardHistoryEntry>
+    ),
+    ClipboardHistoryEntry,
+    PrefetchHooks Function()> {
+  $$ClipboardHistoryEntriesTableTableManager(
+      _$ClipboardDatabase db, $ClipboardHistoryEntriesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ClipboardHistoryEntriesTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ClipboardHistoryEntriesTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ClipboardHistoryEntriesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> clipboardItemId = const Value.absent(),
+            Value<String> userId = const Value.absent(),
+            Value<String> action = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ClipboardHistoryEntriesCompanion(
+            id: id,
+            clipboardItemId: clipboardItemId,
+            userId: userId,
+            action: action,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String clipboardItemId,
+            required String userId,
+            required String action,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ClipboardHistoryEntriesCompanion.insert(
+            id: id,
+            clipboardItemId: clipboardItemId,
+            userId: userId,
+            action: action,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ClipboardHistoryEntriesTableProcessedTableManager
+    = ProcessedTableManager<
+        _$ClipboardDatabase,
+        $ClipboardHistoryEntriesTable,
+        ClipboardHistoryEntry,
+        $$ClipboardHistoryEntriesTableFilterComposer,
+        $$ClipboardHistoryEntriesTableOrderingComposer,
+        $$ClipboardHistoryEntriesTableAnnotationComposer,
+        $$ClipboardHistoryEntriesTableCreateCompanionBuilder,
+        $$ClipboardHistoryEntriesTableUpdateCompanionBuilder,
+        (
+          ClipboardHistoryEntry,
+          BaseReferences<_$ClipboardDatabase, $ClipboardHistoryEntriesTable,
+              ClipboardHistoryEntry>
+        ),
+        ClipboardHistoryEntry,
+        PrefetchHooks Function()>;
 
 class $ClipboardDatabaseManager {
   final _$ClipboardDatabase _db;
   $ClipboardDatabaseManager(this._db);
   $$ClipboardItemEntriesTableTableManager get clipboardItemEntries =>
       $$ClipboardItemEntriesTableTableManager(_db, _db.clipboardItemEntries);
+  $$ClipboardHistoryEntriesTableTableManager get clipboardHistoryEntries =>
+      $$ClipboardHistoryEntriesTableTableManager(
+          _db, _db.clipboardHistoryEntries);
 }

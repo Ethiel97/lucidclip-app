@@ -37,12 +37,13 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalClipboardRepository localClipboardRepository;
   final LocalClipboardHistoryRepository localClipboardHistoryRepository;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
-  
+
   // Placeholder for userId until auth context is available
   static const String _pendingUserId = '';
 
   void _startWatchingClipboard() {
-    _clipboardSubscription = clipboardManager.watchClipboard().listen((clipboardData) async {
+    _clipboardSubscription =
+        clipboardManager.watchClipboard().listen((clipboardData) async {
       emit(state.copyWith(currentClipboardData: clipboardData));
 
       final currentItems = state.localClipboardItems;
@@ -55,7 +56,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         // Convert ClipboardData to ClipboardItem and upsert to local repository
         final clipboardItem = _convertToClipboardItem(clipboardData);
         await _upsertClipboardItem(clipboardItem);
-        
+
         // Create clipboard history record
         await _createClipboardHistory(clipboardItem.id);
       }
@@ -73,41 +74,20 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   ClipboardItem _convertToClipboardItem(ClipboardData clipboardData) {
     final now = DateTime.now();
-    final itemType = _mapContentTypeToItemType(clipboardData.type);
-    
+
     return ClipboardItem(
       id: IdGenerator.generate(),
       content: clipboardData.text ?? '',
       contentHash: clipboardData.contentHash ?? '',
-      type: itemType,
+      type: clipboardData.clipboardItemType,
       userId: _pendingUserId,
       createdAt: clipboardData.timestamp ?? now,
       updatedAt: now,
       imageUrl: clipboardData.imageBytes != null ? 'local' : null,
       filePaths: clipboardData.filePaths ?? [],
       htmlContent: clipboardData.html,
-      isSynced: false,
     );
   }
-
-  ClipboardItemType _mapContentTypeToItemType(ClipboardContentType type) {
-    switch (type) {
-      case ClipboardContentType.text:
-        return ClipboardItemType.text;
-      case ClipboardContentType.image:
-        return ClipboardItemType.image;
-      case ClipboardContentType.file:
-        return ClipboardItemType.file;
-      case ClipboardContentType.url:
-        return ClipboardItemType.url;
-      case ClipboardContentType.html:
-        return ClipboardItemType.html;
-      case ClipboardContentType.unknown:
-        return ClipboardItemType.unknown;
-    }
-  }
-
-
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
     try {
@@ -133,7 +113,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
-      
+
       // Store history locally
       await localClipboardHistoryRepository.upsert(history);
     } catch (e, stackTrace) {
@@ -168,7 +148,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   ClipboardData _convertToClipboardData(ClipboardItem item) {
     return ClipboardData(
-      type: item.contentType, // Using the extension
+      type: item.contentType,
+      // Using the extension
       text: item.content,
       contentHash: item.contentHash,
       timestamp: item.createdAt,

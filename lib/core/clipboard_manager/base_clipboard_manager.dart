@@ -1,4 +1,6 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
+import 'package:lucid_clip/features/clipboard/domain/domain.dart';
+
 abstract class BaseClipboardManager {
   static const clipboardPollingInterval = Duration(milliseconds: 500);
 
@@ -74,4 +76,23 @@ enum ClipboardContentType {
   text,
   unknown,
   url,
+}
+
+extension ClipboardDataHelpers on ClipboardData {
+  ClipboardItemType get clipboardItemType {
+    switch (type) {
+      case ClipboardContentType.text:
+        return ClipboardItemType.text;
+      case ClipboardContentType.image:
+        return ClipboardItemType.image;
+      case ClipboardContentType.file:
+        return ClipboardItemType.file;
+      case ClipboardContentType.url:
+        return ClipboardItemType.url;
+      case ClipboardContentType.html:
+        return ClipboardItemType.html;
+      case ClipboardContentType.unknown:
+        return ClipboardItemType.unknown;
+    }
+  }
 }

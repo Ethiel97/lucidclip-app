@@ -79,6 +79,14 @@ class ClipboardState extends Equatable {
     };
   }
 
+  ClipboardItems get unpinnedItems => (clipboardItems.value ?? [])
+      .where((item) => !item.isPinned)
+      .toList(growable: false);
+
+  ClipboardItems get pinnedItems => (clipboardItems.value ?? [])
+      .where((item) => item.isPinned)
+      .toList(growable: false);
+
   @override
   List<Object?> get props => [
         clipboardHistory,

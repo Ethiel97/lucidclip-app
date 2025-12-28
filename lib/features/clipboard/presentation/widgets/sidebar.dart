@@ -4,6 +4,8 @@ import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
+const sidebarWidth = 260.0;
+
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
 
@@ -13,7 +15,7 @@ class Sidebar extends StatelessWidget {
     final l10n = context.l10n;
 
     return Container(
-      width: 260,
+      width: sidebarWidth,
       color: AppColors.sidebar,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -61,7 +63,7 @@ class Sidebar extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'LucidClip © 2025',
+            '${l10n.appName} © ${DateTime.now().year}',
             style: textTheme.bodySmall!.copyWith(
               color: AppColors.textMuted,
             ),

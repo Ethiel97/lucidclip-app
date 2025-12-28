@@ -13,6 +13,9 @@ class SidebarItem extends StatelessWidget {
   final String label;
   final bool isActive;
 
+  Color get _backgroundColor =>
+      isActive ? AppColors.primary.withValues(alpha: 0.13) : Colors.transparent;
+
   @override
   Widget build(BuildContext context) {
     final color = isActive ? AppColors.primary : AppColors.textSecondary;
@@ -36,7 +39,7 @@ class SidebarItem extends StatelessWidget {
               IconTheme(
                 data: IconThemeData(
                   color: color,
-                  size: AppSpacing.md,
+                  size: AppSpacing.lg,
                 ),
                 child: icon,
               ),

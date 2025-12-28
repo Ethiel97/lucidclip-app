@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
+import 'package:recase/recase.dart';
 
 typedef ClipboardItems = List<ClipboardItem>;
 
@@ -119,7 +121,7 @@ enum ClipboardItemType {
 }
 
 /// Extension to map ClipboardItem to ClipboardContentType for reusability
-extension ClipboardItemTypeMapping on ClipboardItem {
+extension ClipboardItemHelper on ClipboardItem {
   /// Maps the ClipboardItem type to ClipboardContentType
   ClipboardContentType get contentType {
     switch (type) {
@@ -137,4 +139,7 @@ extension ClipboardItemTypeMapping on ClipboardItem {
         return ClipboardContentType.unknown;
     }
   }
+
+  String get timeAgo =>
+      Jiffy.parseFromDateTime(createdAt).fromNow().sentenceCase;
 }

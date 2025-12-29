@@ -29,9 +29,12 @@ class ClipboardItemDetailsPanel extends StatelessWidget {
     final l10n = context.l10n;
     return Container(
       width: 360, // ajuste si tu veux plus large/étroit
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.surface2,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.lg),
+          bottomLeft: Radius.circular(AppSpacing.lg),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -151,41 +154,34 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: [
-          _InfoRow(
-            label: l10n.copied.sentenceCase,
-            value: clipboardItem.timeAgo,
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          _InfoRow(
-            label: l10n.size.sentenceCase,
-            // TODO(Ethiel97): implement actual size calculation
-            value: '123 KB',
-            // Placeholder, implement actual size calculation if needed
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedStoreLocation01),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          _InfoRow(
-            label: l10n.characters.sentenceCase,
-            value: clipboardItem.content.length.toString(),
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
-          ),
-          /*const SizedBox(height: AppSpacing.sm),
-          _InfoRow(
-            label: 'Source',
-            value: clipboardItem.source,
-            icon: Icons.computer_rounded,
-          ),*/
-        ],
-      ),
+    return Column(
+      children: [
+        _InfoRow(
+          label: l10n.copied.sentenceCase,
+          value: clipboardItem.timeAgo,
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _InfoRow(
+          label: l10n.size.sentenceCase,
+          // TODO(Ethiel97): implement actual size calculation
+          value: '123 KB',
+          // Placeholder, implement actual size calculation if needed
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedStoreLocation01),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        _InfoRow(
+          label: l10n.characters.sentenceCase,
+          value: clipboardItem.content.length.toString(),
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
+        ),
+        /*const SizedBox(height: AppSpacing.sm),
+        _InfoRow(
+          label: 'Source',
+          value: clipboardItem.source,
+          icon: Icons.computer_rounded,
+        ),*/
+      ],
     );
   }
 }
@@ -204,43 +200,53 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Row(
-      children: [
-        Container(
-          height: 28,
-          width: 28,
-          decoration: BoxDecoration(
-            color: AppColors.surface2,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: IconTheme(
-            data: const IconThemeData(size: 16, color: AppColors.textSecondary),
-            child: icon,
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.textMuted,
-                  fontSize: 12,
-                ),
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 28,
+            width: 28,
+            decoration: BoxDecoration(
+              color: AppColors.surface2,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: IconTheme(
+              data: const IconThemeData(
+                size: 16,
+                color: AppColors.textSecondary,
               ),
-              const SizedBox(height: AppSpacing.xxxs),
-              Text(
-                value,
-                style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
+              child: icon,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.textMuted,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxxs),
+                Text(
+                  value,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -268,7 +274,7 @@ class _TagsWrap extends StatelessWidget {
                 borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
-                t,
+                t.sentenceCase,
                 style: textTheme.labelSmall?.copyWith(color: AppColors.primary),
               ),
             ),
@@ -301,8 +307,18 @@ class _ActionsRow extends StatelessWidget {
         Expanded(
           child: FilledButton.icon(
             onPressed: onCopyPressed,
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: AppColors.surfaceSwatch.shade200),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xxs,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
             icon: const HugeIcon(icon: HugeIcons.strokeRoundedCopy01, size: 16),
-            label: Text(l10n.copyToClipboard.sentenceCase),
+            label: Text(l10n.copy.sentenceCase),
           ),
         ),
         const SizedBox(width: AppSpacing.sm),
@@ -321,8 +337,8 @@ class _ActionsRow extends StatelessWidget {
           ),
           icon: HugeIcon(
             icon: isPinned
-                ? HugeIcons.strokeRoundedPin
-                : HugeIcons.strokeRoundedPinOff,
+                ? HugeIcons.strokeRoundedPinOff
+                : HugeIcons.strokeRoundedPin,
             size: 16,
           ),
           label: Text(

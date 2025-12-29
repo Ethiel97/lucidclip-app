@@ -23,6 +23,22 @@ class ClipboardItem extends Equatable {
     this.htmlContent,
   });
 
+  factory ClipboardItem.empty() {
+    return ClipboardItem(
+      content: '',
+      contentHash: '',
+      createdAt: DateTime.now(),
+      id: '',
+      type: ClipboardItemType.unknown,
+      updatedAt: DateTime.now(),
+      userId: '',
+    );
+  }
+
+  static ClipboardItem emptyValue = ClipboardItem.empty();
+
+  bool get isEmpty => this == ClipboardItem.emptyValue;
+
   final String content;
 
   final String contentHash;

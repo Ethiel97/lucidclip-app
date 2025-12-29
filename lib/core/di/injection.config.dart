@@ -47,6 +47,8 @@ import 'package:lucid_clip/features/clipboard/data/repositories/supabase_reposit
 import 'package:lucid_clip/features/clipboard/domain/domain.dart' as _i782;
 import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_cubit.dart'
     as _i958;
+import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_detail_cubit.dart'
+    as _i68;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -64,6 +66,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i454.SupabaseClient>(() => thirdPartyModule.supabase);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
+    );
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(),
     );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager()..initialize(),

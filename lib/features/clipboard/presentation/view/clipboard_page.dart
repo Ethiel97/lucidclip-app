@@ -15,9 +15,8 @@ class ClipboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => getIt<ClipboardCubit>(),
-        ),
+        BlocProvider(create: (_) => getIt<ClipboardCubit>()),
+        BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
       ],
       child: const ClipboardView(),
     );
@@ -47,7 +46,7 @@ class _ClipboardViewState extends State<ClipboardView>
       vsync: this,
     );
     _clipboardItemDetailsSlideAnimation =
-        Tween<Offset>(begin: Offset.zero, end: const Offset(1, 0)).animate(
+        Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -63,70 +62,108 @@ class _ClipboardViewState extends State<ClipboardView>
           (cubit.state.pinnedItems, cubit.state.unpinnedItems),
     );
 
-    // TODO(Ethiel97): Plug selected item from state
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          Row(
-            children: [
-              const Sidebar(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xlg,
-                    AppSpacing.lg,
-                    AppSpacing.xlg,
-                    AppSpacing.lg,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const PageHeader(),
-                      /* const SizedBox(height: AppSpacing.md),
+    final selectedClipboardItem = context.select(
+      (ClipboardDetailCubit cubit) => cubit.state.clipboardItem,
+    );
+    final hasClipboardItem = context.select(
+      (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
+    );
+    return BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
+      listener: (context, state) {
+        if (state.clipboardItem != null && state.hasClipboardItem) {
+          _animationController.forward();
+        } else {
+          _animationController.reverse();
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Row(
+              children: [
+                const Sidebar(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.xlg,
+                      AppSpacing.lg,
+                      AppSpacing.xlg,
+                      AppSpacing.lg,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const PageHeader(),
+                        /* const SizedBox(height: AppSpacing.md),
                     const _SearchField(),*/
-                      const SizedBox(height: AppSpacing.lg),
-                      Expanded(
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          child: ListView(
+                        const SizedBox(height: AppSpacing.lg),
+                        Expanded(
+                          child: Scrollbar(
                             controller: _scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            children: [
-                              if (pinnedItems.isNotEmpty) ...[
-                                ClipboardListRenderer(
-                                  items: pinnedItems,
-                                  title: l10n.pinned,
-                                ),
-                                const SizedBox(height: AppSpacing.lg),
-                              ],
+                            child: ListView(
+                              controller: _scrollController,
+                              physics: const BouncingScrollPhysics(),
+                              children: [
+                                if (pinnedItems.isNotEmpty) ...[
+                                  ClipboardListRenderer(
+                                    items: pinnedItems,
+                                    title: l10n.pinned,
+                                  ),
+                                  const SizedBox(height: AppSpacing.lg),
+                                ],
 
-                              ClipboardListRenderer(
-                                items: recentItems,
-                                title: l10n.recent,
-                              ),
-                            ],
+                                ClipboardListRenderer(
+                                  items: recentItems,
+                                  title: l10n.recent,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          /*SlideTransition(
-            position: _clipboardItemDetailsSlideAnimation,
-
-            child: ClipboardItemDetailsPanel(
-              clipboardItem: widget.item,
-              onClose: () {
-                _animationController.reverse();
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                /*if (_animationController.isDismissed || !hasClipboardItem) {
+                  return const SizedBox.shrink();
+                }*/
+                return Align(
+                  alignment: Alignment.topRight,
+                  child: SlideTransition(
+                    position: _clipboardItemDetailsSlideAnimation,
+                    child: ClipboardItemDetailsPanel(
+                      clipboardItem:
+                          selectedClipboardItem?.value ?? ClipboardItem.empty(),
+                      onClose: () {
+                        context.read<ClipboardDetailCubit>().clearSelection();
+                      },
+                    ),
+                  ),
+                );
               },
             ),
-          ),*/
-        ],
+            /*if (selectedClipboardItem?.hasData ?? false)
+              Align(
+                alignment: Alignment.topRight,
+                child: SlideTransition(
+                  position: _clipboardItemDetailsSlideAnimation,
+
+                  child: ClipboardItemDetailsPanel(
+                    clipboardItem: selectedClipboardItem!.data,
+                    onClose: () {
+                      context.read<ClipboardDetailCubit>().clearSelection();
+                    },
+                  ),
+                ),
+              ),*/
+          ],
+        ),
       ),
     );
   }

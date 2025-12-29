@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:recase/recase.dart';
@@ -13,10 +15,7 @@ class ClipboardItemTile extends StatefulWidget {
   State<ClipboardItemTile> createState() => _ClipboardItemTileState();
 }
 
-class _ClipboardItemTileState extends State<ClipboardItemTile>
-     {
-
-
+class _ClipboardItemTileState extends State<ClipboardItemTile> {
   bool isHovering = false;
 
   Color get _backgroundColor => isHovering
@@ -28,11 +27,11 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
     final primary = Theme.of(context).colorScheme.primary;
     final textTheme = Theme.of(context).textTheme;
 
-    // TODO(Ethiel97): USE clipboard selection state to determine if item is selected
-
     return GestureDetector(
       onTap: () {
-        // TODO(Ethiel97): Handle item tap
+        context.read<ClipboardDetailCubit>().setClipboardItem(
+          widget.item,
+        );
       },
       onSecondaryTap: () {
         // TODO(Ethiel97): Show context menu

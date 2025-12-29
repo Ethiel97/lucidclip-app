@@ -24,6 +24,8 @@ void main() {
   late MockLocalClipboardHistoryRepository
       mockLocalClipboardHistoryRepository;
   late StreamController<ClipboardData> clipboardStreamController;
+  late StreamController<List<ClipboardItem>> localItemsStreamController;
+  late StreamController<List<ClipboardHistory>> localHistoryStreamController;
 
   setUp(() {
     mockClipboardManager = MockClipboardManager();
@@ -31,6 +33,8 @@ void main() {
     mockLocalClipboardRepository = MockLocalClipboardRepository();
     mockLocalClipboardHistoryRepository = MockLocalClipboardHistoryRepository();
     clipboardStreamController = StreamController<ClipboardData>.broadcast();
+    localItemsStreamController = StreamController<List<ClipboardItem>>.broadcast();
+    localHistoryStreamController = StreamController<List<ClipboardHistory>>.broadcast();
 
     // Setup default mock behaviors
     when(() => mockClipboardManager.watchClipboard())
@@ -41,6 +45,10 @@ void main() {
     when(() => mockClipboardRepository.fetchTags()).thenAnswer((_) async => []);
     when(() => mockLocalClipboardRepository.getAll())
         .thenAnswer((_) async => []);
+    when(() => mockLocalClipboardRepository.watchAll())
+        .thenAnswer((_) => localItemsStreamController.stream);
+    when(() => mockLocalClipboardHistoryRepository.watchAll())
+        .thenAnswer((_) => localHistoryStreamController.stream);
     when(() => mockLocalClipboardRepository.upsert(any()))
         .thenAnswer((_) async {});
     when(() => mockLocalClipboardHistoryRepository.upsert(any()))
@@ -49,6 +57,8 @@ void main() {
 
   tearDown(() {
     clipboardStreamController.close();
+    localItemsStreamController.close();
+    localHistoryStreamController.close();
   });
 
   group('ClipboardCubit', () {
@@ -80,7 +90,7 @@ void main() {
     });
 
     blocTest<ClipboardCubit, ClipboardState>(
-      'adds new clipboard data to localClipboardItems when received',
+      'updates currentClipboardData when clipboard manager emits new data',
       build: () => ClipboardCubit(
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
@@ -100,120 +110,151 @@ void main() {
       expect: () => [
         predicate<ClipboardState>((state) {
           return state.currentClipboardData != null &&
-              state.currentClipboardData!.text == 'Test content' &&
-              state.localClipboardItems.isEmpty;
-        }),
-        predicate<ClipboardState>((state) {
-          return state.localClipboardItems.length == 1 &&
-              state.localClipboardItems.first.text == 'Test content';
+              state.currentClipboardData!.text == 'Test content';
         }),
       ],
     );
 
     blocTest<ClipboardCubit, ClipboardState>(
-      'does not add duplicate clipboard data to localClipboardItems',
+      'does not add duplicate clipboard data to local repository',
       build: () => ClipboardCubit(
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
         localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
-      act: (cubit) {
+      act: (cubit) async {
+        // Wait for initialization
+        await Future.delayed(const Duration(milliseconds: 50));
+        
+        // Add initial item via stream
+        final item = ClipboardItem(
+          id: 'id1',
+          content: 'Duplicate content',
+          contentHash: 'hash456',
+          type: ClipboardItemType.text,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        localItemsStreamController.add([item]);
+        
+        await Future.delayed(const Duration(milliseconds: 50));
+        
         final clipboardData = ClipboardData(
           type: ClipboardContentType.text,
           text: 'Duplicate content',
           contentHash: 'hash456',
           timestamp: DateTime.now(),
         );
-        // Add the same clipboard data twice
+        // Try to add the same clipboard data twice
         clipboardStreamController.add(clipboardData);
         clipboardStreamController.add(clipboardData);
       },
       wait: const Duration(milliseconds: 100),
       verify: (cubit) {
-        // Should only have one item despite receiving the same content twice
-        expect(cubit.state.localClipboardItems.length, 1);
+        // Should only call upsert once since the second one is a duplicate
+        verify(() => mockLocalClipboardRepository.upsert(any())).called(1);
       },
     );
 
     blocTest<ClipboardCubit, ClipboardState>(
-      'adds multiple different clipboard items to history',
+      'receives multiple clipboard items from local repository stream',
       build: () => ClipboardCubit(
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
         localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
-      act: (cubit) {
-        final clipboardData1 = ClipboardData(
-          type: ClipboardContentType.text,
-          text: 'First content',
+      act: (cubit) async {
+        // Wait for initialization
+        await Future.delayed(const Duration(milliseconds: 50));
+        
+        final item1 = ClipboardItem(
+          id: 'id1',
+          content: 'First content',
           contentHash: 'hash1',
-          timestamp: DateTime.now(),
+          type: ClipboardItemType.text,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
-        final clipboardData2 = ClipboardData(
-          type: ClipboardContentType.text,
-          text: 'Second content',
+        final item2 = ClipboardItem(
+          id: 'id2',
+          content: 'Second content',
           contentHash: 'hash2',
-          timestamp: DateTime.now(),
+          type: ClipboardItemType.text,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
-        clipboardStreamController.add(clipboardData1);
-        clipboardStreamController.add(clipboardData2);
+        localItemsStreamController.add([item1, item2]);
       },
       wait: const Duration(milliseconds: 100),
       verify: (cubit) {
         expect(cubit.state.localClipboardItems.length, 2);
-        // Newest items should be first
-        expect(cubit.state.localClipboardItems.first.text, 'Second content');
-        expect(cubit.state.localClipboardItems.last.text, 'First content');
+        expect(cubit.state.localClipboardItems[0].text, 'First content');
+        expect(cubit.state.localClipboardItems[1].text, 'Second content');
       },
     );
 
     blocTest<ClipboardCubit, ClipboardState>(
-      'handles different clipboard content types',
+      'handles different clipboard content types from stream',
       build: () => ClipboardCubit(
         clipboardManager: mockClipboardManager,
         clipboardRepository: mockClipboardRepository,
         localClipboardRepository: mockLocalClipboardRepository,
         localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
       ),
-      act: (cubit) {
-        final textData = ClipboardData(
-          type: ClipboardContentType.text,
-          text: 'Text content',
+      act: (cubit) async {
+        // Wait for initialization
+        await Future.delayed(const Duration(milliseconds: 50));
+        
+        final textItem = ClipboardItem(
+          id: 'id1',
+          content: 'Text content',
           contentHash: 'text_hash',
-          timestamp: DateTime.now(),
+          type: ClipboardItemType.text,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
-        final urlData = ClipboardData(
-          type: ClipboardContentType.url,
-          text: 'https://example.com',
+        final urlItem = ClipboardItem(
+          id: 'id2',
+          content: 'https://example.com',
           contentHash: 'url_hash',
-          timestamp: DateTime.now(),
+          type: ClipboardItemType.url,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
-        final imageData = ClipboardData(
-          type: ClipboardContentType.image,
-          imageBytes: [1, 2, 3, 4],
+        final imageItem = ClipboardItem(
+          id: 'id3',
+          content: '',
           contentHash: 'image_hash',
-          timestamp: DateTime.now(),
+          type: ClipboardItemType.image,
+          userId: '',
+          imageUrl: 'local',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
         );
-        clipboardStreamController.add(textData);
-        clipboardStreamController.add(urlData);
-        clipboardStreamController.add(imageData);
+        
+        localItemsStreamController.add([textItem, urlItem, imageItem]);
       },
       wait: const Duration(milliseconds: 100),
       verify: (cubit) {
         expect(cubit.state.localClipboardItems.length, 3);
         expect(
-          cubit.state.localClipboardItems.first.type,
-          ClipboardContentType.image,
+          cubit.state.localClipboardItems[0].type,
+          ClipboardContentType.text,
         );
         expect(
           cubit.state.localClipboardItems[1].type,
           ClipboardContentType.url,
         );
         expect(
-          cubit.state.localClipboardItems.last.type,
-          ClipboardContentType.text,
+          cubit.state.localClipboardItems[2].type,
+          ClipboardContentType.image,
         );
       },
     );
@@ -259,5 +300,64 @@ void main() {
 
       await cubit.close();
     });
+
+    test('subscribes to local clipboard items stream on initialization', () async {
+      final cubit = ClipboardCubit(
+        clipboardManager: mockClipboardManager,
+        clipboardRepository: mockClipboardRepository,
+        localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
+      );
+
+      // Wait for initialization
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      verify(() => mockLocalClipboardRepository.watchAll()).called(1);
+      verify(() => mockLocalClipboardHistoryRepository.watchAll()).called(1);
+
+      await cubit.close();
+    });
+
+    blocTest<ClipboardCubit, ClipboardState>(
+      'updates state when local items stream emits new data',
+      build: () => ClipboardCubit(
+        clipboardManager: mockClipboardManager,
+        clipboardRepository: mockClipboardRepository,
+        localClipboardRepository: mockLocalClipboardRepository,
+        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
+      ),
+      act: (cubit) async {
+        // Wait for initialization
+        await Future.delayed(const Duration(milliseconds: 100));
+        
+        // Emit items from local repository stream
+        final item1 = ClipboardItem(
+          id: 'id1',
+          content: 'Item 1',
+          contentHash: 'hash1',
+          type: ClipboardItemType.text,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        final item2 = ClipboardItem(
+          id: 'id2',
+          content: 'Item 2',
+          contentHash: 'hash2',
+          type: ClipboardItemType.text,
+          userId: '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        
+        localItemsStreamController.add([item1, item2]);
+      },
+      wait: const Duration(milliseconds: 100),
+      verify: (cubit) {
+        expect(cubit.state.localClipboardItems.length, 2);
+        expect(cubit.state.localClipboardItems[0].text, 'Item 1');
+        expect(cubit.state.localClipboardItems[1].text, 'Item 2');
+      },
+    );
   });
 }

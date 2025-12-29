@@ -3,7 +3,12 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:lucid_clip/core/constants/app_constants.dart';
+import 'package:lucid_clip/core/di/di.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -32,13 +37,30 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   // Add cross-flavor configuration here
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load();
+
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: HydratedStorageDirectory(
+      (await getApplicationSupportDirectory()).path,
+    ),
+  );
+
+  //configure dependencies here
   // Must add this line.
   await windowManager.ensureInitialized();
+
+  await Supabase.initialize(
+    url: AppConstants.supabaseProjectUrl,
+    anonKey: AppConstants.supabaseAnonKey,
+  );
+
+  configureDependencies();
 
   const windowOptions = WindowOptions(
     size: Size(800, 600),
     center: true,
-    title: 'Lucid Clip',
+    title: 'LucidClip',
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,

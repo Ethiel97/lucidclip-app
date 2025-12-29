@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 
-class SidebarItem extends StatelessWidget {
+class SidebarItem extends StatefulWidget {
   const SidebarItem({
     required this.icon,
     required this.label,
@@ -13,45 +13,61 @@ class SidebarItem extends StatelessWidget {
   final String label;
   final bool isActive;
 
-  Color get _backgroundColor =>
-      isActive ? AppColors.primary.withValues(alpha: 0.13) : Colors.transparent;
+  @override
+  State<SidebarItem> createState() => _SidebarItemState();
+}
+
+class _SidebarItemState extends State<SidebarItem> {
+  bool _isHovering = false;
+
+  Color get backgroundColor {
+    if (widget.isActive) {
+      return AppColors.primary.withValues(alpha: 0.13);
+    } else if (_isHovering) {
+      return AppColors.textSecondary.withValues(alpha: 0.05);
+    } else {
+      return Colors.transparent;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? AppColors.primary : AppColors.textSecondary;
+    final color = widget.isActive ? AppColors.primary : AppColors.textSecondary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxs),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: () {},
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.xs,
-            vertical: AppSpacing.xs,
-          ),
-          decoration: BoxDecoration(
-            color: isActive ? AppColors.primary.withValues(alpha: 0.13) : null,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            children: [
-              IconTheme(
-                data: IconThemeData(
-                  color: color,
-                  size: AppSpacing.lg,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovering = true),
+        onExit: (_) => setState(() => _isHovering = false),
+        child: GestureDetector(
+          onTap: () {},
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.sm,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                IconTheme(
+                  data: IconThemeData(color: color, size: AppSpacing.lg),
+                  child: widget.icon,
                 ),
-                child: icon,
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              Text(
-                label,
-                style: AppTextStyle.bodySmall.copyWith(
-                  color: color,
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                const SizedBox(width: AppSpacing.xs),
+                Text(
+                  widget.label,
+                  style: AppTextStyle.bodySmall.copyWith(
+                    color: color,
+                    fontWeight:
+                        widget.isActive ? FontWeight.w600 : FontWeight.w400,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

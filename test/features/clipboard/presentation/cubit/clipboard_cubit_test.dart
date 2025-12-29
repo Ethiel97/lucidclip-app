@@ -4,7 +4,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockClipboardManager extends Mock implements BaseClipboardManager {}

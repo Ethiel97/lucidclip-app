@@ -22,7 +22,7 @@ scripts:
     name: Analyze Gather App
     packageFilters:
       ignore: marketplace_tools
-    run: dart analyze --fatal-infos --fatal-warnings
+    run: fvm dart analyze --fatal-infos --fatal-warnings
 
   ci-format:
     description: CI Script - Check code formatting for Gather App and all local dependencies
@@ -31,7 +31,7 @@ scripts:
     name: Format Gather App
     packageFilters:
       ignore: marketplace_tools
-    run: dart format . --line-length 80 --output none --set-exit-if-changed
+    run: fvm dart format . --line-length 80 --output none --set-exit-if-changed
 
 
   ci-trigger:
@@ -75,12 +75,12 @@ scripts:
     name: Generate Native Dictionaries
     packageFilters:
       scope: lucid_clip
-    run: dart run MELOS_ROOT_PATH/../../tool/arb_converter/bin/arb_converter.dart --inputPath ./lib/l10n/arb/app_en.arb --androidOutput android/app/src/main/res/values/strings.xml --iosOutput ios/Localizable.xcstrings --l10nByTextOutput ./lib/l10n/generated/l10n_by_text.g.dart
+    run: fvm dart run MELOS_ROOT_PATH/../../tool/arb_converter/bin/arb_converter.dart --inputPath ./lib/l10n/arb/app_en.arb --androidOutput android/app/src/main/res/values/strings.xml --iosOutput ios/Localizable.xcstrings --l10nByTextOutput ./lib/l10n/generated/l10n_by_text.g.dart
 
   # generate files scripts
   generate-files:
     description: Generate the files (autoroute,builder configuration) for Project
-    exec: flutter pub run build_runner build --delete-conflicting-outputs
+    exec: fvm dart run build_runner build --delete-conflicting-outputs
     name: Generate files for Project
     packageFilters:
       scope: lucid_clip

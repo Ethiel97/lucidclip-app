@@ -24,7 +24,7 @@ class LocalClipboardHistoryStoreImpl
     try {
       if (histories.isEmpty) return;
       final models = histories
-          .map((h) => ClipboardHistoryModel.fromEntity(h))
+          .map(ClipboardHistoryModel.fromEntity)
           .toList();
       await _localDataSource.putAll(models);
     } catch (e) {

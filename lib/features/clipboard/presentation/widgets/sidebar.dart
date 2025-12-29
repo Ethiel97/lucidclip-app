@@ -19,7 +19,7 @@ class Sidebar extends StatelessWidget {
       color: AppColors.sidebar,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: AppSpacing.lg,
+        vertical: AppSpacing.xlg,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,21 +32,15 @@ class Sidebar extends StatelessWidget {
             isActive: true,
           ),
           SidebarItem(
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedListView,
-            ),
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedListView),
             label: l10n.snippets,
           ),
           SidebarItem(
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedClock01,
-            ),
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
             label: l10n.history,
           ),
           SidebarItem(
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedSettings01,
-            ),
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedSettings01),
             label: l10n.settings,
           ),
           const Spacer(),
@@ -57,16 +51,11 @@ class Sidebar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
-          const StorageIndicator(
-            used: 248,
-            total: 1000,
-          ),
+          const StorageIndicator(used: 248, total: 1000),
           const SizedBox(height: AppSpacing.md),
           Text(
             '${l10n.appName} © ${DateTime.now().year}',
-            style: textTheme.bodySmall!.copyWith(
-              color: AppColors.textMuted,
-            ),
+            style: textTheme.bodySmall!.copyWith(color: AppColors.textMuted),
           ),
         ],
       ),

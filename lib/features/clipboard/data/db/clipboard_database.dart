@@ -155,7 +155,7 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       into(clipboardHistoryEntries).insertOnConflictUpdate(companion);
 
   Future<void> upsertHistoriesBatch(
-          List<ClipboardHistoryEntriesCompanion> comps) =>
+          List<ClipboardHistoryEntriesCompanion> comps,) =>
       batch((b) => b.insertAllOnConflictUpdate(clipboardHistoryEntries, comps));
 
   Future<ClipboardHistoryEntry?> getHistoryById(String id) =>

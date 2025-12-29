@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -49,23 +50,21 @@ import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_cubit
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
-// initializes the registration of main-scope dependencies inside of GetIt
+  // initializes the registration of main-scope dependencies inside of GetIt
   _i174.GetIt init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
   }) {
-    final gh = _i526.GetItHelper(
-      this,
-      environment,
-      environmentFilter,
-    );
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final thirdPartyModule = _$ThirdPartyModule();
     gh.factory<_i669.ClipboardDatabase>(
-        () => thirdPartyModule.clipboardDatabase);
+      () => thirdPartyModule.clipboardDatabase,
+    );
     gh.lazySingleton<_i59.FirebaseAuth>(() => thirdPartyModule.firebaseAuth);
     gh.lazySingleton<_i454.SupabaseClient>(() => thirdPartyModule.supabase);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
-        () => thirdPartyModule.flutterSecureStorage);
+      () => thirdPartyModule.flutterSecureStorage,
+    );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager(),
       dispose: (i) => i.dispose(),
@@ -74,40 +73,45 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingletonAsync<_i407.StorageService>(
-      () {
-        final i = _i443.HiveStorageService(
-            gh<List<_i986.TypeAdapter<dynamic>>>(instanceName: 'hiveAdapters'));
-        return i.initialize().then((_) => i);
-      },
-      dispose: (i) => i.dispose(),
-    );
+    gh.lazySingletonAsync<_i407.StorageService>(() {
+      final i = _i443.HiveStorageService(
+        gh<List<_i986.TypeAdapter<dynamic>>>(instanceName: 'hiveAdapters'),
+      );
+      return i.initialize().then((_) => i);
+    }, dispose: (i) => i.dispose());
     gh.lazySingleton<_i669.ClipboardLocalDataSource>(
       () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
       dispose: (i) => i.clear(),
     );
     gh.lazySingleton<_i669.ClipboardHistoryLocalDataSource>(
       () => _i988.DriftClipboardHistoryLocalDataSource(
-          gh<_i669.ClipboardDatabase>()),
+        gh<_i669.ClipboardDatabase>(),
+      ),
       dispose: (i) => i.clear(),
     );
     gh.singleton<_i70.RemoteSyncClient>(
-        () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()));
+      () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i782.LocalClipboardHistoryRepository>(
       () => _i354.LocalClipboardHistoryStoreImpl(
-          gh<_i669.ClipboardHistoryLocalDataSource>()),
+        gh<_i669.ClipboardHistoryLocalDataSource>(),
+      ),
       dispose: (i) => i.clear(),
     );
     gh.lazySingleton<_i782.LocalClipboardRepository>(
       () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
       dispose: (i) => i.clear(),
     );
-    gh.lazySingleton<_i42.ClipboardRemoteDataSource>(() =>
-        _i272.SupabaseRemoteDataSource(
-            networkClient: gh<_i183.RemoteSyncClient>()));
-    gh.lazySingleton<_i42.ClipboardRepository>(() =>
-        _i244.SupabaseRepositoryImpl(
-            remoteDataSource: gh<_i42.ClipboardRemoteDataSource>()));
+    gh.lazySingleton<_i42.ClipboardRemoteDataSource>(
+      () => _i272.SupabaseRemoteDataSource(
+        networkClient: gh<_i183.RemoteSyncClient>(),
+      ),
+    );
+    gh.lazySingleton<_i42.ClipboardRepository>(
+      () => _i244.SupabaseRepositoryImpl(
+        remoteDataSource: gh<_i42.ClipboardRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(
         clipboardManager: gh<_i108.BaseClipboardManager>(),

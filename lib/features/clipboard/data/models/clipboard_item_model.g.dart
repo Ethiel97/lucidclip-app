@@ -12,13 +12,18 @@ ClipboardItemModel _$ClipboardItemModelFromJson(Map<String, dynamic> json) =>
       contentHash: json['content_hash'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       id: json['id'] as String,
-      type: $enumDecodeNullable(_$ClipboardItemTypeModelEnumMap, json['type'],
-              unknownValue: ClipboardItemTypeModel.unknown) ??
+      type:
+          $enumDecodeNullable(
+            _$ClipboardItemTypeModelEnumMap,
+            json['type'],
+            unknownValue: ClipboardItemTypeModel.unknown,
+          ) ??
           ClipboardItemTypeModel.unknown,
       updatedAt: DateTime.parse(json['updated_at'] as String),
       userId: json['user_id'] as String,
       imageUrl: json['image_url'] as String?,
-      filePaths: (json['file_paths'] as List<dynamic>?)
+      filePaths:
+          (json['file_paths'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],

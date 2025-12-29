@@ -4,13 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 /// App Text Style Definitions using Google Fonts
 abstract class AppTextStyle {
   // Base families
-  static final TextStyle _sans = GoogleFonts.inter(
+  static final TextStyle _sans = GoogleFonts.spaceGrotesk(
     fontWeight: FontWeight.w400,
     height: 1.25,
     letterSpacing: 0,
   );
 
-  static final TextStyle _flare = GoogleFonts.spaceGrotesk(
+  static final TextStyle _flare = GoogleFonts.inter(
     fontWeight: FontWeight.w500,
     height: 1.1,
     letterSpacing: 0,

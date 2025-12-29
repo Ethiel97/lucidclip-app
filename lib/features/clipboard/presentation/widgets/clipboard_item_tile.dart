@@ -5,10 +5,7 @@ import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:recase/recase.dart';
 
 class ClipboardItemTile extends StatefulWidget {
-  const ClipboardItemTile({
-    required this.item,
-    super.key,
-  });
+  const ClipboardItemTile({required this.item, super.key});
 
   final ClipboardItem item;
 
@@ -19,11 +16,10 @@ class ClipboardItemTile extends StatefulWidget {
 class _ClipboardItemTileState extends State<ClipboardItemTile> {
   bool isHovering = false;
 
-  Color get _backgroundColor => isHovering
-      ? AppColors.surface2.withValues(
-          alpha: 0.5,
-        )
-      : AppColors.surface;
+  Color get _backgroundColor =>
+      isHovering
+          ? AppColors.surface2.withValues(alpha: 0.5)
+          : AppColors.surface;
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +33,19 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
         // TODO(Ethiel97): Show context menu
       },
       child: MouseRegion(
-        onHover: (_) {
+        onEnter: (_) {
           setState(() {
             isHovering = true;
           });
         },
+        onExit: (_) {
+          setState(() {
+            isHovering = false;
+          });
+        },
         cursor: SystemMouseCursors.click,
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.only(bottom: AppSpacing.xs),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
@@ -138,12 +140,7 @@ class _ItemTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         color: color.withValues(alpha: 0.13),
       ),
-      child: Text(
-        label,
-        style: AppTextStyle.labelSmall.copyWith(
-          color: color,
-        ),
-      ),
+      child: Text(label, style: AppTextStyle.labelSmall.copyWith(color: color)),
     );
   }
 }

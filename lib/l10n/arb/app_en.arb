@@ -63,5 +63,15 @@
   "sync": "Sync",
   "@sync": {
     "description": "Button text to sync content"
+  },
+  "noItemsForCategory": "No {category} items",
+  "@noItemsForCategory": {
+    "description": "Message shown when there are no items for a specific label",
+    "placeholders": {
+      "category": {
+        "type": "String",
+        "description": "Label of the section"
+      }
+    }
   }
 }

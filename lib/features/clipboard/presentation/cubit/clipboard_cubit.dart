@@ -42,8 +42,11 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   static const String _pendingUserId = '';
 
   void _startWatchingClipboard() {
+    print('Starting clipboard watch...');
     _clipboardSubscription =
         clipboardManager.watchClipboard().listen((clipboardData) async {
+
+          print('New clipboard data detected: $clipboardData');
       emit(state.copyWith(currentClipboardData: clipboardData));
 
       final currentItems = state.localClipboardItems;

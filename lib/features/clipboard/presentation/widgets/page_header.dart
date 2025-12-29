@@ -15,23 +15,25 @@ class PageHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.appName,
-              style: AppTextStyle.headlineMedium.copyWith(
-                color: AppColors.textPrimary,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.appName,
+                style: AppTextStyle.headlineMedium.copyWith(
+                  color: AppColors.textPrimary,
+                ),
               ),
-            ),
-           /* const SizedBox(height: AppSpacing.xxxs),
-            Text(
-              'All your recent clips, neatly organized.',
-              style: textTheme.bodySmall!.copyWith(
-                color: AppColors.textMuted,
-              ),
-            ),*/
-          ],
+              /* const SizedBox(height: AppSpacing.xxxs),
+              Text(
+                'All your recent clips, neatly organized.',
+                style: textTheme.bodySmall!.copyWith(
+                  color: AppColors.textMuted,
+                ),
+              ),*/
+            ],
+          ),
         ),
         FilledButton.icon(
           onPressed: () {},

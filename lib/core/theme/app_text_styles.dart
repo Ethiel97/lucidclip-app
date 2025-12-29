@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// App Text Style Definitions using Google Fonts
 abstract class AppTextStyle {
   // Base families
-  static final TextStyle _sans = GoogleFonts.spaceGrotesk(
+  static final TextStyle _sans = GoogleFonts.sora(
     fontWeight: FontWeight.w400,
     height: 1.25,
     letterSpacing: 0,

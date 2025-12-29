@@ -55,4 +55,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sync => 'Sync';
+
+  @override
+  String noItemsForCategory(String category) {
+    return 'No $category items';
+  }
 }

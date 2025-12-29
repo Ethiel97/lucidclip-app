@@ -4,7 +4,7 @@ import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 abstract class BaseClipboardManager {
   static const clipboardPollingInterval = Duration(milliseconds: 500);
 
-  Future<void> initialize();
+  void initialize();
 
   Future<ClipboardData?> getClipboardContent();
 
@@ -42,10 +42,6 @@ class ClipboardData {
   final DateTime? timestamp;
   final ClipboardContentType type;
 
-  set contentHash(String? value) {
-    contentHash = value;
-  }
-
   ClipboardData copyWith({
     String? contentHash,
     List<String>? filePaths,
@@ -69,14 +65,7 @@ class ClipboardData {
   }
 }
 
-enum ClipboardContentType {
-  file,
-  html,
-  image,
-  text,
-  unknown,
-  url,
-}
+enum ClipboardContentType { file, html, image, text, unknown, url }
 
 extension ClipboardDataHelpers on ClipboardData {
   ClipboardItemType get clipboardItemType {

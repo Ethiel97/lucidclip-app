@@ -52,12 +52,14 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await Supabase.initialize(
     url: AppConstants.supabaseProjectUrl,
+    debug: true,
     anonKey: AppConstants.supabaseAnonKey,
   );
 
   configureDependencies();
 
   const windowOptions = WindowOptions(
+    minimumSize: Size(800, 600),
     size: Size(800, 600),
     center: true,
     title: 'LucidClip',

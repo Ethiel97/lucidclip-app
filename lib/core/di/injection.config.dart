@@ -57,7 +57,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final thirdPartyModule = _$ThirdPartyModule();
-    gh.factory<_i669.ClipboardDatabase>(
+    gh.singleton<_i669.ClipboardDatabase>(
       () => thirdPartyModule.clipboardDatabase,
     );
     gh.lazySingleton<_i59.FirebaseAuth>(() => thirdPartyModule.firebaseAuth);
@@ -66,7 +66,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => thirdPartyModule.flutterSecureStorage,
     );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
-      () => _i647.FlutterClipboardManager(),
+      () => _i647.FlutterClipboardManager()..initialize(),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i407.SecureStorageService>(

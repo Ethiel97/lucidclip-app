@@ -189,6 +189,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync'**
   String get sync;
+
+  /// Message shown when there are no items for a specific label
+  ///
+  /// In en, this message translates to:
+  /// **'No {category} items'**
+  String noItemsForCategory(String category);
 }
 
 class _AppLocalizationsDelegate

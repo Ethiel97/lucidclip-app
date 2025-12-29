@@ -85,12 +85,12 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
               ),
               const SizedBox(width: AppSpacing.sm),
               _ItemTag(
-                label: widget.item.type.name.sentenceCase,
+                label: widget.item.type.label.sentenceCase,
                 color: primary,
               ),
               const SizedBox(width: AppSpacing.sm),
               SizedBox(
-                width:  100,
+                width: 100,
                 child: Text(
                   widget.item.timeAgo,
                   style: textTheme.displaySmall?.copyWith(

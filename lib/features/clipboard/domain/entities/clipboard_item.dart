@@ -118,6 +118,13 @@ enum ClipboardItemType {
   bool get isHtml => this == ClipboardItemType.html;
 
   bool get isUnknown => this == ClipboardItemType.unknown;
+
+  String get label {
+    return switch (this) {
+      ClipboardItemType.url => 'Link',
+      _ => name,
+    };
+  }
 }
 
 /// Extension to map ClipboardItem to ClipboardContentType for reusability

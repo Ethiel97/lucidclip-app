@@ -136,6 +136,12 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
+  /// Button text to copy content to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to Clipboard'**
+  String get copyToClipboard;
+
   /// Title for the History Page
   ///
   /// In en, this message translates to:
@@ -153,6 +159,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pinned'**
   String get pinned;
+
+  /// Button text to pin an item
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pin;
+
+  /// Button text to unpin an item
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get unpin;
 
   /// Label for the Recent items
   ///
@@ -195,6 +213,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No {category} items'**
   String noItemsForCategory(String category);
+
+  /// Title for the Item Details Panel
+  ///
+  /// In en, this message translates to:
+  /// **'Item Details'**
+  String get itemDetails;
+
+  /// Label for the information section
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get information;
+
+  /// Label for the preview of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
+  /// Label for the tags feature
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get tags;
+
+  /// Label for the size of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get size;
+
+  /// Label for the format of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get format;
+
+  /// Label for the source of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get source;
+
+  /// Message shown when content is copied to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// Label for the number of characters
+  ///
+  /// In en, this message translates to:
+  /// **'Characters'**
+  String get characters;
 }
 
 class _AppLocalizationsDelegate

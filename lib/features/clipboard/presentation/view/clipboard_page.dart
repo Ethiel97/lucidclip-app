@@ -13,8 +13,12 @@ class ClipboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ClipboardCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => getIt<ClipboardCubit>(),
+        ),
+      ],
       child: const ClipboardView(),
     );
   }
@@ -27,8 +31,29 @@ class ClipboardView extends StatefulWidget {
   State<ClipboardView> createState() => _ClipboardViewState();
 }
 
-class _ClipboardViewState extends State<ClipboardView> {
+class _ClipboardViewState extends State<ClipboardView>
+    with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
+
+  final clipboardItemDetailsSlideDuration = const Duration(milliseconds: 200);
+  late final AnimationController _animationController;
+  late final Animation<Offset> _clipboardItemDetailsSlideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _clipboardItemDetailsSlideAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(1, 0)).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,52 +63,69 @@ class _ClipboardViewState extends State<ClipboardView> {
           (cubit.state.pinnedItems, cubit.state.unpinnedItems),
     );
 
-    return Scaffold(
-      body: Row(
-        children: [
-          const Sidebar(),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xlg,
-                AppSpacing.lg,
-                AppSpacing.xlg,
-                AppSpacing.lg,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const PageHeader(),
-                  /* const SizedBox(height: AppSpacing.md),
-                const _SearchField(),*/
-                  const SizedBox(height: AppSpacing.lg),
-                  Expanded(
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      child: ListView(
-                        controller: _scrollController,
-                        physics: const BouncingScrollPhysics(),
-                        children: [
-                          if (pinnedItems.isNotEmpty) ...[
-                            ClipboardListRenderer(
-                              items: pinnedItems,
-                              title: l10n.pinned,
-                            ),
-                            const SizedBox(height: AppSpacing.lg),
-                          ],
+    // TODO(Ethiel97): Plug selected item from state
 
-                          ClipboardListRenderer(
-                            items: recentItems,
-                            title: l10n.recent,
-                          ),
-                        ],
-                      ),
-                    ),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Row(
+            children: [
+              const Sidebar(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xlg,
+                    AppSpacing.lg,
+                    AppSpacing.xlg,
+                    AppSpacing.lg,
                   ),
-                ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const PageHeader(),
+                      /* const SizedBox(height: AppSpacing.md),
+                    const _SearchField(),*/
+                      const SizedBox(height: AppSpacing.lg),
+                      Expanded(
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          child: ListView(
+                            controller: _scrollController,
+                            physics: const BouncingScrollPhysics(),
+                            children: [
+                              if (pinnedItems.isNotEmpty) ...[
+                                ClipboardListRenderer(
+                                  items: pinnedItems,
+                                  title: l10n.pinned,
+                                ),
+                                const SizedBox(height: AppSpacing.lg),
+                              ],
+
+                              ClipboardListRenderer(
+                                items: recentItems,
+                                title: l10n.recent,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
+
+          /*SlideTransition(
+            position: _clipboardItemDetailsSlideAnimation,
+
+            child: ClipboardItemDetailsPanel(
+              clipboardItem: widget.item,
+              onClose: () {
+                _animationController.reverse();
+              },
+            ),
+          ),*/
         ],
       ),
     );

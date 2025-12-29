@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
+  String get copyToClipboard => 'Copy to Clipboard';
+
+  @override
   String get history => 'History';
 
   @override
@@ -37,6 +40,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinned => 'Pinned';
+
+  @override
+  String get pin => 'Pin';
+
+  @override
+  String get unpin => 'Unpin';
 
   @override
   String get recent => 'Recent';
@@ -60,4 +69,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String noItemsForCategory(String category) {
     return 'No $category items';
   }
+
+  @override
+  String get itemDetails => 'Item Details';
+
+  @override
+  String get information => 'Information';
+
+  @override
+  String get preview => 'Preview';
+
+  @override
+  String get tags => 'Tags';
+
+  @override
+  String get size => 'Size';
+
+  @override
+  String get format => 'Format';
+
+  @override
+  String get source => 'Source';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String get characters => 'Characters';
 }

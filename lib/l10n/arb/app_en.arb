@@ -28,6 +28,10 @@
   "@delete": {
     "description": "Button text to delete content"
   },
+  "copyToClipboard": "Copy to Clipboard",
+  "@copyToClipboard": {
+    "description": "Button text to copy content to the clipboard"
+  },
   "history": "History",
   "@history": {
     "description": "Title for the History Page"
@@ -39,6 +43,14 @@
   "pinned": "Pinned",
   "@pinned": {
     "description": "Label for the Pinned feature"
+  },
+  "pin": "Pin",
+  "@pin": {
+    "description": "Button text to pin an item"
+  },
+  "unpin": "Unpin",
+  "@unpin": {
+    "description": "Button text to unpin an item"
   },
   "recent": "Recent",
   "@recent": {
@@ -73,5 +85,42 @@
         "description": "Label of the section"
       }
     }
+  },
+  "itemDetails": "Item Details",
+  "@itemDetails": {
+    "description": "Title for the Item Details Panel"
+  },
+  "information": "Information",
+  "@information": {
+    "description": "Label for the information section"
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Label for the preview of the content"
+  },
+  "tags": "Tags",
+  "@tags": {
+    "description": "Label for the tags feature"
+  },
+  "size": "Size",
+  "@size": {
+    "description": "Label for the size of the content"
+  },
+  "format": "Format",
+  "@format": {
+    "description": "Label for the format of the content"
+  },
+  "source": "Source",
+  "@source": {
+    "description": "Label for the source of the content"
+  },
+  "copied": "Copied",
+  "@copied": {
+    "description": "Message shown when content is copied to the clipboard"
+  },
+  "characters": "Characters",
+  "@characters": {
+    "description": "Label for the number of characters"
   }
+
 }

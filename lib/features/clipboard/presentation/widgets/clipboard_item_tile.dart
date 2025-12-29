@@ -13,7 +13,10 @@ class ClipboardItemTile extends StatefulWidget {
   State<ClipboardItemTile> createState() => _ClipboardItemTileState();
 }
 
-class _ClipboardItemTileState extends State<ClipboardItemTile> {
+class _ClipboardItemTileState extends State<ClipboardItemTile>
+     {
+
+
   bool isHovering = false;
 
   Color get _backgroundColor => isHovering
@@ -24,6 +27,8 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     final textTheme = Theme.of(context).textTheme;
+
+    // TODO(Ethiel97): USE clipboard selection state to determine if item is selected
 
     return GestureDetector(
       onTap: () {

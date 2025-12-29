@@ -12,15 +12,13 @@ class ClipboardPage extends StatelessWidget {
   const ClipboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => getIt<ClipboardCubit>()),
-        BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
-      ],
-      child: const ClipboardView(),
-    );
-  }
+  Widget build(BuildContext context) => MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => getIt<ClipboardCubit>()),
+      BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
+    ],
+    child: const ClipboardView(),
+  );
 }
 
 class ClipboardView extends StatefulWidget {
@@ -65,9 +63,7 @@ class _ClipboardViewState extends State<ClipboardView>
     final selectedClipboardItem = context.select(
       (ClipboardDetailCubit cubit) => cubit.state.clipboardItem,
     );
-    final hasClipboardItem = context.select(
-      (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
-    );
+
     return BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
       listener: (context, state) {
         if (state.clipboardItem != null && state.hasClipboardItem) {
@@ -130,9 +126,6 @@ class _ClipboardViewState extends State<ClipboardView>
             AnimatedBuilder(
               animation: _animationController,
               builder: (context, child) {
-                /*if (_animationController.isDismissed || !hasClipboardItem) {
-                  return const SizedBox.shrink();
-                }*/
                 return Align(
                   alignment: Alignment.topRight,
                   child: SlideTransition(
@@ -148,20 +141,6 @@ class _ClipboardViewState extends State<ClipboardView>
                 );
               },
             ),
-            /*if (selectedClipboardItem?.hasData ?? false)
-              Align(
-                alignment: Alignment.topRight,
-                child: SlideTransition(
-                  position: _clipboardItemDetailsSlideAnimation,
-
-                  child: ClipboardItemDetailsPanel(
-                    clipboardItem: selectedClipboardItem!.data,
-                    onClose: () {
-                      context.read<ClipboardDetailCubit>().clearSelection();
-                    },
-                  ),
-                ),
-              ),*/
           ],
         ),
       ),

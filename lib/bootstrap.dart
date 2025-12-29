@@ -63,10 +63,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     // size: Size(800, 600),
     center: true,
     title: 'LucidClip',
-    backgroundColor: Colors.transparent,
+    // backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
-    fullScreen: true,
+    // fullScreen: true,
     // maximumSize: Size(1200, 900),
   );
 

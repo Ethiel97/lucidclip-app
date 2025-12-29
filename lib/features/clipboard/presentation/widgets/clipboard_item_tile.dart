@@ -29,9 +29,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
 
     return GestureDetector(
       onTap: () {
-        context.read<ClipboardDetailCubit>().setClipboardItem(
-          widget.item,
-        );
+        context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
       },
       onSecondaryTap: () {
         // TODO(Ethiel97): Show context menu
@@ -88,10 +86,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              _ItemTag(
-                label: widget.item.type.label.sentenceCase,
-                color: primary,
-              ),
+              ClipboardItemTagChip(label: widget.item.type.label),
               const SizedBox(width: AppSpacing.sm),
               SizedBox(
                 width: 100,

@@ -5,23 +5,31 @@ import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 extension ClipboardUiHelper on ClipboardItem {
   Widget get icon {
-    final icon = switch (type) {
-      ClipboardItemType.text =>
+    final (icon, color) = switch (type) {
+      ClipboardItemType.text => (
         const HugeIcon(icon: HugeIcons.strokeRoundedNote),
-      ClipboardItemType.image =>
+        AppColors.success,
+      ),
+      ClipboardItemType.image => (
         const HugeIcon(icon: HugeIcons.strokeRoundedImage01),
-      ClipboardItemType.file =>
+        AppColors.danger,
+      ),
+      ClipboardItemType.file => (
         const HugeIcon(icon: HugeIcons.strokeRoundedFolderOpen),
-      ClipboardItemType.url =>
+        AppColors.warning,
+      ),
+      ClipboardItemType.url => (
         const HugeIcon(icon: HugeIcons.strokeRoundedLink01),
-      _ => const HugeIcon(icon: HugeIcons.strokeRoundedClipboard),
+        AppColors.primary,
+      ),
+      _ => (
+        const HugeIcon(icon: HugeIcons.strokeRoundedClipboard),
+        AppColors.textSecondary,
+      ),
     };
 
     return IconTheme(
-      data: const IconThemeData(
-        // color: color,
-        size: AppSpacing.md,
-      ),
+      data:  IconThemeData(color: color, size: AppSpacing.md),
       child: icon,
     );
   }

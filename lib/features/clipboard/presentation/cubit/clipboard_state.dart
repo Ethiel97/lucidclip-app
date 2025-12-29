@@ -6,32 +6,33 @@ class ClipboardState extends Equatable {
     this.clipboardItems = const ValueWrapper(value: []),
     this.clipboardItemTags = const ValueWrapper(value: []),
     this.currentClipboardData,
-    this.localClipboardItems = const [],
+    // this.localClipboardItems = const [],
     this.tags = const ValueWrapper(value: []),
   });
 
   factory ClipboardState.fromJson(Map<String, dynamic> json) {
     return ClipboardState(
       clipboardHistory: ValueWrapper(
-        value: ClipboardMapper.historyFromJson(
+        value:
+            ClipboardMapper.historyFromJson(
               json['clipboardHistory'] as List<dynamic>?,
             ) ??
             [],
       ),
       clipboardItems: ValueWrapper(
-        value: ClipboardMapper.itemsFromJson(
+        value:
+            ClipboardMapper.itemsFromJson(
               json['clipboardItems'] as List<dynamic>?,
             ) ??
             [],
       ),
       tags: ValueWrapper(
-        value: ClipboardMapper.tagsFromJson(
-              json['tags'] as List<dynamic>?,
-            ) ??
-            [],
+        value:
+            ClipboardMapper.tagsFromJson(json['tags'] as List<dynamic>?) ?? [],
       ),
       clipboardItemTags: ValueWrapper(
-        value: ClipboardMapper.clipboardItemTagsFromJson(
+        value:
+            ClipboardMapper.clipboardItemTagsFromJson(
               json['clipboardItemTags'] as List<dynamic>?,
             ) ??
             [],
@@ -46,7 +47,7 @@ class ClipboardState extends Equatable {
 
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
 
-  final List<ClipboardData> localClipboardItems;
+  // final List<ClipboardData> localClipboardItems;
   final ValueWrapper<Tags> tags;
 
   ClipboardState copyWith({
@@ -62,7 +63,7 @@ class ClipboardState extends Equatable {
       clipboardItems: clipboardItems ?? this.clipboardItems,
       currentClipboardData: currentClipboardData ?? this.currentClipboardData,
       clipboardItemTags: clipboardItemTags ?? this.clipboardItemTags,
-      localClipboardItems: localClipboardItems ?? this.localClipboardItems,
+      // localClipboardItems: localClipboardItems ?? this.localClipboardItems,
       tags: tags ?? this.tags,
     );
   }
@@ -89,11 +90,11 @@ class ClipboardState extends Equatable {
 
   @override
   List<Object?> get props => [
-        clipboardHistory,
-        clipboardItems,
-        currentClipboardData,
-        clipboardItemTags,
-        localClipboardItems,
-        tags,
-      ];
+    clipboardHistory,
+    clipboardItems,
+    currentClipboardData,
+    clipboardItemTags,
+    // localClipboardItems,
+    tags,
+  ];
 }

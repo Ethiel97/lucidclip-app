@@ -34,6 +34,8 @@ class _SidebarItemState extends State<SidebarItem> {
   Widget build(BuildContext context) {
     final color = widget.isActive ? AppColors.primary : AppColors.textSecondary;
 
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxs),
       child: MouseRegion(
@@ -60,7 +62,7 @@ class _SidebarItemState extends State<SidebarItem> {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   widget.label,
-                  style: AppTextStyle.bodySmall.copyWith(
+                  style: textTheme.bodySmall?.copyWith(
                     color: color,
                     fontWeight:
                         widget.isActive ? FontWeight.w600 : FontWeight.w400,

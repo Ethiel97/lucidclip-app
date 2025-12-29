@@ -16,7 +16,12 @@ class Sidebar extends StatelessWidget {
 
     return Container(
       width: sidebarWidth,
-      color: AppColors.sidebar,
+      decoration: const BoxDecoration(
+        color: AppColors.sidebar,
+        border: Border(
+          right: BorderSide(color: AppColors.borderSubtle, width: .5),
+        ),
+      ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.xlg,

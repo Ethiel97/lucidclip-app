@@ -16,14 +16,14 @@ class ClipboardItemTile extends StatefulWidget {
 class _ClipboardItemTileState extends State<ClipboardItemTile> {
   bool isHovering = false;
 
-  Color get _backgroundColor =>
-      isHovering
-          ? AppColors.surface2.withValues(alpha: 0.5)
-          : AppColors.surface;
+  Color get _backgroundColor => isHovering
+      ? AppColors.surface2.withValues(alpha: 0.5)
+      : AppColors.surface;
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
+    final textTheme = Theme.of(context).textTheme;
 
     return GestureDetector(
       onTap: () {
@@ -46,7 +46,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
         cursor: SystemMouseCursors.click,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
@@ -57,7 +57,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
           ),
           child: Row(
             children: [
-              _ItemLeadingIcon(icon: widget.item.icon),
+              widget.item.icon,
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Column(
@@ -67,9 +67,8 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                       widget.item.content,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.bodyMedium.copyWith(
+                      style: textTheme.bodySmall?.copyWith(
                         color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     /*const SizedBox(height: AppSpacing.xxxs),
@@ -90,35 +89,20 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                 color: primary,
               ),
               const SizedBox(width: AppSpacing.sm),
-              Text(
-                widget.item.timeAgo,
-                style: AppTextStyle.bodyXSmall.copyWith(
-                  color: AppColors.textMuted,
+              SizedBox(
+                width:  100,
+                child: Text(
+                  widget.item.timeAgo,
+                  style: textTheme.displaySmall?.copyWith(
+                    fontSize: 12,
+                    color: AppColors.textMuted,
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _ItemLeadingIcon extends StatelessWidget {
-  const _ItemLeadingIcon({required this.icon});
-
-  final Widget icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: AppSpacing.xlg,
-      width: AppSpacing.xlg,
-      decoration: BoxDecoration(
-        color: AppColors.surface2,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: icon,
     );
   }
 }
@@ -131,6 +115,7 @@ class _ItemTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
@@ -139,8 +124,12 @@ class _ItemTag extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
         color: color.withValues(alpha: 0.13),
+        border: Border.all(color: color.withValues(alpha: 0.33)),
       ),
-      child: Text(label, style: AppTextStyle.labelSmall.copyWith(color: color)),
+      child: Text(
+        label,
+        style: textTheme.labelSmall?.copyWith(color: color, fontSize: 12),
+      ),
     );
   }
 }

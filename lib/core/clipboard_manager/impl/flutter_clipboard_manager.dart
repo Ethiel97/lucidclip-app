@@ -29,9 +29,6 @@ class FlutterClipboardManager implements BaseClipboardManager {
   }
 
   Future<void> _checkClipboardChange() async {
-    print('Checking clipboard for changes...');
-
-    print('Last content: $_lastContent');
     final content = await getClipboardContent();
     if (content != null && content.text != _lastContent) {
       _lastContent = content.text;

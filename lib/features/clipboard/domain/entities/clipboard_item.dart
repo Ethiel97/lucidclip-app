@@ -82,21 +82,21 @@ class ClipboardItem extends Equatable {
 
   @override
   List<Object?> get props => [
-        content,
-        contentHash,
-        createdAt,
-        filePaths,
-        htmlContent,
-        id,
-        imageUrl,
-        isPinned,
-        isSnippet,
-        isSynced,
-        metadata,
-        type,
-        updatedAt,
-        userId,
-      ];
+    content,
+    contentHash,
+    createdAt,
+    filePaths,
+    htmlContent,
+    id,
+    imageUrl,
+    isPinned,
+    isSnippet,
+    isSynced,
+    metadata,
+    type,
+    updatedAt,
+    userId,
+  ];
 }
 
 enum ClipboardItemType {
@@ -123,22 +123,14 @@ enum ClipboardItemType {
 /// Extension to map ClipboardItem to ClipboardContentType for reusability
 extension ClipboardItemHelper on ClipboardItem {
   /// Maps the ClipboardItem type to ClipboardContentType
-  ClipboardContentType get contentType {
-    switch (type) {
-      case ClipboardItemType.text:
-        return ClipboardContentType.text;
-      case ClipboardItemType.image:
-        return ClipboardContentType.image;
-      case ClipboardItemType.file:
-        return ClipboardContentType.file;
-      case ClipboardItemType.url:
-        return ClipboardContentType.url;
-      case ClipboardItemType.html:
-        return ClipboardContentType.html;
-      case ClipboardItemType.unknown:
-        return ClipboardContentType.unknown;
-    }
-  }
+  ClipboardContentType get contentType => switch (type) {
+    ClipboardItemType.text => ClipboardContentType.text,
+    ClipboardItemType.image => ClipboardContentType.image,
+    ClipboardItemType.file => ClipboardContentType.file,
+    ClipboardItemType.url => ClipboardContentType.url,
+    ClipboardItemType.html => ClipboardContentType.html,
+    ClipboardItemType.unknown => ClipboardContentType.unknown,
+  };
 
   String get timeAgo =>
       Jiffy.parseFromDateTime(createdAt).fromNow().sentenceCase;

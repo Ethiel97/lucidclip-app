@@ -60,7 +60,6 @@ class _ClipboardViewState extends State<ClipboardView> {
                   Expanded(
                     child: Scrollbar(
                       controller: _scrollController,
-                      thumbVisibility: true,
                       child: ListView(
                         controller: _scrollController,
                         physics: const BouncingScrollPhysics(),

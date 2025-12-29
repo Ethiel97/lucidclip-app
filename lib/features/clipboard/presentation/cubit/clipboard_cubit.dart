@@ -25,10 +25,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> _loadData() async {
     await Future.wait([
-      loadClipboardItems(),
-      loadClipboardHistory(),
-      loadTags(),
+      // loadClipboardItems(),
       _loadLocalClipboardItems(),
+      // loadClipboardHistory(),
+      loadTags(),
     ]);
   }
 
@@ -38,18 +38,19 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalClipboardHistoryRepository localClipboardHistoryRepository;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
 
+  late StreamSubscription<ClipboardItems>? _localItemsSubscription;
+  late StreamSubscription<ClipboardHistories>? _localHistorySubscription;
+
   // Placeholder for userId until auth context is available
   static const String _pendingUserId = '';
 
   void _startWatchingClipboard() {
-    print('Starting clipboard watch...');
-    _clipboardSubscription =
-        clipboardManager.watchClipboard().listen((clipboardData) async {
-
-          print('New clipboard data detected: $clipboardData');
+    _clipboardSubscription = clipboardManager.watchClipboard().listen((
+      clipboardData,
+    ) async {
       emit(state.copyWith(currentClipboardData: clipboardData));
 
-      final currentItems = state.localClipboardItems;
+      final currentItems = state.clipboardItems.data;
 
       final isDuplicate = currentItems.any(
         (item) => item.contentHash == clipboardData.contentHash,
@@ -63,15 +64,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         // Create clipboard history record
         await _createClipboardHistory(clipboardItem.id);
       }
-
-      final updated = [
-        if (!isDuplicate) clipboardData,
-        ...currentItems,
-      ];
-
-      emit(
-        state.copyWith(localClipboardItems: updated),
-      );
+      //
+      // final updated = [if (!isDuplicate) clipboardData, ...currentItems];
+      //
+      // emit(state.copyWith(localClipboardItems: updated));
     });
   }
 
@@ -131,22 +127,62 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   Future<void> _loadLocalClipboardItems() async {
-    try {
-      final items = await localClipboardRepository.getAll();
-      // Convert to ClipboardData for display in the UI
-      final clipboardDataList = items.map(_convertToClipboardData).toList();
-      emit(
-        state.copyWith(localClipboardItems: clipboardDataList),
-      );
-    } catch (e, stackTrace) {
-      developer.log(
-        'Failed to load clipboard items from local repository',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
-      );
-      // Continue with empty list if loading fails
-    }
+    _localItemsSubscription = localClipboardRepository.watchAll().listen(
+      (items) {
+        // Convert ClipboardItems to ClipboardData for display
+
+        emit(state.copyWith(clipboardItems: items.toSuccess()));
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        emit(
+          state.copyWith(
+            clipboardItems: state.clipboardItems.toError(
+              ErrorDetails(
+                message: 'Error watching local clipboard items: $error',
+              ),
+            ),
+          ),
+        );
+        developer.log(
+          'Error watching local clipboard items',
+          error: error,
+          stackTrace: stackTrace,
+          name: 'ClipboardCubit',
+        );
+      },
+    );
+
+    // Watch local clipboard history stream
+    _localHistorySubscription = localClipboardHistoryRepository.watchAll().listen(
+      (histories) {
+        // Store histories in state if needed
+
+        emit(state.copyWith(clipboardHistory: histories.toSuccess()));
+
+        developer.log(
+          'Received ${histories.length} clipboard history records from stream',
+          name: 'ClipboardCubit',
+        );
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        emit(
+          state.copyWith(
+            clipboardHistory: state.clipboardHistory.toError(
+              ErrorDetails(
+                message: 'Error watching local clipboard history: $error',
+              ),
+            ),
+          ),
+        );
+        developer.log(
+          'Error watching local clipboard history',
+          error: error,
+          stackTrace: stackTrace,
+
+          name: 'ClipboardCubit',
+        );
+      },
+    );
   }
 
   ClipboardData _convertToClipboardData(ClipboardItem item) {
@@ -163,9 +199,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> loadClipboardItems() async {
     try {
-      emit(
-        state.copyWith(clipboardItems: state.clipboardItems.toLoading()),
-      );
+      emit(state.copyWith(clipboardItems: state.clipboardItems.toLoading()));
     } on ServerException {
       emit(
         state.copyWith(
@@ -189,7 +223,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     }
   }
 
-  Future<void> loadClipboardHistory() async {
+  /*  Future<void> loadClipboardHistory() async {
     try {
       if (state.clipboardHistory.isLoading) {
         return;
@@ -201,11 +235,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       final data = await clipboardRepository.fetchClipboardHistory();
 
-      emit(
-        state.copyWith(
-          clipboardHistory: data.toSuccess(),
-        ),
-      );
+      emit(state.copyWith(clipboardHistory: data.toSuccess()));
     } on ServerException {
       emit(
         state.copyWith(
@@ -217,7 +247,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         ),
       );
     }
-  }
+  }*/
 
   // load tags
   Future<void> loadTags() async {
@@ -225,16 +255,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       if (state.tags.isLoading) {
         return;
       }
-      emit(
-        state.copyWith(tags: state.tags.toLoading()),
-      );
+      emit(state.copyWith(tags: state.tags.toLoading()));
 
       final data = await clipboardRepository.fetchTags();
-      emit(
-        state.copyWith(
-          tags: data.toSuccess(),
-        ),
-      );
+      emit(state.copyWith(tags: data.toSuccess()));
     } on ServerException {
       emit(
         state.copyWith(
@@ -249,9 +273,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       emit(
         state.copyWith(
           tags: state.tags.toError(
-            ErrorDetails(
-              message: 'An error occurred while loading tags: $e',
-            ),
+            ErrorDetails(message: 'An error occurred while loading tags: $e'),
           ),
         ),
       );
@@ -268,11 +290,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         state.copyWith(clipboardItemTags: state.clipboardItemTags.toLoading()),
       );
       final data = await clipboardRepository.fetchClipboardItemTags();
-      emit(
-        state.copyWith(
-          clipboardItemTags: data.toSuccess(),
-        ),
-      );
+      emit(state.copyWith(clipboardItemTags: data.toSuccess()));
     } on ServerException {
       emit(
         state.copyWith(
@@ -321,6 +339,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   Future<void> close() async {
     await _clipboardSubscription?.cancel();
     await clipboardManager.dispose();
+    await _localHistorySubscription?.cancel();
+    await _localItemsSubscription?.cancel();
     return super.close();
   }
 }

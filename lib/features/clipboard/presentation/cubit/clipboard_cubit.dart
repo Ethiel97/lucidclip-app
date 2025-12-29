@@ -63,7 +63,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       }
       // Note: The state will be updated by the _localItemsSubscription stream
       // when the database emits the updated data, so we don't manually update 
-      // localClipboardItems here anymore
+      // localClipboardItems here any more
     });
   }
 

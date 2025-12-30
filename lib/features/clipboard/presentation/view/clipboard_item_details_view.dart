@@ -138,10 +138,7 @@ class _PreviewCard extends StatelessWidget {
         // scrollDirection: Axis.horizontal,
         child: Text(
           preview,
-          style: textTheme.bodySmall?.copyWith(
-            color: AppColors.textPrimary,
-            fontFamily: 'monospace',
-          ),
+          style: textTheme.bodySmall?.copyWith(color: AppColors.textPrimary),
         ),
       ),
     );

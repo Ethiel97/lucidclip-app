@@ -1,4 +1,5 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
+import 'package:equatable/equatable.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 abstract class BaseClipboardManager {
@@ -21,7 +22,7 @@ abstract class BaseClipboardManager {
   Future<int> getSize();
 }
 
-class ClipboardData {
+class ClipboardData extends Equatable {
   const ClipboardData({
     required this.type,
     this.contentHash,
@@ -63,6 +64,18 @@ class ClipboardData {
       timestamp: timestamp ?? this.timestamp,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    contentHash,
+    filePaths,
+    html,
+    imageBytes,
+    metadata,
+    text,
+    timestamp,
+    type,
+  ];
 }
 
 enum ClipboardContentType { file, html, image, text, unknown, url }

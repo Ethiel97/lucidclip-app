@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
-import 'package:jiffy/jiffy.dart';
+import 'package:jiffy/jiffy.dart' hide Unit;
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
+import 'package:proper_filesize/proper_filesize.dart';
 import 'package:recase/recase.dart';
 
 typedef ClipboardItems = List<ClipboardItem>;
@@ -94,6 +97,13 @@ class ClipboardItem extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
       userId: userId ?? this.userId,
     );
+  }
+
+  String get userFacingSize {
+    final sizeInBytes = utf8.encode(content).length;
+    return FileSize.fromBytes(
+      sizeInBytes,
+    ).toString(unit: Unit.kilobyte, decimals: 2);
   }
 
   @override

@@ -33,6 +33,7 @@ dependencies:
   equatable: ^2.0.5
   iconsax: ^0.0.8
   window_manager: ^0.5.1
+  proper_filesize: ^1.0.2
 
   # Dependency Injection
   get_it: ^9.2.0

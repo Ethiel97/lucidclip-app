@@ -159,10 +159,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
         emit(state.copyWith(clipboardHistory: histories.toSuccess()));
 
-        developer.log(
+        /*developer.log(
           'Received ${histories.length} clipboard history records from stream',
           name: 'ClipboardCubit',
-        );
+        );*/
       },
       onError: (Object error, StackTrace stackTrace) {
         emit(

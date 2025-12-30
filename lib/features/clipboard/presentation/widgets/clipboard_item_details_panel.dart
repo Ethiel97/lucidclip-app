@@ -127,6 +127,7 @@ class _PreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Container(
+      height:  MediaQuery.sizeOf(context).height * 0.5,
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -134,7 +135,7 @@ class _PreviewCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+        // scrollDirection: Axis.horizontal,
         child: Text(
           preview,
           style: textTheme.bodySmall?.copyWith(
@@ -166,7 +167,7 @@ class _InfoCard extends StatelessWidget {
         _InfoRow(
           label: l10n.size.sentenceCase,
           // TODO(Ethiel97): implement actual size calculation
-          value: '123 KB',
+          value: clipboardItem.userFacingSize,
           // Placeholder, implement actual size calculation if needed
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedStoreLocation01),
         ),

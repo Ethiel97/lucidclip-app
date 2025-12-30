@@ -44,6 +44,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.file,
         filePaths: files,
+        text: files.join(', '),
         timestamp: DateTime.now(),
       );
       return clipboardData.copyWith(
@@ -70,6 +71,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
     if (html != null && html.isNotEmpty) {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.html,
+        text:  html,
         html: html,
         timestamp: DateTime.now(),
       );

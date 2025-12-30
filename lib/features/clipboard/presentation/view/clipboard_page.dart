@@ -64,6 +64,10 @@ class _ClipboardViewState extends State<ClipboardView>
       (ClipboardDetailCubit cubit) => cubit.state.clipboardItem,
     );
 
+    final hasClipboardItem = context.select(
+      (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
+    );
+
     return BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
       listener: (context, state) {
         if (state.clipboardItem != null && state.hasClipboardItem) {
@@ -130,11 +134,22 @@ class _ClipboardViewState extends State<ClipboardView>
                   alignment: Alignment.topRight,
                   child: SlideTransition(
                     position: _clipboardItemDetailsSlideAnimation,
-                    child: ClipboardItemDetailsPanel(
+                    child: ClipboardItemDetailsView(
                       clipboardItem:
                           selectedClipboardItem?.value ?? ClipboardItem.empty(),
                       onClose: () {
                         context.read<ClipboardDetailCubit>().clearSelection();
+                      },
+                      onTogglePin: () {
+                        if (hasClipboardItem) {
+                          context
+                              .read<ClipboardDetailCubit>()
+                              .togglePinClipboardItem(
+                                selectedClipboardItem!.data,
+                              );
+
+                          context.read<ClipboardDetailCubit>().clearSelection();
+                        }
                       },
                     ),
                   ),

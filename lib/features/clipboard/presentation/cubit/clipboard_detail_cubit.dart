@@ -8,12 +8,29 @@ part 'clipboard_detail_state.dart';
 
 @lazySingleton
 class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
-  ClipboardDetailCubit() : super(const ClipboardDetailState());
+  ClipboardDetailCubit({required this.localClipboardRepository})
+    : super(const ClipboardDetailState());
 
-  void setClipboardItem(ClipboardItem clipboardItem) {
-    emit(state.copyWith(clipboardItem: clipboardItem.toSuccess()));
+  final LocalClipboardRepository localClipboardRepository;
+
+  Future<void> togglePinClipboardItem(ClipboardItem clipboardItem) async {
+    final isPinned = clipboardItem.isPinned;
+    final updatedItem = clipboardItem.copyWith(isPinned: !isPinned);
+    await localClipboardRepository.upsert(updatedItem);
+    emit(state.copyWith(clipboardItem: updatedItem.toSuccess()));
   }
 
+  void setClipboardItem(ClipboardItem clipboardItem) {
+    try {
+      emit(state.copyWith(clipboardItem: clipboardItem.toSuccess()));
+    } catch (e) {
+      emit(state.copyWith(clipboardItem: null.toError()));
+    }
+  }
+
+  // Clear the selected clipboard item
+  // This can be used when navigating away from the detail view
+  // will trigger the closing of the detail view in the UI
   void clearSelection() {
     emit(state.copyWith(clipboardItem: null.toInitial()));
   }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
-import 'package:recase/recase.dart';
 
 class ClipboardItemTile extends StatefulWidget {
   const ClipboardItemTile({required this.item, super.key});
@@ -101,33 +99,6 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _ItemTag extends StatelessWidget {
-  const _ItemTag({required this.label, required this.color});
-
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxxs,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: color.withValues(alpha: 0.13),
-        border: Border.all(color: color.withValues(alpha: 0.33)),
-      ),
-      child: Text(
-        label,
-        style: textTheme.labelSmall?.copyWith(color: color, fontSize: 12),
       ),
     );
   }

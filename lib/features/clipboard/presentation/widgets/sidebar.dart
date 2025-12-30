@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
-const sidebarWidth = 260.0;
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -15,7 +15,7 @@ class Sidebar extends StatelessWidget {
     final l10n = context.l10n;
 
     return Container(
-      width: sidebarWidth,
+      width: AppConstants.clipboardSidebarWidth,
       decoration: const BoxDecoration(
         color: AppColors.sidebar,
         border: Border(

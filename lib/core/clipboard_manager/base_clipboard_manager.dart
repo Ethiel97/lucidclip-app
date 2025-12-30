@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 abstract class BaseClipboardManager {
-  static const clipboardPollingInterval = Duration(milliseconds: 500);
+  static const clipboardPollingInterval = Duration(milliseconds: 1200);
 
   void initialize();
 

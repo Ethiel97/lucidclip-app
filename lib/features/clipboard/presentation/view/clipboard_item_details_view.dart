@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/theme/app_colors.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
-class ClipboardItemDetailsPanel extends StatelessWidget {
-  const ClipboardItemDetailsPanel({
+class ClipboardItemDetailsView extends StatelessWidget {
+  const ClipboardItemDetailsView({
     required this.clipboardItem,
     super.key,
     this.onClose,
@@ -29,7 +29,7 @@ class ClipboardItemDetailsPanel extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
     return Container(
-      width: 360, // ajuste si tu veux plus large/étroit
+      width: AppConstants.clipboardItemDetailsViewWidth,
       decoration: const BoxDecoration(
         color: AppColors.surface2,
         borderRadius: BorderRadius.only(
@@ -127,7 +127,7 @@ class _PreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Container(
-      height:  MediaQuery.sizeOf(context).height * 0.5,
+      height: MediaQuery.sizeOf(context).height * 0.5,
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(

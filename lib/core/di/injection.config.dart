@@ -67,9 +67,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
-    gh.lazySingleton<_i68.ClipboardDetailCubit>(
-      () => _i68.ClipboardDetailCubit(),
-    );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager()..initialize(),
       dispose: (i) => i.dispose(),
@@ -110,6 +107,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i42.ClipboardRemoteDataSource>(
       () => _i272.SupabaseRemoteDataSource(
         networkClient: gh<_i183.RemoteSyncClient>(),
+      ),
+    );
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
       ),
     );
     gh.lazySingleton<_i42.ClipboardRepository>(

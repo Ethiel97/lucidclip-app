@@ -9,4 +9,7 @@ class AppConstants {
       dotenv.env['SUPABASE_PROJECT_URL'] ?? '';
   static final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
   static final supabaseApiKey = dotenv.env['SUPABASE_API_KEY'] ?? '';
+
+  static const clipboardItemDetailsViewWidth = 360.0;
+  static const clipboardSidebarWidth = 260.0;
 }

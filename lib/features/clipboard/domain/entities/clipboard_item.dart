@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
+import 'package:jiffy/jiffy.dart' hide Unit;
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
+import 'package:proper_filesize/proper_filesize.dart';
+import 'package:recase/recase.dart';
 
 typedef ClipboardItems = List<ClipboardItem>;
 
@@ -20,6 +25,22 @@ class ClipboardItem extends Equatable {
     this.metadata = const {},
     this.htmlContent,
   });
+
+  factory ClipboardItem.empty() {
+    return ClipboardItem(
+      content: '',
+      contentHash: '',
+      createdAt: DateTime.now(),
+      id: '',
+      type: ClipboardItemType.unknown,
+      updatedAt: DateTime.now(),
+      userId: '',
+    );
+  }
+
+  static ClipboardItem emptyValue = ClipboardItem.empty();
+
+  bool get isEmpty => this == ClipboardItem.emptyValue;
 
   final String content;
 
@@ -78,23 +99,30 @@ class ClipboardItem extends Equatable {
     );
   }
 
+  String get userFacingSize {
+    final sizeInBytes = utf8.encode(content).length;
+    return FileSize.fromBytes(
+      sizeInBytes,
+    ).toString(unit: Unit.kilobyte, decimals: 2);
+  }
+
   @override
   List<Object?> get props => [
-        content,
-        contentHash,
-        createdAt,
-        filePaths,
-        htmlContent,
-        id,
-        imageUrl,
-        isPinned,
-        isSnippet,
-        isSynced,
-        metadata,
-        type,
-        updatedAt,
-        userId,
-      ];
+    content,
+    contentHash,
+    createdAt,
+    filePaths,
+    htmlContent,
+    id,
+    imageUrl,
+    isPinned,
+    isSnippet,
+    isSynced,
+    metadata,
+    type,
+    updatedAt,
+    userId,
+  ];
 }
 
 enum ClipboardItemType {
@@ -116,25 +144,27 @@ enum ClipboardItemType {
   bool get isHtml => this == ClipboardItemType.html;
 
   bool get isUnknown => this == ClipboardItemType.unknown;
+
+  String get label {
+    return switch (this) {
+      ClipboardItemType.url => 'Link',
+      _ => name,
+    };
+  }
 }
 
 /// Extension to map ClipboardItem to ClipboardContentType for reusability
-extension ClipboardItemTypeMapping on ClipboardItem {
+extension ClipboardItemHelper on ClipboardItem {
   /// Maps the ClipboardItem type to ClipboardContentType
-  ClipboardContentType get contentType {
-    switch (type) {
-      case ClipboardItemType.text:
-        return ClipboardContentType.text;
-      case ClipboardItemType.image:
-        return ClipboardContentType.image;
-      case ClipboardItemType.file:
-        return ClipboardContentType.file;
-      case ClipboardItemType.url:
-        return ClipboardContentType.url;
-      case ClipboardItemType.html:
-        return ClipboardContentType.html;
-      case ClipboardItemType.unknown:
-        return ClipboardContentType.unknown;
-    }
-  }
+  ClipboardContentType get contentType => switch (type) {
+    ClipboardItemType.text => ClipboardContentType.text,
+    ClipboardItemType.image => ClipboardContentType.image,
+    ClipboardItemType.file => ClipboardContentType.file,
+    ClipboardItemType.url => ClipboardContentType.url,
+    ClipboardItemType.html => ClipboardContentType.html,
+    ClipboardItemType.unknown => ClipboardContentType.unknown,
+  };
+
+  String get timeAgo =>
+      Jiffy.parseFromDateTime(createdAt).fromNow().sentenceCase;
 }

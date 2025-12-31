@@ -14,13 +14,11 @@ abstract class ThirdPartyModule {
 
   @lazySingleton
   FlutterSecureStorage get flutterSecureStorage => const FlutterSecureStorage(
-        aOptions: AndroidOptions(
-          encryptedSharedPreferences: true,
-        ),
-        iOptions: IOSOptions(
-          accessibility: KeychainAccessibility.first_unlock_this_device,
-        ),
-      );
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+    ),
+  );
 
+  @singleton
   ClipboardDatabase get clipboardDatabase => ClipboardDatabase();
 }

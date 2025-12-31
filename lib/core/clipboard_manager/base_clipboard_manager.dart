@@ -1,8 +1,11 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
-abstract class BaseClipboardManager {
-  static const clipboardPollingInterval = Duration(milliseconds: 500);
+import 'package:equatable/equatable.dart';
+import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
-  Future<void> initialize();
+abstract class BaseClipboardManager {
+  static const clipboardPollingInterval = Duration(milliseconds: 1200);
+
+  void initialize();
 
   Future<ClipboardData?> getClipboardContent();
 
@@ -19,7 +22,7 @@ abstract class BaseClipboardManager {
   Future<int> getSize();
 }
 
-class ClipboardData {
+class ClipboardData extends Equatable {
   const ClipboardData({
     required this.type,
     this.contentHash,
@@ -39,10 +42,6 @@ class ClipboardData {
   final String? text;
   final DateTime? timestamp;
   final ClipboardContentType type;
-
-  set contentHash(String? value) {
-    contentHash = value;
-  }
 
   ClipboardData copyWith({
     String? contentHash,
@@ -65,13 +64,37 @@ class ClipboardData {
       timestamp: timestamp ?? this.timestamp,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    contentHash,
+    filePaths,
+    html,
+    imageBytes,
+    metadata,
+    text,
+    timestamp,
+    type,
+  ];
 }
 
-enum ClipboardContentType {
-  file,
-  html,
-  image,
-  text,
-  unknown,
-  url,
+enum ClipboardContentType { file, html, image, text, unknown, url }
+
+extension ClipboardDataHelpers on ClipboardData {
+  ClipboardItemType get clipboardItemType {
+    switch (type) {
+      case ClipboardContentType.text:
+        return ClipboardItemType.text;
+      case ClipboardContentType.image:
+        return ClipboardItemType.image;
+      case ClipboardContentType.file:
+        return ClipboardItemType.file;
+      case ClipboardContentType.url:
+        return ClipboardItemType.url;
+      case ClipboardContentType.html:
+        return ClipboardItemType.html;
+      case ClipboardContentType.unknown:
+        return ClipboardItemType.unknown;
+    }
+  }
 }

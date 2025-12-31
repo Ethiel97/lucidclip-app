@@ -12,123 +12,191 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
   @override
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'content', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _contentHashMeta =
-      const VerificationMeta('contentHash');
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentHashMeta = const VerificationMeta(
+    'contentHash',
+  );
   @override
   late final GeneratedColumn<String> contentHash = GeneratedColumn<String>(
-      'content_hash', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'content_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<String> userId = GeneratedColumn<String>(
-      'user_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _updatedAtMeta =
-      const VerificationMeta('updatedAt');
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _htmlContentMeta =
-      const VerificationMeta('htmlContent');
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _htmlContentMeta = const VerificationMeta(
+    'htmlContent',
+  );
   @override
   late final GeneratedColumn<String> htmlContent = GeneratedColumn<String>(
-      'html_content', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _imageUrlMeta =
-      const VerificationMeta('imageUrl');
+    'html_content',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
+    'imageUrl',
+  );
   @override
   late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
-      'image_url', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _filePathsMeta =
-      const VerificationMeta('filePaths');
+    'image_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _filePathsMeta = const VerificationMeta(
+    'filePaths',
+  );
   @override
   late final GeneratedColumn<String> filePaths = GeneratedColumn<String>(
-      'file_paths', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('[]'));
-  static const VerificationMeta _isPinnedMeta =
-      const VerificationMeta('isPinned');
+    'file_paths',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _isPinnedMeta = const VerificationMeta(
+    'isPinned',
+  );
   @override
   late final GeneratedColumn<bool> isPinned = GeneratedColumn<bool>(
-      'is_pinned', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_pinned" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _isSnippetMeta =
-      const VerificationMeta('isSnippet');
+    'is_pinned',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_pinned" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isSnippetMeta = const VerificationMeta(
+    'isSnippet',
+  );
   @override
   late final GeneratedColumn<bool> isSnippet = GeneratedColumn<bool>(
-      'is_snippet', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_snippet" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _isSyncedMeta =
-      const VerificationMeta('isSynced');
+    'is_snippet',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_snippet" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
   @override
   late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
-      'is_synced', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_synced" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _metadataJsonMeta =
-      const VerificationMeta('metadataJson');
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _metadataJsonMeta = const VerificationMeta(
+    'metadataJson',
+  );
   @override
   late final GeneratedColumn<String> metadataJson = GeneratedColumn<String>(
-      'metadata_json', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'metadata_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        content,
-        contentHash,
-        userId,
-        type,
-        createdAt,
-        updatedAt,
-        htmlContent,
-        imageUrl,
-        filePaths,
-        isPinned,
-        isSnippet,
-        isSynced,
-        metadataJson
-      ];
+    id,
+    content,
+    contentHash,
+    userId,
+    type,
+    createdAt,
+    updatedAt,
+    htmlContent,
+    imageUrl,
+    filePaths,
+    isPinned,
+    isSnippet,
+    isSynced,
+    metadataJson,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'clipboard_item_entries';
   @override
-  VerificationContext validateIntegrity(Insertable<ClipboardItemEntry> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<ClipboardItemEntry> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -137,74 +205,103 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
       context.missing(_idMeta);
     }
     if (data.containsKey('content')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
     if (data.containsKey('content_hash')) {
       context.handle(
+        _contentHashMeta,
+        contentHash.isAcceptableOrUnknown(
+          data['content_hash']!,
           _contentHashMeta,
-          contentHash.isAcceptableOrUnknown(
-              data['content_hash']!, _contentHashMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_contentHashMeta);
     }
     if (data.containsKey('user_id')) {
-      context.handle(_userIdMeta,
-          userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta));
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
     if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
-      context.handle(_updatedAtMeta,
-          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
     if (data.containsKey('html_content')) {
       context.handle(
+        _htmlContentMeta,
+        htmlContent.isAcceptableOrUnknown(
+          data['html_content']!,
           _htmlContentMeta,
-          htmlContent.isAcceptableOrUnknown(
-              data['html_content']!, _htmlContentMeta));
+        ),
+      );
     }
     if (data.containsKey('image_url')) {
-      context.handle(_imageUrlMeta,
-          imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
+      context.handle(
+        _imageUrlMeta,
+        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+      );
     }
     if (data.containsKey('file_paths')) {
-      context.handle(_filePathsMeta,
-          filePaths.isAcceptableOrUnknown(data['file_paths']!, _filePathsMeta));
+      context.handle(
+        _filePathsMeta,
+        filePaths.isAcceptableOrUnknown(data['file_paths']!, _filePathsMeta),
+      );
     }
     if (data.containsKey('is_pinned')) {
-      context.handle(_isPinnedMeta,
-          isPinned.isAcceptableOrUnknown(data['is_pinned']!, _isPinnedMeta));
+      context.handle(
+        _isPinnedMeta,
+        isPinned.isAcceptableOrUnknown(data['is_pinned']!, _isPinnedMeta),
+      );
     }
     if (data.containsKey('is_snippet')) {
-      context.handle(_isSnippetMeta,
-          isSnippet.isAcceptableOrUnknown(data['is_snippet']!, _isSnippetMeta));
+      context.handle(
+        _isSnippetMeta,
+        isSnippet.isAcceptableOrUnknown(data['is_snippet']!, _isSnippetMeta),
+      );
     }
     if (data.containsKey('is_synced')) {
-      context.handle(_isSyncedMeta,
-          isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta));
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
     }
     if (data.containsKey('metadata_json')) {
       context.handle(
+        _metadataJsonMeta,
+        metadataJson.isAcceptableOrUnknown(
+          data['metadata_json']!,
           _metadataJsonMeta,
-          metadataJson.isAcceptableOrUnknown(
-              data['metadata_json']!, _metadataJsonMeta));
+        ),
+      );
     }
     return context;
   }
@@ -215,34 +312,62 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
   ClipboardItemEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ClipboardItemEntry(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
-      contentHash: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content_hash'])!,
-      userId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}user_id'])!,
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
-      htmlContent: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}html_content']),
-      imageUrl: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
-      filePaths: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}file_paths'])!,
-      isPinned: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_pinned'])!,
-      isSnippet: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_snippet'])!,
-      isSynced: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_synced'])!,
-      metadataJson: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}metadata_json']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      contentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_hash'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      htmlContent: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}html_content'],
+      ),
+      imageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_url'],
+      ),
+      filePaths: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_paths'],
+      )!,
+      isPinned: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_pinned'],
+      )!,
+      isSnippet: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_snippet'],
+      )!,
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      metadataJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metadata_json'],
+      ),
     );
   }
 
@@ -268,21 +393,22 @@ class ClipboardItemEntry extends DataClass
   final bool isSnippet;
   final bool isSynced;
   final String? metadataJson;
-  const ClipboardItemEntry(
-      {required this.id,
-      required this.content,
-      required this.contentHash,
-      required this.userId,
-      required this.type,
-      required this.createdAt,
-      required this.updatedAt,
-      this.htmlContent,
-      this.imageUrl,
-      required this.filePaths,
-      required this.isPinned,
-      required this.isSnippet,
-      required this.isSynced,
-      this.metadataJson});
+  const ClipboardItemEntry({
+    required this.id,
+    required this.content,
+    required this.contentHash,
+    required this.userId,
+    required this.type,
+    required this.createdAt,
+    required this.updatedAt,
+    this.htmlContent,
+    this.imageUrl,
+    required this.filePaths,
+    required this.isPinned,
+    required this.isSnippet,
+    required this.isSynced,
+    this.metadataJson,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -334,8 +460,10 @@ class ClipboardItemEntry extends DataClass
     );
   }
 
-  factory ClipboardItemEntry.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory ClipboardItemEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ClipboardItemEntry(
       id: serializer.fromJson<String>(json['id']),
@@ -375,50 +503,51 @@ class ClipboardItemEntry extends DataClass
     };
   }
 
-  ClipboardItemEntry copyWith(
-          {String? id,
-          String? content,
-          String? contentHash,
-          String? userId,
-          String? type,
-          DateTime? createdAt,
-          DateTime? updatedAt,
-          Value<String?> htmlContent = const Value.absent(),
-          Value<String?> imageUrl = const Value.absent(),
-          String? filePaths,
-          bool? isPinned,
-          bool? isSnippet,
-          bool? isSynced,
-          Value<String?> metadataJson = const Value.absent()}) =>
-      ClipboardItemEntry(
-        id: id ?? this.id,
-        content: content ?? this.content,
-        contentHash: contentHash ?? this.contentHash,
-        userId: userId ?? this.userId,
-        type: type ?? this.type,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
-        imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
-        filePaths: filePaths ?? this.filePaths,
-        isPinned: isPinned ?? this.isPinned,
-        isSnippet: isSnippet ?? this.isSnippet,
-        isSynced: isSynced ?? this.isSynced,
-        metadataJson:
-            metadataJson.present ? metadataJson.value : this.metadataJson,
-      );
+  ClipboardItemEntry copyWith({
+    String? id,
+    String? content,
+    String? contentHash,
+    String? userId,
+    String? type,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<String?> htmlContent = const Value.absent(),
+    Value<String?> imageUrl = const Value.absent(),
+    String? filePaths,
+    bool? isPinned,
+    bool? isSnippet,
+    bool? isSynced,
+    Value<String?> metadataJson = const Value.absent(),
+  }) => ClipboardItemEntry(
+    id: id ?? this.id,
+    content: content ?? this.content,
+    contentHash: contentHash ?? this.contentHash,
+    userId: userId ?? this.userId,
+    type: type ?? this.type,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
+    imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+    filePaths: filePaths ?? this.filePaths,
+    isPinned: isPinned ?? this.isPinned,
+    isSnippet: isSnippet ?? this.isSnippet,
+    isSynced: isSynced ?? this.isSynced,
+    metadataJson: metadataJson.present ? metadataJson.value : this.metadataJson,
+  );
   ClipboardItemEntry copyWithCompanion(ClipboardItemEntriesCompanion data) {
     return ClipboardItemEntry(
       id: data.id.present ? data.id.value : this.id,
       content: data.content.present ? data.content.value : this.content,
-      contentHash:
-          data.contentHash.present ? data.contentHash.value : this.contentHash,
+      contentHash: data.contentHash.present
+          ? data.contentHash.value
+          : this.contentHash,
       userId: data.userId.present ? data.userId.value : this.userId,
       type: data.type.present ? data.type.value : this.type,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      htmlContent:
-          data.htmlContent.present ? data.htmlContent.value : this.htmlContent,
+      htmlContent: data.htmlContent.present
+          ? data.htmlContent.value
+          : this.htmlContent,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
       filePaths: data.filePaths.present ? data.filePaths.value : this.filePaths,
       isPinned: data.isPinned.present ? data.isPinned.value : this.isPinned,
@@ -453,20 +582,21 @@ class ClipboardItemEntry extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id,
-      content,
-      contentHash,
-      userId,
-      type,
-      createdAt,
-      updatedAt,
-      htmlContent,
-      imageUrl,
-      filePaths,
-      isPinned,
-      isSnippet,
-      isSynced,
-      metadataJson);
+    id,
+    content,
+    contentHash,
+    userId,
+    type,
+    createdAt,
+    updatedAt,
+    htmlContent,
+    imageUrl,
+    filePaths,
+    isPinned,
+    isSnippet,
+    isSynced,
+    metadataJson,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -537,13 +667,13 @@ class ClipboardItemEntriesCompanion
     this.isSynced = const Value.absent(),
     this.metadataJson = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        content = Value(content),
-        contentHash = Value(contentHash),
-        userId = Value(userId),
-        type = Value(type),
-        createdAt = Value(createdAt),
-        updatedAt = Value(updatedAt);
+  }) : id = Value(id),
+       content = Value(content),
+       contentHash = Value(contentHash),
+       userId = Value(userId),
+       type = Value(type),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
   static Insertable<ClipboardItemEntry> custom({
     Expression<String>? id,
     Expression<String>? content,
@@ -580,22 +710,23 @@ class ClipboardItemEntriesCompanion
     });
   }
 
-  ClipboardItemEntriesCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? content,
-      Value<String>? contentHash,
-      Value<String>? userId,
-      Value<String>? type,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt,
-      Value<String?>? htmlContent,
-      Value<String?>? imageUrl,
-      Value<String>? filePaths,
-      Value<bool>? isPinned,
-      Value<bool>? isSnippet,
-      Value<bool>? isSynced,
-      Value<String?>? metadataJson,
-      Value<int>? rowid}) {
+  ClipboardItemEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? content,
+    Value<String>? contentHash,
+    Value<String>? userId,
+    Value<String>? type,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<String?>? htmlContent,
+    Value<String?>? imageUrl,
+    Value<String>? filePaths,
+    Value<bool>? isPinned,
+    Value<bool>? isSnippet,
+    Value<bool>? isSynced,
+    Value<String?>? metadataJson,
+    Value<int>? rowid,
+  }) {
     return ClipboardItemEntriesCompanion(
       id: id ?? this.id,
       content: content ?? this.content,
@@ -689,54 +820,474 @@ class ClipboardItemEntriesCompanion
   }
 }
 
+class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
+    with TableInfo<$ClipboardHistoryEntriesTable, ClipboardHistoryEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ClipboardHistoryEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _clipboardItemIdMeta = const VerificationMeta(
+    'clipboardItemId',
+  );
+  @override
+  late final GeneratedColumn<String> clipboardItemId = GeneratedColumn<String>(
+    'clipboard_item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _actionMeta = const VerificationMeta('action');
+  @override
+  late final GeneratedColumn<String> action = GeneratedColumn<String>(
+    'action',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    clipboardItemId,
+    userId,
+    action,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'clipboard_history_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ClipboardHistoryEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('clipboard_item_id')) {
+      context.handle(
+        _clipboardItemIdMeta,
+        clipboardItemId.isAcceptableOrUnknown(
+          data['clipboard_item_id']!,
+          _clipboardItemIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clipboardItemIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('action')) {
+      context.handle(
+        _actionMeta,
+        action.isAcceptableOrUnknown(data['action']!, _actionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_actionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ClipboardHistoryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ClipboardHistoryEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      clipboardItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clipboard_item_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      action: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}action'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ClipboardHistoryEntriesTable createAlias(String alias) {
+    return $ClipboardHistoryEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class ClipboardHistoryEntry extends DataClass
+    implements Insertable<ClipboardHistoryEntry> {
+  final String id;
+  final String clipboardItemId;
+  final String userId;
+  final String action;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ClipboardHistoryEntry({
+    required this.id,
+    required this.clipboardItemId,
+    required this.userId,
+    required this.action,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['clipboard_item_id'] = Variable<String>(clipboardItemId);
+    map['user_id'] = Variable<String>(userId);
+    map['action'] = Variable<String>(action);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ClipboardHistoryEntriesCompanion toCompanion(bool nullToAbsent) {
+    return ClipboardHistoryEntriesCompanion(
+      id: Value(id),
+      clipboardItemId: Value(clipboardItemId),
+      userId: Value(userId),
+      action: Value(action),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ClipboardHistoryEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ClipboardHistoryEntry(
+      id: serializer.fromJson<String>(json['id']),
+      clipboardItemId: serializer.fromJson<String>(json['clipboardItemId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      action: serializer.fromJson<String>(json['action']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'clipboardItemId': serializer.toJson<String>(clipboardItemId),
+      'userId': serializer.toJson<String>(userId),
+      'action': serializer.toJson<String>(action),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ClipboardHistoryEntry copyWith({
+    String? id,
+    String? clipboardItemId,
+    String? userId,
+    String? action,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ClipboardHistoryEntry(
+    id: id ?? this.id,
+    clipboardItemId: clipboardItemId ?? this.clipboardItemId,
+    userId: userId ?? this.userId,
+    action: action ?? this.action,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ClipboardHistoryEntry copyWithCompanion(
+    ClipboardHistoryEntriesCompanion data,
+  ) {
+    return ClipboardHistoryEntry(
+      id: data.id.present ? data.id.value : this.id,
+      clipboardItemId: data.clipboardItemId.present
+          ? data.clipboardItemId.value
+          : this.clipboardItemId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      action: data.action.present ? data.action.value : this.action,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClipboardHistoryEntry(')
+          ..write('id: $id, ')
+          ..write('clipboardItemId: $clipboardItemId, ')
+          ..write('userId: $userId, ')
+          ..write('action: $action, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, clipboardItemId, userId, action, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ClipboardHistoryEntry &&
+          other.id == this.id &&
+          other.clipboardItemId == this.clipboardItemId &&
+          other.userId == this.userId &&
+          other.action == this.action &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ClipboardHistoryEntriesCompanion
+    extends UpdateCompanion<ClipboardHistoryEntry> {
+  final Value<String> id;
+  final Value<String> clipboardItemId;
+  final Value<String> userId;
+  final Value<String> action;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ClipboardHistoryEntriesCompanion({
+    this.id = const Value.absent(),
+    this.clipboardItemId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.action = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ClipboardHistoryEntriesCompanion.insert({
+    required String id,
+    required String clipboardItemId,
+    required String userId,
+    required String action,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       clipboardItemId = Value(clipboardItemId),
+       userId = Value(userId),
+       action = Value(action),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ClipboardHistoryEntry> custom({
+    Expression<String>? id,
+    Expression<String>? clipboardItemId,
+    Expression<String>? userId,
+    Expression<String>? action,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (clipboardItemId != null) 'clipboard_item_id': clipboardItemId,
+      if (userId != null) 'user_id': userId,
+      if (action != null) 'action': action,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ClipboardHistoryEntriesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? clipboardItemId,
+    Value<String>? userId,
+    Value<String>? action,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ClipboardHistoryEntriesCompanion(
+      id: id ?? this.id,
+      clipboardItemId: clipboardItemId ?? this.clipboardItemId,
+      userId: userId ?? this.userId,
+      action: action ?? this.action,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (clipboardItemId.present) {
+      map['clipboard_item_id'] = Variable<String>(clipboardItemId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (action.present) {
+      map['action'] = Variable<String>(action.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ClipboardHistoryEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('clipboardItemId: $clipboardItemId, ')
+          ..write('userId: $userId, ')
+          ..write('action: $action, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$ClipboardDatabase extends GeneratedDatabase {
   _$ClipboardDatabase(QueryExecutor e) : super(e);
   $ClipboardDatabaseManager get managers => $ClipboardDatabaseManager(this);
   late final $ClipboardItemEntriesTable clipboardItemEntries =
       $ClipboardItemEntriesTable(this);
+  late final $ClipboardHistoryEntriesTable clipboardHistoryEntries =
+      $ClipboardHistoryEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [clipboardItemEntries];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    clipboardItemEntries,
+    clipboardHistoryEntries,
+  ];
 }
 
-typedef $$ClipboardItemEntriesTableCreateCompanionBuilder
-    = ClipboardItemEntriesCompanion Function({
-  required String id,
-  required String content,
-  required String contentHash,
-  required String userId,
-  required String type,
-  required DateTime createdAt,
-  required DateTime updatedAt,
-  Value<String?> htmlContent,
-  Value<String?> imageUrl,
-  Value<String> filePaths,
-  Value<bool> isPinned,
-  Value<bool> isSnippet,
-  Value<bool> isSynced,
-  Value<String?> metadataJson,
-  Value<int> rowid,
-});
-typedef $$ClipboardItemEntriesTableUpdateCompanionBuilder
-    = ClipboardItemEntriesCompanion Function({
-  Value<String> id,
-  Value<String> content,
-  Value<String> contentHash,
-  Value<String> userId,
-  Value<String> type,
-  Value<DateTime> createdAt,
-  Value<DateTime> updatedAt,
-  Value<String?> htmlContent,
-  Value<String?> imageUrl,
-  Value<String> filePaths,
-  Value<bool> isPinned,
-  Value<bool> isSnippet,
-  Value<bool> isSynced,
-  Value<String?> metadataJson,
-  Value<int> rowid,
-});
+typedef $$ClipboardItemEntriesTableCreateCompanionBuilder =
+    ClipboardItemEntriesCompanion Function({
+      required String id,
+      required String content,
+      required String contentHash,
+      required String userId,
+      required String type,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<String?> htmlContent,
+      Value<String?> imageUrl,
+      Value<String> filePaths,
+      Value<bool> isPinned,
+      Value<bool> isSnippet,
+      Value<bool> isSynced,
+      Value<String?> metadataJson,
+      Value<int> rowid,
+    });
+typedef $$ClipboardItemEntriesTableUpdateCompanionBuilder =
+    ClipboardItemEntriesCompanion Function({
+      Value<String> id,
+      Value<String> content,
+      Value<String> contentHash,
+      Value<String> userId,
+      Value<String> type,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String?> htmlContent,
+      Value<String?> imageUrl,
+      Value<String> filePaths,
+      Value<bool> isPinned,
+      Value<bool> isSnippet,
+      Value<bool> isSynced,
+      Value<String?> metadataJson,
+      Value<int> rowid,
+    });
 
 class $$ClipboardItemEntriesTableFilterComposer
     extends Composer<_$ClipboardDatabase, $ClipboardItemEntriesTable> {
@@ -748,46 +1299,74 @@ class $$ClipboardItemEntriesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnFilters(column));
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get contentHash => $composableBuilder(
-      column: $table.contentHash, builder: (column) => ColumnFilters(column));
+    column: $table.contentHash,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get userId => $composableBuilder(
-      column: $table.userId, builder: (column) => ColumnFilters(column));
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get htmlContent => $composableBuilder(
-      column: $table.htmlContent, builder: (column) => ColumnFilters(column));
+    column: $table.htmlContent,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
-      column: $table.imageUrl, builder: (column) => ColumnFilters(column));
+    column: $table.imageUrl,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get filePaths => $composableBuilder(
-      column: $table.filePaths, builder: (column) => ColumnFilters(column));
+    column: $table.filePaths,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isPinned => $composableBuilder(
-      column: $table.isPinned, builder: (column) => ColumnFilters(column));
+    column: $table.isPinned,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isSnippet => $composableBuilder(
-      column: $table.isSnippet, builder: (column) => ColumnFilters(column));
+    column: $table.isSnippet,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isSynced => $composableBuilder(
-      column: $table.isSynced, builder: (column) => ColumnFilters(column));
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get metadataJson => $composableBuilder(
-      column: $table.metadataJson, builder: (column) => ColumnFilters(column));
+    column: $table.metadataJson,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$ClipboardItemEntriesTableOrderingComposer
@@ -800,47 +1379,74 @@ class $$ClipboardItemEntriesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnOrderings(column));
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get contentHash => $composableBuilder(
-      column: $table.contentHash, builder: (column) => ColumnOrderings(column));
+    column: $table.contentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get userId => $composableBuilder(
-      column: $table.userId, builder: (column) => ColumnOrderings(column));
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get htmlContent => $composableBuilder(
-      column: $table.htmlContent, builder: (column) => ColumnOrderings(column));
+    column: $table.htmlContent,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get imageUrl => $composableBuilder(
-      column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
+    column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get filePaths => $composableBuilder(
-      column: $table.filePaths, builder: (column) => ColumnOrderings(column));
+    column: $table.filePaths,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isPinned => $composableBuilder(
-      column: $table.isPinned, builder: (column) => ColumnOrderings(column));
+    column: $table.isPinned,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isSnippet => $composableBuilder(
-      column: $table.isSnippet, builder: (column) => ColumnOrderings(column));
+    column: $table.isSnippet,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isSynced => $composableBuilder(
-      column: $table.isSynced, builder: (column) => ColumnOrderings(column));
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get metadataJson => $composableBuilder(
-      column: $table.metadataJson,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.metadataJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ClipboardItemEntriesTableAnnotationComposer
@@ -859,7 +1465,9 @@ class $$ClipboardItemEntriesTableAnnotationComposer
       $composableBuilder(column: $table.content, builder: (column) => column);
 
   GeneratedColumn<String> get contentHash => $composableBuilder(
-      column: $table.contentHash, builder: (column) => column);
+    column: $table.contentHash,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
@@ -874,7 +1482,9 @@ class $$ClipboardItemEntriesTableAnnotationComposer
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   GeneratedColumn<String> get htmlContent => $composableBuilder(
-      column: $table.htmlContent, builder: (column) => column);
+    column: $table.htmlContent,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
@@ -892,134 +1502,398 @@ class $$ClipboardItemEntriesTableAnnotationComposer
       $composableBuilder(column: $table.isSynced, builder: (column) => column);
 
   GeneratedColumn<String> get metadataJson => $composableBuilder(
-      column: $table.metadataJson, builder: (column) => column);
+    column: $table.metadataJson,
+    builder: (column) => column,
+  );
 }
 
-class $$ClipboardItemEntriesTableTableManager extends RootTableManager<
-    _$ClipboardDatabase,
-    $ClipboardItemEntriesTable,
-    ClipboardItemEntry,
-    $$ClipboardItemEntriesTableFilterComposer,
-    $$ClipboardItemEntriesTableOrderingComposer,
-    $$ClipboardItemEntriesTableAnnotationComposer,
-    $$ClipboardItemEntriesTableCreateCompanionBuilder,
-    $$ClipboardItemEntriesTableUpdateCompanionBuilder,
-    (
-      ClipboardItemEntry,
-      BaseReferences<_$ClipboardDatabase, $ClipboardItemEntriesTable,
-          ClipboardItemEntry>
-    ),
-    ClipboardItemEntry,
-    PrefetchHooks Function()> {
+class $$ClipboardItemEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ClipboardDatabase,
+          $ClipboardItemEntriesTable,
+          ClipboardItemEntry,
+          $$ClipboardItemEntriesTableFilterComposer,
+          $$ClipboardItemEntriesTableOrderingComposer,
+          $$ClipboardItemEntriesTableAnnotationComposer,
+          $$ClipboardItemEntriesTableCreateCompanionBuilder,
+          $$ClipboardItemEntriesTableUpdateCompanionBuilder,
+          (
+            ClipboardItemEntry,
+            BaseReferences<
+              _$ClipboardDatabase,
+              $ClipboardItemEntriesTable,
+              ClipboardItemEntry
+            >,
+          ),
+          ClipboardItemEntry,
+          PrefetchHooks Function()
+        > {
   $$ClipboardItemEntriesTableTableManager(
-      _$ClipboardDatabase db, $ClipboardItemEntriesTable table)
-      : super(TableManagerState(
+    _$ClipboardDatabase db,
+    $ClipboardItemEntriesTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
               $$ClipboardItemEntriesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
               $$ClipboardItemEntriesTableOrderingComposer(
-                  $db: db, $table: table),
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
               $$ClipboardItemEntriesTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> content = const Value.absent(),
-            Value<String> contentHash = const Value.absent(),
-            Value<String> userId = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<DateTime> updatedAt = const Value.absent(),
-            Value<String?> htmlContent = const Value.absent(),
-            Value<String?> imageUrl = const Value.absent(),
-            Value<String> filePaths = const Value.absent(),
-            Value<bool> isPinned = const Value.absent(),
-            Value<bool> isSnippet = const Value.absent(),
-            Value<bool> isSynced = const Value.absent(),
-            Value<String?> metadataJson = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ClipboardItemEntriesCompanion(
-            id: id,
-            content: content,
-            contentHash: contentHash,
-            userId: userId,
-            type: type,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-            htmlContent: htmlContent,
-            imageUrl: imageUrl,
-            filePaths: filePaths,
-            isPinned: isPinned,
-            isSnippet: isSnippet,
-            isSynced: isSynced,
-            metadataJson: metadataJson,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String content,
-            required String contentHash,
-            required String userId,
-            required String type,
-            required DateTime createdAt,
-            required DateTime updatedAt,
-            Value<String?> htmlContent = const Value.absent(),
-            Value<String?> imageUrl = const Value.absent(),
-            Value<String> filePaths = const Value.absent(),
-            Value<bool> isPinned = const Value.absent(),
-            Value<bool> isSnippet = const Value.absent(),
-            Value<bool> isSynced = const Value.absent(),
-            Value<String?> metadataJson = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              ClipboardItemEntriesCompanion.insert(
-            id: id,
-            content: content,
-            contentHash: contentHash,
-            userId: userId,
-            type: type,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-            htmlContent: htmlContent,
-            imageUrl: imageUrl,
-            filePaths: filePaths,
-            isPinned: isPinned,
-            isSnippet: isSnippet,
-            isSynced: isSynced,
-            metadataJson: metadataJson,
-            rowid: rowid,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> contentHash = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> htmlContent = const Value.absent(),
+                Value<String?> imageUrl = const Value.absent(),
+                Value<String> filePaths = const Value.absent(),
+                Value<bool> isPinned = const Value.absent(),
+                Value<bool> isSnippet = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<String?> metadataJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClipboardItemEntriesCompanion(
+                id: id,
+                content: content,
+                contentHash: contentHash,
+                userId: userId,
+                type: type,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                htmlContent: htmlContent,
+                imageUrl: imageUrl,
+                filePaths: filePaths,
+                isPinned: isPinned,
+                isSnippet: isSnippet,
+                isSynced: isSynced,
+                metadataJson: metadataJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String content,
+                required String contentHash,
+                required String userId,
+                required String type,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<String?> htmlContent = const Value.absent(),
+                Value<String?> imageUrl = const Value.absent(),
+                Value<String> filePaths = const Value.absent(),
+                Value<bool> isPinned = const Value.absent(),
+                Value<bool> isSnippet = const Value.absent(),
+                Value<bool> isSynced = const Value.absent(),
+                Value<String?> metadataJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClipboardItemEntriesCompanion.insert(
+                id: id,
+                content: content,
+                contentHash: contentHash,
+                userId: userId,
+                type: type,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                htmlContent: htmlContent,
+                imageUrl: imageUrl,
+                filePaths: filePaths,
+                isPinned: isPinned,
+                isSnippet: isSnippet,
+                isSynced: isSynced,
+                metadataJson: metadataJson,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$ClipboardItemEntriesTableProcessedTableManager
-    = ProcessedTableManager<
-        _$ClipboardDatabase,
-        $ClipboardItemEntriesTable,
+typedef $$ClipboardItemEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ClipboardDatabase,
+      $ClipboardItemEntriesTable,
+      ClipboardItemEntry,
+      $$ClipboardItemEntriesTableFilterComposer,
+      $$ClipboardItemEntriesTableOrderingComposer,
+      $$ClipboardItemEntriesTableAnnotationComposer,
+      $$ClipboardItemEntriesTableCreateCompanionBuilder,
+      $$ClipboardItemEntriesTableUpdateCompanionBuilder,
+      (
         ClipboardItemEntry,
-        $$ClipboardItemEntriesTableFilterComposer,
-        $$ClipboardItemEntriesTableOrderingComposer,
-        $$ClipboardItemEntriesTableAnnotationComposer,
-        $$ClipboardItemEntriesTableCreateCompanionBuilder,
-        $$ClipboardItemEntriesTableUpdateCompanionBuilder,
-        (
-          ClipboardItemEntry,
-          BaseReferences<_$ClipboardDatabase, $ClipboardItemEntriesTable,
-              ClipboardItemEntry>
+        BaseReferences<
+          _$ClipboardDatabase,
+          $ClipboardItemEntriesTable,
+          ClipboardItemEntry
+        >,
+      ),
+      ClipboardItemEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$ClipboardHistoryEntriesTableCreateCompanionBuilder =
+    ClipboardHistoryEntriesCompanion Function({
+      required String id,
+      required String clipboardItemId,
+      required String userId,
+      required String action,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ClipboardHistoryEntriesTableUpdateCompanionBuilder =
+    ClipboardHistoryEntriesCompanion Function({
+      Value<String> id,
+      Value<String> clipboardItemId,
+      Value<String> userId,
+      Value<String> action,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ClipboardHistoryEntriesTableFilterComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
+  $$ClipboardHistoryEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clipboardItemId => $composableBuilder(
+    column: $table.clipboardItemId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get action => $composableBuilder(
+    column: $table.action,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ClipboardHistoryEntriesTableOrderingComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
+  $$ClipboardHistoryEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clipboardItemId => $composableBuilder(
+    column: $table.clipboardItemId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get action => $composableBuilder(
+    column: $table.action,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ClipboardHistoryEntriesTableAnnotationComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
+  $$ClipboardHistoryEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get clipboardItemId => $composableBuilder(
+    column: $table.clipboardItemId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get action =>
+      $composableBuilder(column: $table.action, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ClipboardHistoryEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$ClipboardDatabase,
+          $ClipboardHistoryEntriesTable,
+          ClipboardHistoryEntry,
+          $$ClipboardHistoryEntriesTableFilterComposer,
+          $$ClipboardHistoryEntriesTableOrderingComposer,
+          $$ClipboardHistoryEntriesTableAnnotationComposer,
+          $$ClipboardHistoryEntriesTableCreateCompanionBuilder,
+          $$ClipboardHistoryEntriesTableUpdateCompanionBuilder,
+          (
+            ClipboardHistoryEntry,
+            BaseReferences<
+              _$ClipboardDatabase,
+              $ClipboardHistoryEntriesTable,
+              ClipboardHistoryEntry
+            >,
+          ),
+          ClipboardHistoryEntry,
+          PrefetchHooks Function()
+        > {
+  $$ClipboardHistoryEntriesTableTableManager(
+    _$ClipboardDatabase db,
+    $ClipboardHistoryEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ClipboardHistoryEntriesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ClipboardHistoryEntriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ClipboardHistoryEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> clipboardItemId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> action = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ClipboardHistoryEntriesCompanion(
+                id: id,
+                clipboardItemId: clipboardItemId,
+                userId: userId,
+                action: action,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String clipboardItemId,
+                required String userId,
+                required String action,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ClipboardHistoryEntriesCompanion.insert(
+                id: id,
+                clipboardItemId: clipboardItemId,
+                userId: userId,
+                action: action,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ),
-        ClipboardItemEntry,
-        PrefetchHooks Function()>;
+      );
+}
+
+typedef $$ClipboardHistoryEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$ClipboardDatabase,
+      $ClipboardHistoryEntriesTable,
+      ClipboardHistoryEntry,
+      $$ClipboardHistoryEntriesTableFilterComposer,
+      $$ClipboardHistoryEntriesTableOrderingComposer,
+      $$ClipboardHistoryEntriesTableAnnotationComposer,
+      $$ClipboardHistoryEntriesTableCreateCompanionBuilder,
+      $$ClipboardHistoryEntriesTableUpdateCompanionBuilder,
+      (
+        ClipboardHistoryEntry,
+        BaseReferences<
+          _$ClipboardDatabase,
+          $ClipboardHistoryEntriesTable,
+          ClipboardHistoryEntry
+        >,
+      ),
+      ClipboardHistoryEntry,
+      PrefetchHooks Function()
+    >;
 
 class $ClipboardDatabaseManager {
   final _$ClipboardDatabase _db;
   $ClipboardDatabaseManager(this._db);
   $$ClipboardItemEntriesTableTableManager get clipboardItemEntries =>
       $$ClipboardItemEntriesTableTableManager(_db, _db.clipboardItemEntries);
+  $$ClipboardHistoryEntriesTableTableManager get clipboardHistoryEntries =>
+      $$ClipboardHistoryEntriesTableTableManager(
+        _db,
+        _db.clipboardHistoryEntries,
+      );
 }

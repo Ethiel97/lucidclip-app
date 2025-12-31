@@ -4,9 +4,9 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ^3.5.0
+  sdk: '>=3.8.0 <4.0.0'
 
-drift_version: &drift_version ^2.22.1
+#drift_version: &drift_version ^2.22.1
 
 dependencies:
   # Core
@@ -14,25 +14,30 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
   supabase_flutter: ^2.10.3
-  clipboard: ^2.0.2
+  clipboard: ^3.0.8
   crypto: ^3.0.3
   pasteboard: ^0.4.0
-  drift: *drift_version
-  drift_flutter:  ^0.2.7
+  flutter_context_menu: ^0.4.1
+  toastification: ^3.0.3
 
+  drift: ^2.29.0
+  drift_flutter: 0.2.7
+#  drift: 2.26.1
+#  drift_flutter: ^0.2.7
 
   # State Management
-  bloc: ^8.1.4
-  flutter_bloc: ^8.1.6
-  hydrated_bloc: ^8.1.0
+  bloc: ^9.1.0
+  flutter_bloc: ^9.1.1
+  hydrated_bloc: ^10.1.1
   equatable: ^2.0.5
   iconsax: ^0.0.8
   window_manager: ^0.5.1
+  proper_filesize: ^1.0.2
 
   # Dependency Injection
-  get_it: ^7.7.0
+  get_it: ^9.2.0
   injectable: ^2.4.4
 
   # Networking
@@ -42,12 +47,12 @@ dependencies:
   # Local Storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  flutter_secure_storage: ^9.0.0
+  flutter_secure_storage: ^10.0.0
 
   # Firebase
-  firebase_core: ^3.6.0
-  firebase_crashlytics: ^4.1.3
-  firebase_auth: ^5.3.1
+  firebase_core: ^4.3.0
+  firebase_crashlytics: ^5.0.6
+  firebase_auth: ^6.1.3
 
   # UI & Images
   cached_network_image: ^3.3.1
@@ -56,42 +61,43 @@ dependencies:
   google_fonts: ^6.2.1
 
   # Platform Services
-  permission_handler: ^11.3.1
-  device_info_plus: ^10.1.0
-  package_info_plus: ^8.0.0
+  permission_handler: ^12.0.1
+  device_info_plus: ^12.3.0
+  package_info_plus: ^9.0.0
 
   # Utilities
   path_provider: ^2.1.3
   url_launcher: ^6.2.6
-  flutter_dotenv: ^5.0.2
+  flutter_dotenv: ^6.0.0
   tinycolor2: ^3.0.1
-  share_plus: ^10.1.2
+  share_plus: ^12.0.1
   uuid: ^4.5.1
-
-
+  hugeicons: ^1.1.4
+  recase: ^4.1.0
+  jiffy: ^6.3.2
 
   # Navigation
-  auto_route: ^9.2.2
+  auto_route: ^10.1.0+1
   melos: ^6.3.2
-
 
 dev_dependencies:
   # Testing
-  bloc_test: ^9.1.7
+  bloc_test: ^10.0.0
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4
-  drift_dev: *drift_version
+  drift_dev: ^2.29.0
 
   # Code Generation
+  flutter_gen_runner: ^5.6.0
   build_runner: ^2.4.9
   injectable_generator: ^2.6.2
   json_serializable: ^6.8.0
-#  hive_generator: ^2.0.1
-  auto_route_generator: ^9.0.0
+  #  hive_generator: ^2.0.1
+  auto_route_generator: ^10.0.1
   flutter_launcher_icons: ^0.14.4
   # Static Analysis
-  very_good_analysis: ^6.0.0
+  very_good_analysis: ^9.0.0
 
 flutter:
   uses-material-design: true
@@ -105,6 +111,8 @@ flutter_gen:
   output: lib/generated/
   line_length: 80
 
+  integrations:
+    flutter_svg: true
 
 melos:
   useRootAsPackage: true

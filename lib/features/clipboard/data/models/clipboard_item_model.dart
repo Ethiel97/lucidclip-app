@@ -67,10 +67,12 @@ class ClipboardItemModel {
   @JsonKey(name: 'is_pinned')
   final bool isPinned;
 
-  @JsonKey(name: 'is_snippet')
+  @JsonKey(
+    name: 'is_snippet',
+  )
   final bool isSnippet;
 
-  @JsonKey(name: 'is_synced', defaultValue: false)
+  @JsonKey(name: 'is_synced')
   final bool isSynced;
 
   final Map<String, dynamic> metadata;

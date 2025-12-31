@@ -7,9 +7,7 @@ part 'clipboard_history_model.g.dart';
 
 typedef ClipboardHistoryModels = List<ClipboardHistoryModel>;
 
-@JsonSerializable(
-  explicitToJson: true,
-)
+@JsonSerializable(explicitToJson: true)
 class ClipboardHistoryModel {
   ClipboardHistoryModel({
     required this.action,
@@ -19,6 +17,32 @@ class ClipboardHistoryModel {
     required this.updatedAt,
     required this.userId,
   });
+
+  factory ClipboardHistoryModel.fromEntity(ClipboardHistory entity) {
+    ClipboardActionModel? actionModel;
+    try {
+      actionModel = ClipboardActionModel.values.firstWhere(
+        (model) => model.name == entity.action.name,
+      );
+    } catch (e) {
+      developer.log(
+        'Enum mismatch: ClipboardAction.${entity.action.name} not found '
+        'in ClipboardActionModel. Using copy as fallback.',
+        name: 'ClipboardHistoryModel',
+        level: 900, // WARNING: 900 is standard warning level in dart:developer
+      );
+      actionModel = ClipboardActionModel.copy;
+    }
+
+    return ClipboardHistoryModel(
+      action: actionModel,
+      clipboardItemId: entity.clipboardItemId,
+      createdAt: entity.createdAt,
+      id: entity.id,
+      updatedAt: entity.updatedAt,
+      userId: entity.userId,
+    );
+  }
 
   factory ClipboardHistoryModel.fromJson(Map<String, dynamic> json) =>
       _$ClipboardHistoryModelFromJson(json);
@@ -71,13 +95,14 @@ class ClipboardHistoryModel {
       );
     } catch (e) {
       developer.log(
-        'Enum mismatch: ClipboardActionModel.${action.name} not found in ClipboardAction. Using copy as fallback.',
+        'Enum mismatch: ClipboardActionModel.${action.name} not found in'
+        ' ClipboardAction. Using copy as fallback.',
         name: 'ClipboardHistoryModel',
         level: 900, // WARNING: 900 is standard warning level in dart:developer
       );
       actionEntity = ClipboardAction.copy;
     }
-    
+
     return ClipboardHistory(
       action: actionEntity,
       clipboardItemId: clipboardItemId,
@@ -85,31 +110,6 @@ class ClipboardHistoryModel {
       id: id,
       updatedAt: updatedAt,
       userId: userId,
-    );
-  }
-
-  factory ClipboardHistoryModel.fromEntity(ClipboardHistory entity) {
-    ClipboardActionModel? actionModel;
-    try {
-      actionModel = ClipboardActionModel.values.firstWhere(
-        (model) => model.name == entity.action.name,
-      );
-    } catch (e) {
-      developer.log(
-        'Enum mismatch: ClipboardAction.${entity.action.name} not found in ClipboardActionModel. Using copy as fallback.',
-        name: 'ClipboardHistoryModel',
-        level: 900, // WARNING: 900 is standard warning level in dart:developer
-      );
-      actionModel = ClipboardActionModel.copy;
-    }
-    
-    return ClipboardHistoryModel(
-      action: actionModel,
-      clipboardItemId: entity.clipboardItemId,
-      createdAt: entity.createdAt,
-      id: entity.id,
-      updatedAt: entity.updatedAt,
-      userId: entity.userId,
     );
   }
 }

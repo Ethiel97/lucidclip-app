@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucid_clip/counter/counter.dart';
-import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:lucid_clip/core/theme/app_theme.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -8,15 +9,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: const AppTheme().dark,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+
+      home: const ClipboardPage(),
     );
   }
 }

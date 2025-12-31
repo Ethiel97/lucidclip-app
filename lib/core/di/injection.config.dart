@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -31,10 +32,14 @@ import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
 import 'package:lucid_clip/features/clipboard/clipboard.dart' as _i42;
 import 'package:lucid_clip/features/clipboard/data/data.dart' as _i669;
+import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_history_local_data_source.dart'
+    as _i988;
 import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_local_data_source.dart'
     as _i158;
 import 'package:lucid_clip/features/clipboard/data/data_sources/supabase_remote_data_source.dart'
     as _i272;
+import 'package:lucid_clip/features/clipboard/data/repositories/local_clipboard_history_repository_impl.dart'
+    as _i354;
 import 'package:lucid_clip/features/clipboard/data/repositories/local_repository_impl.dart'
     as _i752;
 import 'package:lucid_clip/features/clipboard/data/repositories/supabase_repository_impl.dart'
@@ -42,58 +47,85 @@ import 'package:lucid_clip/features/clipboard/data/repositories/supabase_reposit
 import 'package:lucid_clip/features/clipboard/domain/domain.dart' as _i782;
 import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_cubit.dart'
     as _i958;
+import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_detail_cubit.dart'
+    as _i68;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
-// initializes the registration of main-scope dependencies inside of GetIt
+  // initializes the registration of main-scope dependencies inside of GetIt
   _i174.GetIt init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
   }) {
-    final gh = _i526.GetItHelper(
-      this,
-      environment,
-      environmentFilter,
-    );
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final thirdPartyModule = _$ThirdPartyModule();
-    gh.factory<_i669.ClipboardDatabase>(
-        () => thirdPartyModule.clipboardDatabase);
+    gh.singleton<_i669.ClipboardDatabase>(
+      () => thirdPartyModule.clipboardDatabase,
+    );
     gh.lazySingleton<_i59.FirebaseAuth>(() => thirdPartyModule.firebaseAuth);
     gh.lazySingleton<_i454.SupabaseClient>(() => thirdPartyModule.supabase);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
-        () => thirdPartyModule.flutterSecureStorage);
+      () => thirdPartyModule.flutterSecureStorage,
+    );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
-      () => _i647.FlutterClipboardManager(),
+      () => _i647.FlutterClipboardManager()..initialize(),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingletonAsync<_i407.StorageService>(
-      () {
-        final i = _i443.HiveStorageService(
-            gh<List<_i986.TypeAdapter<dynamic>>>(instanceName: 'hiveAdapters'));
-        return i.initialize().then((_) => i);
-      },
-      dispose: (i) => i.dispose(),
+    gh.lazySingletonAsync<_i407.StorageService>(() {
+      final i = _i443.HiveStorageService(
+        gh<List<_i986.TypeAdapter<dynamic>>>(instanceName: 'hiveAdapters'),
+      );
+      return i.initialize().then((_) => i);
+    }, dispose: (i) => i.dispose());
+    gh.lazySingleton<_i669.ClipboardLocalDataSource>(
+      () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
+      dispose: (i) => i.clear(),
     );
-    gh.lazySingleton<_i669.ClipboardLocalDataSource>(() =>
-        _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()));
+    gh.lazySingleton<_i669.ClipboardHistoryLocalDataSource>(
+      () => _i988.DriftClipboardHistoryLocalDataSource(
+        gh<_i669.ClipboardDatabase>(),
+      ),
+      dispose: (i) => i.clear(),
+    );
     gh.singleton<_i70.RemoteSyncClient>(
-        () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()));
-    gh.lazySingleton<_i782.LocalClipboardRepository>(() =>
-        _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()));
-    gh.lazySingleton<_i42.ClipboardRemoteDataSource>(() =>
-        _i272.SupabaseRemoteDataSource(
-            networkClient: gh<_i183.RemoteSyncClient>()));
-    gh.lazySingleton<_i42.ClipboardRepository>(() =>
-        _i244.SupabaseRepositoryImpl(
-            remoteDataSource: gh<_i42.ClipboardRemoteDataSource>()));
+      () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i782.LocalClipboardHistoryRepository>(
+      () => _i354.LocalClipboardHistoryStoreImpl(
+        gh<_i669.ClipboardHistoryLocalDataSource>(),
+      ),
+      dispose: (i) => i.clear(),
+    );
+    gh.lazySingleton<_i782.LocalClipboardRepository>(
+      () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
+      dispose: (i) => i.clear(),
+    );
+    gh.lazySingleton<_i42.ClipboardRemoteDataSource>(
+      () => _i272.SupabaseRemoteDataSource(
+        networkClient: gh<_i183.RemoteSyncClient>(),
+      ),
+    );
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i42.ClipboardRepository>(
+      () => _i244.SupabaseRepositoryImpl(
+        remoteDataSource: gh<_i42.ClipboardRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(
         clipboardManager: gh<_i108.BaseClipboardManager>(),
         clipboardRepository: gh<_i42.ClipboardRepository>(),
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        localClipboardHistoryRepository:
+            gh<_i42.LocalClipboardHistoryRepository>(),
       ),
       dispose: (i) => i.close(),
     );

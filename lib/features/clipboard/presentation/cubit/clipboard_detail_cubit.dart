@@ -17,7 +17,8 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
     final isPinned = clipboardItem.isPinned;
     final updatedItem = clipboardItem.copyWith(isPinned: !isPinned);
     await localClipboardRepository.upsert(updatedItem);
-    emit(state.copyWith(clipboardItem: updatedItem.toSuccess()));
+
+    clearSelection();
   }
 
   void setClipboardItem(ClipboardItem clipboardItem) {

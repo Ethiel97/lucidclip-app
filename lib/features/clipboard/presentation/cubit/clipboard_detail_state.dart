@@ -15,5 +15,7 @@ class ClipboardDetailState extends Equatable {
   List<Object?> get props => [clipboardItem];
 
   bool get hasClipboardItem =>
-      clipboardItem?.value != null && !clipboardItem!.value!.isEmpty;
+      clipboardItem?.value != null &&
+      !clipboardItem!.value!.isEmpty &&
+      clipboardItem!.isSuccess;
 }

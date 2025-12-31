@@ -166,7 +166,7 @@ class _InfoCard extends StatelessWidget {
           // TODO(Ethiel97): implement actual size calculation
           value: clipboardItem.userFacingSize,
           // Placeholder, implement actual size calculation if needed
-          icon: const HugeIcon(icon: HugeIcons.strokeRoundedStoreLocation01),
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
         ),
         const SizedBox(height: AppSpacing.sm),
         _InfoRow(
@@ -323,7 +323,7 @@ class _ActionsRow extends StatelessWidget {
             size: 16,
           ),
           label: Text(
-            l10n.pin.sentenceCase,
+            isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
             style: textTheme.labelSmall?.copyWith(
               color: AppColors.textSecondary,
             ),

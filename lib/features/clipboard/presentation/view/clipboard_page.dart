@@ -32,7 +32,7 @@ class _ClipboardViewState extends State<ClipboardView>
     with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
 
-  final clipboardItemDetailsSlideDuration = const Duration(milliseconds: 200);
+  final clipboardItemDetailsSlideDuration = const Duration(milliseconds: 300);
   late final AnimationController _animationController;
   late final Animation<Offset> _clipboardItemDetailsSlideAnimation;
 
@@ -40,7 +40,7 @@ class _ClipboardViewState extends State<ClipboardView>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _clipboardItemDetailsSlideAnimation =
@@ -68,14 +68,16 @@ class _ClipboardViewState extends State<ClipboardView>
       (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
     );
 
-    return BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
-      listener: (context, state) {
-        if (state.clipboardItem != null && state.hasClipboardItem) {
-          _animationController.forward();
-        } else {
-          _animationController.reverse();
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
+          listenWhen: (previous, current) =>
+              previous.hasClipboardItem != current.hasClipboardItem,
+          listener: (context, state) {
+            _animationController.toggle();
+          },
+        ),
+      ],
       child: Scaffold(
         body: Stack(
           children: [
@@ -147,8 +149,6 @@ class _ClipboardViewState extends State<ClipboardView>
                               .togglePinClipboardItem(
                                 selectedClipboardItem!.data,
                               );
-
-                          context.read<ClipboardDetailCubit>().clearSelection();
                         }
                       },
                     ),

@@ -12,6 +12,12 @@ class AppTheme {
     primarySwatch: AppColors.purpleSwatch,
     scaffoldBackgroundColor: AppColors.bg,
     canvasColor: AppColors.bg,
+    popupMenuTheme: const PopupMenuThemeData(
+      color: AppColors.surface2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(14)),
+      ),
+    ),
     colorScheme: const ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.primary,
@@ -25,6 +31,7 @@ class AppTheme {
       outlineVariant: AppColors.textMuted,
       onTertiary: AppColors.textSecondary,
       error: AppColors.danger,
+      errorContainer: AppColors.dangerSoft,
       onError: Colors.white,
     ),
     textTheme: _textTheme,
@@ -49,6 +56,7 @@ class AppTheme {
     filledButtonTheme: _filledButtonTheme,
     textButtonTheme: _textButtonTheme,
     chipTheme: _chipTheme,
+    dialogTheme: _dialogTheme,
   );
 
   /// Mapping AppTextStyle → TextTheme
@@ -120,5 +128,13 @@ class AppTheme {
     labelStyle: AppTextStyle.labelSmall.copyWith(color: AppColors.primary),
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+  );
+
+  DialogThemeData get _dialogTheme => DialogThemeData(
+    backgroundColor: AppColors.surface,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    titleTextStyle: AppTextStyle.headlineMedium,
+    contentTextStyle: AppTextStyle.bodyMedium,
+    barrierColor: AppColors.bg.withValues(alpha: .6),
   );
 }

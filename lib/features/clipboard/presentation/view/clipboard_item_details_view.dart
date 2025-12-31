@@ -335,7 +335,7 @@ class _ActionsRow extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: onDelete,
           style: OutlinedButton.styleFrom(
-            side: BorderSide(color: colorScheme.error),
+            side: BorderSide(color: colorScheme.errorContainer, width: .2),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.xxs,

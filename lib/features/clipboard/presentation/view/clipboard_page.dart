@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -34,6 +36,7 @@ class _ClipboardViewState extends State<ClipboardView>
 
   final clipboardItemDetailsSlideDuration = const Duration(milliseconds: 300);
   late final AnimationController _animationController;
+  late final Animation<double> _blurAnimation;
   late final Animation<Offset> _clipboardItemDetailsSlideAnimation;
 
   @override
@@ -43,6 +46,11 @@ class _ClipboardViewState extends State<ClipboardView>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+
+    _blurAnimation = Tween<double>(begin: 0, end: 5).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
     _clipboardItemDetailsSlideAnimation =
         Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
           CurvedAnimation(
@@ -50,6 +58,13 @@ class _ClipboardViewState extends State<ClipboardView>
             curve: Curves.easeInOut,
           ),
         );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,71 +83,92 @@ class _ClipboardViewState extends State<ClipboardView>
       (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
     );
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
           listenWhen: (previous, current) =>
               previous.hasClipboardItem != current.hasClipboardItem,
           listener: (context, state) {
-            _animationController.toggle();
+            if (state.hasClipboardItem) {
+              _animationController.forward();
+            } else {
+              _animationController.reverse();
+            }
           },
         ),
       ],
       child: Scaffold(
-        body: Stack(
-          children: [
-            Row(
-              children: [
-                const Sidebar(),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.xlg,
-                      AppSpacing.lg,
-                      AppSpacing.xlg,
-                      AppSpacing.lg,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const PageHeader(),
-                        /* const SizedBox(height: AppSpacing.md),
-                    const _SearchField(),*/
-                        const SizedBox(height: AppSpacing.lg),
-                        Expanded(
-                          child: Scrollbar(
+        body: AnimatedBuilder(
+          animation: _animationController,
+          child: Row(
+            children: [
+              const Sidebar(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xlg,
+                    AppSpacing.lg,
+                    AppSpacing.xlg,
+                    AppSpacing.lg,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const PageHeader(),
+                      const SizedBox(height: AppSpacing.lg),
+                      Expanded(
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          child: ListView(
                             controller: _scrollController,
-                            child: ListView(
-                              controller: _scrollController,
-                              physics: const BouncingScrollPhysics(),
-                              children: [
-                                if (pinnedItems.isNotEmpty) ...[
-                                  ClipboardListRenderer(
-                                    items: pinnedItems,
-                                    title: l10n.pinned,
-                                  ),
-                                  const SizedBox(height: AppSpacing.lg),
-                                ],
-
+                            physics: const BouncingScrollPhysics(),
+                            children: [
+                              if (pinnedItems.isNotEmpty) ...[
                                 ClipboardListRenderer(
-                                  items: recentItems,
-                                  title: l10n.recent,
+                                  items: pinnedItems,
+                                  title: l10n.pinned,
                                 ),
+                                const SizedBox(height: AppSpacing.lg),
                               ],
-                            ),
+                              ClipboardListRenderer(
+                                items: recentItems,
+                                title: l10n.recent,
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+          builder: (context, child) {
+            final blur = _blurAnimation.value;
+            final blocking = _animationController.value > 0.0;
 
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Align(
+            return Stack(
+              children: [
+                AbsorbPointer(
+                  absorbing: blocking,
+                  child: ImageFiltered(
+                    imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                    child: child,
+                  ),
+                ),
+
+                if (blocking)
+                  Positioned.fill(
+                    child: ModalBarrier(
+                      color: colorScheme.scrim.withValues(alpha: .4),
+                      dismissible: false,
+                    ),
+                  ),
+
+                Align(
                   alignment: Alignment.topRight,
                   child: SlideTransition(
                     position: _clipboardItemDetailsSlideAnimation,
@@ -160,10 +196,10 @@ class _ClipboardViewState extends State<ClipboardView>
                       },
                     ),
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -182,6 +218,7 @@ class ClipboardListRenderer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -193,15 +230,15 @@ class ClipboardListRenderer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: AppSpacing.md,
             children: [
-              const HugeIcon(
+              HugeIcon(
                 icon: HugeIcons.strokeRoundedClipboard,
                 size: AppSpacing.xxxxxlg * 2,
-                color: AppColors.textMuted,
+                color: colorScheme.onSurfaceVariant,
               ),
               Text(
                 context.l10n.noItemsForCategory(title.sentenceCase),
                 style: AppTextStyle.functionalSmall.copyWith(
-                  color: AppColors.textMuted,
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],

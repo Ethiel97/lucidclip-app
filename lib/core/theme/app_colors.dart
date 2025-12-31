@@ -24,8 +24,11 @@ abstract class AppColors {
 
   /// Status
   static const success = Color(0xFF3CCB7A);
+  static const successSoft = Color(0xFF8EF0B1);
   static const danger = Color(0xFFFF5C7A);
+  static const dangerSoft = Color(0xFFFFA1AC);
   static const warning = Color(0xFFFFC857);
+  static const warningSoft = Color(0xFFFFE6A8);
 
   // Primary swatch material color.
   static const MaterialColor purpleSwatch = MaterialColor(

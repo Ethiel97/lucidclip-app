@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -83,8 +81,6 @@ class _ClipboardViewState extends State<ClipboardView>
       (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
     );
 
-    final colorScheme = Theme.of(context).colorScheme;
-
     return MultiBlocListener(
       listeners: [
         BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
@@ -150,54 +146,42 @@ class _ClipboardViewState extends State<ClipboardView>
             final blur = _blurAnimation.value;
             final blocking = _animationController.value > 0.0;
 
-            return Stack(
-              children: [
-                AbsorbPointer(
-                  absorbing: blocking,
-                  child: ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                    child: child,
+            return CustomBarrier(
+              backgroundContent: child,
+              blocking: blocking,
+              blurValue: blur,
+              onDismiss: () {
+                context.read<ClipboardDetailCubit>().clearSelection();
+              },
+              child: Align(
+                alignment: Alignment.topRight,
+                child: SlideTransition(
+                  position: _clipboardItemDetailsSlideAnimation,
+                  child: ClipboardItemDetailsView(
+                    clipboardItem:
+                        selectedClipboardItem?.value ?? ClipboardItem.empty(),
+                    onClose: () {
+                      context.read<ClipboardDetailCubit>().clearSelection();
+                    },
+                    onDelete: () {
+                      if (hasClipboardItem) {
+                        context
+                            .read<ClipboardDetailCubit>()
+                            .deleteClipboardItem(selectedClipboardItem!.data);
+                      }
+                    },
+                    onTogglePin: () {
+                      if (hasClipboardItem) {
+                        context
+                            .read<ClipboardDetailCubit>()
+                            .togglePinClipboardItem(
+                              selectedClipboardItem!.data,
+                            );
+                      }
+                    },
                   ),
                 ),
-
-                if (blocking)
-                  Positioned.fill(
-                    child: ModalBarrier(
-                      color: colorScheme.scrim.withValues(alpha: .4),
-                      dismissible: false,
-                    ),
-                  ),
-
-                Align(
-                  alignment: Alignment.topRight,
-                  child: SlideTransition(
-                    position: _clipboardItemDetailsSlideAnimation,
-                    child: ClipboardItemDetailsView(
-                      clipboardItem:
-                          selectedClipboardItem?.value ?? ClipboardItem.empty(),
-                      onClose: () {
-                        context.read<ClipboardDetailCubit>().clearSelection();
-                      },
-                      onDelete: () {
-                        if (hasClipboardItem) {
-                          context
-                              .read<ClipboardDetailCubit>()
-                              .deleteClipboardItem(selectedClipboardItem!.data);
-                        }
-                      },
-                      onTogglePin: () {
-                        if (hasClipboardItem) {
-                          context
-                              .read<ClipboardDetailCubit>()
-                              .togglePinClipboardItem(
-                                selectedClipboardItem!.data,
-                              );
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ],
+              ),
             );
           },
         ),

@@ -8,7 +8,7 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
-class ClipboardItemDetailsView extends StatelessWidget {
+class ClipboardItemDetailsView extends StatefulWidget {
   const ClipboardItemDetailsView({
     required this.clipboardItem,
     super.key,
@@ -24,6 +24,13 @@ class ClipboardItemDetailsView extends StatelessWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onTogglePin;
 
+  @override
+  State<ClipboardItemDetailsView> createState() => _ClipboardItemDetailsViewState();
+}
+
+class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
+
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -55,7 +62,7 @@ class ClipboardItemDetailsView extends StatelessWidget {
                 ),
 
                 IconButton(
-                  onPressed: onClose,
+                  onPressed: widget.onClose,
                   icon: const HugeIcon(
                     icon: HugeIcons.strokeRoundedCancel01,
                     size: 20,
@@ -67,35 +74,41 @@ class ClipboardItemDetailsView extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
 
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _SectionLabel(l10n.preview.toUpperCase()),
-                    const SizedBox(height: AppSpacing.xs),
-                    _PreviewCard(preview: clipboardItem.content),
-                    const SizedBox(height: AppSpacing.lg),
-
-                    _SectionLabel(l10n.information.toUpperCase()),
-                    const SizedBox(height: AppSpacing.xs),
-                    _InfoCard(clipboardItem: clipboardItem),
-                    if (clipboardItem.type.label.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.lg),
-                      _SectionLabel(l10n.tags.toUpperCase()),
+              child: Scrollbar(
+                controller: _scrollController,
+                trackVisibility: false,
+                thumbVisibility: false,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _SectionLabel(l10n.preview.toUpperCase()),
                       const SizedBox(height: AppSpacing.xs),
-                      _TagsWrap(tags: [clipboardItem.type.label]),
+                      _PreviewCard(preview: widget.clipboardItem.content),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      _SectionLabel(l10n.information.toUpperCase()),
+                      const SizedBox(height: AppSpacing.xs),
+                      _InfoCard(clipboardItem: widget.clipboardItem),
+                      if (widget.clipboardItem.type.label.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.lg),
+                        _SectionLabel(l10n.tags.toUpperCase()),
+                        const SizedBox(height: AppSpacing.xs),
+                        _TagsWrap(tags: [widget.clipboardItem.type.label]),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
 
             const SizedBox(height: AppSpacing.lg),
             _ActionsRow(
-              isPinned: clipboardItem.isPinned,
-              onCopyPressed: onCopyPressed,
-              onTogglePin: onTogglePin,
-              onDelete: onDelete,
+              isPinned: widget.clipboardItem.isPinned,
+              onCopyPressed: widget.onCopyPressed,
+              onTogglePin: widget.onTogglePin,
+              onDelete: widget.onDelete,
             ),
           ],
         ),

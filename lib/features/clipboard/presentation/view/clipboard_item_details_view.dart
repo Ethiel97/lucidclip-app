@@ -282,6 +282,7 @@ class _ActionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         // Primary action
@@ -289,7 +290,7 @@ class _ActionsRow extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: onCopyPressed,
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: AppColors.surfaceSwatch.shade200),
+              side: BorderSide(color: colorScheme.outline),
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xxs,
@@ -307,7 +308,7 @@ class _ActionsRow extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: onTogglePin,
           style: OutlinedButton.styleFrom(
-            side: BorderSide(color: AppColors.surfaceSwatch.shade200),
+            side: BorderSide(color: colorScheme.outline),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.xxs,
@@ -334,7 +335,7 @@ class _ActionsRow extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: onDelete,
           style: OutlinedButton.styleFrom(
-            side: BorderSide(color: AppColors.surfaceSwatch.shade200),
+            side: BorderSide(color: colorScheme.error),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.sm,
               vertical: AppSpacing.xxs,
@@ -343,12 +344,14 @@ class _ActionsRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(999),
             ),
           ),
-          icon: const HugeIcon(icon: HugeIcons.strokeRoundedDelete01, size: 16),
+          icon: HugeIcon(
+            icon: HugeIcons.strokeRoundedDelete01,
+            size: 16,
+            color: colorScheme.error,
+          ),
           label: Text(
             l10n.delete.sentenceCase,
-            style: textTheme.labelSmall?.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: textTheme.labelSmall?.copyWith(color: colorScheme.error),
           ),
         ),
       ],

@@ -14,11 +14,28 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
   final LocalClipboardRepository localClipboardRepository;
 
   Future<void> togglePinClipboardItem(ClipboardItem clipboardItem) async {
-    final isPinned = clipboardItem.isPinned;
-    final updatedItem = clipboardItem.copyWith(isPinned: !isPinned);
-    await localClipboardRepository.upsert(updatedItem);
+    try {
+      final isPinned = clipboardItem.isPinned;
+      final updatedItem = clipboardItem.copyWith(isPinned: !isPinned);
+      await localClipboardRepository.upsert(updatedItem);
 
-    clearSelection();
+      emit(state.copyWith(togglePinStatus: null.toSuccess()));
+
+      clearSelection();
+    } catch (e) {
+      emit(state.copyWith(togglePinStatus: null.toError()));
+    }
+  }
+
+  Future<void> deleteClipboardItem(ClipboardItem clipboardItem) async {
+    try {
+      await localClipboardRepository.delete(clipboardItem.id);
+      emit(state.copyWith(deletionStatus: null.toSuccess()));
+
+      clearSelection();
+    } catch (e) {
+      emit(state.copyWith(deletionStatus: null.toError()));
+    }
   }
 
   void setClipboardItem(ClipboardItem clipboardItem) {

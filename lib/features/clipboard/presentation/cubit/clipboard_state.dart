@@ -88,6 +88,9 @@ class ClipboardState extends Equatable {
       .where((item) => item.isPinned)
       .toList(growable: false);
 
+
+  int get totalItemsCount => clipboardItems.value?.length ?? 0;
+
   @override
   List<Object?> get props => [
     clipboardHistory,

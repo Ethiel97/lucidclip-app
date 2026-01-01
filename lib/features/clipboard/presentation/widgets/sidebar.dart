@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
-
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -13,6 +13,9 @@ class Sidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
+    final clipboardItemsCount = context.select(
+      (ClipboardCubit cubit) => cubit.state.totalItemsCount,
+    );
 
     return Container(
       width: AppConstants.clipboardSidebarWidth,
@@ -56,7 +59,7 @@ class Sidebar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
-          const StorageIndicator(used: 248, total: 1000),
+          StorageIndicator(used: clipboardItemsCount, total: 1000),
           const SizedBox(height: AppSpacing.md),
           Text(
             '${l10n.appName} © ${DateTime.now().year}',

@@ -70,6 +70,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   );
 
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setPreventClose(true);
     await windowManager.show();
     await windowManager.focus();
   });

@@ -36,6 +36,9 @@ class _SearchFieldState extends State<SearchField> {
           }
         },
         child: TextFormField(
+          style:  theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface,
+          ),
           controller: _controller,
           onChanged: (value) {
             context.read<SearchCubit>().search(value);

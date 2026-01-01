@@ -105,6 +105,10 @@ class _ClipboardViewState extends State<ClipboardView>
       (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
     );
 
+    final isSearchMode = context.select(
+      (SearchCubit cubit) => cubit.state.isSearchMode,
+    );
+
     final (pinnedItems, recentItems) = getListItems(context);
 
     return MultiBlocListener(
@@ -157,6 +161,7 @@ class _ClipboardViewState extends State<ClipboardView>
                               ClipboardListRenderer(
                                 items: recentItems,
                                 title: l10n.recent,
+                                searchMode: isSearchMode,
                               ),
                             ],
                           ),
@@ -220,10 +225,12 @@ class ClipboardListRenderer extends StatelessWidget {
   const ClipboardListRenderer({
     required this.items,
     required this.title,
+    this.searchMode = false,
     super.key,
   });
 
   final ClipboardItems items;
+  final bool searchMode;
   final String title;
 
   @override
@@ -241,9 +248,11 @@ class ClipboardListRenderer extends StatelessWidget {
             spacing: AppSpacing.lg,
             children: [
               HugeIcon(
-                icon: HugeIcons.strokeRoundedClipboard,
+                icon: searchMode
+                    ? HugeIcons.strokeRoundedSearchVisual
+                    : HugeIcons.strokeRoundedClipboard,
                 size: AppSpacing.xxxxxlg * 2,
-                color: colorScheme.onSurface,
+                color: colorScheme.primary,
               ),
               Text(
                 context.l10n.noItemsForCategory(title.sentenceCase),

@@ -11,13 +11,25 @@ import 'package:pasteboard/pasteboard.dart';
 @LazySingleton(as: BaseClipboardManager)
 class FlutterClipboardManager implements BaseClipboardManager {
   Timer? _pollingTimer;
-  String? _lastContent;
+  String? _lastContentHash;
   final _controller = StreamController<ClipboardData>.broadcast();
 
   @override
   @postConstruct
   void initialize() {
+    _seedLastContent();
     _startPolling();
+  }
+
+  Future<void> _seedLastContent() async {
+    try {
+      final current = await getClipboardContent();
+      if (current != null) {
+        _lastContentHash = current.contentHash ?? current.computedContentHash;
+      }
+    } catch (_) {
+      // ignore errors during seeding
+    }
   }
 
   void _startPolling() {
@@ -30,9 +42,12 @@ class FlutterClipboardManager implements BaseClipboardManager {
 
   Future<void> _checkClipboardChange() async {
     final content = await getClipboardContent();
-    if (content != null && content.text != _lastContent) {
-      _lastContent = content.text;
-      _controller.add(content);
+    if (content != null) {
+      final currentHash = content.contentHash ?? content.computedContentHash;
+      if (currentHash != _lastContentHash) {
+        _lastContentHash = currentHash;
+        _controller.add(content);
+      }
     }
   }
 
@@ -137,7 +152,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
         break;
     }
 
-    _lastContent = data.text;
+    _lastContentHash = data.contentHash ?? data.computedContentHash;
   }
 
   @override
@@ -151,7 +166,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   @override
   Future<void> clear() async {
     await FlutterClipboard.clear();
-    _lastContent = null;
+    _lastContentHash = null;
   }
 
   @disposeMethod
@@ -175,7 +190,6 @@ extension ClipboardDataHashExt on ClipboardData {
       html,
       if (imageBytes != null) imageBytes,
       if (filePaths != null) filePaths,
-      timestamp?.toIso8601String(),
     ];
     return ContentHasher.hashOfParts(parts);
   }

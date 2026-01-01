@@ -21,7 +21,6 @@ class ClipboardItemTile extends StatefulWidget {
 class _ClipboardItemTileState extends State<ClipboardItemTile> {
   late LinkPreviewController _linkPreviewController;
   bool isHovering = false;
-  Timer? _hoverExitTimer;
 
   @override
   void initState() {
@@ -31,13 +30,11 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
 
   @override
   void dispose() {
-    _hoverExitTimer?.cancel();
     _linkPreviewController.dispose();
     super.dispose();
   }
 
   void _onHoverEnter() {
-    _hoverExitTimer?.cancel();
     if (isHovering) return;
     setState(() {
       isHovering = true;
@@ -45,19 +42,16 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
   }
 
   void _onHoverExit() {
-    _hoverExitTimer?.cancel();
-    _hoverExitTimer = Timer(const Duration(milliseconds: 300), () {
-      setState(() {
-        isHovering = false;
-      });
+    setState(() {
+      isHovering = false;
     });
   }
 
   Color get _backgroundColor => isHovering
-      ? AppColors.surface2.withValues(alpha: 0.5)
+      ? AppColors.surface2.withValues(alpha: 0.4)
       : AppColors.surface;
 
-  bool get shouldShowLinkPreview => widget.item.type.isUrl;
+  bool get shouldShowLinkPreview => widget.item.type.isUrl && isHovering;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +92,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                     follower: Alignment.topLeft,
                     target: Alignment.bottomLeft,
                   ),
-                  visible: isHovering && shouldShowLinkPreview,
+                  visible: shouldShowLinkPreview,
                   portalFollower: SizedBox(
                     width: MediaQuery.sizeOf(context).width * 0.4,
                     child: LinkPreview.compact(
@@ -133,7 +127,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                       ),
                     ),
                   ),
-                  child: widget.item.preview,
+                  child: widget.item.preview(maxLines: 1),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),

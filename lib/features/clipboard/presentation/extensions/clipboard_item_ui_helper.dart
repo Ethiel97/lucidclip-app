@@ -36,12 +36,11 @@ extension ClipboardUiHelper on ClipboardItem {
     );
   }
 
-  Widget get preview {
-
+  Widget preview({int? maxLines}) {
     final textPreview = Text(
       content,
       overflow: TextOverflow.ellipsis,
-      maxLines: 1,
+      maxLines: maxLines,
       style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
     );
 

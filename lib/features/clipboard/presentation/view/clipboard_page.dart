@@ -238,12 +238,12 @@ class ClipboardListRenderer extends StatelessWidget {
         if (items.isEmpty)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: AppSpacing.md,
+            spacing: AppSpacing.lg,
             children: [
               HugeIcon(
                 icon: HugeIcons.strokeRoundedClipboard,
                 size: AppSpacing.xxxxxlg * 2,
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.onSurface,
               ),
               Text(
                 context.l10n.noItemsForCategory(title.sentenceCase),

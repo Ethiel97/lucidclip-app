@@ -94,7 +94,9 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                       _SectionLabel(l10n.preview.toUpperCase()),
                       const SizedBox(height: AppSpacing.xs),
                       _PreviewCard(
-                        previewWidget: widget.clipboardItem.preview,
+                        previewWidget: widget.clipboardItem.preview(
+                          maxLines:  5000000
+                        ),
                         preview: widget.clipboardItem.content,
                       ),
                       const SizedBox(height: AppSpacing.lg),

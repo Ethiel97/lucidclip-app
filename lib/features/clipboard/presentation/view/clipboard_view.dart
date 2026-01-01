@@ -13,7 +13,7 @@ class ClipboardView extends StatelessWidget {
     final l10n = context.l10n;
     final (pinnedItems, recentItems) = context.select(
       (ClipboardCubit cubit) =>
-          (cubit.state.pinnedItems, cubit.state.unpinnedItems),
+          (cubit.state.pinnedItems, cubit.state.unPinnedItems),
     );
 
     return Padding(

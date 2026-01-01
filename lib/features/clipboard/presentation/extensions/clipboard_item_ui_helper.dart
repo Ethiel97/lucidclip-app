@@ -51,6 +51,8 @@ extension ClipboardUiHelper on ClipboardItem {
       ClipboardItemType.image when imageBytes != null => Image.memory(
         Uint8List.fromList(imageBytes!),
         fit: BoxFit.cover,
+        filterQuality: FilterQuality.high,
+        width: 75,
       ),
 
       _ => textPreview,

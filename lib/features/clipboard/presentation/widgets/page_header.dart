@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -21,7 +22,10 @@ class PageHeader extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [Text(l10n.appName, style: textTheme.headlineMedium)],
+            children: [
+              // Text(l10n.appName, style: textTheme.headlineMedium),
+              const SearchField(),
+            ],
           ),
         ),
         IconButton(

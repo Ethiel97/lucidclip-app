@@ -104,6 +104,14 @@ class AppTheme {
     ),
     hintStyle: AppTextStyle.bodySmall.copyWith(color: AppColors.textMuted),
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    prefixIconConstraints:  const BoxConstraints(
+      minWidth: 24,
+      minHeight: 24,
+    ),
+    suffixIconConstraints: const BoxConstraints(
+      minWidth: 24,
+      minHeight: 24,
+    ),
   );
 
   FilledButtonThemeData get _filledButtonTheme => FilledButtonThemeData(

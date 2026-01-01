@@ -80,7 +80,7 @@ class ClipboardState extends Equatable {
     };
   }
 
-  ClipboardItems get unpinnedItems => (clipboardItems.value ?? [])
+  ClipboardItems get unPinnedItems => (clipboardItems.value ?? [])
       .where((item) => !item.isPinned)
       .toList(growable: false);
 

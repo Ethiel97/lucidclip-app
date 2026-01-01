@@ -100,6 +100,12 @@ abstract class AppLocalizations {
   /// **'LucidClip'**
   String get appName;
 
+  /// Label for the number of characters
+  ///
+  /// In en, this message translates to:
+  /// **'Characters'**
+  String get characters;
+
   /// Label for the Clipboard feature
   ///
   /// In en, this message translates to:
@@ -118,11 +124,23 @@ abstract class AppLocalizations {
   /// **'Command'**
   String get command;
 
+  /// Message shown when content is copied to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
   /// Button text to copy content
   ///
   /// In en, this message translates to:
   /// **'Copy'**
   String get copy;
+
+  /// Button text to copy content to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to Clipboard'**
+  String get copyToClipboard;
 
   /// Text shown in the AppBar of the Counter Page
   ///
@@ -136,113 +154,11 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// Button text to copy content to the clipboard
+  /// Message shown when the preview failed to load
   ///
   /// In en, this message translates to:
-  /// **'Copy to Clipboard'**
-  String get copyToClipboard;
-
-  /// Title for the History Page
-  ///
-  /// In en, this message translates to:
-  /// **'History'**
-  String get history;
-
-  /// Label for Link input
-  ///
-  /// In en, this message translates to:
-  /// **'Link'**
-  String get link;
-
-  /// Label for the Pinned feature
-  ///
-  /// In en, this message translates to:
-  /// **'Pinned'**
-  String get pinned;
-
-  /// Button text to pin an item
-  ///
-  /// In en, this message translates to:
-  /// **'Pin'**
-  String get pin;
-
-  /// Button text to unpin an item
-  ///
-  /// In en, this message translates to:
-  /// **'Unpin'**
-  String get unpin;
-
-  /// Label for the Recent items
-  ///
-  /// In en, this message translates to:
-  /// **'Recent'**
-  String get recent;
-
-  /// Title for the Settings Page
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
-
-  /// Label for the Snippets feature
-  ///
-  /// In en, this message translates to:
-  /// **'Snippets'**
-  String get snippets;
-
-  /// Label for the Storage settings
-  ///
-  /// In en, this message translates to:
-  /// **'Storage'**
-  String get storage;
-
-  /// Label for the Theme settings
-  ///
-  /// In en, this message translates to:
-  /// **'Theme'**
-  String get theme;
-
-  /// Button text to sync content
-  ///
-  /// In en, this message translates to:
-  /// **'Sync'**
-  String get sync;
-
-  /// Message shown when there are no items for a specific label
-  ///
-  /// In en, this message translates to:
-  /// **'No {category} items'**
-  String noItemsForCategory(String category);
-
-  /// Title for the Item Details Panel
-  ///
-  /// In en, this message translates to:
-  /// **'Item Details'**
-  String get itemDetails;
-
-  /// Label for the information section
-  ///
-  /// In en, this message translates to:
-  /// **'Information'**
-  String get information;
-
-  /// Label for the preview of the content
-  ///
-  /// In en, this message translates to:
-  /// **'Preview'**
-  String get preview;
-
-  /// Label for the tags feature
-  ///
-  /// In en, this message translates to:
-  /// **'Tags'**
-  String get tags;
-
-  /// Label for the size of the content
-  ///
-  /// In en, this message translates to:
-  /// **'Size'**
-  String get size;
+  /// **'Failed to load link preview'**
+  String get failedToLoadLinkPreview;
 
   /// Label for the format of the content
   ///
@@ -250,23 +166,29 @@ abstract class AppLocalizations {
   /// **'Format'**
   String get format;
 
-  /// Label for the source of the content
+  /// Title for the History Page
   ///
   /// In en, this message translates to:
-  /// **'Source'**
-  String get source;
+  /// **'History'**
+  String get history;
 
-  /// Message shown when content is copied to the clipboard
+  /// Label for the information section
   ///
   /// In en, this message translates to:
-  /// **'Copied'**
-  String get copied;
+  /// **'Information'**
+  String get information;
 
-  /// Label for the number of characters
+  /// Title for the Item Details Panel
   ///
   /// In en, this message translates to:
-  /// **'Characters'**
-  String get characters;
+  /// **'Item Details'**
+  String get itemDetails;
+
+  /// Label for Link input
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get link;
 
   /// Message shown when the preview is loading
   ///
@@ -274,11 +196,95 @@ abstract class AppLocalizations {
   /// **'Loading link preview...'**
   String get loadingLinkPreview;
 
-  /// Message shown when the preview failed to load
+  /// Message shown when there are no items for a specific label
   ///
   /// In en, this message translates to:
-  /// **'Failed to load link preview'**
-  String get failedToLoadLinkPreview;
+  /// **'No {category} items'**
+  String noItemsForCategory(String category);
+
+  /// Button text to pin an item
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get pin;
+
+  /// Label for the Pinned feature
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get pinned;
+
+  /// Label for the preview of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get preview;
+
+  /// Label for the Recent items
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recent;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search...'**
+  String get searchHint;
+
+  /// Title for the Settings Page
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// Label for the size of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get size;
+
+  /// Label for the Snippets feature
+  ///
+  /// In en, this message translates to:
+  /// **'Snippets'**
+  String get snippets;
+
+  /// Label for the source of the content
+  ///
+  /// In en, this message translates to:
+  /// **'Source'**
+  String get source;
+
+  /// Label for the Storage settings
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get storage;
+
+  /// Button text to sync content
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get sync;
+
+  /// Label for the tags feature
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get tags;
+
+  /// Label for the Theme settings
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// Button text to unpin an item
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get unpin;
 }
 
 class _AppLocalizationsDelegate

@@ -8,6 +8,11 @@ import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
+typedef ClipboardPageItems = (
+  ClipboardItems pinnedItems,
+  ClipboardItems recentItems,
+);
+
 class ClipboardPage extends StatelessWidget {
   const ClipboardPage({super.key});
 
@@ -16,6 +21,7 @@ class ClipboardPage extends StatelessWidget {
     providers: [
       BlocProvider(create: (_) => getIt<ClipboardCubit>()),
       BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
+      BlocProvider(create: (_) => getIt<SearchCubit>()),
     ],
     child: const ClipboardView(),
   );
@@ -58,6 +64,28 @@ class _ClipboardViewState extends State<ClipboardView>
         );
   }
 
+  ClipboardPageItems getListItems(BuildContext context) {
+    final (pinnedItems, recentItems) = context.select(
+      (ClipboardCubit cubit) =>
+          (cubit.state.pinnedItems, cubit.state.unPinnedItems),
+    );
+
+    final (isSearchMode, pinnedSearchResults, recentSearchResults) = context
+        .select(
+          (SearchCubit cubit) => (
+            cubit.state.isSearchMode,
+            cubit.state.pinnedItems,
+            cubit.state.unPinnedItems,
+          ),
+        );
+
+    if (isSearchMode) {
+      return (pinnedSearchResults, recentSearchResults);
+    }
+
+    return (pinnedItems, recentItems);
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -68,10 +96,6 @@ class _ClipboardViewState extends State<ClipboardView>
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final (pinnedItems, recentItems) = context.select(
-      (ClipboardCubit cubit) =>
-          (cubit.state.pinnedItems, cubit.state.unpinnedItems),
-    );
 
     final selectedClipboardItem = context.select(
       (ClipboardDetailCubit cubit) => cubit.state.clipboardItem,
@@ -80,6 +104,8 @@ class _ClipboardViewState extends State<ClipboardView>
     final hasClipboardItem = context.select(
       (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
     );
+
+    final (pinnedItems, recentItems) = getListItems(context);
 
     return MultiBlocListener(
       listeners: [

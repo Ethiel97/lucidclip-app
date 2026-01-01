@@ -25,12 +25,13 @@ class ClipboardItemDetailsView extends StatefulWidget {
   final VoidCallback? onTogglePin;
 
   @override
-  State<ClipboardItemDetailsView> createState() => _ClipboardItemDetailsViewState();
+  State<ClipboardItemDetailsView> createState() =>
+      _ClipboardItemDetailsViewState();
 }
 
 class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
-
   final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -85,7 +86,10 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                     children: [
                       _SectionLabel(l10n.preview.toUpperCase()),
                       const SizedBox(height: AppSpacing.xs),
-                      _PreviewCard(preview: widget.clipboardItem.content),
+                      _PreviewCard(
+                        previewWidget: widget.clipboardItem.preview,
+                        preview: widget.clipboardItem.content,
+                      ),
                       const SizedBox(height: AppSpacing.lg),
 
                       _SectionLabel(l10n.information.toUpperCase()),
@@ -132,9 +136,10 @@ class _SectionLabel extends StatelessWidget {
 }
 
 class _PreviewCard extends StatelessWidget {
-  const _PreviewCard({required this.preview});
+  const _PreviewCard({required this.preview, this.previewWidget});
 
   final String preview;
+  final Widget? previewWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -149,10 +154,14 @@ class _PreviewCard extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         // scrollDirection: Axis.horizontal,
-        child: Text(
-          preview,
-          style: textTheme.bodySmall?.copyWith(color: AppColors.textPrimary),
-        ),
+        child:
+            previewWidget ??
+            Text(
+              preview,
+              style: textTheme.bodySmall?.copyWith(
+                color: AppColors.textPrimary,
+              ),
+            ),
       ),
     );
   }

@@ -100,10 +100,16 @@ class ClipboardItem extends Equatable {
   }
 
   String get userFacingSize {
-    final sizeInBytes = utf8.encode(content).length;
+    var sizeInBytes = 0;
+    if (type.isImage && imageBytes != null) {
+      sizeInBytes = imageBytes!.length;
+    } else {
+      sizeInBytes = utf8.encode(content).length;
+    }
+
     return FileSize.fromBytes(
       sizeInBytes,
-    ).toString(unit: Unit.kilobyte, decimals: 2);
+    ).toString(unit: Unit.kilobyte, decimals: 0);
   }
 
   @override

@@ -49,6 +49,8 @@ import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_cubit
     as _i958;
 import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_detail_cubit.dart'
     as _i68;
+import 'package:lucid_clip/features/clipboard/presentation/cubit/search_cubit.dart'
+    as _i997;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -107,6 +109,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i42.ClipboardRemoteDataSource>(
       () => _i272.SupabaseRemoteDataSource(
         networkClient: gh<_i183.RemoteSyncClient>(),
+      ),
+    );
+    gh.lazySingleton<_i997.SearchCubit>(
+      () => _i997.SearchCubit(
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
       ),
     );
     gh.lazySingleton<_i68.ClipboardDetailCubit>(

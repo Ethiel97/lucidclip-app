@@ -12,21 +12,14 @@ class PageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       spacing: AppSpacing.md,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Text(l10n.appName, style: textTheme.headlineMedium),
-              const SearchField(),
-            ],
-          ),
+        const Expanded(
+          child: SearchField(),
         ),
         IconButton(
           onPressed: () {},

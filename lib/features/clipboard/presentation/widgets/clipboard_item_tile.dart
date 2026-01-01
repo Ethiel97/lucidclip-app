@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
@@ -19,6 +21,7 @@ class ClipboardItemTile extends StatefulWidget {
 class _ClipboardItemTileState extends State<ClipboardItemTile> {
   late LinkPreviewController _linkPreviewController;
   bool isHovering = false;
+  Timer? _hoverExitTimer;
 
   @override
   void initState() {
@@ -28,10 +31,27 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
 
   @override
   void dispose() {
+    _hoverExitTimer?.cancel();
     _linkPreviewController.dispose();
     super.dispose();
   }
 
+  void _onHoverEnter() {
+    _hoverExitTimer?.cancel();
+    if (isHovering) return;
+    setState(() {
+      isHovering = true;
+    });
+  }
+
+  void _onHoverExit() {
+    _hoverExitTimer?.cancel();
+    _hoverExitTimer = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        isHovering = false;
+      });
+    });
+  }
 
   Color get _backgroundColor => isHovering
       ? AppColors.surface2.withValues(alpha: 0.5)
@@ -52,18 +72,11 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
         // TODO(Ethiel97): Show context menu
       },
       child: MouseRegion(
-        onEnter: (_) {
-          setState(() {
-            isHovering = true;
-          });
-        },
-        onExit: (_) {
-          setState(() {
-            isHovering = false;
-          });
-        },
+        onEnter: (_) => _onHoverEnter(),
+        onExit: (_) => _onHoverExit(),
         cursor: SystemMouseCursors.click,
         child: AnimatedContainer(
+          key: ValueKey(widget.item.id),
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           padding: const EdgeInsets.symmetric(

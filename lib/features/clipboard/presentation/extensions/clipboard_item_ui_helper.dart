@@ -37,6 +37,7 @@ extension ClipboardUiHelper on ClipboardItem {
   }
 
   Widget get preview {
+
     final textPreview = Text(
       content,
       overflow: TextOverflow.ellipsis,
@@ -49,6 +50,7 @@ extension ClipboardUiHelper on ClipboardItem {
       ClipboardItemType.file ||
       ClipboardItemType.url => textPreview,
       ClipboardItemType.image when imageBytes != null => Image.memory(
+        gaplessPlayback: true,
         Uint8List.fromList(imageBytes!),
         fit: BoxFit.cover,
         filterQuality: FilterQuality.high,

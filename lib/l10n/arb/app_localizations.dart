@@ -226,7 +226,7 @@ abstract class AppLocalizations {
   /// **'Recent'**
   String get recent;
 
-  /// No description provided for @searchHint.
+  /// Hint shown in the Search Bar
   ///
   /// In en, this message translates to:
   /// **'Search...'**

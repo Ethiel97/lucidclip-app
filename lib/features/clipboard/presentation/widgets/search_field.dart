@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -16,6 +17,14 @@ class SearchField extends StatefulWidget {
 
 class _SearchFieldState extends State<SearchField> {
   final TextEditingController _controller = TextEditingController();
+  final _debouncer = Debouncer(milliseconds: 300);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _debouncer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +45,14 @@ class _SearchFieldState extends State<SearchField> {
           }
         },
         child: TextFormField(
-          style:  theme.textTheme.bodySmall?.copyWith(
+          style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurface,
           ),
           controller: _controller,
           onChanged: (value) {
-            context.read<SearchCubit>().search(value);
+            _debouncer.run(() {
+              context.read<SearchCubit>().search(value);
+            });
           },
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(

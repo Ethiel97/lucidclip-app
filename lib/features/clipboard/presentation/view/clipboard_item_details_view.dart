@@ -194,7 +194,6 @@ class _InfoCard extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         _InfoRow(
           label: l10n.size.sentenceCase,
-          // TODO(Ethiel97): implement actual size calculation
           value: clipboardItem.userFacingSize,
           // Placeholder, implement actual size calculation if needed
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),

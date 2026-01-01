@@ -95,6 +95,9 @@
     "description": "Label for the Recent items"
   },
   "searchHint": "Search...",
+  "@searchHint": {
+    "description": "Hint shown in the Search Bar"
+  },
   "settings": "Settings",
   "@settings": {
     "description": "Title for the Settings Page"

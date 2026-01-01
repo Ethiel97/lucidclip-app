@@ -5,7 +5,6 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
-// TODO(Ethiel97): Add SearchField here
 
 class PageHeader extends StatelessWidget {
   const PageHeader({super.key});

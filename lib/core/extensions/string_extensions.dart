@@ -17,7 +17,7 @@ extension StringExtensions on String {
 
   bool get isUrl {
     final urlRegex = RegExp(
-      r'^(https?:\/\/)' // Required protocol
+      r'^(https?:\/\/)?' // Optional protocol
       r'((([a-zA-Z0-9\-_]+\.)+[a-zA-Z]{2,})|' // Domain name
       'localhost|' // OR localhost
       r'(\d{1,3}\.){3}\d{1,3})' // OR IP (v4) address

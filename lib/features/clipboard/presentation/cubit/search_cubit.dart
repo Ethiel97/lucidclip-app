@@ -73,9 +73,6 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void search(String query) {
-    if (query.isEmpty) {
-      return;
-    }
     final trimmedQuery = query.trim();
     emit(state.copyWith(query: query, searchResults: null.toLoading()));
     _applyFilter(trimmedQuery);

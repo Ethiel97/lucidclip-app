@@ -15,7 +15,7 @@ class ClipboardMapper {
       filePaths: e.filePaths,
       htmlContent: e.htmlContent,
       id: e.id,
-      imageUrl: e.imageUrl,
+      imageBytes: e.imageBytes,
       isPinned: e.isPinned,
       isSnippet: e.isSnippet,
       metadata: e.metadata,

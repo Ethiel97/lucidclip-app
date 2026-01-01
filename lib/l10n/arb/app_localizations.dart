@@ -267,6 +267,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Characters'**
   String get characters;
+
+  /// Message shown when the preview is loading
+  ///
+  /// In en, this message translates to:
+  /// **'Loading link preview...'**
+  String get loadingLinkPreview;
+
+  /// Message shown when the preview failed to load
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load link preview'**
+  String get failedToLoadLinkPreview;
 }
 
 class _AppLocalizationsDelegate

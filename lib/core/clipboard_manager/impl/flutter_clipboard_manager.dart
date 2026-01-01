@@ -40,12 +40,13 @@ class FlutterClipboardManager implements BaseClipboardManager {
   Future<ClipboardData?> getClipboardContent() async {
     // 1. Vérifier les fichiers d'abord
     final files = await Pasteboard.files();
+    final timestamp = DateTime.now();
     if (files.isNotEmpty) {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.file,
         filePaths: files,
         text: files.join(', '),
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
@@ -58,7 +59,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.image,
         imageBytes: Uint8List.fromList(image),
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
 
       return clipboardData.copyWith(
@@ -71,9 +72,9 @@ class FlutterClipboardManager implements BaseClipboardManager {
     if (html != null && html.isNotEmpty) {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.html,
-        text:  html,
+        text: html,
         html: html,
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
@@ -87,7 +88,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       final clipboardData = ClipboardData(
         type: type,
         text: text,
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
 
       return clipboardData.copyWith(

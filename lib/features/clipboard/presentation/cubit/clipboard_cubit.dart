@@ -82,7 +82,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       userId: _pendingUserId,
       createdAt: clipboardData.timestamp ?? now,
       updatedAt: now,
-      imageUrl: clipboardData.imageBytes != null ? 'local' : null,
+      imageBytes: clipboardData.imageBytes,
       filePaths: clipboardData.filePaths ?? [],
       htmlContent: clipboardData.html,
     );
@@ -153,36 +153,38 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     );
 
     // Watch local clipboard history stream
-    _localHistorySubscription = localClipboardHistoryRepository.watchAll().listen(
-      (histories) {
-        // Store histories in state if needed
+    _localHistorySubscription = localClipboardHistoryRepository
+        .watchAll()
+        .listen(
+          (histories) {
+            // Store histories in state if needed
 
-        emit(state.copyWith(clipboardHistory: histories.toSuccess()));
+            emit(state.copyWith(clipboardHistory: histories.toSuccess()));
 
-        /*developer.log(
+            /*developer.log(
           'Received ${histories.length} clipboard history records from stream',
           name: 'ClipboardCubit',
         );*/
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        emit(
-          state.copyWith(
-            clipboardHistory: state.clipboardHistory.toError(
-              ErrorDetails(
-                message: 'Error watching local clipboard history: $error',
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            emit(
+              state.copyWith(
+                clipboardHistory: state.clipboardHistory.toError(
+                  ErrorDetails(
+                    message: 'Error watching local clipboard history: $error',
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-        developer.log(
-          'Error watching local clipboard history',
-          error: error,
-          stackTrace: stackTrace,
+            );
+            developer.log(
+              'Error watching local clipboard history',
+              error: error,
+              stackTrace: stackTrace,
 
-          name: 'ClipboardCubit',
+              name: 'ClipboardCubit',
+            );
+          },
         );
-      },
-    );
   }
 
   ClipboardData _convertToClipboardData(ClipboardItem item) {

@@ -21,7 +21,9 @@ ClipboardItemModel _$ClipboardItemModelFromJson(Map<String, dynamic> json) =>
           ClipboardItemTypeModel.unknown,
       updatedAt: DateTime.parse(json['updated_at'] as String),
       userId: json['user_id'] as String,
-      imageUrl: json['image_url'] as String?,
+      imageBytes: (json['image_bytes'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
       filePaths:
           (json['file_paths'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -42,7 +44,7 @@ Map<String, dynamic> _$ClipboardItemModelToJson(ClipboardItemModel instance) =>
       'file_paths': instance.filePaths,
       'html_content': instance.htmlContent,
       'id': instance.id,
-      'image_url': instance.imageUrl,
+      'image_bytes': instance.imageBytes,
       'is_pinned': instance.isPinned,
       'is_snippet': instance.isSnippet,
       'is_synced': instance.isSynced,

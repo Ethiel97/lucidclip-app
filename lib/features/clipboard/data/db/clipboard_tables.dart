@@ -18,7 +18,7 @@ class ClipboardItemEntries extends Table {
 
   TextColumn get htmlContent => text().named('html_content').nullable()();
 
-  TextColumn get imageUrl => text().named('image_url').nullable()();
+  TextColumn get imageBytes => text().named('image_bytes').nullable()();
 
   TextColumn get filePaths =>
       text().named('file_paths').withDefault(const Constant('[]'))();

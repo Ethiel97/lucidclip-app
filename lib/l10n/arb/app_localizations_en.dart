@@ -96,4 +96,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get characters => 'Characters';
+
+  @override
+  String get loadingLinkPreview => 'Loading link preview...';
+
+  @override
+  String get failedToLoadLinkPreview => 'Failed to load link preview';
 }

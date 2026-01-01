@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:metalink_flutter/metalink_flutter.dart';
 
 class ClipboardItemTile extends StatefulWidget {
   const ClipboardItemTile({required this.item, super.key});
@@ -14,16 +17,32 @@ class ClipboardItemTile extends StatefulWidget {
 }
 
 class _ClipboardItemTileState extends State<ClipboardItemTile> {
+  late LinkPreviewController _linkPreviewController;
   bool isHovering = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _linkPreviewController = LinkPreviewController();
+  }
+
+  @override
+  void dispose() {
+    _linkPreviewController.dispose();
+    super.dispose();
+  }
+
 
   Color get _backgroundColor => isHovering
       ? AppColors.surface2.withValues(alpha: 0.5)
       : AppColors.surface;
 
+  bool get shouldShowLinkPreview => widget.item.type.isUrl;
+
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final textTheme = Theme.of(context).textTheme;
+    final l10n = context.l10n;
 
     return GestureDetector(
       onTap: () {
@@ -56,31 +75,52 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               widget.item.icon,
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.item.content,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.textPrimary,
+                child: PortalTarget(
+                  anchor: const Aligned(
+                    follower: Alignment.topLeft,
+                    target: Alignment.bottomLeft,
+                  ),
+                  visible: isHovering && shouldShowLinkPreview,
+                  portalFollower: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.4,
+                    child: LinkPreview.compact(
+                      controller: _linkPreviewController,
+                      url: widget.item.content,
+                      errorBuilder: (context, error) => Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        color: AppColors.surface,
+                        child: Text(
+                          l10n.failedToLoadLinkPreview,
+                          style: textTheme.bodySmall?.copyWith(),
+                        ),
+                      ),
+                      loadingBuilder: (context) => Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        color: AppColors.surface,
+                        child: Column(
+                          spacing: AppSpacing.sm,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10n.loadingLinkPreview,
+                              style: textTheme.bodySmall?.copyWith(),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    /*const SizedBox(height: AppSpacing.xxxs),
-                    Text(
-                      item.preview,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyle.bodySmall.copyWith(
-                        color: AppColors.textMuted,
-                      ),
-                    ),*/
-                  ],
+                  ),
+                  child: widget.item.preview,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),

@@ -121,6 +121,14 @@
   "characters": "Characters",
   "@characters": {
     "description": "Label for the number of characters"
+  },
+  "loadingLinkPreview": "Loading link preview...",
+  "@loadingLinkPreview": {
+    "description": "Message shown when the preview is loading"
+  },
+  "failedToLoadLinkPreview": "Failed to load link preview",
+  "@failedToLoadLinkPreview": {
+    "description": "Message shown when the preview failed to load"
   }
 
 }

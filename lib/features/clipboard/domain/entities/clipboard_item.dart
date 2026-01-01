@@ -17,7 +17,7 @@ class ClipboardItem extends Equatable {
     required this.type,
     required this.updatedAt,
     required this.userId,
-    this.imageUrl,
+    this.imageBytes,
     this.filePaths = const [],
     this.isPinned = false,
     this.isSnippet = false,
@@ -51,7 +51,7 @@ class ClipboardItem extends Equatable {
 
   final String? htmlContent;
   final String id;
-  final String? imageUrl;
+  final List<int>? imageBytes;
   final bool isPinned;
 
   final bool isSnippet;
@@ -72,7 +72,7 @@ class ClipboardItem extends Equatable {
     List<String>? filePaths,
     String? htmlContent,
     String? id,
-    String? imageUrl,
+    List<int>? imageBytes,
     bool? isPinned,
     bool? isSnippet,
     bool? isSynced,
@@ -88,7 +88,7 @@ class ClipboardItem extends Equatable {
       filePaths: filePaths ?? this.filePaths,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageBytes: imageBytes ?? this.imageBytes,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
       isSynced: isSynced ?? this.isSynced,
@@ -114,7 +114,7 @@ class ClipboardItem extends Equatable {
     filePaths,
     htmlContent,
     id,
-    imageUrl,
+    imageBytes,
     isPinned,
     isSnippet,
     isSynced,

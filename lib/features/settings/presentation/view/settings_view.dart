@@ -60,6 +60,8 @@ class SettingsView extends StatelessWidget {
                     title: 'General',
                   ),
                   const SizedBox(height: AppSpacing.xs),
+                  // Note: These settings use existing properties as placeholders
+                  // TODO: Add dedicated properties for launch_at_startup, show_in_menu_bar, sound_effects
                   SettingsSwitchItem(
                     title: 'Launch at startup',
                     description: 'Automatically start Clipboard OS when you log in',
@@ -130,6 +132,8 @@ class SettingsView extends StatelessWidget {
                       }
                     },
                   ),
+                  // Note: Password filtering uses autoSync as placeholder
+                  // TODO: Add dedicated property for ignore_passwords
                   SettingsSwitchItem(
                     title: 'Ignore copied passwords',
                     description: "Don't save password manager data",

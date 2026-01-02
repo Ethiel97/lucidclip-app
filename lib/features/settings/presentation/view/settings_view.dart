@@ -26,7 +26,8 @@ class SettingsView extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      // Retry loading settings
+                      // TODO: Get user ID from auth context
+                      context.read<SettingsCubit>().loadSettings('');
                     },
                     child: const Text('Retry'),
                   ),

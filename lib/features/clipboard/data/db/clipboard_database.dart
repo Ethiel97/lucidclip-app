@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:drift_flutter/drift_flutter.dart';
-import 'package:lucid_clip/features/clipboard/data/data.dart'; // pour ClipboardItemModel
+import 'package:drift/native.dart';
+import 'package:lucid_clip/features/clipboard/data/data.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart'; // pour ClipboardItemModel
 
 part 'clipboard_database.g.dart';
 
@@ -12,7 +15,16 @@ class ClipboardDatabase extends _$ClipboardDatabase {
     : super(executor ?? _openConnection());
 
   static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'clipboard_db.sqlite');
+    return LazyDatabase(() async {
+      final dir = await getApplicationDocumentsDirectory();
+      final dbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
+      // crée le dossier si nécessaire
+      if (!dbFile.parent.existsSync()) {
+        await dbFile.parent.create(recursive: true);
+      }
+      return NativeDatabase(dbFile);
+    });
+    // return driftDatabase(name: 'clipboard_db.sqlite');
   }
 
   @override
@@ -94,23 +106,24 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       orElse: () => ClipboardItemTypeModel.unknown,
     );
 
-    final filePaths = (e.filePaths.isEmpty)
-        ? <String>[]
-        : List<String>.from(jsonDecode(e.filePaths) as List);
     final metadata = e.metadataJson == null
         ? <String, dynamic>{}
         : Map<String, dynamic>.from(
             jsonDecode(e.metadataJson!) as Map<String, dynamic>,
           );
 
+    final imageBytes = (e.imageBytes?.isEmpty ?? true)
+        ? <int>[]
+        : base64Decode(e.imageBytes!);
+
     return ClipboardItemModel(
       content: e.content,
       contentHash: e.contentHash,
       createdAt: e.createdAt,
-      filePaths: filePaths,
+      filePath: e.filePath,
       htmlContent: e.htmlContent,
       id: e.id,
-      imageUrl: e.imageUrl,
+      imageBytes: imageBytes,
       isPinned: e.isPinned,
       isSnippet: e.isSnippet,
       isSynced: e.isSynced,
@@ -131,8 +144,12 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       createdAt: Value(m.createdAt),
       updatedAt: Value(m.updatedAt),
       htmlContent: Value(m.htmlContent),
-      imageUrl: Value(m.imageUrl),
-      filePaths: Value(jsonEncode(m.filePaths)),
+      imageBytes: Value(
+        (m.imageBytes?.isNotEmpty ?? false)
+            ? base64Encode(m.imageBytes!)
+            : null,
+      ),
+      filePath: Value(m.filePath),
       isPinned: Value(m.isPinned),
       isSnippet: Value(m.isSnippet),
       isSynced: Value(m.isSynced),

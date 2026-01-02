@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  after_layout:
+    dependency: transitive
+    description:
+      name: after_layout
+      sha256: "95a1cb2ca1464f44f14769329fbf15987d20ab6c88f8fc5d359bd362be625f29"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   analyzer:
     dependency: transitive
     description:
@@ -33,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.7.1"
+  animations:
+    dependency: transitive
+    description:
+      name: animations
+      sha256: "18938cefd7dcc04e1ecac0db78973761a01e4bc2d6bfae0cfa596bfeac9e96ab"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   ansi_styles:
     dependency: transitive
     description:
@@ -321,6 +337,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  contextmenu:
+    dependency: "direct main"
+    description:
+      name: contextmenu
+      sha256: e0c7d60e2fc9f316f5b03f5fe2c0f977d65125345d1a1f77eea02be612e32d0c
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   conventional_commit:
     dependency: transitive
     description:
@@ -361,6 +385,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      sha256: "09bad715f418841f976c77db72d5398dc1253c21fb9c0c7f0b0b985860b2d58e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  dart_helper_utils:
+    dependency: transitive
+    description:
+      name: dart_helper_utils
+      sha256: c2c95a1aefdf8edbb63f86bdc22adb3de7c46d50eba9c48d6ed295e47c7292cc
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.1"
   dart_jsonwebtoken:
     dependency: transitive
     description:
@@ -561,6 +601,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  flexible_dropdown:
+    dependency: "direct main"
+    description:
+      name: flexible_dropdown
+      sha256: e710f18ca703edc20be7d30746b14514b3e81c9807029ca7ded87297fa9de6c5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.8"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -582,14 +630,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_context_menu:
-    dependency: "direct main"
-    description:
-      name: flutter_context_menu
-      sha256: e8f2cd13ef5e3320e35b27b3f7de278d9fc6b3f9c328cc16cd90784fb66d1054
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.1"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -614,6 +654,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.12.0"
+  flutter_helper_utils:
+    dependency: transitive
+    description:
+      name: flutter_helper_utils
+      sha256: "70c1e1bfd60ebed4435f78a030b07f61a2c711bb310a398cf30e1f5878ecc678"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.5.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -627,6 +675,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_portal:
+    dependency: "direct main"
+    description:
+      name: flutter_portal
+      sha256: "4601b3dc24f385b3761721bd852a3f6c09cddd4e943dd184ed58ee1f43006257"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -789,6 +845,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.16.0"
+  hive_ce_flutter:
+    dependency: transitive
+    description:
+      name: hive_ce_flutter
+      sha256: "26d656c9e8974f0732f1d09020e2d7b08ba841b8961a02dbfb6caf01474b0e9a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.3"
   hive_flutter:
     dependency: "direct main"
     description:
@@ -805,6 +869,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.0"
+  html:
+    dependency: transitive
+    description:
+      name: html
+      sha256: "6d1264f2dffa1b1101c25a91dff0dc2daee4c18e87cd8538729773c073dbf602"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.6"
   http:
     dependency: transitive
     description:
@@ -1029,6 +1101,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.16.0"
+  metalink:
+    dependency: transitive
+    description:
+      name: metalink
+      sha256: dc72d3da6ebd05792dba2f52569141ab51bbb0cf7780a709e6522bff2074184a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
+  metalink_flutter:
+    dependency: "direct main"
+    description:
+      name: metalink_flutter
+      sha256: cc5371f189138153af2c4bb604dc82beafe3488746cba04dc0e273f9ab5cbbe3
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   mime:
     dependency: transitive
     description:
@@ -1110,7 +1198,7 @@ packages:
     source: hosted
     version: "0.4.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"

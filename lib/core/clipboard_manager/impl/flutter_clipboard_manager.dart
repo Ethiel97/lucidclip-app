@@ -11,13 +11,25 @@ import 'package:pasteboard/pasteboard.dart';
 @LazySingleton(as: BaseClipboardManager)
 class FlutterClipboardManager implements BaseClipboardManager {
   Timer? _pollingTimer;
-  String? _lastContent;
+  String? _lastContentHash;
   final _controller = StreamController<ClipboardData>.broadcast();
 
   @override
   @postConstruct
   void initialize() {
+    _seedLastContent();
     _startPolling();
+  }
+
+  Future<void> _seedLastContent() async {
+    try {
+      final current = await getClipboardContent();
+      if (current != null) {
+        _lastContentHash = current.contentHash ?? current.computedContentHash;
+      }
+    } catch (_) {
+      // ignore errors during seeding
+    }
   }
 
   void _startPolling() {
@@ -30,26 +42,35 @@ class FlutterClipboardManager implements BaseClipboardManager {
 
   Future<void> _checkClipboardChange() async {
     final content = await getClipboardContent();
-    if (content != null && content.text != _lastContent) {
-      _lastContent = content.text;
-      _controller.add(content);
+    if (content != null) {
+      final currentHash = content.contentHash ?? content.computedContentHash;
+      if (currentHash != _lastContentHash) {
+        _lastContentHash = currentHash;
+        _controller.add(content);
+      }
     }
   }
 
+  // TODO(Ethiel97): handle multiple files in clipboard
   @override
   Future<ClipboardData?> getClipboardContent() async {
     // 1. Vérifier les fichiers d'abord
     final files = await Pasteboard.files();
+    final timestamp = DateTime.now();
     if (files.isNotEmpty) {
-      final clipboardData = ClipboardData(
-        type: ClipboardContentType.file,
-        filePaths: files,
-        text: files.join(', '),
-        timestamp: DateTime.now(),
-      );
-      return clipboardData.copyWith(
-        contentHash: clipboardData.computedContentHash,
-      );
+      for (final file in files) {
+        if (file.isNotEmpty) {
+          final clipboardData = ClipboardData(
+            type: ClipboardContentType.file,
+            filePath: file,
+            text: file,
+            timestamp: timestamp,
+          );
+          return clipboardData.copyWith(
+            contentHash: clipboardData.computedContentHash,
+          );
+        }
+      }
     }
 
     // 2. Vérifier les images
@@ -58,7 +79,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.image,
         imageBytes: Uint8List.fromList(image),
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
 
       return clipboardData.copyWith(
@@ -71,9 +92,9 @@ class FlutterClipboardManager implements BaseClipboardManager {
     if (html != null && html.isNotEmpty) {
       final clipboardData = ClipboardData(
         type: ClipboardContentType.html,
-        text:  html,
+        text: html,
         html: html,
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
@@ -87,7 +108,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       final clipboardData = ClipboardData(
         type: type,
         text: text,
-        timestamp: DateTime.now(),
+        timestamp: timestamp,
       );
 
       return clipboardData.copyWith(
@@ -122,8 +143,8 @@ class FlutterClipboardManager implements BaseClipboardManager {
         }
 
       case ClipboardContentType.file:
-        if (data.filePaths != null && data.filePaths!.isNotEmpty) {
-          await Pasteboard.writeFiles(data.filePaths!);
+        if (data.filePath != null && data.filePath!.isNotEmpty) {
+          await Pasteboard.writeFiles([data.filePath!]);
         }
 
       case ClipboardContentType.html:
@@ -132,11 +153,10 @@ class FlutterClipboardManager implements BaseClipboardManager {
         }
 
       case ClipboardContentType.unknown:
-        // Ne rien faire pour les types inconnus
         break;
     }
 
-    _lastContent = data.text;
+    _lastContentHash = data.contentHash ?? data.computedContentHash;
   }
 
   @override
@@ -150,7 +170,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   @override
   Future<void> clear() async {
     await FlutterClipboard.clear();
-    _lastContent = null;
+    _lastContentHash = null;
   }
 
   @disposeMethod
@@ -173,8 +193,7 @@ extension ClipboardDataHashExt on ClipboardData {
       text,
       html,
       if (imageBytes != null) imageBytes,
-      if (filePaths != null) filePaths,
-      timestamp?.toIso8601String(),
+      if (filePath != null) filePath,
     ];
     return ContentHasher.hashOfParts(parts);
   }

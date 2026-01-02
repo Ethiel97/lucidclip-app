@@ -91,28 +91,27 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
-    'imageUrl',
+  static const VerificationMeta _imageBytesMeta = const VerificationMeta(
+    'imageBytes',
   );
   @override
-  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
-    'image_url',
+  late final GeneratedColumn<String> imageBytes = GeneratedColumn<String>(
+    'image_bytes',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _filePathsMeta = const VerificationMeta(
-    'filePaths',
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
   );
   @override
-  late final GeneratedColumn<String> filePaths = GeneratedColumn<String>(
-    'file_paths',
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultValue: const Constant('[]'),
   );
   static const VerificationMeta _isPinnedMeta = const VerificationMeta(
     'isPinned',
@@ -180,8 +179,8 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     createdAt,
     updatedAt,
     htmlContent,
-    imageUrl,
-    filePaths,
+    imageBytes,
+    filePath,
     isPinned,
     isSnippet,
     isSynced,
@@ -264,16 +263,16 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
         ),
       );
     }
-    if (data.containsKey('image_url')) {
+    if (data.containsKey('image_bytes')) {
       context.handle(
-        _imageUrlMeta,
-        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+        _imageBytesMeta,
+        imageBytes.isAcceptableOrUnknown(data['image_bytes']!, _imageBytesMeta),
       );
     }
-    if (data.containsKey('file_paths')) {
+    if (data.containsKey('file_path')) {
       context.handle(
-        _filePathsMeta,
-        filePaths.isAcceptableOrUnknown(data['file_paths']!, _filePathsMeta),
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
       );
     }
     if (data.containsKey('is_pinned')) {
@@ -344,14 +343,14 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
         DriftSqlType.string,
         data['${effectivePrefix}html_content'],
       ),
-      imageUrl: attachedDatabase.typeMapping.read(
+      imageBytes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}image_url'],
+        data['${effectivePrefix}image_bytes'],
       ),
-      filePaths: attachedDatabase.typeMapping.read(
+      filePath: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}file_paths'],
-      )!,
+        data['${effectivePrefix}file_path'],
+      ),
       isPinned: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_pinned'],
@@ -387,8 +386,8 @@ class ClipboardItemEntry extends DataClass
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? htmlContent;
-  final String? imageUrl;
-  final String filePaths;
+  final String? imageBytes;
+  final String? filePath;
   final bool isPinned;
   final bool isSnippet;
   final bool isSynced;
@@ -402,8 +401,8 @@ class ClipboardItemEntry extends DataClass
     required this.createdAt,
     required this.updatedAt,
     this.htmlContent,
-    this.imageUrl,
-    required this.filePaths,
+    this.imageBytes,
+    this.filePath,
     required this.isPinned,
     required this.isSnippet,
     required this.isSynced,
@@ -422,10 +421,12 @@ class ClipboardItemEntry extends DataClass
     if (!nullToAbsent || htmlContent != null) {
       map['html_content'] = Variable<String>(htmlContent);
     }
-    if (!nullToAbsent || imageUrl != null) {
-      map['image_url'] = Variable<String>(imageUrl);
+    if (!nullToAbsent || imageBytes != null) {
+      map['image_bytes'] = Variable<String>(imageBytes);
     }
-    map['file_paths'] = Variable<String>(filePaths);
+    if (!nullToAbsent || filePath != null) {
+      map['file_path'] = Variable<String>(filePath);
+    }
     map['is_pinned'] = Variable<bool>(isPinned);
     map['is_snippet'] = Variable<bool>(isSnippet);
     map['is_synced'] = Variable<bool>(isSynced);
@@ -447,10 +448,12 @@ class ClipboardItemEntry extends DataClass
       htmlContent: htmlContent == null && nullToAbsent
           ? const Value.absent()
           : Value(htmlContent),
-      imageUrl: imageUrl == null && nullToAbsent
+      imageBytes: imageBytes == null && nullToAbsent
           ? const Value.absent()
-          : Value(imageUrl),
-      filePaths: Value(filePaths),
+          : Value(imageBytes),
+      filePath: filePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filePath),
       isPinned: Value(isPinned),
       isSnippet: Value(isSnippet),
       isSynced: Value(isSynced),
@@ -474,8 +477,8 @@ class ClipboardItemEntry extends DataClass
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       htmlContent: serializer.fromJson<String?>(json['htmlContent']),
-      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
-      filePaths: serializer.fromJson<String>(json['filePaths']),
+      imageBytes: serializer.fromJson<String?>(json['imageBytes']),
+      filePath: serializer.fromJson<String?>(json['filePath']),
       isPinned: serializer.fromJson<bool>(json['isPinned']),
       isSnippet: serializer.fromJson<bool>(json['isSnippet']),
       isSynced: serializer.fromJson<bool>(json['isSynced']),
@@ -494,8 +497,8 @@ class ClipboardItemEntry extends DataClass
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'htmlContent': serializer.toJson<String?>(htmlContent),
-      'imageUrl': serializer.toJson<String?>(imageUrl),
-      'filePaths': serializer.toJson<String>(filePaths),
+      'imageBytes': serializer.toJson<String?>(imageBytes),
+      'filePath': serializer.toJson<String?>(filePath),
       'isPinned': serializer.toJson<bool>(isPinned),
       'isSnippet': serializer.toJson<bool>(isSnippet),
       'isSynced': serializer.toJson<bool>(isSynced),
@@ -512,8 +515,8 @@ class ClipboardItemEntry extends DataClass
     DateTime? createdAt,
     DateTime? updatedAt,
     Value<String?> htmlContent = const Value.absent(),
-    Value<String?> imageUrl = const Value.absent(),
-    String? filePaths,
+    Value<String?> imageBytes = const Value.absent(),
+    Value<String?> filePath = const Value.absent(),
     bool? isPinned,
     bool? isSnippet,
     bool? isSynced,
@@ -527,8 +530,8 @@ class ClipboardItemEntry extends DataClass
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
-    imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
-    filePaths: filePaths ?? this.filePaths,
+    imageBytes: imageBytes.present ? imageBytes.value : this.imageBytes,
+    filePath: filePath.present ? filePath.value : this.filePath,
     isPinned: isPinned ?? this.isPinned,
     isSnippet: isSnippet ?? this.isSnippet,
     isSynced: isSynced ?? this.isSynced,
@@ -548,8 +551,10 @@ class ClipboardItemEntry extends DataClass
       htmlContent: data.htmlContent.present
           ? data.htmlContent.value
           : this.htmlContent,
-      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
-      filePaths: data.filePaths.present ? data.filePaths.value : this.filePaths,
+      imageBytes: data.imageBytes.present
+          ? data.imageBytes.value
+          : this.imageBytes,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
       isPinned: data.isPinned.present ? data.isPinned.value : this.isPinned,
       isSnippet: data.isSnippet.present ? data.isSnippet.value : this.isSnippet,
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
@@ -570,8 +575,8 @@ class ClipboardItemEntry extends DataClass
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('htmlContent: $htmlContent, ')
-          ..write('imageUrl: $imageUrl, ')
-          ..write('filePaths: $filePaths, ')
+          ..write('imageBytes: $imageBytes, ')
+          ..write('filePath: $filePath, ')
           ..write('isPinned: $isPinned, ')
           ..write('isSnippet: $isSnippet, ')
           ..write('isSynced: $isSynced, ')
@@ -590,8 +595,8 @@ class ClipboardItemEntry extends DataClass
     createdAt,
     updatedAt,
     htmlContent,
-    imageUrl,
-    filePaths,
+    imageBytes,
+    filePath,
     isPinned,
     isSnippet,
     isSynced,
@@ -609,8 +614,8 @@ class ClipboardItemEntry extends DataClass
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
           other.htmlContent == this.htmlContent &&
-          other.imageUrl == this.imageUrl &&
-          other.filePaths == this.filePaths &&
+          other.imageBytes == this.imageBytes &&
+          other.filePath == this.filePath &&
           other.isPinned == this.isPinned &&
           other.isSnippet == this.isSnippet &&
           other.isSynced == this.isSynced &&
@@ -627,8 +632,8 @@ class ClipboardItemEntriesCompanion
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<String?> htmlContent;
-  final Value<String?> imageUrl;
-  final Value<String> filePaths;
+  final Value<String?> imageBytes;
+  final Value<String?> filePath;
   final Value<bool> isPinned;
   final Value<bool> isSnippet;
   final Value<bool> isSynced;
@@ -643,8 +648,8 @@ class ClipboardItemEntriesCompanion
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.htmlContent = const Value.absent(),
-    this.imageUrl = const Value.absent(),
-    this.filePaths = const Value.absent(),
+    this.imageBytes = const Value.absent(),
+    this.filePath = const Value.absent(),
     this.isPinned = const Value.absent(),
     this.isSnippet = const Value.absent(),
     this.isSynced = const Value.absent(),
@@ -660,8 +665,8 @@ class ClipboardItemEntriesCompanion
     required DateTime createdAt,
     required DateTime updatedAt,
     this.htmlContent = const Value.absent(),
-    this.imageUrl = const Value.absent(),
-    this.filePaths = const Value.absent(),
+    this.imageBytes = const Value.absent(),
+    this.filePath = const Value.absent(),
     this.isPinned = const Value.absent(),
     this.isSnippet = const Value.absent(),
     this.isSynced = const Value.absent(),
@@ -683,8 +688,8 @@ class ClipboardItemEntriesCompanion
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<String>? htmlContent,
-    Expression<String>? imageUrl,
-    Expression<String>? filePaths,
+    Expression<String>? imageBytes,
+    Expression<String>? filePath,
     Expression<bool>? isPinned,
     Expression<bool>? isSnippet,
     Expression<bool>? isSynced,
@@ -700,8 +705,8 @@ class ClipboardItemEntriesCompanion
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (htmlContent != null) 'html_content': htmlContent,
-      if (imageUrl != null) 'image_url': imageUrl,
-      if (filePaths != null) 'file_paths': filePaths,
+      if (imageBytes != null) 'image_bytes': imageBytes,
+      if (filePath != null) 'file_path': filePath,
       if (isPinned != null) 'is_pinned': isPinned,
       if (isSnippet != null) 'is_snippet': isSnippet,
       if (isSynced != null) 'is_synced': isSynced,
@@ -719,8 +724,8 @@ class ClipboardItemEntriesCompanion
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<String?>? htmlContent,
-    Value<String?>? imageUrl,
-    Value<String>? filePaths,
+    Value<String?>? imageBytes,
+    Value<String?>? filePath,
     Value<bool>? isPinned,
     Value<bool>? isSnippet,
     Value<bool>? isSynced,
@@ -736,8 +741,8 @@ class ClipboardItemEntriesCompanion
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       htmlContent: htmlContent ?? this.htmlContent,
-      imageUrl: imageUrl ?? this.imageUrl,
-      filePaths: filePaths ?? this.filePaths,
+      imageBytes: imageBytes ?? this.imageBytes,
+      filePath: filePath ?? this.filePath,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
       isSynced: isSynced ?? this.isSynced,
@@ -773,11 +778,11 @@ class ClipboardItemEntriesCompanion
     if (htmlContent.present) {
       map['html_content'] = Variable<String>(htmlContent.value);
     }
-    if (imageUrl.present) {
-      map['image_url'] = Variable<String>(imageUrl.value);
+    if (imageBytes.present) {
+      map['image_bytes'] = Variable<String>(imageBytes.value);
     }
-    if (filePaths.present) {
-      map['file_paths'] = Variable<String>(filePaths.value);
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
     }
     if (isPinned.present) {
       map['is_pinned'] = Variable<bool>(isPinned.value);
@@ -808,8 +813,8 @@ class ClipboardItemEntriesCompanion
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('htmlContent: $htmlContent, ')
-          ..write('imageUrl: $imageUrl, ')
-          ..write('filePaths: $filePaths, ')
+          ..write('imageBytes: $imageBytes, ')
+          ..write('filePath: $filePath, ')
           ..write('isPinned: $isPinned, ')
           ..write('isSnippet: $isSnippet, ')
           ..write('isSynced: $isSynced, ')
@@ -1262,8 +1267,8 @@ typedef $$ClipboardItemEntriesTableCreateCompanionBuilder =
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<String?> htmlContent,
-      Value<String?> imageUrl,
-      Value<String> filePaths,
+      Value<String?> imageBytes,
+      Value<String?> filePath,
       Value<bool> isPinned,
       Value<bool> isSnippet,
       Value<bool> isSynced,
@@ -1280,8 +1285,8 @@ typedef $$ClipboardItemEntriesTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<String?> htmlContent,
-      Value<String?> imageUrl,
-      Value<String> filePaths,
+      Value<String?> imageBytes,
+      Value<String?> filePath,
       Value<bool> isPinned,
       Value<bool> isSnippet,
       Value<bool> isSynced,
@@ -1338,13 +1343,13 @@ class $$ClipboardItemEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get imageUrl => $composableBuilder(
-    column: $table.imageUrl,
+  ColumnFilters<String> get imageBytes => $composableBuilder(
+    column: $table.imageBytes,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get filePaths => $composableBuilder(
-    column: $table.filePaths,
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1418,13 +1423,13 @@ class $$ClipboardItemEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get imageUrl => $composableBuilder(
-    column: $table.imageUrl,
+  ColumnOrderings<String> get imageBytes => $composableBuilder(
+    column: $table.imageBytes,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get filePaths => $composableBuilder(
-    column: $table.filePaths,
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1486,11 +1491,13 @@ class $$ClipboardItemEntriesTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get imageUrl =>
-      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+  GeneratedColumn<String> get imageBytes => $composableBuilder(
+    column: $table.imageBytes,
+    builder: (column) => column,
+  );
 
-  GeneratedColumn<String> get filePaths =>
-      $composableBuilder(column: $table.filePaths, builder: (column) => column);
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
 
   GeneratedColumn<bool> get isPinned =>
       $composableBuilder(column: $table.isPinned, builder: (column) => column);
@@ -1558,8 +1565,8 @@ class $$ClipboardItemEntriesTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
-                Value<String?> imageUrl = const Value.absent(),
-                Value<String> filePaths = const Value.absent(),
+                Value<String?> imageBytes = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
                 Value<bool> isPinned = const Value.absent(),
                 Value<bool> isSnippet = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
@@ -1574,8 +1581,8 @@ class $$ClipboardItemEntriesTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 htmlContent: htmlContent,
-                imageUrl: imageUrl,
-                filePaths: filePaths,
+                imageBytes: imageBytes,
+                filePath: filePath,
                 isPinned: isPinned,
                 isSnippet: isSnippet,
                 isSynced: isSynced,
@@ -1592,8 +1599,8 @@ class $$ClipboardItemEntriesTableTableManager
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<String?> htmlContent = const Value.absent(),
-                Value<String?> imageUrl = const Value.absent(),
-                Value<String> filePaths = const Value.absent(),
+                Value<String?> imageBytes = const Value.absent(),
+                Value<String?> filePath = const Value.absent(),
                 Value<bool> isPinned = const Value.absent(),
                 Value<bool> isSnippet = const Value.absent(),
                 Value<bool> isSynced = const Value.absent(),
@@ -1608,8 +1615,8 @@ class $$ClipboardItemEntriesTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 htmlContent: htmlContent,
-                imageUrl: imageUrl,
-                filePaths: filePaths,
+                imageBytes: imageBytes,
+                filePath: filePath,
                 isPinned: isPinned,
                 isSnippet: isSnippet,
                 isSynced: isSynced,

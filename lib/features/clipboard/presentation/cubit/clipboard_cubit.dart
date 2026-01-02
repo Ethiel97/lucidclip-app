@@ -58,7 +58,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       if (!isDuplicate) {
         // Convert ClipboardData to ClipboardItem and upsert to local repository
-        final clipboardItem = _convertToClipboardItem(clipboardData);
+        final clipboardItem = clipboardData.toDomain(userId: _pendingUserId);
         await _upsertClipboardItem(clipboardItem);
 
         // Create clipboard history record
@@ -69,23 +69,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       //
       // emit(state.copyWith(localClipboardItems: updated));
     });
-  }
-
-  ClipboardItem _convertToClipboardItem(ClipboardData clipboardData) {
-    final now = DateTime.now();
-
-    return ClipboardItem(
-      id: IdGenerator.generate(),
-      content: clipboardData.text ?? '',
-      contentHash: clipboardData.contentHash ?? '',
-      type: clipboardData.clipboardItemType,
-      userId: _pendingUserId,
-      createdAt: clipboardData.timestamp ?? now,
-      updatedAt: now,
-      imageUrl: clipboardData.imageBytes != null ? 'local' : null,
-      filePaths: clipboardData.filePaths ?? [],
-      htmlContent: clipboardData.html,
-    );
   }
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
@@ -153,48 +136,38 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     );
 
     // Watch local clipboard history stream
-    _localHistorySubscription = localClipboardHistoryRepository.watchAll().listen(
-      (histories) {
-        // Store histories in state if needed
+    _localHistorySubscription = localClipboardHistoryRepository
+        .watchAll()
+        .listen(
+          (histories) {
+            // Store histories in state if needed
 
-        emit(state.copyWith(clipboardHistory: histories.toSuccess()));
+            emit(state.copyWith(clipboardHistory: histories.toSuccess()));
 
-        /*developer.log(
+            /*developer.log(
           'Received ${histories.length} clipboard history records from stream',
           name: 'ClipboardCubit',
         );*/
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        emit(
-          state.copyWith(
-            clipboardHistory: state.clipboardHistory.toError(
-              ErrorDetails(
-                message: 'Error watching local clipboard history: $error',
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            emit(
+              state.copyWith(
+                clipboardHistory: state.clipboardHistory.toError(
+                  ErrorDetails(
+                    message: 'Error watching local clipboard history: $error',
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-        developer.log(
-          'Error watching local clipboard history',
-          error: error,
-          stackTrace: stackTrace,
+            );
+            developer.log(
+              'Error watching local clipboard history',
+              error: error,
+              stackTrace: stackTrace,
 
-          name: 'ClipboardCubit',
+              name: 'ClipboardCubit',
+            );
+          },
         );
-      },
-    );
-  }
-
-  ClipboardData _convertToClipboardData(ClipboardItem item) {
-    return ClipboardData(
-      type: item.contentType,
-      // Using the extension
-      text: item.content,
-      contentHash: item.contentHash,
-      timestamp: item.createdAt,
-      html: item.htmlContent,
-      filePaths: item.filePaths.isNotEmpty ? item.filePaths : null,
-    );
   }
 
   Future<void> loadClipboardItems() async {

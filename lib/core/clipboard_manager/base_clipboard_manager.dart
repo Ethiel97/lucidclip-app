@@ -26,7 +26,7 @@ class ClipboardData extends Equatable {
   const ClipboardData({
     required this.type,
     this.contentHash,
-    this.filePaths,
+    this.filePath,
     this.html,
     this.imageBytes,
     this.metadata,
@@ -35,7 +35,7 @@ class ClipboardData extends Equatable {
   });
 
   final String? contentHash;
-  final List<String>? filePaths;
+  final String? filePath;
   final String? html;
   final List<int>? imageBytes;
   final Map<String, dynamic>? metadata;
@@ -45,7 +45,7 @@ class ClipboardData extends Equatable {
 
   ClipboardData copyWith({
     String? contentHash,
-    List<String>? filePaths,
+    String? filePath,
     String? html,
     List<int>? imageBytes,
     Map<String, dynamic>? metadata,
@@ -56,7 +56,7 @@ class ClipboardData extends Equatable {
     return ClipboardData(
       contentHash: contentHash ?? this.contentHash,
       type: type ?? this.type,
-      filePaths: filePaths ?? this.filePaths,
+      filePath: filePath ?? this.filePath,
       html: html ?? this.html,
       imageBytes: imageBytes ?? this.imageBytes,
       metadata: metadata ?? this.metadata,
@@ -68,7 +68,7 @@ class ClipboardData extends Equatable {
   @override
   List<Object?> get props => [
     contentHash,
-    filePaths,
+    filePath,
     html,
     imageBytes,
     metadata,

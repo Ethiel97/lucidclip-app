@@ -5,9 +5,7 @@ part 'clipboard_item_model.g.dart';
 
 typedef ClipboardItemModels = List<ClipboardItemModel>;
 
-@JsonSerializable(
-  explicitToJson: true,
-)
+@JsonSerializable(explicitToJson: true)
 class ClipboardItemModel {
   ClipboardItemModel({
     required this.content,
@@ -17,8 +15,8 @@ class ClipboardItemModel {
     required this.type,
     required this.updatedAt,
     required this.userId,
-    this.imageUrl,
-    this.filePaths = const [],
+    this.imageBytes,
+    this.filePath,
     this.isPinned = false,
     this.isSnippet = false,
     this.isSynced = false,
@@ -31,10 +29,11 @@ class ClipboardItemModel {
       content: item.content,
       contentHash: item.contentHash,
       createdAt: item.createdAt,
-      filePaths: item.filePaths,
+      filePath: item.filePath,
       htmlContent: item.htmlContent,
       id: item.id,
-      imageUrl: item.imageUrl,
+
+      imageBytes: item.imageBytes,
       isPinned: item.isPinned,
       isSnippet: item.isSnippet,
       metadata: item.metadata,
@@ -54,22 +53,20 @@ class ClipboardItemModel {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  @JsonKey(name: 'file_paths')
-  final List<String> filePaths;
+  @JsonKey(name: 'file_path')
+  final String? filePath;
 
   @JsonKey(name: 'html_content')
   final String? htmlContent;
   final String id;
 
-  @JsonKey(name: 'image_url')
-  final String? imageUrl;
+  @JsonKey(name: 'image_bytes')
+  final List<int>? imageBytes;
 
   @JsonKey(name: 'is_pinned')
   final bool isPinned;
 
-  @JsonKey(
-    name: 'is_snippet',
-  )
+  @JsonKey(name: 'is_snippet')
   final bool isSnippet;
 
   @JsonKey(name: 'is_synced')
@@ -96,10 +93,10 @@ class ClipboardItemModel {
     String? content,
     String? contentHash,
     DateTime? createdAt,
-    List<String>? filePaths,
+    String? filePath,
     String? htmlContent,
     String? id,
-    String? imageUrl,
+    List<int>? imageBytes,
     bool? isPinned,
     bool? isSnippet,
     bool? isSynced,
@@ -112,10 +109,10 @@ class ClipboardItemModel {
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       createdAt: createdAt ?? this.createdAt,
-      filePaths: filePaths ?? this.filePaths,
+      filePath: filePath ?? this.filePath,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageBytes: imageBytes ?? this.imageBytes,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
       isSynced: isSynced ?? this.isSynced,
@@ -131,10 +128,10 @@ class ClipboardItemModel {
       content: content,
       contentHash: contentHash,
       createdAt: createdAt,
-      filePaths: filePaths,
+      filePath: filePath,
       htmlContent: htmlContent,
       id: id,
-      imageUrl: imageUrl,
+      imageBytes: imageBytes,
       isPinned: isPinned,
       isSnippet: isSnippet,
       metadata: metadata,
@@ -145,11 +142,4 @@ class ClipboardItemModel {
   }
 }
 
-enum ClipboardItemTypeModel {
-  text,
-  image,
-  file,
-  url,
-  html,
-  unknown;
-}
+enum ClipboardItemTypeModel { text, image, file, url, html, unknown }

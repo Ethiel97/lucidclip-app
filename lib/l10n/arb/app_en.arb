@@ -1,8 +1,16 @@
 {
   "@@locale": "en",
+  "allTypes": "All Types",
+  "@allTypes": {
+    "description": "Label for the All Types filter"
+  },
   "appName": "LucidClip",
   "@appName": {
     "description": "Name of the app"
+  },
+  "characters": "Characters",
+  "@characters": {
+    "description": "Label for the number of characters"
   },
   "clipboard": "Clipboard",
   "@clipboard": {
@@ -16,9 +24,17 @@
   "@command": {
     "description": "Label for Command input"
   },
+  "copied": "Copied",
+  "@copied": {
+    "description": "Message shown when content is copied to the clipboard"
+  },
   "copy": "Copy",
   "@copy": {
     "description": "Button text to copy content"
+  },
+  "copyToClipboard": "Copy to Clipboard",
+  "@copyToClipboard": {
+    "description": "Button text to copy content to the clipboard"
   },
   "counterAppBarTitle": "Counter",
   "@counterAppBarTitle": {
@@ -28,53 +44,49 @@
   "@delete": {
     "description": "Button text to delete content"
   },
-  "copyToClipboard": "Copy to Clipboard",
-  "@copyToClipboard": {
-    "description": "Button text to copy content to the clipboard"
+  "edit": "Edit",
+  "@edit": {
+    "description": "Button text to edit content"
+  },
+  "failedToLoadLinkPreview": "Failed to load link preview",
+  "@failedToLoadLinkPreview": {
+    "description": "Message shown when the preview failed to load"
+  },
+  "fileOnly": "File Only",
+  "@fileOnly": {
+    "description": "Label for the File Only filter"
+  },
+  "format": "Format",
+  "@format": {
+    "description": "Label for the format of the content"
   },
   "history": "History",
   "@history": {
     "description": "Title for the History Page"
   },
+  "imageOnly": "Image Only",
+  "@imageOnly": {
+    "description": "Label for the Image Only filter"
+  },
+  "information": "Information",
+  "@information": {
+    "description": "Label for the information section"
+  },
+  "itemDetails": "Item Details",
+  "@itemDetails": {
+    "description": "Title for the Item Details Panel"
+  },
   "link": "Link",
   "@link": {
     "description": "Label for Link input"
   },
-  "pinned": "Pinned",
-  "@pinned": {
-    "description": "Label for the Pinned feature"
+  "linkOnly": "Link Only",
+  "@linkOnly": {
+    "description": "Label for the Link Only filter"
   },
-  "pin": "Pin",
-  "@pin": {
-    "description": "Button text to pin an item"
-  },
-  "unpin": "Unpin",
-  "@unpin": {
-    "description": "Button text to unpin an item"
-  },
-  "recent": "Recent",
-  "@recent": {
-    "description": "Label for the Recent items"
-  },
-  "settings": "Settings",
-  "@settings": {
-    "description": "Title for the Settings Page"
-  },
-  "snippets": "Snippets",
-  "@snippets": {
-    "description": "Label for the Snippets feature"
-  },
-  "storage": "Storage",
-  "@storage": {
-    "description": "Label for the Storage settings"
-  },
-  "theme": "Theme",
-  "@theme": {
-    "description": "Label for the Theme settings"
-  },
-  "sync": "Sync",
-  "@sync": {
-    "description": "Button text to sync content"
+  "loadingLinkPreview": "Loading link preview...",
+  "@loadingLinkPreview": {
+    "description": "Message shown when the preview is loading"
   },
   "noItemsForCategory": "No {category} items",
   "@noItemsForCategory": {
@@ -86,41 +98,68 @@
       }
     }
   },
-  "itemDetails": "Item Details",
-  "@itemDetails": {
-    "description": "Title for the Item Details Panel"
+  "pin": "Pin",
+  "@pin": {
+    "description": "Button text to pin an item"
   },
-  "information": "Information",
-  "@information": {
-    "description": "Label for the information section"
+  "pinned": "Pinned",
+  "@pinned": {
+    "description": "Label for the Pinned feature"
   },
   "preview": "Preview",
   "@preview": {
     "description": "Label for the preview of the content"
   },
-  "tags": "Tags",
-  "@tags": {
-    "description": "Label for the tags feature"
+  "recent": "Recent",
+  "@recent": {
+    "description": "Label for the Recent items"
+  },
+  "searchHint": "Search...",
+  "@searchHint": {
+    "description": "Hint shown in the Search Bar"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Title for the Settings Page"
+  },
+  "share": "Share",
+  "@share": {
+    "description": "Button text to share content"
   },
   "size": "Size",
   "@size": {
     "description": "Label for the size of the content"
   },
-  "format": "Format",
-  "@format": {
-    "description": "Label for the format of the content"
+  "snippets": "Snippets",
+  "@snippets": {
+    "description": "Label for the Snippets feature"
   },
   "source": "Source",
   "@source": {
     "description": "Label for the source of the content"
   },
-  "copied": "Copied",
-  "@copied": {
-    "description": "Message shown when content is copied to the clipboard"
+  "storage": "Storage",
+  "@storage": {
+    "description": "Label for the Storage settings"
   },
-  "characters": "Characters",
-  "@characters": {
-    "description": "Label for the number of characters"
+  "sync": "Sync",
+  "@sync": {
+    "description": "Button text to sync content"
+  },
+  "tags": "Tags",
+  "@tags": {
+    "description": "Label for the tags feature"
+  },
+  "textOnly": "Text Only",
+  "@textOnly": {
+    "description": "Label for the Text Only filter"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Label for the Theme settings"
+  },
+  "unpin": "Unpin",
+  "@unpin": {
+    "description": "Button text to unpin an item"
   }
-
 }

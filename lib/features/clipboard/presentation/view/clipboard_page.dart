@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -8,6 +10,11 @@ import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
+typedef ClipboardPageItems = (
+  ClipboardItems pinnedItems,
+  ClipboardItems recentItems,
+);
+
 class ClipboardPage extends StatelessWidget {
   const ClipboardPage({super.key});
 
@@ -16,6 +23,7 @@ class ClipboardPage extends StatelessWidget {
     providers: [
       BlocProvider(create: (_) => getIt<ClipboardCubit>()),
       BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
+      BlocProvider(create: (_) => getIt<SearchCubit>()),
     ],
     child: const ClipboardView(),
   );
@@ -58,6 +66,34 @@ class _ClipboardViewState extends State<ClipboardView>
         );
   }
 
+  ClipboardPageItems getListItems(BuildContext context) {
+    final (pinnedItems, recentItems) = context.select(
+      (ClipboardCubit cubit) =>
+          (cubit.state.pinnedItems, cubit.state.unPinnedItems),
+    );
+
+    final (isSearchMode, pinnedSearchResults, recentSearchResults) = context
+        .select(
+          (SearchCubit cubit) => (
+            cubit.state.isSearchMode,
+            cubit.state.pinnedItems,
+            cubit.state.unPinnedItems,
+          ),
+        );
+
+    log(
+      'ClipboardView: isSearchMode=$isSearchMode, '
+      'pinnedSearchResults=${pinnedSearchResults.length}, '
+      'recentSearchResults=${recentSearchResults.length}',
+    );
+
+    if (isSearchMode) {
+      return (pinnedSearchResults, recentSearchResults);
+    }
+
+    return (pinnedItems, recentItems);
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -68,10 +104,6 @@ class _ClipboardViewState extends State<ClipboardView>
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final (pinnedItems, recentItems) = context.select(
-      (ClipboardCubit cubit) =>
-          (cubit.state.pinnedItems, cubit.state.unpinnedItems),
-    );
 
     final selectedClipboardItem = context.select(
       (ClipboardDetailCubit cubit) => cubit.state.clipboardItem,
@@ -80,6 +112,12 @@ class _ClipboardViewState extends State<ClipboardView>
     final hasClipboardItem = context.select(
       (ClipboardDetailCubit cubit) => cubit.state.hasClipboardItem,
     );
+
+    final isSearchMode = context.select(
+      (SearchCubit cubit) => cubit.state.isSearchMode,
+    );
+
+    final (pinnedItems, recentItems) = getListItems(context);
 
     return MultiBlocListener(
       listeners: [
@@ -131,6 +169,7 @@ class _ClipboardViewState extends State<ClipboardView>
                               ClipboardListRenderer(
                                 items: recentItems,
                                 title: l10n.recent,
+                                searchMode: isSearchMode,
                               ),
                             ],
                           ),
@@ -194,10 +233,12 @@ class ClipboardListRenderer extends StatelessWidget {
   const ClipboardListRenderer({
     required this.items,
     required this.title,
+    this.searchMode = false,
     super.key,
   });
 
   final ClipboardItems items;
+  final bool searchMode;
   final String title;
 
   @override
@@ -212,12 +253,14 @@ class ClipboardListRenderer extends StatelessWidget {
         if (items.isEmpty)
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: AppSpacing.md,
+            spacing: AppSpacing.lg,
             children: [
               HugeIcon(
-                icon: HugeIcons.strokeRoundedClipboard,
+                icon: searchMode
+                    ? HugeIcons.strokeRoundedSearchVisual
+                    : HugeIcons.strokeRoundedClipboard,
                 size: AppSpacing.xxxxxlg * 2,
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.primary,
               ),
               Text(
                 context.l10n.noItemsForCategory(title.sentenceCase),

@@ -11,5 +11,5 @@ class AppConstants {
   static final supabaseApiKey = dotenv.env['SUPABASE_API_KEY'] ?? '';
 
   static const clipboardItemDetailsViewWidth = 360.0;
-  static const clipboardSidebarWidth = 290.0;
+  static const clipboardSidebarWidth = 220.0;
 }

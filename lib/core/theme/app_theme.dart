@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/app_colors.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class AppTheme {
   const AppTheme();
@@ -12,10 +13,35 @@ class AppTheme {
     primarySwatch: AppColors.purpleSwatch,
     scaffoldBackgroundColor: AppColors.bg,
     canvasColor: AppColors.bg,
-    popupMenuTheme: const PopupMenuThemeData(
-      color: AppColors.surface2,
-      shape: RoundedRectangleBorder(
+    popupMenuTheme: PopupMenuThemeData(
+      color: AppColors.surface2.toTinyColor().lighten().color,
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(14)),
+      ),
+    ),
+
+    dropdownMenuTheme:  DropdownMenuThemeData(
+      menuStyle: MenuStyle(
+        backgroundColor: WidgetStateProperty.all(
+          AppColors.surface2.toTinyColor().lighten(5).color,
+        ),
+        elevation: WidgetStateProperty.all(8),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+    ),
+
+
+    menuTheme: MenuThemeData(
+      style: MenuStyle(
+        backgroundColor: WidgetStateProperty.all(
+          AppColors.surface2.toTinyColor().lighten(5).color,
+        ),
+        elevation: WidgetStateProperty.all(8),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
       ),
     ),
     colorScheme: const ColorScheme(
@@ -104,6 +130,8 @@ class AppTheme {
     ),
     hintStyle: AppTextStyle.bodySmall.copyWith(color: AppColors.textMuted),
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    prefixIconConstraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+    suffixIconConstraints: const BoxConstraints(minWidth: 24, minHeight: 24),
   );
 
   FilledButtonThemeData get _filledButtonTheme => FilledButtonThemeData(

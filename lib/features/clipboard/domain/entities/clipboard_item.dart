@@ -17,8 +17,8 @@ class ClipboardItem extends Equatable {
     required this.type,
     required this.updatedAt,
     required this.userId,
-    this.imageUrl,
-    this.filePaths = const [],
+    this.imageBytes,
+    this.filePath,
     this.isPinned = false,
     this.isSnippet = false,
     this.isSynced = false,
@@ -47,11 +47,11 @@ class ClipboardItem extends Equatable {
   final String contentHash;
   final DateTime createdAt;
 
-  final List<String> filePaths;
+  final String? filePath;
 
   final String? htmlContent;
   final String id;
-  final String? imageUrl;
+  final List<int>? imageBytes;
   final bool isPinned;
 
   final bool isSnippet;
@@ -69,10 +69,10 @@ class ClipboardItem extends Equatable {
     String? content,
     String? contentHash,
     DateTime? createdAt,
-    List<String>? filePaths,
+    String? filePath,
     String? htmlContent,
     String? id,
-    String? imageUrl,
+    List<int>? imageBytes,
     bool? isPinned,
     bool? isSnippet,
     bool? isSynced,
@@ -85,10 +85,10 @@ class ClipboardItem extends Equatable {
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       createdAt: createdAt ?? this.createdAt,
-      filePaths: filePaths ?? this.filePaths,
+      filePath: filePath ?? this.filePath,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
-      imageUrl: imageUrl ?? this.imageUrl,
+      imageBytes: imageBytes ?? this.imageBytes,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
       isSynced: isSynced ?? this.isSynced,
@@ -100,10 +100,16 @@ class ClipboardItem extends Equatable {
   }
 
   String get userFacingSize {
-    final sizeInBytes = utf8.encode(content).length;
+    var sizeInBytes = 0;
+    if (type.isImage && imageBytes != null) {
+      sizeInBytes = imageBytes!.length;
+    } else {
+      sizeInBytes = utf8.encode(content).length;
+    }
+
     return FileSize.fromBytes(
       sizeInBytes,
-    ).toString(unit: Unit.kilobyte, decimals: 2);
+    ).toString(unit: Unit.kilobyte, decimals: 0);
   }
 
   @override
@@ -111,10 +117,10 @@ class ClipboardItem extends Equatable {
     content,
     contentHash,
     createdAt,
-    filePaths,
+    filePath,
     htmlContent,
     id,
-    imageUrl,
+    imageBytes,
     isPinned,
     isSnippet,
     isSynced,
@@ -132,6 +138,13 @@ enum ClipboardItemType {
   url,
   html,
   unknown;
+
+  List<ClipboardItemType> get filterableTypes => [
+    ClipboardItemType.text,
+    ClipboardItemType.image,
+    ClipboardItemType.file,
+    ClipboardItemType.url,
+  ];
 
   bool get isText => this == ClipboardItemType.text;
 

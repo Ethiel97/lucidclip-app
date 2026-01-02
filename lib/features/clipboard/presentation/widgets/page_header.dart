@@ -1,44 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+
 import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:recase/recase.dart';
 
-// TODO(Ethiel97): Add SearchField here
-
-class PageHeader extends StatelessWidget {
+class PageHeader extends StatefulWidget {
   const PageHeader({super.key});
 
   @override
+  State<PageHeader> createState() => _PageHeaderState();
+}
+
+class _PageHeaderState extends State<PageHeader> {
+  @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      spacing: AppSpacing.md,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.appName,
-                style: AppTextStyle.headlineMedium.copyWith(
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              /* const SizedBox(height: AppSpacing.xxxs),
-              Text(
-                'All your recent clips, neatly organized.',
-                style: textTheme.bodySmall!.copyWith(
-                  color: AppColors.textMuted,
-                ),
-              ),*/
-            ],
-          ),
-        ),
+        const Expanded(child: SearchField()),
+        const ClipboardItemTypeFilter(),
         FilledButton.icon(
           onPressed: () {},
-          icon: const Icon(Icons.sync_rounded, size: 18),
-          label: const Text('Sync'),
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedFileSync),
+          label: Text(l10n.sync.sentenceCase),
         ),
       ],
     );

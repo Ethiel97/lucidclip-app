@@ -1,4 +1,5 @@
-import 'package:lucid_clip/core/utils/generic_mapper.dart';
+import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 /// Mapper utilities between domain entities and data models
@@ -12,10 +13,10 @@ class ClipboardMapper {
       content: e.content,
       contentHash: e.contentHash,
       createdAt: e.createdAt,
-      filePaths: e.filePaths,
+      filePath: e.filePath,
       htmlContent: e.htmlContent,
       id: e.id,
-      imageUrl: e.imageUrl,
+      imageBytes: e.imageBytes,
       isPinned: e.isPinned,
       isSnippet: e.isSnippet,
       metadata: e.metadata,
@@ -53,8 +54,7 @@ class ClipboardMapper {
 
   static List<Map<String, dynamic>>? historyToJson(
     List<ClipboardHistory>? history,
-  ) =>
-      toJsonList<ClipboardHistory>(history, (h) => historyToModel(h).toJson());
+  ) => toJsonList<ClipboardHistory>(history, (h) => historyToModel(h).toJson());
 
   static List<ClipboardHistory>? historyFromJson(List<dynamic>? json) =>
       fromJsonList<ClipboardHistory>(
@@ -77,19 +77,17 @@ class ClipboardMapper {
 
   static List<Map<String, dynamic>>? clipboardItemTagsToJson(
     List<ClipboardItemTag>? tags,
-  ) =>
-      toJsonList<ClipboardItemTag>(
-        tags,
-        (t) => clipboardItemTagToModel(t).toJson(),
-      );
+  ) => toJsonList<ClipboardItemTag>(
+    tags,
+    (t) => clipboardItemTagToModel(t).toJson(),
+  );
 
   static List<ClipboardItemTag>? clipboardItemTagsFromJson(
     List<dynamic>? json,
-  ) =>
-      fromJsonList<ClipboardItemTag>(
-        json,
-        (m) => ClipboardItemTagModel.fromJson(m).toEntity(),
-      );
+  ) => fromJsonList<ClipboardItemTag>(
+    json,
+    (m) => ClipboardItemTagModel.fromJson(m).toEntity(),
+  );
 
   // --- Tag ---
   static TagModel tagToModel(Tag t) {
@@ -108,8 +106,39 @@ class ClipboardMapper {
   static List<Map<String, dynamic>>? tagsToJson(List<Tag>? tags) =>
       toJsonList<Tag>(tags, (t) => tagToModel(t).toJson());
 
-  static List<Tag>? tagsFromJson(List<dynamic>? json) => fromJsonList<Tag>(
-        json,
-        (m) => TagModel.fromJson(m).toEntity(),
-      );
+  static List<Tag>? tagsFromJson(List<dynamic>? json) =>
+      fromJsonList<Tag>(json, (m) => TagModel.fromJson(m).toEntity());
+}
+
+extension ClipboardDataMapper on ClipboardData {
+  ClipboardItem toDomain({required String userId}) {
+    final now = DateTime.now();
+    return ClipboardItem(
+      id: IdGenerator.generate(),
+      content: text ?? '',
+      contentHash: contentHash ?? '',
+      type: clipboardItemType,
+      userId: userId,
+      createdAt: timestamp ?? now,
+      updatedAt: now,
+      imageBytes: imageBytes,
+      filePath: filePath,
+      htmlContent: html,
+    );
+  }
+}
+
+extension ClipboardItemMapper on ClipboardItem {
+  // TODO(Ethiel97): (generate new content hash)
+  ClipboardData toInfrastructure() {
+    return ClipboardData(
+      type: contentType,
+      text: content,
+      contentHash: contentHash,
+      timestamp: createdAt,
+      html: htmlContent,
+      filePath: filePath,
+      imageBytes: imageBytes,
+    );
+  }
 }

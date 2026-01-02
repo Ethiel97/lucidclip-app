@@ -15,6 +15,10 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
 
   Future<void> togglePinClipboardItem(ClipboardItem clipboardItem) async {
     try {
+      print(
+        'Toggling pin status for item id: ${clipboardItem.id} with contentHash: ${clipboardItem.contentHash}',
+      );
+
       final isPinned = clipboardItem.isPinned;
       final updatedItem = clipboardItem.copyWith(isPinned: !isPinned);
       await localClipboardRepository.upsert(updatedItem);
@@ -22,7 +26,8 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
       emit(state.copyWith(togglePinStatus: null.toSuccess()));
 
       clearSelection();
-    } catch (e) {
+    } catch (e, stack) {
+      print('Error toggling pin status: $e \n$stack');
       emit(state.copyWith(togglePinStatus: null.toError()));
     }
   }

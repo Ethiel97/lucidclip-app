@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,21 +59,31 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   configureDependencies();
 
   const windowOptions = WindowOptions(
-    minimumSize: Size(900, 700),
-    // size: Size(800, 600),
+    minimumSize: Size(900, 600),
+    size: Size(1000, 800),
     center: true,
     title: 'LucidClip',
     // backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
-    // fullScreen: true,
     // maximumSize: Size(1200, 900),
   );
 
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setPreventClose(true);
     await windowManager.show();
     await windowManager.focus();
   });
 
+  // await resetClipboardDatabase();
+
   runApp(await builder());
+}
+
+Future<void> resetClipboardDatabase() async {
+  final dir = await getApplicationDocumentsDirectory();
+  final dbFile = File('${dir.path}/clipboard_db.sqlite');
+  if (dbFile.existsSync()) {
+    await dbFile.delete();
+  }
 }

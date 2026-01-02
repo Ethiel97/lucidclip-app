@@ -106,6 +106,24 @@ abstract class AppLocalizations {
   /// **'LucidClip'**
   String get appName;
 
+  /// Label for the Appearance settings
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// Label for the Auto Delete After setting
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Delete After'**
+  String get autoDeleteAfter;
+
+  /// Label for the Auto Sync setting
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Sync'**
+  String get autoSync;
+
   /// Label for the number of characters
   ///
   /// In en, this message translates to:
@@ -184,11 +202,23 @@ abstract class AppLocalizations {
   /// **'Format'**
   String get format;
 
+  /// Label for the General settings
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
   /// Title for the History Page
   ///
   /// In en, this message translates to:
   /// **'History'**
   String get history;
+
+  /// Label for the History Limit setting
+  ///
+  /// In en, this message translates to:
+  /// **'History Limit'**
+  String get historyLimit;
 
   /// Label for the Image Only filter
   ///
@@ -232,6 +262,12 @@ abstract class AppLocalizations {
   /// **'No {category} items'**
   String noItemsForCategory(String category);
 
+  /// Label for the Notifications settings
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
   /// Button text to pin an item
   ///
   /// In en, this message translates to:
@@ -274,6 +310,12 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get share;
 
+  /// Label for the Show in Menu Bar setting
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Menu Bar'**
+  String get showInMenuBar;
+
   /// Label for the size of the content
   ///
   /// In en, this message translates to:
@@ -304,6 +346,12 @@ abstract class AppLocalizations {
   /// **'Sync'**
   String get sync;
 
+  /// Label for the Sync Interval setting
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Interval'**
+  String get syncInterval;
+
   /// Label for the tags feature
   ///
   /// In en, this message translates to:
@@ -327,6 +375,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unpin'**
   String get unpin;
+
+  /// Label for the Preview Links setting
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Links'**
+  String get previewLinks;
+
+  /// Label for the Ignore Copied Passwords setting
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore Copied Passwords'**
+  String get ignorePasswords;
 }
 
 class _AppLocalizationsDelegate

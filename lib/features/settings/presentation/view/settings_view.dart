@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/features/settings/presentation/widgets/widgets.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -18,19 +20,14 @@ class SettingsView extends StatelessWidget {
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
-          return state.settings.when(
-            initial: () => const Center(
-              child: Text('Initializing settings...'),
-            ),
-            loading: (oldValue) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            error: (errorDetails, oldValue) => Center(
+          final l10n = context.l10n;
+          return state.settings.maybeWhen(
+            orElse: () => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Error: ${errorDetails.message}',
+                  const Text(
+                    'Error loading settings.',
                     style: TextStyle(color: AppColors.textMuted),
                   ),
                   const SizedBox(height: 16),
@@ -56,26 +53,24 @@ class SettingsView extends StatelessWidget {
                 children: [
                   // General Section
                   const SettingsSectionHeader(
-                    icon: HugeIcons.strokeRoundedSettings02,
+                    icon: HugeIcon(icon: HugeIcons.strokeRoundedSettings02),
                     title: 'General',
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  // Note: These settings use existing properties as placeholders
-                  // TODO: Add dedicated properties for launch_at_startup, show_in_menu_bar, sound_effects
-                  SettingsSwitchItem(
-                    title: 'Launch at startup',
-                    description: 'Automatically start Clipboard OS when you log in',
-                    value: settings.pinOnTop,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updatePinOnTop(value);
-                    },
-                  ),
+                  // Note: These settings use existing properties
+                  // as placeholders
+                  // TODO(Ethiel97): Add dedicated properties
+                  //  for launch_at_startup,
+                  //  show_in_menu_bar, sound_effects
+
                   SettingsSwitchItem(
                     title: 'Show in menu bar',
                     description: 'Display clipboard icon in the macOS menu bar',
                     value: settings.showSourceApp,
                     onChanged: (value) {
-                      context.read<SettingsCubit>().updateShowSourceApp(value);
+                      context.read<SettingsCubit>().updateShowSourceApp(
+                        showSourceApp: value,
+                      );
                     },
                   ),
                   SettingsSwitchItem(
@@ -83,14 +78,16 @@ class SettingsView extends StatelessWidget {
                     description: 'Play sounds for clipboard actions',
                     value: settings.previewImages,
                     onChanged: (value) {
-                      context.read<SettingsCubit>().updatePreviewImages(value);
+                      context.read<SettingsCubit>().updatePreviewImages(
+                        previewImages: value,
+                      );
                     },
                   ),
 
                   // Appearance Section
                   const SizedBox(height: AppSpacing.md),
                   const SettingsSectionHeader(
-                    icon: HugeIcons.strokeRoundedPaintBoard,
+                    icon: HugeIcon(icon: HugeIcons.strokeRoundedPaintBoard),
                     title: 'Appearance',
                   ),
                   const SizedBox(height: AppSpacing.xs),
@@ -104,7 +101,7 @@ class SettingsView extends StatelessWidget {
                   // Clipboard Section
                   const SizedBox(height: AppSpacing.md),
                   const SettingsSectionHeader(
-                    icon: HugeIcons.strokeRoundedClipboard,
+                    icon: HugeIcon(icon: HugeIcons.strokeRoundedClipboard),
                     title: 'Clipboard',
                   ),
                   const SizedBox(height: AppSpacing.xs),
@@ -116,7 +113,9 @@ class SettingsView extends StatelessWidget {
                     itemLabel: (value) => '$value items',
                     onChanged: (value) {
                       if (value != null) {
-                        context.read<SettingsCubit>().updateMaxHistoryItems(value);
+                        context.read<SettingsCubit>().updateMaxHistoryItems(
+                          value,
+                        );
                       }
                     },
                   ),
@@ -128,18 +127,22 @@ class SettingsView extends StatelessWidget {
                     itemLabel: (value) => '$value days',
                     onChanged: (value) {
                       if (value != null) {
-                        context.read<SettingsCubit>().updateRetentionDays(value);
+                        context.read<SettingsCubit>().updateRetentionDays(
+                          value,
+                        );
                       }
                     },
                   ),
                   // Note: Password filtering uses autoSync as placeholder
-                  // TODO: Add dedicated property for ignore_passwords
+                  // TODO(Ethiel97): Add dedicated property for ignore_passwords
                   SettingsSwitchItem(
                     title: 'Ignore copied passwords',
                     description: "Don't save password manager data",
                     value: settings.autoSync,
                     onChanged: (value) {
-                      context.read<SettingsCubit>().updateAutoSync(value);
+                      context.read<SettingsCubit>().updateAutoSync(
+                        autoSync: value,
+                      );
                     },
                   ),
 
@@ -147,7 +150,7 @@ class SettingsView extends StatelessWidget {
                   if (settings.autoSync) ...[
                     const SizedBox(height: AppSpacing.md),
                     const SettingsSectionHeader(
-                      icon: HugeIcons.strokeRoundedCloudUpload,
+                      icon: HugeIcon(icon: HugeIcons.strokeRoundedCloudUpload),
                       title: 'Sync',
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -159,7 +162,9 @@ class SettingsView extends StatelessWidget {
                       itemLabel: (value) => '$value minutes',
                       onChanged: (value) {
                         if (value != null) {
-                          context.read<SettingsCubit>().updateSyncInterval(value);
+                          context.read<SettingsCubit>().updateSyncInterval(
+                            value,
+                          );
                         }
                       },
                     ),
@@ -173,4 +178,3 @@ class SettingsView extends StatelessWidget {
     );
   }
 }
-

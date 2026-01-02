@@ -1,23 +1,25 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lucid_clip/features/settings/domain/entities/entities.dart';
 
 part 'user_settings_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class UserSettingsModel {
-  UserSettingsModel({
+class UserSettingsModel extends Equatable {
+  const UserSettingsModel({
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
     this.theme = 'dark',
     this.shortcuts = const {},
     this.autoSync = false,
-    this.syncIntervalMinutes = 5,
-    this.maxHistoryItems = 1000,
-    this.retentionDays = 30,
-    this.pinOnTop = true,
+    this.syncIntervalMinutes = 60,
+    this.maxHistoryItems = 50,
+    this.retentionDays = 5,
+    this.incognitoMode = false,
     this.showSourceApp = true,
     this.previewImages = true,
+    this.previewLinks = true,
   });
 
   factory UserSettingsModel.fromEntity(UserSettings settings) {
@@ -29,9 +31,9 @@ class UserSettingsModel {
       syncIntervalMinutes: settings.syncIntervalMinutes,
       maxHistoryItems: settings.maxHistoryItems,
       retentionDays: settings.retentionDays,
-      pinOnTop: settings.pinOnTop,
       showSourceApp: settings.showSourceApp,
       previewImages: settings.previewImages,
+      previewLinks: settings.previewLinks,
       createdAt: settings.createdAt,
       updatedAt: settings.updatedAt,
     );
@@ -59,20 +61,23 @@ class UserSettingsModel {
   @JsonKey(name: 'retention_days')
   final int retentionDays;
 
-  @JsonKey(name: 'pin_on_top')
-  final bool pinOnTop;
-
   @JsonKey(name: 'show_source_app')
   final bool showSourceApp;
 
   @JsonKey(name: 'preview_images')
   final bool previewImages;
 
+  @JsonKey(name: 'preview_links')
+  final bool previewLinks;
+
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
+
+  @JsonKey(name: 'incognito_mode')
+  final bool incognitoMode;
 
   Map<String, dynamic> toJson() => _$UserSettingsModelToJson(this);
 
@@ -84,9 +89,10 @@ class UserSettingsModel {
     int? syncIntervalMinutes,
     int? maxHistoryItems,
     int? retentionDays,
-    bool? pinOnTop,
     bool? showSourceApp,
     bool? previewImages,
+    bool? previewLinks,
+    bool? incognitoMode,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -98,9 +104,10 @@ class UserSettingsModel {
       syncIntervalMinutes: syncIntervalMinutes ?? this.syncIntervalMinutes,
       maxHistoryItems: maxHistoryItems ?? this.maxHistoryItems,
       retentionDays: retentionDays ?? this.retentionDays,
-      pinOnTop: pinOnTop ?? this.pinOnTop,
       showSourceApp: showSourceApp ?? this.showSourceApp,
       previewImages: previewImages ?? this.previewImages,
+      previewLinks: previewLinks ?? this.previewLinks,
+      incognitoMode: incognitoMode ?? this.incognitoMode,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -115,11 +122,29 @@ class UserSettingsModel {
       syncIntervalMinutes: syncIntervalMinutes,
       maxHistoryItems: maxHistoryItems,
       retentionDays: retentionDays,
-      pinOnTop: pinOnTop,
       showSourceApp: showSourceApp,
+      incognitoMode: incognitoMode,
       previewImages: previewImages,
+      previewLinks: previewLinks,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    userId,
+    theme,
+    shortcuts,
+    autoSync,
+    syncIntervalMinutes,
+    maxHistoryItems,
+    retentionDays,
+    showSourceApp,
+    previewImages,
+    previewLinks,
+    createdAt,
+    updatedAt,
+    incognitoMode,
+  ];
 }

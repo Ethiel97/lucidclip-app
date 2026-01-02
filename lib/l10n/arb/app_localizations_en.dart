@@ -15,6 +15,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'LucidClip';
 
   @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get autoDeleteAfter => 'Auto Delete After';
+
+  @override
+  String get autoSync => 'Auto Sync';
+
+  @override
   String get characters => 'Characters';
 
   @override
@@ -54,7 +63,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get format => 'Format';
 
   @override
+  String get general => 'General';
+
+  @override
   String get history => 'History';
+
+  @override
+  String get historyLimit => 'History Limit';
 
   @override
   String get imageOnly => 'Image Only';
@@ -80,6 +95,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get notifications => 'Notifications';
+
+  @override
   String get pin => 'Pin';
 
   @override
@@ -101,6 +119,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get share => 'Share';
 
   @override
+  String get showInMenuBar => 'Show in Menu Bar';
+
+  @override
   String get size => 'Size';
 
   @override
@@ -116,6 +137,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sync => 'Sync';
 
   @override
+  String get syncInterval => 'Sync Interval';
+
+  @override
   String get tags => 'Tags';
 
   @override
@@ -126,4 +150,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unpin => 'Unpin';
+
+  @override
+  String get previewLinks => 'Preview Links';
+
+  @override
+  String get ignorePasswords => 'Ignore Copied Passwords';
 }

@@ -8,6 +8,18 @@
   "@appName": {
     "description": "Name of the app"
   },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Label for the Appearance settings"
+  },
+  "autoSync": "Auto Sync",
+  "@autoSync": {
+    "description": "Label for the Auto Sync setting"
+  },
+  "autoSyncDescription": "Syncs the clipboard with the server automatically.",
+  "@autoSyncDescription": {
+    "description": "Description for the Auto Sync setting"
+  },
   "characters": "Characters",
   "@characters": {
     "description": "Label for the number of characters"
@@ -60,13 +72,34 @@
   "@format": {
     "description": "Label for the format of the content"
   },
+  "general": "General",
+  "@general": {
+    "description": "Label for the General settings"
+  },
   "history": "History",
   "@history": {
     "description": "Title for the History Page"
   },
+  "historyLimit": "History Limit",
+  "@historyLimit": {
+    "description": "Label for the History Limit setting"
+  },
+  "ignorePasswords": "Ignore Copied Passwords",
+  "@ignorePasswords": {
+    "description": "Label for the Ignore Copied Passwords setting"
+  },
   "imageOnly": "Image Only",
   "@imageOnly": {
     "description": "Label for the Image Only filter"
+  },
+  "incognitoMode": "Incognito Mode",
+  "@incognitoMode": {
+    "description": "Label for the Incognito Mode setting"
+  },
+  "incognitoModeDescription": "Disables history recording for copied items.",
+  "@incognitoModeDescription": {
+    "description": "Description for the Incognito Mode setting",
+    "placeholders": {}
   },
   "information": "Information",
   "@information": {
@@ -88,6 +121,10 @@
   "@loadingLinkPreview": {
     "description": "Message shown when the preview is loading"
   },
+  "maxHistoryItemsDescription": "Sets the maximum number of items in the clipboard.",
+  "@maxHistoryItemsDescription": {
+    "description": "Description for the Max History Items setting"
+  },
   "noItemsForCategory": "No {category} items",
   "@noItemsForCategory": {
     "description": "Message shown when there are no items for a specific label",
@@ -97,6 +134,10 @@
         "description": "Label of the section"
       }
     }
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Label for the Notifications settings"
   },
   "pin": "Pin",
   "@pin": {
@@ -110,9 +151,28 @@
   "@preview": {
     "description": "Label for the preview of the content"
   },
+  "previewImages": "Preview Images",
+  "@previewImages": {},
+  "previewImagesDescription": "Shows a preview of images in the clipboard.",
+  "@previewImagesDescription": {
+    "description": "Description for the Preview Images setting",
+    "placeholders": {}
+  },
+  "previewLinks": "Preview Links",
+  "@previewLinks": {
+    "description": "Label for the Preview Links setting"
+  },
+  "previewLinksDescription": "Shows a preview of links in the clipboard.",
+  "@previewLinksDescription": {
+    "description": "Description for the Preview Links setting"
+  },
   "recent": "Recent",
   "@recent": {
     "description": "Label for the Recent items"
+  },
+  "retentionDaysDescription": "Sets how long items are kept in the clipboard.",
+  "@retentionDaysDescription": {
+    "description": "Description for the Retention Days setting"
   },
   "searchHint": "Search...",
   "@searchHint": {
@@ -125,6 +185,18 @@
   "share": "Share",
   "@share": {
     "description": "Button text to share content"
+  },
+  "showInMenuBar": "Show in Menu Bar",
+  "@showInMenuBar": {
+    "description": "Label for the Show in Menu Bar setting"
+  },
+  "showSourceApp": "Show Source App",
+  "@showSourceApp": {
+    "description": "Label for the Show Source App setting"
+  },
+  "showSourceAppDescription": "Shows the app that copied the content.",
+  "@showSourceAppDescription": {
+    "description": "Description for the Show Source App setting"
   },
   "size": "Size",
   "@size": {
@@ -145,6 +217,14 @@
   "sync": "Sync",
   "@sync": {
     "description": "Button text to sync content"
+  },
+  "syncInterval": "Sync Interval",
+  "@syncInterval": {
+    "description": "Label for the Sync Interval setting"
+  },
+  "syncIntervalDescription": "Sets how often the clipboard is synced with the server.",
+  "@syncIntervalDescription": {
+    "description": "Description for the Sync Interval setting"
   },
   "tags": "Tags",
   "@tags": {

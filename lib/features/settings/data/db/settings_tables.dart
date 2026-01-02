@@ -11,23 +11,27 @@ class UserSettingsEntries extends Table {
   BoolColumn get autoSync =>
       boolean().named('auto_sync').withDefault(const Constant(false))();
 
-  IntColumn get syncIntervalMinutes =>
-      integer().named('sync_interval_minutes').withDefault(const Constant(5))();
+  BoolColumn get incognitoMode =>
+      boolean().named('incognito_mode').withDefault(const Constant(false))();
+
+  IntColumn get syncIntervalMinutes => integer()
+      .named('sync_interval_minutes')
+      .withDefault(const Constant(60))();
 
   IntColumn get maxHistoryItems =>
-      integer().named('max_history_items').withDefault(const Constant(1000))();
+      integer().named('max_history_items').withDefault(const Constant(50))();
 
   IntColumn get retentionDays =>
-      integer().named('retention_days').withDefault(const Constant(30))();
-
-  BoolColumn get pinOnTop =>
-      boolean().named('pin_on_top').withDefault(const Constant(true))();
+      integer().named('retention_days').withDefault(const Constant(5))();
 
   BoolColumn get showSourceApp =>
       boolean().named('show_source_app').withDefault(const Constant(true))();
 
   BoolColumn get previewImages =>
       boolean().named('preview_images').withDefault(const Constant(true))();
+
+  BoolColumn get previewLinks =>
+      boolean().named('preview_links').withDefault(const Constant(true))();
 
   DateTimeColumn get createdAt => dateTime().named('created_at')();
 

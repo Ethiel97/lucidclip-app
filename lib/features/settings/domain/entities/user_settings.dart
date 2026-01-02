@@ -11,9 +11,10 @@ class UserSettings extends Equatable {
     this.syncIntervalMinutes = 5,
     this.maxHistoryItems = 1000,
     this.retentionDays = 30,
-    this.pinOnTop = true,
     this.showSourceApp = true,
     this.previewImages = true,
+    this.previewLinks = true,
+    this.incognitoMode = false,
   });
 
   factory UserSettings.empty() {
@@ -35,9 +36,10 @@ class UserSettings extends Equatable {
   final int syncIntervalMinutes;
   final int maxHistoryItems;
   final int retentionDays;
-  final bool pinOnTop;
   final bool showSourceApp;
+  final bool incognitoMode;
   final bool previewImages;
+  final bool previewLinks;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -52,6 +54,8 @@ class UserSettings extends Equatable {
     bool? pinOnTop,
     bool? showSourceApp,
     bool? previewImages,
+    bool? previewLinks,
+    bool? incognitoMode,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -63,9 +67,10 @@ class UserSettings extends Equatable {
       syncIntervalMinutes: syncIntervalMinutes ?? this.syncIntervalMinutes,
       maxHistoryItems: maxHistoryItems ?? this.maxHistoryItems,
       retentionDays: retentionDays ?? this.retentionDays,
-      pinOnTop: pinOnTop ?? this.pinOnTop,
       showSourceApp: showSourceApp ?? this.showSourceApp,
+      incognitoMode: incognitoMode ?? this.incognitoMode,
       previewImages: previewImages ?? this.previewImages,
+      previewLinks: previewLinks ?? this.previewLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -73,19 +78,20 @@ class UserSettings extends Equatable {
 
   @override
   List<Object?> get props => [
-        userId,
-        theme,
-        shortcuts,
-        autoSync,
-        syncIntervalMinutes,
-        maxHistoryItems,
-        retentionDays,
-        pinOnTop,
-        showSourceApp,
-        previewImages,
-        createdAt,
-        updatedAt,
-      ];
+    userId,
+    theme,
+    shortcuts,
+    autoSync,
+    syncIntervalMinutes,
+    maxHistoryItems,
+    retentionDays,
+    showSourceApp,
+    incognitoMode,
+    previewImages,
+    previewLinks,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 enum SettingsThemeMode {
@@ -94,7 +100,9 @@ enum SettingsThemeMode {
   system;
 
   bool get isLight => this == SettingsThemeMode.light;
+
   bool get isDark => this == SettingsThemeMode.dark;
+
   bool get isSystem => this == SettingsThemeMode.system;
 
   static SettingsThemeMode fromString(String value) {

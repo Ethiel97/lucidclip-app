@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'LucidClip';
 
   @override
+  String get allTypes => 'All Types';
+
+  @override
   String get characters => 'Characters';
 
   @override

@@ -21,7 +21,7 @@ extension ClipboardUiHelper on ClipboardItem {
       ),
       ClipboardItemType.file => (
         const HugeIcon(icon: HugeIcons.strokeRoundedFolderOpen),
-        AppColors.warningSoft
+        AppColors.warningSoft,
       ),
       ClipboardItemType.url => (
         const HugeIcon(icon: HugeIcons.strokeRoundedLink01),
@@ -81,6 +81,7 @@ extension ClipboardItemTypeUiHelper on ClipboardItemType {
     FilterType.image => l10n.imageOnly,
     FilterType.file => l10n.fileOnly,
     FilterType.url => l10n.linkOnly,
+    FilterType.unknown => l10n.allTypes,
     _ => l10n.textOnly,
   };
 }

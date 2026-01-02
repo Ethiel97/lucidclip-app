@@ -1,6 +1,7 @@
 part of 'search_cubit.dart';
 
 typedef FilterType = ClipboardItemType;
+// add all to the typedef
 
 class SearchState extends Equatable {
   const SearchState({

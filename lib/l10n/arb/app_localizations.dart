@@ -100,6 +100,12 @@ abstract class AppLocalizations {
   /// **'LucidClip'**
   String get appName;
 
+  /// Label for the All Types filter
+  ///
+  /// In en, this message translates to:
+  /// **'All Types'**
+  String get allTypes;
+
   /// Label for the number of characters
   ///
   /// In en, this message translates to:

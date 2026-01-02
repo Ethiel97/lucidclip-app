@@ -601,6 +601,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  flexible_dropdown:
+    dependency: "direct main"
+    description:
+      name: flexible_dropdown
+      sha256: e710f18ca703edc20be7d30746b14514b3e81c9807029ca7ded87297fa9de6c5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.8"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -1190,7 +1198,7 @@ packages:
     source: hosted
     version: "0.4.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"

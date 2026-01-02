@@ -24,6 +24,8 @@ dependencies:
   toastification: ^3.0.3
   metalink_flutter: ^1.0.2
   flutter_portal: ^1.1.4
+  path: ^1.9.1
+  flexible_dropdown: ^1.0.8
 
   drift: ^2.29.0
   drift_flutter: 0.2.7

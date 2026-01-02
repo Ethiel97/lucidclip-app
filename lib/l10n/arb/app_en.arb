@@ -44,6 +44,10 @@
   "@failedToLoadLinkPreview": {
     "description": "Message shown when the preview failed to load"
   },
+  "fileOnly": "File Only",
+  "@fileOnly": {
+    "description": "Label for the File Only filter"
+  },
   "format": "Format",
   "@format": {
     "description": "Label for the format of the content"
@@ -51,6 +55,10 @@
   "history": "History",
   "@history": {
     "description": "Title for the History Page"
+  },
+  "imageOnly": "Image Only",
+  "@imageOnly": {
+    "description": "Label for the Image Only filter"
   },
   "information": "Information",
   "@information": {
@@ -63,6 +71,10 @@
   "link": "Link",
   "@link": {
     "description": "Label for Link input"
+  },
+  "linkOnly": "Link Only",
+  "@linkOnly": {
+    "description": "Label for the Link Only filter"
   },
   "loadingLinkPreview": "Loading link preview...",
   "@loadingLinkPreview": {
@@ -125,6 +137,10 @@
   "tags": "Tags",
   "@tags": {
     "description": "Label for the tags feature"
+  },
+  "textOnly": "Text Only",
+  "@textOnly": {
+    "description": "Label for the Text Only filter"
   },
   "theme": "Theme",
   "@theme": {

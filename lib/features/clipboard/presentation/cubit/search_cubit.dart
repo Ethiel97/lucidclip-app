@@ -56,14 +56,22 @@ class SearchCubit extends Cubit<SearchState> {
     final norm = q.toLowerCase();
     final filtered = _allItems.where((m) {
       final contentMatch = m.content.toLowerCase().contains(norm);
-      final typeMatch = m.type.name.toLowerCase().contains(norm);
-      final fileMatch = m.filePaths.any((p) => p.toLowerCase().contains(norm));
+      final typeMatch =
+          m.type.name.toLowerCase().contains(norm) ||
+          m.type == state.filterType;
+      final fileMatch = m.filePath?.contains(norm) ?? false;
       final metaMatch = m.metadata.values.any(
         (v) => v.toString().toLowerCase().contains(norm),
       );
       return contentMatch || typeMatch || fileMatch || metaMatch;
     }).toList();
+
     emit(state.copyWith(searchResults: filtered.toSuccess()));
+  }
+
+  void setFilterType(FilterType filterType) {
+    emit(state.copyWith(filterType: filterType));
+    _applyFilter(state.query);
   }
 
   void clear() {

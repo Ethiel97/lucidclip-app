@@ -24,11 +24,7 @@ ClipboardItemModel _$ClipboardItemModelFromJson(Map<String, dynamic> json) =>
       imageBytes: (json['image_bytes'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
           .toList(),
-      filePaths:
-          (json['file_paths'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+      filePath: json['file_path'] as String?,
       isPinned: json['is_pinned'] as bool? ?? false,
       isSnippet: json['is_snippet'] as bool? ?? false,
       isSynced: json['is_synced'] as bool? ?? false,
@@ -41,7 +37,7 @@ Map<String, dynamic> _$ClipboardItemModelToJson(ClipboardItemModel instance) =>
       'content': instance.content,
       'content_hash': instance.contentHash,
       'created_at': instance.createdAt.toIso8601String(),
-      'file_paths': instance.filePaths,
+      'file_path': instance.filePath,
       'html_content': instance.htmlContent,
       'id': instance.id,
       'image_bytes': instance.imageBytes,

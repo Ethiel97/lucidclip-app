@@ -107,9 +107,6 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       orElse: () => ClipboardItemTypeModel.unknown,
     );
 
-    final filePaths = (e.filePaths.isEmpty)
-        ? <String>[]
-        : List<String>.from(jsonDecode(e.filePaths) as List);
     final metadata = e.metadataJson == null
         ? <String, dynamic>{}
         : Map<String, dynamic>.from(
@@ -124,7 +121,7 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       content: e.content,
       contentHash: e.contentHash,
       createdAt: e.createdAt,
-      filePaths: filePaths,
+      filePath: e.filePath,
       htmlContent: e.htmlContent,
       id: e.id,
       imageBytes: imageBytes,
@@ -153,7 +150,7 @@ class ClipboardDatabase extends _$ClipboardDatabase {
             ? base64Encode(m.imageBytes!)
             : null,
       ),
-      filePaths: Value(jsonEncode(m.filePaths)),
+      filePath: Value(m.filePath),
       isPinned: Value(m.isPinned),
       isSnippet: Value(m.isSnippet),
       isSynced: Value(m.isSynced),

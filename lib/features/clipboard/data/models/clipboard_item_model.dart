@@ -16,7 +16,7 @@ class ClipboardItemModel {
     required this.updatedAt,
     required this.userId,
     this.imageBytes,
-    this.filePaths = const [],
+    this.filePath,
     this.isPinned = false,
     this.isSnippet = false,
     this.isSynced = false,
@@ -29,7 +29,7 @@ class ClipboardItemModel {
       content: item.content,
       contentHash: item.contentHash,
       createdAt: item.createdAt,
-      filePaths: item.filePaths,
+      filePath: item.filePath,
       htmlContent: item.htmlContent,
       id: item.id,
 
@@ -53,8 +53,8 @@ class ClipboardItemModel {
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
 
-  @JsonKey(name: 'file_paths')
-  final List<String> filePaths;
+  @JsonKey(name: 'file_path')
+  final String? filePath;
 
   @JsonKey(name: 'html_content')
   final String? htmlContent;
@@ -93,7 +93,7 @@ class ClipboardItemModel {
     String? content,
     String? contentHash,
     DateTime? createdAt,
-    List<String>? filePaths,
+    String? filePath,
     String? htmlContent,
     String? id,
     List<int>? imageBytes,
@@ -109,7 +109,7 @@ class ClipboardItemModel {
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       createdAt: createdAt ?? this.createdAt,
-      filePaths: filePaths ?? this.filePaths,
+      filePath: filePath ?? this.filePath,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
       imageBytes: imageBytes ?? this.imageBytes,
@@ -128,7 +128,7 @@ class ClipboardItemModel {
       content: content,
       contentHash: contentHash,
       createdAt: createdAt,
-      filePaths: filePaths,
+      filePath: filePath,
       htmlContent: htmlContent,
       id: id,
       imageBytes: imageBytes,

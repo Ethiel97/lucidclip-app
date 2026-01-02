@@ -160,6 +160,12 @@ abstract class AppLocalizations {
   /// **'Failed to load link preview'**
   String get failedToLoadLinkPreview;
 
+  /// Label for the File Only filter
+  ///
+  /// In en, this message translates to:
+  /// **'File Only'**
+  String get fileOnly;
+
   /// Label for the format of the content
   ///
   /// In en, this message translates to:
@@ -171,6 +177,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'History'**
   String get history;
+
+  /// Label for the Image Only filter
+  ///
+  /// In en, this message translates to:
+  /// **'Image Only'**
+  String get imageOnly;
 
   /// Label for the information section
   ///
@@ -189,6 +201,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Link'**
   String get link;
+
+  /// Label for the Link Only filter
+  ///
+  /// In en, this message translates to:
+  /// **'Link Only'**
+  String get linkOnly;
 
   /// Message shown when the preview is loading
   ///
@@ -273,6 +291,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tags'**
   String get tags;
+
+  /// Label for the Text Only filter
+  ///
+  /// In en, this message translates to:
+  /// **'Text Only'**
+  String get textOnly;
 
   /// Label for the Theme settings
   ///

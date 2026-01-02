@@ -20,8 +20,7 @@ class ClipboardItemEntries extends Table {
 
   TextColumn get imageBytes => text().named('image_bytes').nullable()();
 
-  TextColumn get filePaths =>
-      text().named('file_paths').withDefault(const Constant('[]'))();
+  TextColumn get filePath => text().named('file_path').nullable()();
 
   BoolColumn get isPinned =>
       boolean().named('is_pinned').withDefault(const Constant(false))();

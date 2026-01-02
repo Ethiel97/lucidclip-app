@@ -83,7 +83,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       createdAt: clipboardData.timestamp ?? now,
       updatedAt: now,
       imageBytes: clipboardData.imageBytes,
-      filePaths: clipboardData.filePaths ?? [],
+      filePath: clipboardData.filePath,
       htmlContent: clipboardData.html,
     );
   }
@@ -195,7 +195,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       contentHash: item.contentHash,
       timestamp: item.createdAt,
       html: item.htmlContent,
-      filePaths: item.filePaths.isNotEmpty ? item.filePaths : null,
+      filePath: item.filePath,
     );
   }
 

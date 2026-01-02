@@ -12,7 +12,7 @@ class ClipboardMapper {
       content: e.content,
       contentHash: e.contentHash,
       createdAt: e.createdAt,
-      filePaths: e.filePaths,
+      filePath: e.filePath,
       htmlContent: e.htmlContent,
       id: e.id,
       imageBytes: e.imageBytes,

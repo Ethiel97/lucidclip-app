@@ -18,7 +18,7 @@ class ClipboardItem extends Equatable {
     required this.updatedAt,
     required this.userId,
     this.imageBytes,
-    this.filePaths = const [],
+    this.filePath,
     this.isPinned = false,
     this.isSnippet = false,
     this.isSynced = false,
@@ -47,7 +47,7 @@ class ClipboardItem extends Equatable {
   final String contentHash;
   final DateTime createdAt;
 
-  final List<String> filePaths;
+  final String? filePath;
 
   final String? htmlContent;
   final String id;
@@ -69,7 +69,7 @@ class ClipboardItem extends Equatable {
     String? content,
     String? contentHash,
     DateTime? createdAt,
-    List<String>? filePaths,
+    String? filePath,
     String? htmlContent,
     String? id,
     List<int>? imageBytes,
@@ -85,7 +85,7 @@ class ClipboardItem extends Equatable {
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       createdAt: createdAt ?? this.createdAt,
-      filePaths: filePaths ?? this.filePaths,
+      filePath: filePath ?? this.filePath,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
       imageBytes: imageBytes ?? this.imageBytes,
@@ -117,7 +117,7 @@ class ClipboardItem extends Equatable {
     content,
     contentHash,
     createdAt,
-    filePaths,
+    filePath,
     htmlContent,
     id,
     imageBytes,
@@ -138,6 +138,13 @@ enum ClipboardItemType {
   url,
   html,
   unknown;
+
+  List<ClipboardItemType> get filterableTypes => [
+    ClipboardItemType.text,
+    ClipboardItemType.image,
+    ClipboardItemType.file,
+    ClipboardItemType.url,
+  ];
 
   bool get isText => this == ClipboardItemType.text;
 

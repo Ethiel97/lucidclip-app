@@ -42,10 +42,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToLoadLinkPreview => 'Failed to load link preview';
 
   @override
+  String get fileOnly => 'File Only';
+
+  @override
   String get format => 'Format';
 
   @override
   String get history => 'History';
+
+  @override
+  String get imageOnly => 'Image Only';
 
   @override
   String get information => 'Information';
@@ -55,6 +61,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get link => 'Link';
+
+  @override
+  String get linkOnly => 'Link Only';
 
   @override
   String get loadingLinkPreview => 'Loading link preview...';
@@ -99,6 +108,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tags => 'Tags';
+
+  @override
+  String get textOnly => 'Text Only';
 
   @override
   String get theme => 'Theme';

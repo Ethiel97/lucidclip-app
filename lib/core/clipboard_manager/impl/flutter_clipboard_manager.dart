@@ -51,21 +51,26 @@ class FlutterClipboardManager implements BaseClipboardManager {
     }
   }
 
+  // TODO(Ethiel97): handle multiple files in clipboard
   @override
   Future<ClipboardData?> getClipboardContent() async {
     // 1. Vérifier les fichiers d'abord
     final files = await Pasteboard.files();
     final timestamp = DateTime.now();
     if (files.isNotEmpty) {
-      final clipboardData = ClipboardData(
-        type: ClipboardContentType.file,
-        filePaths: files,
-        text: files.join(', '),
-        timestamp: timestamp,
-      );
-      return clipboardData.copyWith(
-        contentHash: clipboardData.computedContentHash,
-      );
+      for (final file in files) {
+        if (file.isNotEmpty) {
+          final clipboardData = ClipboardData(
+            type: ClipboardContentType.file,
+            filePath: file,
+            text: file,
+            timestamp: timestamp,
+          );
+          return clipboardData.copyWith(
+            contentHash: clipboardData.computedContentHash,
+          );
+        }
+      }
     }
 
     // 2. Vérifier les images
@@ -138,8 +143,8 @@ class FlutterClipboardManager implements BaseClipboardManager {
         }
 
       case ClipboardContentType.file:
-        if (data.filePaths != null && data.filePaths!.isNotEmpty) {
-          await Pasteboard.writeFiles(data.filePaths!);
+        if (data.filePath != null && data.filePath!.isNotEmpty) {
+          await Pasteboard.writeFiles([data.filePath!]);
         }
 
       case ClipboardContentType.html:
@@ -148,7 +153,6 @@ class FlutterClipboardManager implements BaseClipboardManager {
         }
 
       case ClipboardContentType.unknown:
-        // Ne rien faire pour les types inconnus
         break;
     }
 
@@ -189,7 +193,7 @@ extension ClipboardDataHashExt on ClipboardData {
       text,
       html,
       if (imageBytes != null) imageBytes,
-      if (filePaths != null) filePaths,
+      if (filePath != null) filePath,
     ];
     return ContentHasher.hashOfParts(parts);
   }

@@ -82,7 +82,7 @@ dependencies:
   jiffy: ^6.3.2
 
   # Navigation
-  auto_route: ^10.1.0+1
+  auto_route: ^11.1.0
   melos: ^6.3.2
 
 dev_dependencies:

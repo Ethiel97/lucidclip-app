@@ -1,10 +1,10 @@
 {
   "@@locale": "en",
-  "appName": "LucidClip",
   "allTypes": "All Types",
   "@allTypes": {
     "description": "Label for the All Types filter"
   },
+  "appName": "LucidClip",
   "@appName": {
     "description": "Name of the app"
   },
@@ -43,6 +43,10 @@
   "delete": "Delete",
   "@delete": {
     "description": "Button text to delete content"
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Button text to edit content"
   },
   "failedToLoadLinkPreview": "Failed to load link preview",
   "@failedToLoadLinkPreview": {
@@ -117,6 +121,10 @@
   "settings": "Settings",
   "@settings": {
     "description": "Title for the Settings Page"
+  },
+  "share": "Share",
+  "@share": {
+    "description": "Button text to share content"
   },
   "size": "Size",
   "@size": {

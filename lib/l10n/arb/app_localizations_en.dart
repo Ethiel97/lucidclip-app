@@ -9,10 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'LucidClip';
+  String get allTypes => 'All Types';
 
   @override
-  String get allTypes => 'All Types';
+  String get appName => 'LucidClip';
 
   @override
   String get characters => 'Characters';
@@ -40,6 +40,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
 
   @override
   String get failedToLoadLinkPreview => 'Failed to load link preview';
@@ -93,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
+
+  @override
+  String get share => 'Share';
 
   @override
   String get size => 'Size';

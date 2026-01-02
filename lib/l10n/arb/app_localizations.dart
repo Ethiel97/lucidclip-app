@@ -94,17 +94,17 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// Name of the app
-  ///
-  /// In en, this message translates to:
-  /// **'LucidClip'**
-  String get appName;
-
   /// Label for the All Types filter
   ///
   /// In en, this message translates to:
   /// **'All Types'**
   String get allTypes;
+
+  /// Name of the app
+  ///
+  /// In en, this message translates to:
+  /// **'LucidClip'**
+  String get appName;
 
   /// Label for the number of characters
   ///
@@ -159,6 +159,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// Button text to edit content
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
 
   /// Message shown when the preview failed to load
   ///
@@ -261,6 +267,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// Button text to share content
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
 
   /// Label for the size of the content
   ///

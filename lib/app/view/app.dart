@@ -15,7 +15,6 @@ class App extends StatelessWidget {
         theme: const AppTheme().dark,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-      
         home: const ClipboardPage(),
       ),
     );

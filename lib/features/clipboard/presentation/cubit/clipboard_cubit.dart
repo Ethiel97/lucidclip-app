@@ -58,7 +58,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       if (!isDuplicate) {
         // Convert ClipboardData to ClipboardItem and upsert to local repository
-        final clipboardItem = _convertToClipboardItem(clipboardData);
+        final clipboardItem = clipboardData.toDomain(userId: _pendingUserId);
         await _upsertClipboardItem(clipboardItem);
 
         // Create clipboard history record
@@ -69,23 +69,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       //
       // emit(state.copyWith(localClipboardItems: updated));
     });
-  }
-
-  ClipboardItem _convertToClipboardItem(ClipboardData clipboardData) {
-    final now = DateTime.now();
-
-    return ClipboardItem(
-      id: IdGenerator.generate(),
-      content: clipboardData.text ?? '',
-      contentHash: clipboardData.contentHash ?? '',
-      type: clipboardData.clipboardItemType,
-      userId: _pendingUserId,
-      createdAt: clipboardData.timestamp ?? now,
-      updatedAt: now,
-      imageBytes: clipboardData.imageBytes,
-      filePath: clipboardData.filePath,
-      htmlContent: clipboardData.html,
-    );
   }
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
@@ -185,18 +168,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
             );
           },
         );
-  }
-
-  ClipboardData _convertToClipboardData(ClipboardItem item) {
-    return ClipboardData(
-      type: item.contentType,
-      // Using the extension
-      text: item.content,
-      contentHash: item.contentHash,
-      timestamp: item.createdAt,
-      html: item.htmlContent,
-      filePath: item.filePath,
-    );
   }
 
   Future<void> loadClipboardItems() async {

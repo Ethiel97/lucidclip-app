@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// App Text Style Definitions using Google Fonts
 abstract class AppTextStyle {
   // Base families
   static final TextStyle _sans = GoogleFonts.sora(

@@ -88,21 +88,21 @@ class UserSettings extends Equatable {
       ];
 }
 
-enum ThemeMode {
+enum SettingsThemeMode {
   light,
   dark,
   system;
 
-  bool get isLight => this == ThemeMode.light;
-  bool get isDark => this == ThemeMode.dark;
-  bool get isSystem => this == ThemeMode.system;
+  bool get isLight => this == SettingsThemeMode.light;
+  bool get isDark => this == SettingsThemeMode.dark;
+  bool get isSystem => this == SettingsThemeMode.system;
 
-  static ThemeMode fromString(String value) {
+  static SettingsThemeMode fromString(String value) {
     return switch (value.toLowerCase()) {
-      'light' => ThemeMode.light,
-      'dark' => ThemeMode.dark,
-      'system' => ThemeMode.system,
-      _ => ThemeMode.dark,
+      'light' => SettingsThemeMode.light,
+      'dark' => SettingsThemeMode.dark,
+      'system' => SettingsThemeMode.system,
+      _ => SettingsThemeMode.dark,
     };
   }
 }

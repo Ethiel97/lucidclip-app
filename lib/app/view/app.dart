@@ -44,13 +44,12 @@ class _AppView extends StatelessWidget {
     );
   }
 
-  ThemeMode _getThemeMode(String theme) {
-    return switch (theme) {
-      'light' => ThemeMode.light,
-      'dark' => ThemeMode.dark,
-      'system' => ThemeMode.system,
-      _ => ThemeMode.dark,
-    };
-  }
+  ThemeMode _getThemeMode(String theme) =>
+      switch (theme.toLowerCase()) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        'system' => ThemeMode.system,
+        _ => ThemeMode.dark,
+      };
 }
 

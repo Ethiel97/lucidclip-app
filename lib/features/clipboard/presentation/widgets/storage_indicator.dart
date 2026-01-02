@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 
 class StorageIndicator extends StatelessWidget {
-  const StorageIndicator({
-    required this.used,
-    required this.total,
-    super.key,
-  });
+  const StorageIndicator({required this.used, required this.total, super.key});
 
   final int used;
   final int total;
@@ -22,6 +18,7 @@ class StorageIndicator extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
+        spacing: AppSpacing.xxs,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -30,7 +27,6 @@ class StorageIndicator extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
           ),
-          const SizedBox(height: AppSpacing.xxxs),
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: SizedBox(
@@ -39,9 +35,7 @@ class StorageIndicator extends StatelessWidget {
                 builder: (context, constraints) {
                   return Stack(
                     children: [
-                      Container(
-                        color: Colors.white.withValues(alpha: 0.04),
-                      ),
+                      Container(color: Colors.white.withValues(alpha: 0.04)),
                       FractionallySizedBox(
                         widthFactor: ratio.clamp(0.0, 1.0),
                         child: Container(

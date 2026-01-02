@@ -141,10 +141,10 @@ packages:
     dependency: "direct main"
     description:
       name: bloc
-      sha256: a2cebb899f91d36eeeaa55c7b20b5915db5a9df1b8fd4a3c9c825e22e474537d
+      sha256: a48653a82055a900b88cd35f92429f068c5a8057ae9b136d197b3d56c57efb81
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.0"
+    version: "9.2.0"
   bloc_test:
     dependency: "direct dev"
     description:
@@ -301,10 +301,10 @@ packages:
     dependency: "direct main"
     description:
       name: clipboard
-      sha256: "619f4e9e946cfd637ac994f49af356bb590ab88b0c4aded03204ee566fd69d9e"
+      sha256: "45f26eb08784c1ef11d58acd8c918ee3690ab619e286ff0ce4e4f78436f8a2b2"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.8"
+    version: "3.0.9"
   clock:
     dependency: transitive
     description:

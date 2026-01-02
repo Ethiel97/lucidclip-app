@@ -13,146 +13,147 @@ class SettingsView extends StatelessWidget {
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state.error != null) {
-            return Center(
+          return state.settings.when(
+            initial: () => const Center(
+              child: Text('Initializing settings...'),
+            ),
+            loading: (oldValue) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            error: (errorDetails, oldValue) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Error: ${state.error}'),
+                  Text('Error: ${errorDetails.message}'),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      // TODO: Get user ID from auth context
-                      context.read<SettingsCubit>().loadSettings('');
+                      context.read<SettingsCubit>().loadSettings(null);
                     },
                     child: const Text('Retry'),
                   ),
                 ],
               ),
-            );
-          }
+            ),
+            success: (settings) {
+              if (settings == null) {
+                return const Center(child: Text('No settings available'));
+              }
 
-          final settings = state.settings;
-          if (settings == null) {
-            return const Center(child: Text('No settings available'));
-          }
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _buildSection(
-                context,
-                title: 'Appearance',
+              return ListView(
+                padding: const EdgeInsets.all(16),
                 children: [
-                  _buildThemeSelector(context, settings.theme),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _buildSection(
-                context,
-                title: 'Sync Settings',
-                children: [
-                  _buildSwitchTile(
+                  _buildSection(
                     context,
-                    title: 'Auto Sync',
-                    subtitle: 'Automatically sync clipboard to cloud',
-                    value: settings.autoSync,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateAutoSync(value);
-                    },
+                    title: 'Appearance',
+                    children: [
+                      _buildThemeSelector(context, settings.theme),
+                    ],
                   ),
-                  if (settings.autoSync) ...[
-                    _buildSliderTile(
-                      context,
-                      title: 'Sync Interval',
-                      subtitle: '${settings.syncIntervalMinutes} minutes',
-                      value: settings.syncIntervalMinutes.toDouble(),
-                      min: 1,
-                      max: 60,
-                      divisions: 59,
-                      onChanged: (value) {
-                        context
-                            .read<SettingsCubit>()
-                            .updateSyncInterval(value.toInt());
-                      },
-                    ),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 24),
-              _buildSection(
-                context,
-                title: 'Clipboard Settings',
-                children: [
-                  _buildSliderTile(
+                  const SizedBox(height: 24),
+                  _buildSection(
                     context,
-                    title: 'Max History Items',
-                    subtitle: '${settings.maxHistoryItems} items',
-                    value: settings.maxHistoryItems.toDouble(),
-                    min: 100,
-                    max: 10000,
-                    divisions: 99,
-                    onChanged: (value) {
-                      context
-                          .read<SettingsCubit>()
-                          .updateMaxHistoryItems(value.toInt());
-                    },
+                    title: 'Sync Settings',
+                    children: [
+                      _buildSwitchTile(
+                        context,
+                        title: 'Auto Sync',
+                        subtitle: 'Automatically sync clipboard to cloud',
+                        value: settings.autoSync,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updateAutoSync(value);
+                        },
+                      ),
+                      if (settings.autoSync) ...[
+                        _buildSliderTile(
+                          context,
+                          title: 'Sync Interval',
+                          subtitle: '${settings.syncIntervalMinutes} minutes',
+                          value: settings.syncIntervalMinutes.toDouble(),
+                          min: 1,
+                          max: 60,
+                          divisions: 59,
+                          onChanged: (value) {
+                            context
+                                .read<SettingsCubit>()
+                                .updateSyncInterval(value.toInt());
+                          },
+                        ),
+                      ],
+                    ],
                   ),
-                  _buildSliderTile(
+                  const SizedBox(height: 24),
+                  _buildSection(
                     context,
-                    title: 'Retention Period',
-                    subtitle: '${settings.retentionDays} days',
-                    value: settings.retentionDays.toDouble(),
-                    min: 1,
-                    max: 365,
-                    divisions: 364,
-                    onChanged: (value) {
-                      context
-                          .read<SettingsCubit>()
-                          .updateRetentionDays(value.toInt());
-                    },
+                    title: 'Clipboard Settings',
+                    children: [
+                      _buildSliderTile(
+                        context,
+                        title: 'Max History Items',
+                        subtitle: '${settings.maxHistoryItems} items',
+                        value: settings.maxHistoryItems.toDouble(),
+                        min: 100,
+                        max: 10000,
+                        divisions: 99,
+                        onChanged: (value) {
+                          context
+                              .read<SettingsCubit>()
+                              .updateMaxHistoryItems(value.toInt());
+                        },
+                      ),
+                      _buildSliderTile(
+                        context,
+                        title: 'Retention Period',
+                        subtitle: '${settings.retentionDays} days',
+                        value: settings.retentionDays.toDouble(),
+                        min: 1,
+                        max: 365,
+                        divisions: 364,
+                        onChanged: (value) {
+                          context
+                              .read<SettingsCubit>()
+                              .updateRetentionDays(value.toInt());
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _buildSection(
-                context,
-                title: 'Display Settings',
-                children: [
-                  _buildSwitchTile(
+                  const SizedBox(height: 24),
+                  _buildSection(
                     context,
-                    title: 'Pin on Top',
-                    subtitle: 'Keep pinned items at the top',
-                    value: settings.pinOnTop,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updatePinOnTop(value);
-                    },
-                  ),
-                  _buildSwitchTile(
-                    context,
-                    title: 'Show Source App',
-                    subtitle: 'Display which app the clipboard item came from',
-                    value: settings.showSourceApp,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateShowSourceApp(value);
-                    },
-                  ),
-                  _buildSwitchTile(
-                    context,
-                    title: 'Preview Images',
-                    subtitle: 'Show image previews in the list',
-                    value: settings.previewImages,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updatePreviewImages(value);
-                    },
+                    title: 'Display Settings',
+                    children: [
+                      _buildSwitchTile(
+                        context,
+                        title: 'Pin on Top',
+                        subtitle: 'Keep pinned items at the top',
+                        value: settings.pinOnTop,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updatePinOnTop(value);
+                        },
+                      ),
+                      _buildSwitchTile(
+                        context,
+                        title: 'Show Source App',
+                        subtitle: 'Display which app the clipboard item came from',
+                        value: settings.showSourceApp,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updateShowSourceApp(value);
+                        },
+                      ),
+                      _buildSwitchTile(
+                        context,
+                        title: 'Preview Images',
+                        subtitle: 'Show image previews in the list',
+                        value: settings.previewImages,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updatePreviewImages(value);
+                        },
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ],
+              );
+            },
           );
         },
       ),

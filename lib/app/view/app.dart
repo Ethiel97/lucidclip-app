@@ -26,7 +26,7 @@ class _AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
-        final settings = state.settings;
+        final settings = state.settings.value;
         final themeMode = _getThemeMode(settings?.theme ?? 'dark');
         
         return Portal(

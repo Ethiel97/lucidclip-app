@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/settings/data/models/models.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
@@ -13,69 +14,116 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({
     required this.localSettingsRepository,
     required this.settingsRepository,
-  }) : super(const SettingsState());
+  }) : super(const SettingsState()) {
+    // Initialize with default settings for unauthenticated users
+    _initializeDefaultSettings();
+  }
 
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository settingsRepository;
 
   StreamSubscription<UserSettings?>? _settingsSubscription;
 
-  Future<void> loadSettings(String userId) async {
-    emit(state.copyWith(isLoading: true, error: null));
+  // Use a local storage key for unauthenticated users
+  static const String _guestUserId = 'guest';
 
-    try {
-      // First load from local
-      final localSettings = await localSettingsRepository.getSettings(userId);
-
-      if (localSettings != null) {
-        emit(state.copyWith(settings: localSettings, isLoading: false));
-      }
-
-      // Then try to load from remote and sync
-      try {
-        final remoteSettings = await settingsRepository.getSettings(userId);
-        if (remoteSettings != null) {
-          await localSettingsRepository.upsertSettings(remoteSettings);
-          emit(state.copyWith(settings: remoteSettings, isLoading: false));
-        } else if (localSettings == null) {
-          // Create default settings
-          final defaultSettings = UserSettings(
-            userId: userId,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-          );
-          await updateSettings(defaultSettings);
-        }
-      } catch (e) {
-        // If remote fails but we have local, that's okay
-        if (localSettings == null) {
-          // Create default settings locally
-          final defaultSettings = UserSettings(
-            userId: userId,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-          );
-          await localSettingsRepository.upsertSettings(defaultSettings);
-          emit(state.copyWith(settings: defaultSettings, isLoading: false));
-        }
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          error: 'Failed to load settings: $e',
-        ),
+  void _initializeDefaultSettings() {
+    // If we don't have settings loaded, create default ones
+    if (state.settings.value == null) {
+      final defaultSettings = UserSettings(
+        userId: _guestUserId,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
+      emit(state.copyWith(
+        settings: state.settings.toSuccess(defaultSettings),
+      ));
     }
   }
 
-  void watchSettings(String userId) {
+  Future<void> loadSettings(String? userId) async {
+    // Use guest userId if not authenticated
+    final effectiveUserId = userId?.isNotEmpty == true ? userId! : _guestUserId;
+    
+    emit(state.copyWith(
+      settings: state.settings.toLoading(),
+    ));
+
+    try {
+      // First load from local
+      final localSettings = await localSettingsRepository.getSettings(effectiveUserId);
+
+      if (localSettings != null) {
+        emit(state.copyWith(
+          settings: state.settings.toSuccess(localSettings),
+        ));
+      }
+
+      // Only try to sync with remote if user is authenticated
+      if (userId?.isNotEmpty == true) {
+        try {
+          final remoteSettings = await settingsRepository.getSettings(userId!);
+          if (remoteSettings != null) {
+            await localSettingsRepository.upsertSettings(remoteSettings);
+            emit(state.copyWith(
+              settings: state.settings.toSuccess(remoteSettings),
+            ));
+          } else if (localSettings == null) {
+            // Create default settings
+            final defaultSettings = UserSettings(
+              userId: userId,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            );
+            await updateSettings(defaultSettings);
+          }
+        } catch (e) {
+          // If remote fails but we have local, that's okay
+          if (localSettings == null) {
+            // Create default settings locally
+            final defaultSettings = UserSettings(
+              userId: userId,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+            );
+            await localSettingsRepository.upsertSettings(defaultSettings);
+            emit(state.copyWith(
+              settings: state.settings.toSuccess(defaultSettings),
+            ));
+          }
+        }
+      } else if (localSettings == null) {
+        // Create default settings for guest
+        final defaultSettings = UserSettings(
+          userId: _guestUserId,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        await localSettingsRepository.upsertSettings(defaultSettings);
+        emit(state.copyWith(
+          settings: state.settings.toSuccess(defaultSettings),
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        settings: state.settings.toError(
+          ErrorDetails(message: 'Failed to load settings: $e'),
+        ),
+      ));
+    }
+  }
+
+  void watchSettings(String? userId) {
+    final effectiveUserId = userId?.isNotEmpty == true ? userId! : _guestUserId;
+    
     _settingsSubscription?.cancel();
     _settingsSubscription = localSettingsRepository
-        .watchSettings(userId)
+        .watchSettings(effectiveUserId)
         .listen((settings) {
       if (settings != null) {
-        emit(state.copyWith(settings: settings));
+        emit(state.copyWith(
+          settings: state.settings.toSuccess(settings),
+        ));
       }
     });
   }
@@ -88,76 +136,88 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
       // Update local first for immediate feedback
       await localSettingsRepository.upsertSettings(updatedSettings);
-      emit(state.copyWith(settings: updatedSettings));
+      emit(state.copyWith(
+        settings: state.settings.toSuccess(updatedSettings),
+      ));
 
-      // Then sync to remote in background
-      try {
-        await settingsRepository.updateSettings(updatedSettings);
-      } catch (e) {
-        // Log but don't fail if remote sync fails
-        // The settings are already saved locally
+      // Only sync to remote if user is authenticated (not guest)
+      if (updatedSettings.userId != _guestUserId) {
+        try {
+          await settingsRepository.updateSettings(updatedSettings);
+        } catch (e) {
+          // Log but don't fail if remote sync fails
+          // The settings are already saved locally
+        }
       }
     } catch (e) {
-      emit(
-        state.copyWith(
-          error: 'Failed to update settings: $e',
+      emit(state.copyWith(
+        settings: state.settings.toError(
+          ErrorDetails(message: 'Failed to update settings: $e'),
         ),
-      );
+      ));
     }
   }
 
   Future<void> updateTheme(String theme) async {
-    if (state.settings != null) {
-      await updateSettings(state.settings!.copyWith(theme: theme));
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(currentSettings.copyWith(theme: theme));
     }
   }
 
   Future<void> updateAutoSync(bool autoSync) async {
-    if (state.settings != null) {
-      await updateSettings(state.settings!.copyWith(autoSync: autoSync));
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(currentSettings.copyWith(autoSync: autoSync));
     }
   }
 
   Future<void> updateSyncInterval(int minutes) async {
-    if (state.settings != null) {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
       await updateSettings(
-        state.settings!.copyWith(syncIntervalMinutes: minutes),
+        currentSettings.copyWith(syncIntervalMinutes: minutes),
       );
     }
   }
 
   Future<void> updateMaxHistoryItems(int maxItems) async {
-    if (state.settings != null) {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
       await updateSettings(
-        state.settings!.copyWith(maxHistoryItems: maxItems),
+        currentSettings.copyWith(maxHistoryItems: maxItems),
       );
     }
   }
 
   Future<void> updateRetentionDays(int days) async {
-    if (state.settings != null) {
-      await updateSettings(state.settings!.copyWith(retentionDays: days));
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(currentSettings.copyWith(retentionDays: days));
     }
   }
 
   Future<void> updatePinOnTop(bool pinOnTop) async {
-    if (state.settings != null) {
-      await updateSettings(state.settings!.copyWith(pinOnTop: pinOnTop));
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(currentSettings.copyWith(pinOnTop: pinOnTop));
     }
   }
 
   Future<void> updateShowSourceApp(bool showSourceApp) async {
-    if (state.settings != null) {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
       await updateSettings(
-        state.settings!.copyWith(showSourceApp: showSourceApp),
+        currentSettings.copyWith(showSourceApp: showSourceApp),
       );
     }
   }
 
   Future<void> updatePreviewImages(bool previewImages) async {
-    if (state.settings != null) {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
       await updateSettings(
-        state.settings!.copyWith(previewImages: previewImages),
+        currentSettings.copyWith(previewImages: previewImages),
       );
     }
   }

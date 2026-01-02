@@ -96,4 +96,13 @@ enum ThemeMode {
   bool get isLight => this == ThemeMode.light;
   bool get isDark => this == ThemeMode.dark;
   bool get isSystem => this == ThemeMode.system;
+
+  static ThemeMode fromString(String value) {
+    return switch (value.toLowerCase()) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.dark,
+    };
+  }
 }

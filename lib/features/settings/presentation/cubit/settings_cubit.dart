@@ -14,10 +14,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({
     required this.localSettingsRepository,
     required this.settingsRepository,
-  }) : super(const SettingsState()) {
-    // Initialize with default settings for unauthenticated users
-    _initializeDefaultSettings();
-  }
+  }) : super(const SettingsState());
 
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository settingsRepository;
@@ -27,18 +24,12 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   // Use a local storage key for unauthenticated users
   static const String _guestUserId = 'guest';
 
-  void _initializeDefaultSettings() {
-    // If we don't have settings loaded, create default ones
-    if (state.settings.value == null) {
-      final defaultSettings = UserSettings(
-        userId: _guestUserId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      emit(state.copyWith(
-        settings: state.settings.toSuccess(defaultSettings),
-      ));
-    }
+  UserSettings _createDefaultSettings(String userId) {
+    return UserSettings(
+      userId: userId,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
   }
 
   Future<void> loadSettings(String? userId) async {
@@ -70,22 +61,14 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
             ));
           } else if (localSettings == null) {
             // Create default settings
-            final defaultSettings = UserSettings(
-              userId: userId,
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-            );
+            final defaultSettings = _createDefaultSettings(userId);
             await updateSettings(defaultSettings);
           }
         } catch (e) {
           // If remote fails but we have local, that's okay
           if (localSettings == null) {
             // Create default settings locally
-            final defaultSettings = UserSettings(
-              userId: userId,
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-            );
+            final defaultSettings = _createDefaultSettings(userId);
             await localSettingsRepository.upsertSettings(defaultSettings);
             emit(state.copyWith(
               settings: state.settings.toSuccess(defaultSettings),
@@ -94,11 +77,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         }
       } else if (localSettings == null) {
         // Create default settings for guest
-        final defaultSettings = UserSettings(
-          userId: _guestUserId,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        );
+        final defaultSettings = _createDefaultSettings(_guestUserId);
         await localSettingsRepository.upsertSettings(defaultSettings);
         emit(state.copyWith(
           settings: state.settings.toSuccess(defaultSettings),

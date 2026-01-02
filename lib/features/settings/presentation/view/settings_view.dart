@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/features/settings/presentation/widgets/widgets.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -8,8 +11,10 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.bg,
       appBar: AppBar(
         title: const Text('Settings'),
+        backgroundColor: AppColors.bg,
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
@@ -24,7 +29,10 @@ class SettingsView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Error: ${errorDetails.message}'),
+                  Text(
+                    'Error: ${errorDetails.message}',
+                    style: TextStyle(color: AppColors.textMuted),
+                  ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
@@ -41,116 +49,117 @@ class SettingsView extends StatelessWidget {
               }
 
               return ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
+                ),
                 children: [
-                  _buildSection(
-                    context,
+                  // General Section
+                  const SettingsSectionHeader(
+                    icon: HugeIcons.strokeRoundedSettings02,
+                    title: 'General',
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  SettingsSwitchItem(
+                    title: 'Launch at startup',
+                    description: 'Automatically start Clipboard OS when you log in',
+                    value: settings.pinOnTop,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updatePinOnTop(value);
+                    },
+                  ),
+                  SettingsSwitchItem(
+                    title: 'Show in menu bar',
+                    description: 'Display clipboard icon in the macOS menu bar',
+                    value: settings.showSourceApp,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updateShowSourceApp(value);
+                    },
+                  ),
+                  SettingsSwitchItem(
+                    title: 'Sound effects',
+                    description: 'Play sounds for clipboard actions',
+                    value: settings.previewImages,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updatePreviewImages(value);
+                    },
+                  ),
+
+                  // Appearance Section
+                  const SizedBox(height: AppSpacing.md),
+                  const SettingsSectionHeader(
+                    icon: HugeIcons.strokeRoundedPaintBoard,
                     title: 'Appearance',
-                    children: [
-                      _buildThemeSelector(context, settings.theme),
-                    ],
                   ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    context,
-                    title: 'Sync Settings',
-                    children: [
-                      _buildSwitchTile(
-                        context,
-                        title: 'Auto Sync',
-                        subtitle: 'Automatically sync clipboard to cloud',
-                        value: settings.autoSync,
-                        onChanged: (value) {
-                          context.read<SettingsCubit>().updateAutoSync(value);
-                        },
-                      ),
-                      if (settings.autoSync) ...[
-                        _buildSliderTile(
-                          context,
-                          title: 'Sync Interval',
-                          subtitle: '${settings.syncIntervalMinutes} minutes',
-                          value: settings.syncIntervalMinutes.toDouble(),
-                          min: 1,
-                          max: 60,
-                          divisions: 59,
-                          onChanged: (value) {
-                            context
-                                .read<SettingsCubit>()
-                                .updateSyncInterval(value.toInt());
-                          },
-                        ),
-                      ],
-                    ],
+                  const SizedBox(height: AppSpacing.xs),
+                  SettingsThemeSelector(
+                    currentTheme: settings.theme,
+                    onThemeChanged: (theme) {
+                      context.read<SettingsCubit>().updateTheme(theme);
+                    },
                   ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    context,
-                    title: 'Clipboard Settings',
-                    children: [
-                      _buildSliderTile(
-                        context,
-                        title: 'Max History Items',
-                        subtitle: '${settings.maxHistoryItems} items',
-                        value: settings.maxHistoryItems.toDouble(),
-                        min: 100,
-                        max: 10000,
-                        divisions: 99,
-                        onChanged: (value) {
-                          context
-                              .read<SettingsCubit>()
-                              .updateMaxHistoryItems(value.toInt());
-                        },
-                      ),
-                      _buildSliderTile(
-                        context,
-                        title: 'Retention Period',
-                        subtitle: '${settings.retentionDays} days',
-                        value: settings.retentionDays.toDouble(),
-                        min: 1,
-                        max: 365,
-                        divisions: 364,
-                        onChanged: (value) {
-                          context
-                              .read<SettingsCubit>()
-                              .updateRetentionDays(value.toInt());
-                        },
-                      ),
-                    ],
+
+                  // Clipboard Section
+                  const SizedBox(height: AppSpacing.md),
+                  const SettingsSectionHeader(
+                    icon: HugeIcons.strokeRoundedClipboard,
+                    title: 'Clipboard',
                   ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    context,
-                    title: 'Display Settings',
-                    children: [
-                      _buildSwitchTile(
-                        context,
-                        title: 'Pin on Top',
-                        subtitle: 'Keep pinned items at the top',
-                        value: settings.pinOnTop,
-                        onChanged: (value) {
-                          context.read<SettingsCubit>().updatePinOnTop(value);
-                        },
-                      ),
-                      _buildSwitchTile(
-                        context,
-                        title: 'Show Source App',
-                        subtitle: 'Display which app the clipboard item came from',
-                        value: settings.showSourceApp,
-                        onChanged: (value) {
-                          context.read<SettingsCubit>().updateShowSourceApp(value);
-                        },
-                      ),
-                      _buildSwitchTile(
-                        context,
-                        title: 'Preview Images',
-                        subtitle: 'Show image previews in the list',
-                        value: settings.previewImages,
-                        onChanged: (value) {
-                          context.read<SettingsCubit>().updatePreviewImages(value);
-                        },
-                      ),
-                    ],
+                  const SizedBox(height: AppSpacing.xs),
+                  SettingsDropdownItem<int>(
+                    title: 'History limit',
+                    description: 'Maximum number of items to keep',
+                    value: settings.maxHistoryItems,
+                    items: const [100, 500, 1000, 2500, 5000, 10000],
+                    itemLabel: (value) => '$value items',
+                    onChanged: (value) {
+                      if (value != null) {
+                        context.read<SettingsCubit>().updateMaxHistoryItems(value);
+                      }
+                    },
                   ),
+                  SettingsDropdownItem<int>(
+                    title: 'Auto-delete after',
+                    description: 'Clear old clipboard items automatically',
+                    value: settings.retentionDays,
+                    items: const [7, 14, 30, 60, 90, 180, 365],
+                    itemLabel: (value) => '$value days',
+                    onChanged: (value) {
+                      if (value != null) {
+                        context.read<SettingsCubit>().updateRetentionDays(value);
+                      }
+                    },
+                  ),
+                  SettingsSwitchItem(
+                    title: 'Ignore copied passwords',
+                    description: "Don't save password manager data",
+                    value: settings.autoSync,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updateAutoSync(value);
+                    },
+                  ),
+
+                  // Sync Section (if auto sync is enabled)
+                  if (settings.autoSync) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    const SettingsSectionHeader(
+                      icon: HugeIcons.strokeRoundedCloudUpload,
+                      title: 'Sync',
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    SettingsDropdownItem<int>(
+                      title: 'Sync interval',
+                      description: 'How often to sync with cloud',
+                      value: settings.syncIntervalMinutes,
+                      items: const [1, 5, 10, 15, 30, 60],
+                      itemLabel: (value) => '$value minutes',
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<SettingsCubit>().updateSyncInterval(value);
+                        }
+                      },
+                    ),
+                  ],
                 ],
               );
             },
@@ -159,114 +168,5 @@ class SettingsView extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildSection(
-    BuildContext context, {
-    required String title,
-    required List<Widget> children,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-        Card(
-          child: Column(
-            children: children,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildThemeSelector(BuildContext context, String currentTheme) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Theme',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const SizedBox(height: 12),
-          SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(
-                value: 'light',
-                label: Text('Light'),
-                icon: Icon(Icons.light_mode),
-              ),
-              ButtonSegment(
-                value: 'dark',
-                label: Text('Dark'),
-                icon: Icon(Icons.dark_mode),
-              ),
-              ButtonSegment(
-                value: 'system',
-                label: Text('System'),
-                icon: Icon(Icons.settings_suggest),
-              ),
-            ],
-            selected: {currentTheme},
-            onSelectionChanged: (Set<String> selected) {
-              context.read<SettingsCubit>().updateTheme(selected.first);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSwitchTile(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return SwitchListTile(
-      title: Text(title),
-      subtitle: Text(subtitle),
-      value: value,
-      onChanged: onChanged,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-    );
-  }
-
-  Widget _buildSliderTile(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required double value,
-    required double min,
-    required double max,
-    required int divisions,
-    required ValueChanged<double> onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: Theme.of(context).textTheme.titleSmall),
-          Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-          Slider(
-            value: value,
-            min: min,
-            max: max,
-            divisions: divisions,
-            onChanged: onChanged,
-          ),
-        ],
-      ),
-    );
-  }
 }
+

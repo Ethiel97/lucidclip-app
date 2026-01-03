@@ -14,6 +14,7 @@ class SettingsSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(
         left: AppSpacing.md,
@@ -36,7 +37,7 @@ class SettingsSectionHeader extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Text(
             title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
               color: colorScheme.onSurfaceVariant,
             ),

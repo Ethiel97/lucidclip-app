@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/routes/routes.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
-import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
+
+final _appRouter = AppRouter();
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,7 +15,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<SettingsCubit>(),
+      create: (_) => getIt<SettingsCubit>()..loadSettings(null),
       child: const _AppView(),
     );
   }
@@ -28,28 +30,25 @@ class _AppView extends StatelessWidget {
       builder: (context, state) {
         final settings = state.settings.value;
         final themeMode = _getThemeMode(settings?.theme ?? 'dark');
-        
         return Portal(
-          child: MaterialApp(
+          child: MaterialApp.router(
             debugShowCheckedModeBanner: false,
             theme: const AppTheme().light,
             darkTheme: const AppTheme().dark,
             themeMode: themeMode,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const ClipboardPage(),
+            routerConfig: _appRouter.config(),
           ),
         );
       },
     );
   }
 
-  ThemeMode _getThemeMode(String theme) =>
-      switch (theme.toLowerCase()) {
-        'light' => ThemeMode.light,
-        'dark' => ThemeMode.dark,
-        'system' => ThemeMode.system,
-        _ => ThemeMode.dark,
-      };
+  ThemeMode _getThemeMode(String theme) => switch (theme.toLowerCase()) {
+    'light' => ThemeMode.light,
+    'dark' => ThemeMode.dark,
+    'system' => ThemeMode.system,
+    _ => ThemeMode.dark,
+  };
 }
-

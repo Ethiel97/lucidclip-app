@@ -34,6 +34,7 @@ abstract class AppColors {
   static const MaterialColor purpleSwatch = MaterialColor(
     0xFF615FFF,
     <int, Color>{
+      50: Color(0xFFF5F3FF),
       100: Color(0xFFEDEBFF),
       200: Color(0xFFC2BEFF),
       300: Color(0xFF9A8FFF),
@@ -48,6 +49,7 @@ abstract class AppColors {
   static const MaterialColor surfaceSwatch = MaterialColor(
     0xFF101118,
     <int, Color>{
+      50: Color(0xFFF5F5F7),
       100: Color(0xFF1A1A20),
       200: Color(0xFF2C2C33),
       300: Color(0xFF434347),
@@ -62,6 +64,7 @@ abstract class AppColors {
   static const MaterialColor bgSwatch = MaterialColor(
     0xFF050509,
     <int, Color>{
+      50: Color(0xFFF5F5F7),
       100: Color(0xFF1A1A1E),
       200: Color(0xFF2C2C30),
       300: Color(0xFF434347),

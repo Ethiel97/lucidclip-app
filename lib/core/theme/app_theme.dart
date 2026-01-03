@@ -13,9 +13,9 @@ class AppTheme {
     primarySwatch: AppColors.purpleSwatch,
     scaffoldBackgroundColor: Colors.grey[50],
     canvasColor: Colors.grey[50],
-    popupMenuTheme: PopupMenuThemeData(
+    popupMenuTheme: const PopupMenuThemeData(
       color: Colors.white,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(14)),
       ),
     ),
@@ -42,12 +42,12 @@ class AppTheme {
       primary: AppColors.primary,
       onPrimary: Colors.white,
       secondary: AppColors.primarySoft,
-      tertiary: Colors.grey[100]!,
+      tertiary: Colors.grey[100],
       onSecondary: Colors.black87,
       surface: Colors.white,
       onSurface: Colors.black87,
-      outline: Colors.grey[300]!,
-      outlineVariant: Colors.grey[400]!,
+      outline: Colors.grey[300],
+      outlineVariant: Colors.grey[400],
       onTertiary: Colors.black54,
       error: AppColors.danger,
       errorContainer: AppColors.dangerSoft,
@@ -63,7 +63,7 @@ class AppTheme {
       iconTheme: const IconThemeData(color: Colors.black54),
     ),
     iconTheme: const IconThemeData(color: Colors.black54, size: 18),
-    dividerColor: Colors.grey[300]!.withValues(alpha: .6),
+    dividerColor: Colors.grey[300]?.withValues(alpha: .6),
     listTileTheme: const ListTileThemeData(
       dense: true,
       contentPadding: EdgeInsets.zero,
@@ -93,7 +93,7 @@ class AppTheme {
       ),
     ),
 
-    dropdownMenuTheme:  DropdownMenuThemeData(
+    dropdownMenuTheme: DropdownMenuThemeData(
       menuStyle: MenuStyle(
         backgroundColor: WidgetStateProperty.all(
           AppColors.surface2.toTinyColor().lighten(5).color,
@@ -104,7 +104,6 @@ class AppTheme {
         ),
       ),
     ),
-
 
     menuTheme: MenuThemeData(
       style: MenuStyle(

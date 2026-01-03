@@ -1,70 +1,92 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
+import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:recase/recase.dart';
 
-class Sidebar extends StatelessWidget {
+class SidebarItemConfig<T> {
+  const SidebarItemConfig({
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
+
+  final T icon;
+  final String label;
+  final PageRouteInfo route;
+}
+
+class Sidebar extends StatefulWidget {
   const Sidebar({super.key});
 
   @override
+  State<Sidebar> createState() => _SidebarState();
+}
+
+class _SidebarState extends State<Sidebar> {
+  @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
-    final clipboardItemsCount = context.select(
-      (ClipboardCubit cubit) => cubit.state.totalItemsCount,
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final clipboardItemsCount = context.select<ClipboardCubit, int>(
+      (cubit) => cubit.state.totalItemsCount,
     );
+
+    final menuItems = [
+      SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedClipboard,
+        label: l10n.clipboard.titleCase,
+        route: const ClipboardRoute(),
+      ),
+      SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedNote,
+        label: l10n.snippets.titleCase,
+        route: const SnippetsRoute(),
+      ),
+      SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedSettings03,
+        label: l10n.settings.titleCase,
+        route: const SettingsRoute(),
+      ),
+    ];
 
     return Container(
       width: AppConstants.clipboardSidebarWidth,
-      decoration: const BoxDecoration(
-        color: AppColors.sidebar,
-        border: Border(
-          right: BorderSide(color: AppColors.borderSubtle, width: .5),
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xlg,
-      ),
+      color: colorScheme.surface,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const AppLogo(),
           const SizedBox(height: AppSpacing.xlg),
-          SidebarItem(
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedClipboard),
-            label: l10n.clipboard,
-            isActive: true,
-          ),
-          SidebarItem(
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedListView),
-            label: l10n.snippets,
-          ),
-          SidebarItem(
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
-            label: l10n.history,
-          ),
-          SidebarItem(
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedSettings01),
-            label: l10n.settings,
-          ),
-          const Spacer(),
-          Text(
-            l10n.storage.toUpperCase(),
-            style: AppTextStyle.functionalXSmall.copyWith(
-              color: AppColors.textMuted,
+          const AppLogo(), // Votre widget de logo
+          const SizedBox(height: AppSpacing.xlg),
+          Expanded(
+            child: ListView.separated(
+              itemCount: menuItems.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.xs),
+              itemBuilder: (context, index) {
+                final item = menuItems[index];
+                final isSelected = context.router.isRouteActive(
+                  item.route.routeName,
+                );
+
+                return SidebarItem(
+                  icon: HugeIcon(icon: item.icon, size: 20),
+                  label: item.label,
+                  isSelected: isSelected,
+                  onTap: () => context.navigateTo(item.route),
+                );
+              },
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
           StorageIndicator(used: clipboardItemsCount, total: 1000),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            '${l10n.appName} © ${DateTime.now().year}',
-            style: textTheme.bodySmall!.copyWith(color: AppColors.textMuted),
-          ),
         ],
       ),
     );

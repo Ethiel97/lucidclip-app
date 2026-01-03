@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -15,18 +15,12 @@ typedef ClipboardPageItems = (
   ClipboardItems recentItems,
 );
 
+@RoutePage()
 class ClipboardPage extends StatelessWidget {
   const ClipboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) => MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (_) => getIt<ClipboardCubit>()),
-      BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
-      BlocProvider(create: (_) => getIt<SearchCubit>()),
-    ],
-    child: const ClipboardView(),
-  );
+  Widget build(BuildContext context) => const ClipboardView();
 }
 
 class ClipboardView extends StatefulWidget {
@@ -136,44 +130,29 @@ class _ClipboardViewState extends State<ClipboardView>
       child: Scaffold(
         body: AnimatedBuilder(
           animation: _animationController,
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Sidebar(),
+              const PageHeader(),
+              const SizedBox(height: AppSpacing.lg),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xlg,
-                    AppSpacing.lg,
-                    AppSpacing.xlg,
-                    AppSpacing.lg,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: Scrollbar(
+                  controller: _scrollController,
+                  child: ListView(
+                    controller: _scrollController,
+                    physics: const BouncingScrollPhysics(),
                     children: [
-                      const PageHeader(),
-                      const SizedBox(height: AppSpacing.lg),
-                      Expanded(
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          child: ListView(
-                            controller: _scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            children: [
-                              if (pinnedItems.isNotEmpty) ...[
-                                ClipboardListRenderer(
-                                  items: pinnedItems,
-                                  title: l10n.pinned,
-                                ),
-                                const SizedBox(height: AppSpacing.lg),
-                              ],
-                              ClipboardListRenderer(
-                                items: recentItems,
-                                title: l10n.recent,
-                                searchMode: isSearchMode,
-                              ),
-                            ],
-                          ),
+                      if (pinnedItems.isNotEmpty) ...[
+                        ClipboardListRenderer(
+                          items: pinnedItems,
+                          title: l10n.pinned,
                         ),
+                        const SizedBox(height: AppSpacing.lg),
+                      ],
+                      ClipboardListRenderer(
+                        items: recentItems,
+                        title: l10n.recent,
+                        searchMode: isSearchMode,
                       ),
                     ],
                   ),

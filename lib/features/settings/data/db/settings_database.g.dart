@@ -91,7 +91,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(100),
+    defaultValue: const Constant(50),
   );
   static const VerificationMeta _retentionDaysMeta = const VerificationMeta(
     'retentionDays',
@@ -103,7 +103,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(15),
+    defaultValue: const Constant(5),
   );
   static const VerificationMeta _showSourceAppMeta = const VerificationMeta(
     'showSourceApp',

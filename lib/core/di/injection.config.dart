@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -92,9 +92,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
-    gh.lazySingleton<_i72.SettingsLocalDataSource>(
-      () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
-    );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager()..initialize(),
       dispose: (i) => i.dispose(),
@@ -119,10 +116,8 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.clear(),
     );
-    gh.lazySingleton<_i340.LocalSettingsRepository>(
-      () => _i958.LocalSettingsRepositoryImpl(
-        gh<_i173.SettingsLocalDataSource>(),
-      ),
+    gh.lazySingleton<_i72.SettingsLocalDataSource>(
+      () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
     );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
@@ -137,6 +132,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
       dispose: (i) => i.clear(),
     );
+    gh.lazySingleton<_i340.LocalSettingsRepository>(
+      () => _i958.LocalSettingsRepositoryImpl(
+        gh<_i173.SettingsLocalDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
       () => _i175.SupabaseSettingsRemoteDataSource(
         networkClient: gh<_i183.RemoteSyncClient>(),
@@ -147,25 +147,19 @@ extension GetItInjectableX on _i174.GetIt {
         networkClient: gh<_i183.RemoteSyncClient>(),
       ),
     );
-    gh.lazySingleton<_i997.SearchCubit>(
-      () => _i997.SearchCubit(
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(
         localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
       ),
     );
-    gh.lazySingleton<_i68.ClipboardDetailCubit>(
-      () => _i68.ClipboardDetailCubit(
+    gh.lazySingleton<_i997.SearchCubit>(
+      () => _i997.SearchCubit(
         localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
       ),
     );
     gh.lazySingleton<_i340.SettingsRepository>(
       () => _i758.SettingsRepositoryImpl(
         remoteDataSource: gh<_i173.SettingsRemoteDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i966.SettingsCubit>(
-      () => _i966.SettingsCubit(
-        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-        settingsRepository: gh<_i340.SettingsRepository>(),
       ),
     );
     gh.lazySingleton<_i42.ClipboardRepository>(
@@ -182,6 +176,12 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i42.LocalClipboardHistoryRepository>(),
       ),
       dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i966.SettingsCubit>(
+      () => _i966.SettingsCubit(
+        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
+        settingsRepository: gh<_i340.SettingsRepository>(),
+      ),
     );
     return this;
   }

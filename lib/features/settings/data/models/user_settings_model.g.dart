@@ -15,9 +15,9 @@ UserSettingsModel _$UserSettingsModelFromJson(Map<String, dynamic> json) =>
       shortcuts: json['shortcuts'] as Map<String, dynamic>? ?? const {},
       autoSync: json['auto_sync'] as bool? ?? false,
       syncIntervalMinutes:
-          (json['sync_interval_minutes'] as num?)?.toInt() ?? 5,
-      maxHistoryItems: (json['max_history_items'] as num?)?.toInt() ?? 1000,
-      retentionDays: (json['retention_days'] as num?)?.toInt() ?? 30,
+          (json['sync_interval_minutes'] as num?)?.toInt() ?? 60,
+      maxHistoryItems: (json['max_history_items'] as num?)?.toInt() ?? 50,
+      retentionDays: (json['retention_days'] as num?)?.toInt() ?? 5,
       incognitoMode: json['incognito_mode'] as bool? ?? false,
       showSourceApp: json['show_source_app'] as bool? ?? true,
       previewImages: json['preview_images'] as bool? ?? true,

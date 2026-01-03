@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
 
 class AppLogo extends StatelessWidget {
   const AppLogo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
     return Row(
       children: [
         Container(
@@ -13,8 +17,8 @@ class AppLogo extends StatelessWidget {
           width: 32,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            gradient: const LinearGradient(
-              colors: [AppColors.primary, AppColors.primarySoft],
+            gradient: LinearGradient(
+              colors: [colorScheme.primary, colorScheme.secondary],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -23,15 +27,15 @@ class AppLogo extends StatelessWidget {
             margin: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: AppColors.bg,
+              color: colorScheme.surface,
             ),
           ),
         ),
         const SizedBox(width: AppSpacing.xs),
         Text(
-          'LucidClip',
-          style: AppTextStyle.headlineSmall.copyWith(
-            color: AppColors.textPrimary,
+          l10n.appName,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onSurface,
           ),
         ),
       ],

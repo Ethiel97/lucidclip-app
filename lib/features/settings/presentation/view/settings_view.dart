@@ -6,43 +6,50 @@ import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/features/settings/presentation/widgets/widgets.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:recase/recase.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        title: const Text('Settings'),
-        backgroundColor: AppColors.bg,
+        title: Text(l10n.settings.sentenceCase),
+        backgroundColor: colorScheme.surface,
+        elevation: 0,
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
-          final l10n = context.l10n;
           return state.settings.maybeWhen(
             orElse: () => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Error loading settings.',
-                    style: TextStyle(color: AppColors.textMuted),
+                  Text(
+                    l10n.errorLoadingSettings.sentenceCase,
+                    style: TextStyle(color: colorScheme.onSurface),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
+                      //TODO(Ethiel97): Pull user ID from auth cubit
                       context.read<SettingsCubit>().loadSettings(null);
                     },
-                    child: const Text('Retry'),
+                    child:  Text(
+                      l10n.retry.sentenceCase,
+                    ),
                   ),
                 ],
               ),
             ),
             success: (settings) {
               if (settings == null) {
-                return const Center(child: Text('No settings available'));
+                return Center(child: Text(l10n.noSettingsAvailable.sentenceCase));
               }
 
               return ListView(
@@ -52,17 +59,19 @@ class SettingsView extends StatelessWidget {
                 ),
                 children: [
                   // General Section
-                  const SettingsSectionHeader(
-                    icon: HugeIcon(icon: HugeIcons.strokeRoundedSettings02),
-                    title: 'General',
+                  SettingsSectionHeader(
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedSettings02,
+                    ),
+                    title: l10n.general.sentenceCase,
                   ),
                   const SizedBox(height: AppSpacing.xs),
+
                   // Note: These settings use existing properties
                   // as placeholders
                   // TODO(Ethiel97): Add dedicated properties
                   //  for launch_at_startup,
                   //  show_in_menu_bar, sound_effects
-
                   SettingsSwitchItem(
                     title: 'Show in menu bar',
                     description: 'Display clipboard icon in the macOS menu bar',
@@ -74,8 +83,18 @@ class SettingsView extends StatelessWidget {
                     },
                   ),
                   SettingsSwitchItem(
-                    title: 'Sound effects',
-                    description: 'Play sounds for clipboard actions',
+                    title: l10n.previewLinks.sentenceCase,
+                    description: l10n.previewLinksDescription.sentenceCase,
+                    value: settings.previewLinks,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updatePreviewLinks(
+                        previewLinks: value,
+                      );
+                    },
+                  ),
+                  SettingsSwitchItem(
+                    title: l10n.previewImages.sentenceCase,
+                    description: l10n.previewImagesDescription.sentenceCase,
                     value: settings.previewImages,
                     onChanged: (value) {
                       context.read<SettingsCubit>().updatePreviewImages(
@@ -86,9 +105,11 @@ class SettingsView extends StatelessWidget {
 
                   // Appearance Section
                   const SizedBox(height: AppSpacing.md),
-                  const SettingsSectionHeader(
-                    icon: HugeIcon(icon: HugeIcons.strokeRoundedPaintBoard),
-                    title: 'Appearance',
+                  SettingsSectionHeader(
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedPaintBoard,
+                    ),
+                    title: l10n.appearance.sentenceCase,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   SettingsThemeSelector(
@@ -100,16 +121,39 @@ class SettingsView extends StatelessWidget {
 
                   // Clipboard Section
                   const SizedBox(height: AppSpacing.md),
-                  const SettingsSectionHeader(
-                    icon: HugeIcon(icon: HugeIcons.strokeRoundedClipboard),
-                    title: 'Clipboard',
+                  SettingsSectionHeader(
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedClipboard,
+                    ),
+                    title: l10n.clipboard.sentenceCase,
                   ),
                   const SizedBox(height: AppSpacing.xs),
+                  SettingsSwitchItem(
+                    title: l10n.incognitoMode.sentenceCase,
+                    description: l10n.incognitoModeDescription.sentenceCase,
+                    value: settings.incognitoMode,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updateIncognitoMode(
+                        incognitoMode: value,
+                      );
+                    },
+                  ),
+                  SettingsSwitchItem(
+                    title: l10n.autoSync.sentenceCase,
+                    description: l10n.autoSyncDescription.sentenceCase,
+                    value: settings.autoSync,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updateAutoSync(
+                        autoSync: value,
+                      );
+                    },
+                  ),
+
                   SettingsDropdownItem<int>(
-                    title: 'History limit',
-                    description: 'Maximum number of items to keep',
+                    title: l10n.historyLimit.sentenceCase,
+                    description: l10n.maxHistoryItemsDescription.sentenceCase,
                     value: settings.maxHistoryItems,
-                    items: const [100, 500, 1000, 2500, 5000, 10000],
+                    items: const [100, 500, 1000],
                     itemLabel: (value) => '$value items',
                     onChanged: (value) {
                       if (value != null) {
@@ -120,8 +164,8 @@ class SettingsView extends StatelessWidget {
                     },
                   ),
                   SettingsDropdownItem<int>(
-                    title: 'Auto-delete after',
-                    description: 'Clear old clipboard items automatically',
+                    title: l10n.retentionDays.sentenceCase,
+                    description: l10n.retentionDaysDescription.sentenceCase,
                     value: settings.retentionDays,
                     items: const [7, 14, 30, 60, 90, 180, 365],
                     itemLabel: (value) => '$value days',
@@ -133,30 +177,21 @@ class SettingsView extends StatelessWidget {
                       }
                     },
                   ),
-                  // Note: Password filtering uses autoSync as placeholder
-                  // TODO(Ethiel97): Add dedicated property for ignore_passwords
-                  SettingsSwitchItem(
-                    title: 'Ignore copied passwords',
-                    description: "Don't save password manager data",
-                    value: settings.autoSync,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateAutoSync(
-                        autoSync: value,
-                      );
-                    },
-                  ),
 
                   // Sync Section (if auto sync is enabled)
                   if (settings.autoSync) ...[
                     const SizedBox(height: AppSpacing.md),
-                    const SettingsSectionHeader(
-                      icon: HugeIcon(icon: HugeIcons.strokeRoundedCloudUpload),
-                      title: 'Sync',
+                    SettingsSectionHeader(
+                      icon: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedCloudUpload,
+                      ),
+                      title: l10n.sync.sentenceCase,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     SettingsDropdownItem<int>(
-                      title: 'Sync interval',
-                      description: 'How often to sync with cloud',
+                      title: l10n.autoSyncInterval.sentenceCase,
+                      description:
+                          l10n.autoSyncIntervalDescription.sentenceCase,
                       value: settings.syncIntervalMinutes,
                       items: const [1, 5, 10, 15, 30, 60],
                       itemLabel: (value) => '$value minutes',

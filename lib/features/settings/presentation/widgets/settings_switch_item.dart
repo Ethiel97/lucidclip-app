@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class SettingsSwitchItem extends StatelessWidget {
   const SettingsSwitchItem({
@@ -17,10 +18,12 @@ class SettingsSwitchItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: AppSpacing.xxs,
+        vertical: AppSpacing.xs,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -38,17 +41,17 @@ class SettingsSwitchItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xxxs),
                 Text(
                   description,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textMuted,
-                      ),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onTertiary.toTinyColor().darken().color,
+                  ),
                 ),
               ],
             ),
@@ -57,7 +60,7 @@ class SettingsSwitchItem extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.primary,
+            activeThumbColor: colorScheme.primary,
           ),
         ],
       ),

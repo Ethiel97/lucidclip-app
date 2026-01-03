@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
@@ -18,26 +19,20 @@ class LucidClipPage extends StatelessWidget {
         // BlocProvider(create: (_) => getIt<SettingsCubit>()),
         BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
       ],
-      child: const Scaffold(
-        body: Row(
-          children: [
-            Sidebar(),
-            VerticalDivider(width: 1, thickness: .05),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  AppSpacing.xlg,
-                  AppSpacing.lg,
-                  AppSpacing.xlg,
-                  AppSpacing.lg,
-                ),
-                child: AutoRouter(),
-              ),
-            ),
-          ],
+      child: Scaffold(
+        body: AutoTabsRouter(
+          routes: const [ClipboardRoute(), SnippetsRoute(), SettingsRoute()],
+          builder: (context, child) {
+            return Row(
+              children: [
+                const Sidebar(),
+                const VerticalDivider(width: 1, thickness: .08),
+                Expanded(child: child),
+              ],
+            );
+          },
         ),
       ),
     );
-
   }
 }

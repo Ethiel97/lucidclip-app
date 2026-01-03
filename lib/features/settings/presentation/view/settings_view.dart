@@ -15,14 +15,13 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.settings.sentenceCase),
-        backgroundColor: colorScheme.surface,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Padding(
+        padding: const EdgeInsets.only(
+          left: AppSpacing.lg,
+        ),
+        child: Text(l10n.settings.sentenceCase),
+      ), elevation: 0),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return state.settings.maybeWhen(
@@ -40,16 +39,16 @@ class SettingsView extends StatelessWidget {
                       //TODO(Ethiel97): Pull user ID from auth cubit
                       context.read<SettingsCubit>().loadSettings(null);
                     },
-                    child:  Text(
-                      l10n.retry.sentenceCase,
-                    ),
+                    child: Text(l10n.retry.sentenceCase),
                   ),
                 ],
               ),
             ),
             success: (settings) {
               if (settings == null) {
-                return Center(child: Text(l10n.noSettingsAvailable.sentenceCase));
+                return Center(
+                  child: Text(l10n.noSettingsAvailable.sentenceCase),
+                );
               }
 
               return ListView(

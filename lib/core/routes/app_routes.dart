@@ -4,6 +4,9 @@ import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
   @override
+  RouteType get defaultRouteType => const RouteType.material();
+
+  @override
   List<AutoRoute> get routes => [
     AutoRoute(
       path: '/',

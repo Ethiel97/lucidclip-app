@@ -52,7 +52,7 @@ class _ClipboardViewState extends State<ClipboardView>
     );
 
     _clipboardItemDetailsSlideAnimation =
-        Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
+        Tween<Offset>(begin: const Offset(2, 0), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -130,35 +130,38 @@ class _ClipboardViewState extends State<ClipboardView>
       child: Scaffold(
         body: AnimatedBuilder(
           animation: _animationController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const PageHeader(),
-              const SizedBox(height: AppSpacing.lg),
-              Expanded(
-                child: Scrollbar(
-                  controller: _scrollController,
-                  child: ListView(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const PageHeader(),
+                const SizedBox(height: AppSpacing.lg),
+                Expanded(
+                  child: Scrollbar(
                     controller: _scrollController,
-                    physics: const BouncingScrollPhysics(),
-                    children: [
-                      if (pinnedItems.isNotEmpty) ...[
+                    child: ListView(
+                      controller: _scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        if (pinnedItems.isNotEmpty) ...[
+                          ClipboardListRenderer(
+                            items: pinnedItems,
+                            title: l10n.pinned,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                        ],
                         ClipboardListRenderer(
-                          items: pinnedItems,
-                          title: l10n.pinned,
+                          items: recentItems,
+                          title: l10n.recent,
+                          searchMode: isSearchMode,
                         ),
-                        const SizedBox(height: AppSpacing.lg),
                       ],
-                      ClipboardListRenderer(
-                        items: recentItems,
-                        title: l10n.recent,
-                        searchMode: isSearchMode,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           builder: (context, child) {
             final blur = _blurAnimation.value;

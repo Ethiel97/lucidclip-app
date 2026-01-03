@@ -30,6 +30,27 @@ class Sidebar extends StatefulWidget {
 
 class _SidebarState extends State<Sidebar> {
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.tabsRouter.addListener(_handleRouteChange);
+    });
+  }
+
+  @override
+  void dispose() {
+    context.router.removeListener(_handleRouteChange);
+    super.dispose();
+  }
+
+  void _handleRouteChange() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
@@ -56,6 +77,8 @@ class _SidebarState extends State<Sidebar> {
       ),
     ];
 
+    final tabsRouter = context.tabsRouter;
+
     return Container(
       width: AppConstants.clipboardSidebarWidth,
       color: colorScheme.surface,
@@ -63,7 +86,7 @@ class _SidebarState extends State<Sidebar> {
       child: Column(
         children: [
           const SizedBox(height: AppSpacing.xlg),
-          const AppLogo(), // Votre widget de logo
+          const AppLogo(),
           const SizedBox(height: AppSpacing.xlg),
           Expanded(
             child: ListView.separated(
@@ -72,15 +95,13 @@ class _SidebarState extends State<Sidebar> {
                   const SizedBox(height: AppSpacing.xs),
               itemBuilder: (context, index) {
                 final item = menuItems[index];
-                final isSelected = context.router.isRouteActive(
-                  item.route.routeName,
-                );
+                final isSelected = tabsRouter.activeIndex == index;
 
                 return SidebarItem(
                   icon: HugeIcon(icon: item.icon, size: 20),
                   label: item.label,
                   isSelected: isSelected,
-                  onTap: () => context.navigateTo(item.route),
+                  onTap: () => tabsRouter.setActiveIndex(index),
                 );
               },
             ),

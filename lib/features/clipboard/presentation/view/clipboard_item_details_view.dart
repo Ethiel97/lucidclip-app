@@ -95,7 +95,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                       const SizedBox(height: AppSpacing.xs),
                       _PreviewCard(
                         previewWidget: widget.clipboardItem.preview(
-                          maxLines:  5000000
+                          maxLines:  5000000,
                         ),
                         preview: widget.clipboardItem.content,
                       ),

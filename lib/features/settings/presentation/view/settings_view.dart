@@ -21,7 +21,7 @@ class SettingsView extends StatelessWidget {
           left: AppSpacing.lg,
         ),
         child: Text(l10n.settings.sentenceCase),
-      ), elevation: 0),
+      ), elevation: 0,),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return state.settings.maybeWhen(
@@ -36,7 +36,7 @@ class SettingsView extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      //TODO(Ethiel97): Pull user ID from auth cubit
+                      // TODO(Ethiel97): Pull user ID from auth cubit
                       context.read<SettingsCubit>().loadSettings(null);
                     },
                     child: Text(l10n.retry.sentenceCase),

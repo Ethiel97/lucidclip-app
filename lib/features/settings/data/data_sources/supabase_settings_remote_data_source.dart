@@ -26,7 +26,7 @@ class SupabaseSettingsRemoteDataSource implements SettingsRemoteDataSource {
       if (response.isEmpty) return null;
 
       return UserSettingsModel.fromJson(
-        response.first as Map<String, dynamic>,
+        response.first,
       );
     } catch (e, stack) {
       throw NetworkException(

@@ -113,6 +113,15 @@ class _ClipboardViewState extends State<ClipboardView>
 
     final (pinnedItems, recentItems) = getListItems(context);
 
+    final allItems = [
+      if (pinnedItems.isNotEmpty)
+        SectionHeader(title: l10n.pinned.sentenceCase),
+      ...pinnedItems,
+      if (recentItems.isNotEmpty)
+        SectionHeader(title: l10n.recent.sentenceCase),
+      ...recentItems,
+    ];
+
     return MultiBlocListener(
       listeners: [
         BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
@@ -138,26 +147,23 @@ class _ClipboardViewState extends State<ClipboardView>
                 const PageHeader(),
                 const SizedBox(height: AppSpacing.lg),
                 Expanded(
-                  child: Scrollbar(
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
                     controller: _scrollController,
-                    child: ListView(
-                      controller: _scrollController,
-                      physics: const BouncingScrollPhysics(),
-                      children: [
-                        if (pinnedItems.isNotEmpty) ...[
-                          ClipboardListRenderer(
-                            items: pinnedItems,
-                            title: l10n.pinned,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                        ],
-                        ClipboardListRenderer(
-                          items: recentItems,
-                          title: l10n.recent,
-                          searchMode: isSearchMode,
-                        ),
-                      ],
-                    ),
+                    itemCount: allItems.length,
+                    itemBuilder: (context, index) {
+                      final item = allItems[index];
+                      if (item is SectionHeader) {
+                        return item;
+                      } else if (item is ClipboardItem) {
+                        return ClipboardItemTile(
+                          item: item,
+                          key: ValueKey(item.id),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
                   ),
                 ),
               ],

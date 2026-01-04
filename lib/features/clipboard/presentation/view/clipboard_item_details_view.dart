@@ -223,7 +223,18 @@ class _InfoCard extends StatelessWidget {
         if (shouldShowSourceApp && isSourceAppValid)
           _InfoRow(
             label: l10n.source.sentenceCase,
-            valueWidget: clipboardItem.sourceAppIcon,
+            valueWidget: Row(
+              spacing: AppSpacing.xs,
+              children: [
+                clipboardItem.sourceAppIcon,
+                Text(
+                  clipboardItem.sourceApp!.name,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontSize: 12),
+                ),
+              ],
+            ),
             value: clipboardItem.sourceApp!.name,
             icon: const HugeIcon(icon: HugeIcons.strokeRoundedComputer),
           ),

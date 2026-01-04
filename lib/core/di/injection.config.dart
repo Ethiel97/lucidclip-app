@@ -182,6 +182,7 @@ extension GetItInjectableX on _i174.GetIt {
         localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
         localClipboardHistoryRepository:
             gh<_i42.LocalClipboardHistoryRepository>(),
+        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
       ),
       dispose: (i) => i.close(),
     );

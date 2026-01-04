@@ -215,7 +215,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showSourceAppDescription =>
-      'Shows the app that copied the content.';
+      'Shows the app that copied the content to the clipboard in the item details.';
 
   @override
   String get size => 'Size';

@@ -1,5 +1,8 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 abstract class BaseClipboardManager {
@@ -76,6 +79,15 @@ class ClipboardData extends Equatable {
     timestamp,
     type,
   ];
+
+  SourceApp? get sourceApp {
+    if (metadata?.containsKey('sourceApp') ?? false) {
+      final appData = metadata!['sourceApp'] as Map<String, dynamic>;
+      return SourceApp.fromMap(appData);
+
+    }
+    return null;
+  }
 }
 
 enum ClipboardContentType { file, html, image, text, unknown, url }

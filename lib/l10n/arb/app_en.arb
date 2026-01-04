@@ -258,7 +258,7 @@
   "@showSourceApp": {
     "description": "Label for the Show Source App setting"
   },
-  "showSourceAppDescription": "Shows the app that copied the content.",
+  "showSourceAppDescription": "Shows the app that copied the content to the clipboard in the item details.",
   "@showSourceAppDescription": {
     "description": "Description for the Show Source App setting"
   },

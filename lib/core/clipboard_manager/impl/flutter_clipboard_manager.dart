@@ -63,8 +63,9 @@ class FlutterClipboardManager implements BaseClipboardManager {
     final timestamp = DateTime.now();
 
     final metadata = <String, dynamic>{
-      if (sourceApp != null) 'sourceApp': sourceApp,
+      if (sourceApp != null) 'sourceApp': sourceApp.toJson(),
     };
+
     if (files.isNotEmpty) {
       for (final file in files) {
         if (file.isNotEmpty) {
@@ -108,7 +109,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       );
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
-        metadata:  metadata,
+        metadata: metadata,
       );
     }
 

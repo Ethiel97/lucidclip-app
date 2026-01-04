@@ -469,7 +469,7 @@ abstract class AppLocalizations {
   /// Description for the Show Source App setting
   ///
   /// In en, this message translates to:
-  /// **'Shows the app that copied the content.'**
+  /// **'Shows the app that copied the content to the clipboard in the item details.'**
   String get showSourceAppDescription;
 
   /// Label for the size of the content

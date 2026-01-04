@@ -8,6 +8,8 @@ import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
+final Map<String, Uint8List> _imagePreviewCache = {};
+
 extension ClipboardUiHelper on ClipboardItem {
   Widget get icon {
     final (icon, color) = switch (type) {
@@ -50,29 +52,58 @@ extension ClipboardUiHelper on ClipboardItem {
       style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
     );
 
-    return switch (type) {
-      ClipboardItemType.text || ClipboardItemType.url => textPreview,
-
-      //if the file is an image, try to load and display it
-      ClipboardItemType.file when isImageFile => Image.file(
+    if (type case ClipboardItemType.text || ClipboardItemType.url) {
+      return textPreview;
+    } else if (type case ClipboardItemType.file when isImageFile) {
+      return Image.file(
         File(filePath!),
         gaplessPlayback: true,
         fit: BoxFit.cover,
         filterQuality: FilterQuality.high,
         width: 50,
-      ),
-
-      // TODO(Ethiel97): handle documents and other file types previews
-      ClipboardItemType.image when imageBytes != null => Image.memory(
+      );
+    } else if (type case ClipboardItemType.image when imageBytes != null) {
+      final cachedKey = 'clipboard_image_$id';
+      final cachedBytes = _imagePreviewCache.putIfAbsent(
+        cachedKey,
+        () => Uint8List.fromList(imageBytes!),
+      );
+      return Image.memory(
         gaplessPlayback: true,
-        Uint8List.fromList(imageBytes!),
+        cachedBytes,
         fit: BoxFit.cover,
         filterQuality: FilterQuality.high,
         width: 50,
-      ),
+      );
+    } else {
+      return textPreview;
+    }
+  }
 
-      _ => textPreview,
-    };
+  Widget get sourceAppIcon {
+    if (sourceApp?.icon != null) {
+      final cachedKey = '${sourceApp?.bundleId}';
+      final cachedBytes = _imagePreviewCache.putIfAbsent(
+        cachedKey,
+        () => Uint8List.fromList(sourceApp!.icon!),
+      );
+
+      return Image.memory(
+        cacheHeight: 30,
+        cacheWidth: 30,
+        cachedBytes,
+        gaplessPlayback: true,
+        width: 30,
+        height: 30,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return const HugeIcon(
+        icon: HugeIcons.strokeRounded0Square,
+        size: 20,
+        color: AppColors.textMuted,
+      );
+    }
   }
 }
 

@@ -8,6 +8,7 @@ import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'clipboard_state.dart';
 
@@ -18,9 +19,11 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.clipboardRepository,
     required this.localClipboardRepository,
     required this.localClipboardHistoryRepository,
+    required this.localSettingsRepository,
   }) : super(const ClipboardState()) {
     _loadData();
     _startWatchingClipboard();
+    _watchSettings();
   }
 
   Future<void> _loadData() async {
@@ -36,18 +39,52 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final ClipboardRepository clipboardRepository;
   final LocalClipboardRepository localClipboardRepository;
   final LocalClipboardHistoryRepository localClipboardHistoryRepository;
+  final LocalSettingsRepository localSettingsRepository;
+
   StreamSubscription<ClipboardData>? _clipboardSubscription;
+  StreamSubscription<ClipboardItems>? _localItemsSubscription;
+  StreamSubscription<ClipboardHistories>? _localHistorySubscription;
+  StreamSubscription<UserSettings?>? _userSettingsSubscription;
 
-  late StreamSubscription<ClipboardItems>? _localItemsSubscription;
-  late StreamSubscription<ClipboardHistories>? _localHistorySubscription;
+  UserSettings? _userSettings;
 
-  // Placeholder for userId until auth context is available
+  // TODO(Ethiel97): Placeholder for userId until auth context is available
   static const String _pendingUserId = '';
+
+  void _watchSettings() {
+    _userSettingsSubscription?.cancel();
+    _userSettingsSubscription = localSettingsRepository
+        .watchSettings(_pendingUserId.isEmpty ? 'guest' : _pendingUserId)
+        .listen((s) {
+          _userSettings = s;
+        });
+  }
 
   void _startWatchingClipboard() {
     _clipboardSubscription = clipboardManager.watchClipboard().listen((
       clipboardData,
     ) async {
+      final settings = _userSettings;
+
+      if (settings?.incognitoMode ?? false) {
+        // In incognito mode, do not store clipboard data
+        developer.log(
+          'Incognito mode is enabled; skipping clipboard storage.',
+          name: 'ClipboardCubit',
+        );
+        return;
+      }
+
+      //excluded apps check
+      final excluded = settings?.excludedApps ?? const <String>[];
+      final bundleId = clipboardData.sourceApp?.bundleId;
+
+      if (bundleId != null &&
+          bundleId.isNotEmpty &&
+          excluded.contains(bundleId)) {
+        return;
+      }
+
       emit(state.copyWith(currentClipboardData: clipboardData));
 
       final currentItems = state.clipboardItems.data;
@@ -64,10 +101,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         // Create clipboard history record
         await _createClipboardHistory(clipboardItem.id);
       }
-      //
-      // final updated = [if (!isDuplicate) clipboardData, ...currentItems];
-      //
-      // emit(state.copyWith(localClipboardItems: updated));
     });
   }
 

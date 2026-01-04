@@ -166,7 +166,7 @@ The settings feature will automatically:
 class UserSettingsEntries extends Table {
   TextColumn get userId => text().named('user_id')();
   TextColumn get theme => text().withDefault(const Constant('dark'))();
-  TextColumn get shortcutsJson => text().named('shortcuts_json').withDefault(const Constant('{}'))();
+  TextColumn get shortcuts => text().named('shortcuts').withDefault(const Constant('{}'))();
   BoolColumn get autoSync => boolean().named('auto_sync').withDefault(const Constant(false))();
   IntColumn get syncIntervalMinutes => integer().named('sync_interval_minutes').withDefault(const Constant(5))();
   IntColumn get maxHistoryItems => integer().named('max_history_items').withDefault(const Constant(1000))();

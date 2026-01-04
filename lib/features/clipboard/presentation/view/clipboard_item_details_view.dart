@@ -186,32 +186,37 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final shouldShowSourceApp = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.settings.value?.showSourceApp ?? true,
+    );
+
+    final isSourceAppValid = clipboardItem.sourceApp?.isValid ?? false;
+
     return Column(
+      spacing: AppSpacing.sm,
       children: [
+        if (shouldShowSourceApp && isSourceAppValid)
+          _InfoRow(
+            label: l10n.source.sentenceCase,
+            valueWidget: clipboardItem.sourceAppIcon,
+            value: clipboardItem.sourceApp!.name,
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedComputer),
+          ),
         _InfoRow(
           label: l10n.copied.sentenceCase,
           value: clipboardItem.timeAgo,
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
         ),
-        const SizedBox(height: AppSpacing.sm),
         _InfoRow(
           label: l10n.size.sentenceCase,
           value: clipboardItem.userFacingSize,
-          // Placeholder, implement actual size calculation if needed
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
         ),
-        const SizedBox(height: AppSpacing.sm),
         _InfoRow(
           label: l10n.characters.sentenceCase,
           value: clipboardItem.content.length.toString(),
-          icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedText),
         ),
-        /*const SizedBox(height: AppSpacing.sm),
-        _InfoRow(
-          label: 'Source',
-          value: clipboardItem.source,
-          icon: Icons.computer_rounded,
-        ),*/
       ],
     );
   }
@@ -222,15 +227,18 @@ class _InfoRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
+    this.valueWidget,
   });
 
   final String label;
   final String value;
   final Widget icon;
+  final Widget? valueWidget;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
@@ -243,13 +251,13 @@ class _InfoRow extends StatelessWidget {
             height: 28,
             width: 28,
             decoration: BoxDecoration(
-              color: AppColors.surface2,
+              color: colorScheme.tertiary,
               borderRadius: BorderRadius.circular(8),
             ),
             child: IconTheme(
-              data: const IconThemeData(
-                size: 16,
-                color: AppColors.textSecondary,
+              data: IconThemeData(
+                size: AppSpacing.sm,
+                color: colorScheme.onTertiary,
               ),
               child: icon,
             ),
@@ -262,17 +270,18 @@ class _InfoRow extends StatelessWidget {
                 Text(
                   label,
                   style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.textMuted,
-                    fontSize: 12,
+                    color: colorScheme.onSurface.withValues(alpha: .7),
+                    fontSize: 11,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xxxs),
-                Text(
-                  value,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                valueWidget ??
+                    Text(
+                      value,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
               ],
             ),
           ),

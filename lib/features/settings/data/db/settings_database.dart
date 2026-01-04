@@ -60,9 +60,9 @@ class SettingsDatabase extends _$SettingsDatabase {
   UserSettingsModel entryToModel(UserSettingsEntry e) {
     final shortcuts = e.shortcuts.isEmpty
         ? <String, String>{}
-        : Map<String, String>.from(
-            jsonDecode(e.shortcuts) as Map<String, String>,
-          );
+        : (jsonDecode(e.shortcuts) as Map<String, dynamic>).map(
+          (key, value) => MapEntry(key, value.toString()),
+    );
 
     final excludedApps = e.excludedApps.isEmpty
         ? <String>[]

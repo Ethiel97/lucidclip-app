@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:recase/recase.dart';
 
 class SettingsThemeSelector extends StatelessWidget {
   const SettingsThemeSelector({
@@ -13,6 +16,9 @@ class SettingsThemeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final l10n = context.l10n;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -27,36 +33,45 @@ class SettingsThemeSelector extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Theme',
+            l10n.theme.sentenceCase,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w500,
-                ),
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: AppSpacing.xxxs),
           Text(
-            'Choose your preferred color scheme',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textMuted,
-                ),
+            l10n.chooseYourAppThemeDescription,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
           ),
           const SizedBox(height: AppSpacing.md),
           SegmentedButton<String>(
-            segments: const [
+            segments: [
               ButtonSegment(
-                value: 'light',
-                label: Text('Light'),
-                icon: Icon(Icons.light_mode, size: 18),
+                value: l10n.light,
+                label: Text(l10n.light.sentenceCase),
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedSun01,
+                  size: 18,
+                ),
               ),
               ButtonSegment(
-                value: 'dark',
-                label: Text('Dark'),
-                icon: Icon(Icons.dark_mode, size: 18),
+                value: l10n.dark,
+                label: Text(l10n.dark.sentenceCase),
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedMoon01,
+                  size: 18,
+                ),
               ),
               ButtonSegment(
-                value: 'system',
-                label: Text('System'),
-                icon: Icon(Icons.settings_suggest, size: 18),
+                value: l10n.system,
+                label: Text(l10n.system.sentenceCase),
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedSetting06,
+                  size: 18,
+                ),
               ),
             ],
             selected: {currentTheme},
@@ -66,15 +81,15 @@ class SettingsThemeSelector extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return AppColors.primary.withValues(alpha: 0.2);
+                  return colorScheme.primary.withValues(alpha: 0.4);
                 }
-                return AppColors.surface2;
+                return colorScheme.tertiary;
               }),
               foregroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return AppColors.primary;
+                  return colorScheme.onSurface;
                 }
-                return AppColors.textSecondary;
+                return colorScheme.onSurface;
               }),
             ),
           ),

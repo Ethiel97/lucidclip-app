@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:jiffy/jiffy.dart' hide Unit;
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:proper_filesize/proper_filesize.dart';
 import 'package:recase/recase.dart';
 
@@ -110,6 +111,16 @@ class ClipboardItem extends Equatable {
     return FileSize.fromBytes(
       sizeInBytes,
     ).toString(unit: Unit.kilobyte, decimals: 0);
+  }
+
+  SourceApp? get sourceApp {
+    if (metadata.containsKey('sourceApp')) {
+      final sourceAppData = metadata['sourceApp'];
+      if (sourceAppData is Map<String, dynamic>) {
+        return SourceApp.fromMap(sourceAppData);
+      }
+    }
+    return null;
   }
 
   @override

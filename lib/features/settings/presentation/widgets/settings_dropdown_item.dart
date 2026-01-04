@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class SettingsDropdownItem<T> extends StatelessWidget {
   const SettingsDropdownItem({
@@ -21,10 +22,12 @@ class SettingsDropdownItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: AppSpacing.xxs,
+        vertical: AppSpacing.xs,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
@@ -42,17 +45,17 @@ class SettingsDropdownItem<T> extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.xxxs),
                 Text(
                   description,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textMuted,
-                      ),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onTertiary.toTinyColor().darken().color,
+                  ),
                 ),
               ],
             ),
@@ -71,9 +74,9 @@ class SettingsDropdownItem<T> extends StatelessWidget {
               value: value,
               underline: const SizedBox(),
               isDense: true,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurface,
+              ),
               dropdownColor: AppColors.surface2,
               items: items.map((T item) {
                 return DropdownMenuItem<T>(

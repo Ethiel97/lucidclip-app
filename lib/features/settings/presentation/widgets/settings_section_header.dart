@@ -8,11 +8,13 @@ class SettingsSectionHeader extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  final Widget icon;
   final String title;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(
         left: AppSpacing.md,
@@ -27,19 +29,18 @@ class SettingsSectionHeader extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.13),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              icon,
-              size: 20,
-              color: AppColors.primary,
+            child: IconTheme(
+              data: IconThemeData(size: 20, color: colorScheme.primary),
+              child: icon,
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Text(
             title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),

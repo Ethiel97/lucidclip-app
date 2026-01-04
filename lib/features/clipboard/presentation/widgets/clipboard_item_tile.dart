@@ -1,18 +1,11 @@
-import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
-import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/l10n/arb/app_localizations.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:metalink_flutter/metalink_flutter.dart';
-import 'package:recase/recase.dart';
-
-typedef ClipboardContextMenuItem = ({String label, Object icon});
 
 class ClipboardItemTile extends StatefulWidget {
   const ClipboardItemTile({required this.item, super.key});
@@ -58,68 +51,23 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
 
   bool get shouldShowLinkPreview => widget.item.type.isUrl && isHovering;
 
-  List<Widget> getContextMenuItems(AppLocalizations l10n) {
-    final menu = <ClipboardContextMenuItem>[
-      (
-        label: widget.item.isPinned ? l10n.unpin : l10n.pin.sentenceCase,
-        icon: widget.item.isPinned
-            ? HugeIcons.strokeRoundedPinOff
-            : HugeIcons.strokeRoundedPin,
-      ),
-      (label: l10n.delete.sentenceCase, icon: HugeIcons.strokeRoundedDelete01),
-      (label: l10n.edit.sentenceCase, icon: HugeIcons.strokeRoundedEdit01),
-      (label: l10n.copy.sentenceCase, icon: HugeIcons.strokeRoundedCopy01),
-    ];
-    return menu
-        .map(
-          (item) => ListTile(
-            leading: Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.sm),
-              child: Text(item.label),
-            ),
-            trailing: Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.sm),
-              child: HugeIcon(icon: item.icon as List<List>),
-            ),
-            onTap: () {
-              switch (item.label) {
-                case final l when l == l10n.pin.sentenceCase:
-                  context.read<ClipboardDetailCubit>().togglePinClipboardItem(
-                    widget.item,
-                  );
-                case final l when l == l10n.delete.sentenceCase:
-                  context.read<ClipboardDetailCubit>().deleteClipboardItem(
-                    widget.item,
-                  );
-                case final l when l == l10n.edit.sentenceCase:
-                  // TODO(Ethiel97): Handle edit action
-                  break;
-                case final l when l == l10n.copy.sentenceCase:
-                  getIt<BaseClipboardManager>().setClipboardContent(
-                    widget.item.toInfrastructure(),
-                  );
-
-                // Add other cases as needed
-              }
-
-              Navigator.pop(context);
-            },
-          ),
-        )
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
+    final isLinkPreviewEnabled = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.settings.value?.previewLinks ?? true,
+    );
+    // // TODO(Ethiel97): Enable image previews once performance issues are resolved
+    /*final isImagePreviewEnabled = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.settings.value?.previewImages ?? true,
+    );*/
     return GestureDetector(
       onTap: () {
         context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
       },
-      child: ContextMenuArea(
-        builder: (context) => getContextMenuItems(l10n),
-        verticalPadding: AppSpacing.sm,
+      child: ClipboardContextMenu(
+        clipboardItem: widget.item,
         child: MouseRegion(
           onEnter: (_) => _onHoverEnter(),
           onExit: (_) => _onHoverExit(),
@@ -150,37 +98,39 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                     visible: shouldShowLinkPreview,
                     portalFollower: SizedBox(
                       width: MediaQuery.sizeOf(context).width * 0.4,
-                      child: LinkPreview.compact(
-                        controller: _linkPreviewController,
-                        url: widget.item.content,
-                        errorBuilder: (context, error) => Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          color: AppColors.surface,
-                          child: Text(
-                            l10n.failedToLoadLinkPreview,
-                            style: textTheme.bodySmall?.copyWith(),
-                          ),
-                        ),
-                        loadingBuilder: (context) => Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          color: AppColors.surface,
-                          child: Column(
-                            spacing: AppSpacing.sm,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                l10n.loadingLinkPreview,
-                                style: textTheme.bodySmall?.copyWith(),
+                      child: isLinkPreviewEnabled
+                          ? LinkPreview.compact(
+                              controller: _linkPreviewController,
+                              url: widget.item.content,
+                              errorBuilder: (context, error) => Container(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                color: AppColors.surface,
+                                child: Text(
+                                  l10n.failedToLoadLinkPreview,
+                                  style: textTheme.bodySmall?.copyWith(),
+                                ),
                               ),
-                              const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
+                              loadingBuilder: (context) => Container(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                color: AppColors.surface,
+                                child: Column(
+                                  spacing: AppSpacing.sm,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      l10n.loadingLinkPreview,
+                                      style: textTheme.bodySmall?.copyWith(),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
+                            )
+                          : const SizedBox.shrink(),
                     ),
                     child: widget.item.preview(maxLines: 1),
                   ),

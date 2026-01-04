@@ -118,7 +118,9 @@ enum ClipboardActionModel {
   copy,
   paste,
   delete,
-  edit;
+  edit,
+  pin,
+  unpin;
 
   bool get isCopy => this == ClipboardActionModel.copy;
 
@@ -127,4 +129,8 @@ enum ClipboardActionModel {
   bool get isDelete => this == ClipboardActionModel.delete;
 
   bool get isEdit => this == ClipboardActionModel.edit;
+
+  bool get isPin => this == ClipboardActionModel.pin;
+
+  bool get isUnpin => this == ClipboardActionModel.unpin;
 }

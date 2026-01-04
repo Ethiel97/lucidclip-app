@@ -5,14 +5,18 @@ import 'package:clipboard/clipboard.dart' hide ClipboardContentType;
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/clipboard_manager/base_clipboard_manager.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:pasteboard/pasteboard.dart';
 
 @LazySingleton(as: BaseClipboardManager)
 class FlutterClipboardManager implements BaseClipboardManager {
+  FlutterClipboardManager({required this.sourceAppProvider});
+
   Timer? _pollingTimer;
   String? _lastContentHash;
   final _controller = StreamController<ClipboardData>.broadcast();
+  final SourceAppProvider sourceAppProvider;
 
   @override
   @postConstruct
@@ -54,9 +58,14 @@ class FlutterClipboardManager implements BaseClipboardManager {
   // TODO(Ethiel97): handle multiple files in clipboard
   @override
   Future<ClipboardData?> getClipboardContent() async {
-    // 1. Vérifier les fichiers d'abord
+    final sourceApp = await sourceAppProvider.getFrontmostApp();
     final files = await Pasteboard.files();
     final timestamp = DateTime.now();
+
+    final metadata = <String, dynamic>{
+      if (sourceApp != null) 'sourceApp': sourceApp.toJson(),
+    };
+
     if (files.isNotEmpty) {
       for (final file in files) {
         if (file.isNotEmpty) {
@@ -68,6 +77,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
           );
           return clipboardData.copyWith(
             contentHash: clipboardData.computedContentHash,
+            metadata: metadata,
           );
         }
       }
@@ -84,6 +94,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
 
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
+        metadata: metadata,
       );
     }
 
@@ -98,6 +109,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
       );
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
+        metadata: metadata,
       );
     }
 
@@ -113,6 +125,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
 
       return clipboardData.copyWith(
         contentHash: clipboardData.computedContentHash,
+        metadata: metadata,
       );
     }
 

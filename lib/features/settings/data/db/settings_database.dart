@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:lucid_clip/features/settings/data/models/models.dart';
-import 'package:lucid_clip/features/settings/data/db/settings_tables.dart';
+import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -13,7 +12,7 @@ part 'settings_database.g.dart';
 @DriftDatabase(tables: [UserSettingsEntries])
 class SettingsDatabase extends _$SettingsDatabase {
   SettingsDatabase([QueryExecutor? executor])
-      : super(executor ?? _openConnection());
+    : super(executor ?? _openConnection());
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
@@ -31,38 +30,45 @@ class SettingsDatabase extends _$SettingsDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (Migrator m) async {
-          await m.createAll();
-        },
-      );
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+  );
 
   // Upsert settings
   Future<void> upsertSettings(UserSettingsEntriesCompanion companion) =>
       into(userSettingsEntries).insertOnConflictUpdate(companion);
 
   // Get settings by userId
-  Future<UserSettingsEntry?> getSettingsByUserId(String userId) =>
-      (select(userSettingsEntries)..where((t) => t.userId.equals(userId)))
-          .getSingleOrNull();
+  Future<UserSettingsEntry?> getSettingsByUserId(String userId) => (select(
+    userSettingsEntries,
+  )..where((t) => t.userId.equals(userId))).getSingleOrNull();
 
   // Watch settings by userId
-  Stream<UserSettingsEntry?> watchSettingsByUserId(String userId) =>
-      (select(userSettingsEntries)..where((t) => t.userId.equals(userId)))
-          .watchSingleOrNull();
+  Stream<UserSettingsEntry?> watchSettingsByUserId(String userId) => (select(
+    userSettingsEntries,
+  )..where((t) => t.userId.equals(userId))).watchSingleOrNull();
 
   // Delete settings by userId
   Future<void> deleteSettingsByUserId(String userId) async {
-    await (delete(userSettingsEntries)..where((t) => t.userId.equals(userId)))
-        .go();
+    await (delete(
+      userSettingsEntries,
+    )..where((t) => t.userId.equals(userId))).go();
   }
 
   // Mapping helpers: entry <-> model
   UserSettingsModel entryToModel(UserSettingsEntry e) {
-    final shortcuts = e.shortcutsJson.isEmpty
-        ? <String, dynamic>{}
-        : Map<String, dynamic>.from(
-            jsonDecode(e.shortcutsJson) as Map<String, dynamic>,
+    final shortcuts = e.shortcuts.isEmpty
+        ? <String, String>{}
+        : (jsonDecode(e.shortcuts) as Map<String, dynamic>).map(
+            (key, value) => MapEntry(key, value.toString()),
           );
+
+    final excludedApps = e.excludedApps.isEmpty
+        ? <String>[]
+        : List<dynamic>.from(
+            jsonDecode(e.excludedApps) as List<dynamic>,
+          ).map((e) => e.toString()).toList();
 
     return UserSettingsModel(
       userId: e.userId,
@@ -72,9 +78,11 @@ class SettingsDatabase extends _$SettingsDatabase {
       syncIntervalMinutes: e.syncIntervalMinutes,
       maxHistoryItems: e.maxHistoryItems,
       retentionDays: e.retentionDays,
-      pinOnTop: e.pinOnTop,
       showSourceApp: e.showSourceApp,
       previewImages: e.previewImages,
+      previewLinks: e.previewLinks,
+      incognitoMode: e.incognitoMode,
+      excludedApps: excludedApps,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     );
@@ -84,16 +92,16 @@ class SettingsDatabase extends _$SettingsDatabase {
     return UserSettingsEntriesCompanion(
       userId: Value(m.userId),
       theme: Value(m.theme),
-      shortcutsJson: Value(
-        m.shortcuts.isNotEmpty ? jsonEncode(m.shortcuts) : '{}',
-      ),
+      shortcuts: Value(m.shortcuts.isNotEmpty ? jsonEncode(m.shortcuts) : '{}'),
       autoSync: Value(m.autoSync),
       syncIntervalMinutes: Value(m.syncIntervalMinutes),
       maxHistoryItems: Value(m.maxHistoryItems),
       retentionDays: Value(m.retentionDays),
-      pinOnTop: Value(m.pinOnTop),
       showSourceApp: Value(m.showSourceApp),
       previewImages: Value(m.previewImages),
+      previewLinks: Value(m.previewLinks),
+      incognitoMode: Value(m.incognitoMode),
+      excludedApps: Value(jsonEncode(m.excludedApps)),
       createdAt: Value(m.createdAt),
       updatedAt: Value(m.updatedAt),
     );

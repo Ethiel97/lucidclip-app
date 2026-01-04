@@ -1,5 +1,9 @@
 {
   "@@locale": "en",
+  "about": "About",
+  "@about": {
+    "description": "Label for the About section"
+  },
   "allTypes": "All Types",
   "@allTypes": {
     "description": "Label for the All Types filter"
@@ -8,9 +12,45 @@
   "@appName": {
     "description": "Name of the app"
   },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Label for the Appearance settings"
+  },
+  "autoSync": "Auto Sync",
+  "@autoSync": {
+    "description": "Label for the Auto Sync setting"
+  },
+  "autoSyncDescription": "Syncs the clipboard with the server automatically.",
+  "@autoSyncDescription": {
+    "description": "Description for the Auto Sync setting"
+  },
+  "autoSyncInterval": "Auto Sync Interval",
+  "@autoSyncInterval": {
+    "description": "Label for the Auto Sync Interval setting"
+  },
+  "autoSyncIntervalDescription": "Sets how often the clipboard is synced with the server.",
+  "@autoSyncIntervalDescription": {
+    "description": "Description for the Auto Sync Interval setting"
+  },
+  "build": "Build",
+  "@build": {
+    "description": "Label for the app build number"
+  },
   "characters": "Characters",
   "@characters": {
     "description": "Label for the number of characters"
+  },
+  "chooseYourAppTheme": "Choose your app theme",
+  "@chooseYourAppTheme": {
+    "description": "Label for the Theme settings"
+  },
+  "chooseYourAppThemeDescription": "Choose your preferred theme.",
+  "@chooseYourAppThemeDescription": {
+    "description": "Description for the Theme settings"
+  },
+  "chooseYourClipboardThemeDescription": "Choose your preferred color scheme.",
+  "@chooseYourClipboardThemeDescription": {
+    "description": "Description for the Theme settings"
   },
   "clipboard": "Clipboard",
   "@clipboard": {
@@ -40,6 +80,10 @@
   "@counterAppBarTitle": {
     "description": "Text shown in the AppBar of the Counter Page"
   },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Name of the dark theme"
+  },
   "delete": "Delete",
   "@delete": {
     "description": "Button text to delete content"
@@ -47,6 +91,14 @@
   "edit": "Edit",
   "@edit": {
     "description": "Button text to edit content"
+  },
+  "errorLoadingSettings": "Error loading settings",
+  "@errorLoadingSettings": {
+    "description": "Error message shown when settings cannot be loaded"
+  },
+  "errorOccurred": "An error occurred. Please try again later.",
+  "@errorOccurred": {
+    "description": "Error message shown when an error occurs"
   },
   "failedToLoadLinkPreview": "Failed to load link preview",
   "@failedToLoadLinkPreview": {
@@ -60,13 +112,34 @@
   "@format": {
     "description": "Label for the format of the content"
   },
+  "general": "General",
+  "@general": {
+    "description": "Label for the General settings"
+  },
   "history": "History",
   "@history": {
     "description": "Title for the History Page"
   },
+  "historyLimit": "History Limit",
+  "@historyLimit": {
+    "description": "Label for the History Limit setting"
+  },
+  "ignorePasswords": "Ignore Copied Passwords",
+  "@ignorePasswords": {
+    "description": "Label for the Ignore Copied Passwords setting"
+  },
   "imageOnly": "Image Only",
   "@imageOnly": {
     "description": "Label for the Image Only filter"
+  },
+  "incognitoMode": "Incognito Mode",
+  "@incognitoMode": {
+    "description": "Label for the Incognito Mode setting"
+  },
+  "incognitoModeDescription": "Disables history recording for copied items.",
+  "@incognitoModeDescription": {
+    "description": "Description for the Incognito Mode setting",
+    "placeholders": {}
   },
   "information": "Information",
   "@information": {
@@ -75,6 +148,21 @@
   "itemDetails": "Item Details",
   "@itemDetails": {
     "description": "Title for the Item Details Panel"
+  },
+  "itemsCount": "{count, plural, =0 {No items} =1 {1 item} other {{count} items}}",
+  "@itemsCount": {
+    "description": "Label showing the number of items with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of items",
+        "example": "1"
+      }
+    }
+  },
+  "light": "Light",
+  "@light": {
+    "description": "Name of the light theme"
   },
   "link": "Link",
   "@link": {
@@ -88,6 +176,10 @@
   "@loadingLinkPreview": {
     "description": "Message shown when the preview is loading"
   },
+  "maxHistoryItemsDescription": "Sets the maximum number of items in the clipboard.",
+  "@maxHistoryItemsDescription": {
+    "description": "Description for the Max History Items setting"
+  },
   "noItemsForCategory": "No {category} items",
   "@noItemsForCategory": {
     "description": "Message shown when there are no items for a specific label",
@@ -97,6 +189,14 @@
         "description": "Label of the section"
       }
     }
+  },
+  "noSettingsAvailable": "No settings available",
+  "@noSettingsAvailable": {
+    "description": "Message shown when no settings are available"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Label for the Notifications settings"
   },
   "pin": "Pin",
   "@pin": {
@@ -110,9 +210,33 @@
   "@preview": {
     "description": "Label for the preview of the content"
   },
+  "previewImages": "Preview Images",
+  "@previewImages": {},
+  "previewImagesDescription": "Shows a preview of images in the clipboard.",
+  "@previewImagesDescription": {
+    "description": "Description for the Preview Images setting",
+    "placeholders": {}
+  },
+  "previewLinks": "Preview Links",
+  "@previewLinks": {
+    "description": "Label for the Preview Links setting"
+  },
+  "previewLinksDescription": "Shows a preview of links in the clipboard.",
+  "@previewLinksDescription": {
+    "description": "Description for the Preview Links setting"
+  },
   "recent": "Recent",
   "@recent": {
     "description": "Label for the Recent items"
+  },
+  "retentionDays": "Retention Days",
+  "retentionDaysDescription": "Sets how long items are kept in the clipboard.",
+  "@retentionDaysDescription": {
+    "description": "Description for the Retention Days setting"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Button text to retry an operation"
   },
   "searchHint": "Search...",
   "@searchHint": {
@@ -125,6 +249,18 @@
   "share": "Share",
   "@share": {
     "description": "Button text to share content"
+  },
+  "showInMenuBar": "Show in Menu Bar",
+  "@showInMenuBar": {
+    "description": "Label for the Show in Menu Bar setting"
+  },
+  "showSourceApp": "Show Source App",
+  "@showSourceApp": {
+    "description": "Label for the Show Source App setting"
+  },
+  "showSourceAppDescription": "Shows the app that copied the content to the clipboard in the item details.",
+  "@showSourceAppDescription": {
+    "description": "Description for the Show Source App setting"
   },
   "size": "Size",
   "@size": {
@@ -146,6 +282,18 @@
   "@sync": {
     "description": "Button text to sync content"
   },
+  "syncInterval": "Sync Interval",
+  "@syncInterval": {
+    "description": "Label for the Sync Interval setting"
+  },
+  "syncIntervalDescription": "Sets how often the clipboard is synced with the server.",
+  "@syncIntervalDescription": {
+    "description": "Description for the Sync Interval setting"
+  },
+  "system": "System",
+  "@system": {
+    "description": "Name of the system theme"
+  },
   "tags": "Tags",
   "@tags": {
     "description": "Label for the tags feature"
@@ -161,5 +309,9 @@
   "unpin": "Unpin",
   "@unpin": {
     "description": "Button text to unpin an item"
+  },
+  "version": "Version",
+  "@version": {
+    "description": "Label for the app version"
   }
 }

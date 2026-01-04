@@ -191,7 +191,7 @@ void main() {
         );
         final imageData = ClipboardData(
           type: ClipboardContentType.image,
-          imageBytes: [1, 2, 3, 4],
+          imageBytes: const [1, 2, 3, 4],
           contentHash: 'image_hash',
           timestamp: DateTime.now(),
         );

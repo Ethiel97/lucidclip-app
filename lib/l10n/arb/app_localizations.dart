@@ -94,6 +94,12 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
+  /// Label for the About section
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
   /// Label for the All Types filter
   ///
   /// In en, this message translates to:
@@ -106,11 +112,65 @@ abstract class AppLocalizations {
   /// **'LucidClip'**
   String get appName;
 
+  /// Label for the Appearance settings
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// Label for the Auto Sync setting
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Sync'**
+  String get autoSync;
+
+  /// Description for the Auto Sync setting
+  ///
+  /// In en, this message translates to:
+  /// **'Syncs the clipboard with the server automatically.'**
+  String get autoSyncDescription;
+
+  /// Label for the Auto Sync Interval setting
+  ///
+  /// In en, this message translates to:
+  /// **'Auto Sync Interval'**
+  String get autoSyncInterval;
+
+  /// Description for the Auto Sync Interval setting
+  ///
+  /// In en, this message translates to:
+  /// **'Sets how often the clipboard is synced with the server.'**
+  String get autoSyncIntervalDescription;
+
+  /// Label for the app build number
+  ///
+  /// In en, this message translates to:
+  /// **'Build'**
+  String get build;
+
   /// Label for the number of characters
   ///
   /// In en, this message translates to:
   /// **'Characters'**
   String get characters;
+
+  /// Label for the Theme settings
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your app theme'**
+  String get chooseYourAppTheme;
+
+  /// Description for the Theme settings
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your preferred theme.'**
+  String get chooseYourAppThemeDescription;
+
+  /// Description for the Theme settings
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your preferred color scheme.'**
+  String get chooseYourClipboardThemeDescription;
 
   /// Label for the Clipboard feature
   ///
@@ -154,6 +214,12 @@ abstract class AppLocalizations {
   /// **'Counter'**
   String get counterAppBarTitle;
 
+  /// Name of the dark theme
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get dark;
+
   /// Button text to delete content
   ///
   /// In en, this message translates to:
@@ -165,6 +231,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
+
+  /// Error message shown when settings cannot be loaded
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading settings'**
+  String get errorLoadingSettings;
+
+  /// Error message shown when an error occurs
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again later.'**
+  String get errorOccurred;
 
   /// Message shown when the preview failed to load
   ///
@@ -184,17 +262,47 @@ abstract class AppLocalizations {
   /// **'Format'**
   String get format;
 
+  /// Label for the General settings
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
   /// Title for the History Page
   ///
   /// In en, this message translates to:
   /// **'History'**
   String get history;
 
+  /// Label for the History Limit setting
+  ///
+  /// In en, this message translates to:
+  /// **'History Limit'**
+  String get historyLimit;
+
+  /// Label for the Ignore Copied Passwords setting
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore Copied Passwords'**
+  String get ignorePasswords;
+
   /// Label for the Image Only filter
   ///
   /// In en, this message translates to:
   /// **'Image Only'**
   String get imageOnly;
+
+  /// Label for the Incognito Mode setting
+  ///
+  /// In en, this message translates to:
+  /// **'Incognito Mode'**
+  String get incognitoMode;
+
+  /// Description for the Incognito Mode setting
+  ///
+  /// In en, this message translates to:
+  /// **'Disables history recording for copied items.'**
+  String get incognitoModeDescription;
 
   /// Label for the information section
   ///
@@ -207,6 +315,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Item Details'**
   String get itemDetails;
+
+  /// Label showing the number of items with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {No items} =1 {1 item} other {{count} items}}'**
+  String itemsCount(int count);
+
+  /// Name of the light theme
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light;
 
   /// Label for Link input
   ///
@@ -226,11 +346,29 @@ abstract class AppLocalizations {
   /// **'Loading link preview...'**
   String get loadingLinkPreview;
 
+  /// Description for the Max History Items setting
+  ///
+  /// In en, this message translates to:
+  /// **'Sets the maximum number of items in the clipboard.'**
+  String get maxHistoryItemsDescription;
+
   /// Message shown when there are no items for a specific label
   ///
   /// In en, this message translates to:
   /// **'No {category} items'**
   String noItemsForCategory(String category);
+
+  /// Message shown when no settings are available
+  ///
+  /// In en, this message translates to:
+  /// **'No settings available'**
+  String get noSettingsAvailable;
+
+  /// Label for the Notifications settings
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
 
   /// Button text to pin an item
   ///
@@ -250,11 +388,53 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get preview;
 
+  /// No description provided for @previewImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Images'**
+  String get previewImages;
+
+  /// Description for the Preview Images setting
+  ///
+  /// In en, this message translates to:
+  /// **'Shows a preview of images in the clipboard.'**
+  String get previewImagesDescription;
+
+  /// Label for the Preview Links setting
+  ///
+  /// In en, this message translates to:
+  /// **'Preview Links'**
+  String get previewLinks;
+
+  /// Description for the Preview Links setting
+  ///
+  /// In en, this message translates to:
+  /// **'Shows a preview of links in the clipboard.'**
+  String get previewLinksDescription;
+
   /// Label for the Recent items
   ///
   /// In en, this message translates to:
   /// **'Recent'**
   String get recent;
+
+  /// No description provided for @retentionDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Retention Days'**
+  String get retentionDays;
+
+  /// Description for the Retention Days setting
+  ///
+  /// In en, this message translates to:
+  /// **'Sets how long items are kept in the clipboard.'**
+  String get retentionDaysDescription;
+
+  /// Button text to retry an operation
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
 
   /// Hint shown in the Search Bar
   ///
@@ -273,6 +453,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get share;
+
+  /// Label for the Show in Menu Bar setting
+  ///
+  /// In en, this message translates to:
+  /// **'Show in Menu Bar'**
+  String get showInMenuBar;
+
+  /// Label for the Show Source App setting
+  ///
+  /// In en, this message translates to:
+  /// **'Show Source App'**
+  String get showSourceApp;
+
+  /// Description for the Show Source App setting
+  ///
+  /// In en, this message translates to:
+  /// **'Shows the app that copied the content to the clipboard in the item details.'**
+  String get showSourceAppDescription;
 
   /// Label for the size of the content
   ///
@@ -304,6 +502,24 @@ abstract class AppLocalizations {
   /// **'Sync'**
   String get sync;
 
+  /// Label for the Sync Interval setting
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Interval'**
+  String get syncInterval;
+
+  /// Description for the Sync Interval setting
+  ///
+  /// In en, this message translates to:
+  /// **'Sets how often the clipboard is synced with the server.'**
+  String get syncIntervalDescription;
+
+  /// Name of the system theme
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get system;
+
   /// Label for the tags feature
   ///
   /// In en, this message translates to:
@@ -327,6 +543,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unpin'**
   String get unpin;
+
+  /// Label for the app version
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
 }
 
 class _AppLocalizationsDelegate

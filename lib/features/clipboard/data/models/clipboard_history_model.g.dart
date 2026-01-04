@@ -39,4 +39,6 @@ const _$ClipboardActionModelEnumMap = {
   ClipboardActionModel.paste: 'paste',
   ClipboardActionModel.delete: 'delete',
   ClipboardActionModel.edit: 'edit',
+  ClipboardActionModel.pin: 'pin',
+  ClipboardActionModel.unpin: 'unpin',
 };

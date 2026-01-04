@@ -124,6 +124,7 @@ extension ClipboardDataMapper on ClipboardData {
       imageBytes: imageBytes,
       filePath: filePath,
       htmlContent: html,
+      metadata: metadata ?? {},
     );
   }
 }
@@ -139,6 +140,7 @@ extension ClipboardItemMapper on ClipboardItem {
       html: htmlContent,
       filePath: filePath,
       imageBytes: imageBytes,
+      metadata: metadata,
     );
   }
 }

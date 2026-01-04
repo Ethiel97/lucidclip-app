@@ -5,13 +5,15 @@ class SidebarItem extends StatefulWidget {
   const SidebarItem({
     required this.icon,
     required this.label,
+    required this.onTap,
+    this.isSelected = false,
     super.key,
-    this.isActive = false,
   });
 
   final Widget icon;
   final String label;
-  final bool isActive;
+  final VoidCallback onTap;
+  final bool isSelected;
 
   @override
   State<SidebarItem> createState() => _SidebarItemState();
@@ -20,56 +22,63 @@ class SidebarItem extends StatefulWidget {
 class _SidebarItemState extends State<SidebarItem> {
   bool _isHovering = false;
 
-  Color get backgroundColor {
-    if (widget.isActive) {
-      return AppColors.primary.withValues(alpha: 0.13);
-    } else if (_isHovering) {
-      return AppColors.textSecondary.withValues(alpha: 0.05);
-    } else {
-      return Colors.transparent;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final color = widget.isActive ? AppColors.primary : AppColors.textSecondary;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    final textTheme = Theme.of(context).textTheme;
+    final contentColor = widget.isSelected
+        ? colorScheme.primary
+        : (_isHovering ? colorScheme.onSurface : colorScheme.onTertiary);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxs),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovering = true),
-        onExit: (_) => setState(() => _isHovering = false),
-        child: GestureDetector(
-          onTap: () {},
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              children: [
-                IconTheme(
-                  data: IconThemeData(color: color, size: AppSpacing.lg),
-                  child: widget.icon,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
+    final backgroundColor = widget.isSelected
+        ? colorScheme.primary.withValues(alpha: 0.1)
+        : (_isHovering ? colorScheme.tertiary : Colors.transparent);
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              IconTheme(
+                data: IconThemeData(color: contentColor, size: 20),
+                child: widget.icon,
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
                   widget.label,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: color,
-                    fontWeight:
-                        widget.isActive ? FontWeight.w600 : FontWeight.w400,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: contentColor,
+                    fontWeight: widget.isSelected
+                        ? FontWeight.w600
+                        : FontWeight.w500,
                   ),
                 ),
-              ],
-            ),
+              ),
+              if (widget.isSelected)
+                Container(
+                  width: AppSpacing.xxs,
+                  height: AppSpacing.sm,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

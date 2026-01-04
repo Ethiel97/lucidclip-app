@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -15,18 +15,12 @@ typedef ClipboardPageItems = (
   ClipboardItems recentItems,
 );
 
+@RoutePage()
 class ClipboardPage extends StatelessWidget {
   const ClipboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) => MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (_) => getIt<ClipboardCubit>()),
-      BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
-      BlocProvider(create: (_) => getIt<SearchCubit>()),
-    ],
-    child: const ClipboardView(),
-  );
+  Widget build(BuildContext context) => const ClipboardView();
 }
 
 class ClipboardView extends StatefulWidget {
@@ -58,7 +52,7 @@ class _ClipboardViewState extends State<ClipboardView>
     );
 
     _clipboardItemDetailsSlideAnimation =
-        Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
+        Tween<Offset>(begin: const Offset(2, 0), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
             curve: Curves.easeInOut,
@@ -119,6 +113,15 @@ class _ClipboardViewState extends State<ClipboardView>
 
     final (pinnedItems, recentItems) = getListItems(context);
 
+    final allItems = [
+      if (pinnedItems.isNotEmpty)
+        SectionHeader(title: l10n.pinned.sentenceCase),
+      ...pinnedItems,
+      if (recentItems.isNotEmpty)
+        SectionHeader(title: l10n.recent.sentenceCase),
+      ...recentItems,
+    ];
+
     return MultiBlocListener(
       listeners: [
         BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
@@ -136,50 +139,35 @@ class _ClipboardViewState extends State<ClipboardView>
       child: Scaffold(
         body: AnimatedBuilder(
           animation: _animationController,
-          child: Row(
-            children: [
-              const Sidebar(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xlg,
-                    AppSpacing.lg,
-                    AppSpacing.xlg,
-                    AppSpacing.lg,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const PageHeader(),
-                      const SizedBox(height: AppSpacing.lg),
-                      Expanded(
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          child: ListView(
-                            controller: _scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            children: [
-                              if (pinnedItems.isNotEmpty) ...[
-                                ClipboardListRenderer(
-                                  items: pinnedItems,
-                                  title: l10n.pinned,
-                                ),
-                                const SizedBox(height: AppSpacing.lg),
-                              ],
-                              ClipboardListRenderer(
-                                items: recentItems,
-                                title: l10n.recent,
-                                searchMode: isSearchMode,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const PageHeader(),
+                const SizedBox(height: AppSpacing.lg),
+                Expanded(
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    controller: _scrollController,
+                    itemCount: allItems.length,
+                    itemBuilder: (context, index) {
+                      final item = allItems[index];
+                      if (item is SectionHeader) {
+                        return item;
+                      } else if (item is ClipboardItem) {
+                        return ClipboardItemTile(
+                          item: item,
+                          key: ValueKey(item.id),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           builder: (context, child) {
             final blur = _blurAnimation.value;

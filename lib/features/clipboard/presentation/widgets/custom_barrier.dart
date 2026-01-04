@@ -22,6 +22,7 @@ class CustomBarrier extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Stack(
+      clipBehavior: Clip.antiAlias,
       children: [
         AbsorbPointer(
           absorbing: blocking,

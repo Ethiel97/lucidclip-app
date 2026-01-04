@@ -61,12 +61,14 @@ class SettingsDatabase extends _$SettingsDatabase {
     final shortcuts = e.shortcuts.isEmpty
         ? <String, String>{}
         : (jsonDecode(e.shortcuts) as Map<String, dynamic>).map(
-          (key, value) => MapEntry(key, value.toString()),
-    );
+            (key, value) => MapEntry(key, value.toString()),
+          );
 
     final excludedApps = e.excludedApps.isEmpty
         ? <String>[]
-        : List<String>.from(jsonDecode(e.excludedApps) as List<String>);
+        : List<dynamic>.from(
+            jsonDecode(e.excludedApps) as List<dynamic>,
+          ).map((e) => e.toString()).toList();
 
     return UserSettingsModel(
       userId: e.userId,

@@ -75,15 +75,29 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     await windowManager.focus();
   });
 
-  // await resetClipboardDatabase();
+  // await clearAppData();
 
   runApp(await builder());
 }
 
 Future<void> resetClipboardDatabase() async {
   final dir = await getApplicationDocumentsDirectory();
-  final dbFile = File('${dir.path}/clipboard_db.sqlite');
-  if (dbFile.existsSync()) {
-    await dbFile.delete();
+  final clipboardDbFile = File('${dir.path}/clipboard_db.sqlite');
+  if (clipboardDbFile.existsSync()) {
+    await clipboardDbFile.delete();
   }
+}
+
+Future<void> resetSettingsDatabase() async {
+  final dir = await getApplicationDocumentsDirectory();
+  final settingsDbFile = File('${dir.path}/settings_db.sqlite');
+  if (settingsDbFile.existsSync()) {
+    await settingsDbFile.delete();
+  }
+}
+
+Future<void> clearAppData() async {
+  await HydratedBloc.storage.clear();
+  await resetClipboardDatabase();
+  await resetSettingsDatabase();
 }

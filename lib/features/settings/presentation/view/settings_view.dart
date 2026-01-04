@@ -114,6 +114,16 @@ class SettingsView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   SettingsSwitchItem(
+                    title: l10n.showSourceApp.sentenceCase,
+                    description: l10n.showSourceAppDescription.sentenceCase,
+                    value: settings.showSourceApp,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().updateShowSourceApp(
+                        showSourceApp: value,
+                      );
+                    },
+                  ),
+                  SettingsSwitchItem(
                     title: l10n.incognitoMode.sentenceCase,
                     description: l10n.incognitoModeDescription.sentenceCase,
                     value: settings.incognitoMode,

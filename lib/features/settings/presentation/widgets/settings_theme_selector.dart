@@ -81,13 +81,13 @@ class SettingsThemeSelector extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return colorScheme.primary.withValues(alpha: 0.2);
+                  return colorScheme.primary.withValues(alpha: 0.4);
                 }
                 return colorScheme.tertiary;
               }),
               foregroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return colorScheme.primary;
+                  return colorScheme.onSurface;
                 }
                 return colorScheme.onSurface;
               }),

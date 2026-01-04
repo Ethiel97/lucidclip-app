@@ -1,5 +1,4 @@
 // lib/core/clipboard_manager/clipboard_manager.dart
-import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
@@ -84,7 +83,6 @@ class ClipboardData extends Equatable {
     if (metadata?.containsKey('sourceApp') ?? false) {
       final appData = metadata!['sourceApp'] as Map<String, dynamic>;
       return SourceApp.fromMap(appData);
-
     }
     return null;
   }

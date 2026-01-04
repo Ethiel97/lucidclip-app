@@ -88,7 +88,6 @@ class _SidebarState extends State<Sidebar> {
       color: colorScheme.surface,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: AppSpacing.xlg),
           SizedBox(

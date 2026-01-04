@@ -16,12 +16,13 @@ class SettingsView extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: Padding(
-        padding: const EdgeInsets.only(
-          left: AppSpacing.lg,
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(left: AppSpacing.lg),
+          child: Text(l10n.settings.sentenceCase),
         ),
-        child: Text(l10n.settings.sentenceCase),
-      ), elevation: 0,),
+        elevation: 0,
+      ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return state.settings.maybeWhen(
@@ -66,21 +67,6 @@ class SettingsView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
 
-                  // Note: These settings use existing properties
-                  // as placeholders
-                  // TODO(Ethiel97): Add dedicated properties
-                  //  for launch_at_startup,
-                  //  show_in_menu_bar, sound_effects
-                  SettingsSwitchItem(
-                    title: 'Show in menu bar',
-                    description: 'Display clipboard icon in the macOS menu bar',
-                    value: settings.showSourceApp,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateShowSourceApp(
-                        showSourceApp: value,
-                      );
-                    },
-                  ),
                   SettingsSwitchItem(
                     title: l10n.previewLinks.sentenceCase,
                     description: l10n.previewLinksDescription.sentenceCase,

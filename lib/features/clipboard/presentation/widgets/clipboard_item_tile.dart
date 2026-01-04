@@ -7,6 +7,7 @@ import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:metalink_flutter/metalink_flutter.dart';
@@ -113,6 +114,13 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
+    final isLinkPreviewEnabled = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.settings.value?.previewLinks ?? true,
+    );
+    // // TODO(Ethiel97): Enable image previews once performance issues are resolved
+    /*final isImagePreviewEnabled = context.select<SettingsCubit, bool>(
+      (cubit) => cubit.state.settings.value?.previewImages ?? true,
+    );*/
     return GestureDetector(
       onTap: () {
         context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
@@ -150,37 +158,39 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                     visible: shouldShowLinkPreview,
                     portalFollower: SizedBox(
                       width: MediaQuery.sizeOf(context).width * 0.4,
-                      child: LinkPreview.compact(
-                        controller: _linkPreviewController,
-                        url: widget.item.content,
-                        errorBuilder: (context, error) => Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          color: AppColors.surface,
-                          child: Text(
-                            l10n.failedToLoadLinkPreview,
-                            style: textTheme.bodySmall?.copyWith(),
-                          ),
-                        ),
-                        loadingBuilder: (context) => Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          color: AppColors.surface,
-                          child: Column(
-                            spacing: AppSpacing.sm,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                l10n.loadingLinkPreview,
-                                style: textTheme.bodySmall?.copyWith(),
+                      child: isLinkPreviewEnabled
+                          ? LinkPreview.compact(
+                              controller: _linkPreviewController,
+                              url: widget.item.content,
+                              errorBuilder: (context, error) => Container(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                color: AppColors.surface,
+                                child: Text(
+                                  l10n.failedToLoadLinkPreview,
+                                  style: textTheme.bodySmall?.copyWith(),
+                                ),
                               ),
-                              const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
+                              loadingBuilder: (context) => Container(
+                                padding: const EdgeInsets.all(AppSpacing.md),
+                                color: AppColors.surface,
+                                child: Column(
+                                  spacing: AppSpacing.sm,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      l10n.loadingLinkPreview,
+                                      style: textTheme.bodySmall?.copyWith(),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
+                            )
+                          : const SizedBox.shrink(),
                     ),
                     child: widget.item.preview(maxLines: 1),
                   ),

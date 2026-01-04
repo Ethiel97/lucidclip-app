@@ -4,6 +4,8 @@ import 'package:lucid_clip/features/settings/domain/entities/entities.dart';
 
 part 'user_settings_model.g.dart';
 
+typedef UserSettingsShortcut = Map<String, String>;
+
 @JsonSerializable(explicitToJson: true)
 class UserSettingsModel extends Equatable {
   const UserSettingsModel({
@@ -47,7 +49,7 @@ class UserSettingsModel extends Equatable {
 
   final String theme;
 
-  final Map<String, dynamic> shortcuts;
+  final Map<String, String> shortcuts;
 
   @JsonKey(name: 'auto_sync')
   final bool autoSync;
@@ -84,7 +86,7 @@ class UserSettingsModel extends Equatable {
   UserSettingsModel copyWith({
     String? userId,
     String? theme,
-    Map<String, dynamic>? shortcuts,
+    Map<String, String>? shortcuts,
     bool? autoSync,
     int? syncIntervalMinutes,
     int? maxHistoryItems,

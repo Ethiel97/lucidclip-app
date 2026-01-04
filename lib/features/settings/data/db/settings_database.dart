@@ -59,9 +59,9 @@ class SettingsDatabase extends _$SettingsDatabase {
   // Mapping helpers: entry <-> model
   UserSettingsModel entryToModel(UserSettingsEntry e) {
     final shortcuts = e.shortcutsJson.isEmpty
-        ? <String, dynamic>{}
-        : Map<String, dynamic>.from(
-            jsonDecode(e.shortcutsJson) as Map<String, dynamic>,
+        ? <String, String>{}
+        : Map<String, String>.from(
+            jsonDecode(e.shortcutsJson) as Map<String, String>,
           );
 
     return UserSettingsModel(

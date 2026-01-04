@@ -9,6 +9,8 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
 final Map<String, Uint8List> _imagePreviewCache = {};
+final Map<String, Uint8List> _sourceAppIconCache = {};
+const _sourceAppDisplaySize = 30;
 
 extension ClipboardUiHelper on ClipboardItem {
   Widget get icon {
@@ -83,18 +85,18 @@ extension ClipboardUiHelper on ClipboardItem {
   Widget get sourceAppIcon {
     if (sourceApp?.icon != null) {
       final cachedKey = '${sourceApp?.bundleId}';
-      final cachedBytes = _imagePreviewCache.putIfAbsent(
+      final cachedBytes = _sourceAppIconCache.putIfAbsent(
         cachedKey,
         () => Uint8List.fromList(sourceApp!.icon!),
       );
 
       return Image.memory(
-        cacheHeight: 30,
-        cacheWidth: 30,
+        cacheHeight: _sourceAppDisplaySize,
+        cacheWidth: _sourceAppDisplaySize,
         cachedBytes,
         gaplessPlayback: true,
-        width: 30,
-        height: 30,
+        width: _sourceAppDisplaySize.toDouble(),
+        height: _sourceAppDisplaySize.toDouble(),
         fit: BoxFit.cover,
       );
     } else {

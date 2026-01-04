@@ -18,7 +18,7 @@ class AppLogo extends StatelessWidget {
     return Row(
       children: [
         Container(
-          height: 30,
+          height: AppSpacing.lg,
           width: AppSpacing.lg,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),

@@ -5,7 +5,6 @@ class ClipboardState extends Equatable {
     this.clipboardHistory = const ValueWrapper(value: []),
     this.clipboardItems = const ValueWrapper(value: []),
     this.clipboardItemTags = const ValueWrapper(value: []),
-    this.currentClipboardData,
     // this.localClipboardItems = const [],
     this.tags = const ValueWrapper(value: []),
   });
@@ -43,8 +42,6 @@ class ClipboardState extends Equatable {
   final ValueWrapper<ClipboardHistories> clipboardHistory;
   final ValueWrapper<ClipboardItems> clipboardItems;
 
-  final ClipboardData? currentClipboardData;
-
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
 
   // final List<ClipboardData> localClipboardItems;
@@ -53,7 +50,6 @@ class ClipboardState extends Equatable {
   ClipboardState copyWith({
     ValueWrapper<ClipboardHistories>? clipboardHistory,
     ValueWrapper<ClipboardItems>? clipboardItems,
-    ClipboardData? currentClipboardData,
     ValueWrapper<ClipboardItemTags>? clipboardItemTags,
     List<ClipboardData>? localClipboardItems,
     ValueWrapper<Tags>? tags,
@@ -61,7 +57,6 @@ class ClipboardState extends Equatable {
     return ClipboardState(
       clipboardHistory: clipboardHistory ?? this.clipboardHistory,
       clipboardItems: clipboardItems ?? this.clipboardItems,
-      currentClipboardData: currentClipboardData ?? this.currentClipboardData,
       clipboardItemTags: clipboardItemTags ?? this.clipboardItemTags,
       // localClipboardItems: localClipboardItems ?? this.localClipboardItems,
       tags: tags ?? this.tags,
@@ -88,14 +83,12 @@ class ClipboardState extends Equatable {
       .where((item) => item.isPinned)
       .toList(growable: false);
 
-
   int get totalItemsCount => clipboardItems.value?.length ?? 0;
 
   @override
   List<Object?> get props => [
     clipboardHistory,
     clipboardItems,
-    currentClipboardData,
     clipboardItemTags,
     // localClipboardItems,
     tags,

@@ -85,8 +85,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         return;
       }
 
-      emit(state.copyWith(currentClipboardData: clipboardData));
-
       final currentItems = state.clipboardItems.data;
 
       final isDuplicate = currentItems.any(
@@ -145,8 +143,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   Future<void> _loadLocalClipboardItems() async {
     _localItemsSubscription = localClipboardRepository.watchAll().listen(
       (items) {
-        // Convert ClipboardItems to ClipboardData for display
-
         emit(state.copyWith(clipboardItems: items.toSuccess()));
       },
       onError: (Object error, StackTrace stackTrace) {

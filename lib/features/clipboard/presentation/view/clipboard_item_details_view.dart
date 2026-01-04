@@ -91,11 +91,6 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
 
                 IconButton(
                   onPressed: () {
-                    _scrollController.animateTo(
-                      0,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeIn,
-                    );
                     widget.onClose?.call();
                   },
                   icon: const HugeIcon(

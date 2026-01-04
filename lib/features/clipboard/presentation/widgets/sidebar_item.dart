@@ -59,29 +59,26 @@ class _SidebarItemState extends State<SidebarItem> {
                 : MainAxisAlignment.center,
             children: [
               IconTheme(
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 200),
-                    opacity: isExpanded ? 1.0 : 0.0,
-                    child: isExpanded
-                        ? Container(
-                            padding: const EdgeInsets.only(
-                              left: AppSpacing.sm,
-                            ),
-                            child: Text(
-                              widget.label,
-                              maxLines: 1,
-                              overflow: TextOverflow.clip,
-                              softWrap: false,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: contentColor,
-                                fontWeight: widget.isSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.w500,
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
+                data: IconThemeData(color: contentColor),
+                child: widget.icon,
+              ),
+              if (isExpanded) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: isExpanded
+                      ? Text(
+                          widget.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          softWrap: false,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: contentColor,
+                            fontWeight: widget.isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ),
                 if (widget.isSelected) ...[
                   const SizedBox(width: AppSpacing.xs),

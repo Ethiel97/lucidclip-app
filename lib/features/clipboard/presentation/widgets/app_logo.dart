@@ -15,6 +15,10 @@ class AppLogo extends StatelessWidget {
 
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
 
+    if (!isExpanded) {
+      return const SizedBox.shrink();
+    }
+
     return Row(
       children: [
         Container(
@@ -36,15 +40,13 @@ class AppLogo extends StatelessWidget {
             ),
           ),
         ),
-        if (isExpanded) ...[
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            l10n.appName,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              color: colorScheme.onSurface,
-            ),
+        const SizedBox(width: AppSpacing.xs),
+        Text(
+          l10n.appName,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            color: colorScheme.onSurface,
           ),
-        ],
+        ),
       ],
     );
   }

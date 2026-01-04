@@ -96,10 +96,7 @@ class _SidebarState extends State<Sidebar> {
               mainAxisAlignment: isExpanded
                   ? MainAxisAlignment.spaceBetween
                   : MainAxisAlignment.center,
-              children: [
-                if (isExpanded) const AppLogo(),
-                const _SidebarToggleButton(),
-              ],
+              children: const [AppLogo(), _SidebarToggleButton()],
             ),
           ),
           const SizedBox(height: AppSpacing.xlg),
@@ -113,7 +110,7 @@ class _SidebarState extends State<Sidebar> {
                 final isSelected = tabsRouter.activeIndex == index;
 
                 return SidebarItem(
-                  icon: HugeIcon(icon: item.icon, ),
+                  icon: HugeIcon(icon: item.icon),
                   label: item.label,
                   isSelected: isSelected,
                   onTap: () => tabsRouter.setActiveIndex(index),

@@ -32,7 +32,32 @@ class ClipboardItemDetailsView extends StatefulWidget {
 }
 
 class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void didUpdateWidget(covariant ClipboardItemDetailsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.clipboardItem.id != widget.clipboardItem.id) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

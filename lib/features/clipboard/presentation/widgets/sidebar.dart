@@ -78,15 +78,31 @@ class _SidebarState extends State<Sidebar> {
     ];
 
     final tabsRouter = context.tabsRouter;
+    final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
 
-    return Container(
-      width: AppConstants.clipboardSidebarWidth,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: isExpanded
+          ? AppConstants.clipboardSidebarWidth
+          : AppConstants.collapsedSidebarWidth,
       color: colorScheme.surface,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: AppSpacing.xlg),
-          const AppLogo(),
+          SizedBox(
+            height: 40,
+            child: Row(
+              mainAxisAlignment: isExpanded
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.center,
+              children: [
+                if (isExpanded) const AppLogo(),
+                const _SidebarToggleButton(),
+              ],
+            ),
+          ),
           const SizedBox(height: AppSpacing.xlg),
           Expanded(
             child: ListView.separated(
@@ -98,7 +114,7 @@ class _SidebarState extends State<Sidebar> {
                 final isSelected = tabsRouter.activeIndex == index;
 
                 return SidebarItem(
-                  icon: HugeIcon(icon: item.icon, size: 20),
+                  icon: HugeIcon(icon: item.icon, ),
                   label: item.label,
                   isSelected: isSelected,
                   onTap: () => tabsRouter.setActiveIndex(index),
@@ -109,6 +125,26 @@ class _SidebarState extends State<Sidebar> {
           StorageIndicator(used: clipboardItemsCount, total: 1000),
           const SizedBox(height: AppSpacing.md),
         ],
+      ),
+    );
+  }
+}
+
+class _SidebarToggleButton extends StatelessWidget {
+  const _SidebarToggleButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+
+    return IconButton(
+      onPressed: () {
+        context.read<SidebarCubit>().toggle();
+      },
+      icon: HugeIcon(
+        icon: isExpanded
+            ? HugeIcons.strokeRoundedSidebarLeft
+            : HugeIcons.strokeRoundedSidebarRight,
       ),
     );
   }

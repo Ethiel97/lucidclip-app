@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
 class AppLogo extends StatelessWidget {
@@ -10,11 +12,14 @@ class AppLogo extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = context.l10n;
+
+    final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+
     return Row(
       children: [
         Container(
-          height: 32,
-          width: 32,
+          height: 30,
+          width: AppSpacing.lg,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
@@ -31,13 +36,15 @@ class AppLogo extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
-        Text(
-          l10n.appName,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: colorScheme.onSurface,
+        if (isExpanded) ...[
+          const SizedBox(width: AppSpacing.xs),
+          Text(
+            l10n.appName,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: colorScheme.onSurface,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

@@ -54,6 +54,8 @@ import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_detai
     as _i68;
 import 'package:lucid_clip/features/clipboard/presentation/cubit/search_cubit.dart'
     as _i997;
+import 'package:lucid_clip/features/clipboard/presentation/cubit/sidebar_cubit.dart'
+    as _i677;
 import 'package:lucid_clip/features/settings/data/data.dart' as _i739;
 import 'package:lucid_clip/features/settings/data/data_sources/data_sources.dart'
     as _i173;
@@ -95,6 +97,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
+    gh.lazySingleton<_i677.SidebarCubit>(() => _i677.SidebarCubit());
     gh.lazySingleton<_i51.SourceAppProvider>(
       () => _i740.MethodChannelSourceAppProvider(),
     );

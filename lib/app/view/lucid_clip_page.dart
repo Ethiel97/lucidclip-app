@@ -15,8 +15,8 @@ class LucidClipPage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => getIt<ClipboardCubit>()),
         BlocProvider(create: (_) => getIt<SearchCubit>()),
-        // BlocProvider(create: (_) => getIt<SettingsCubit>()),
         BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
+        BlocProvider(create: (_) => getIt<SidebarCubit>()),
       ],
       child: Scaffold(
         body: AutoTabsRouter(

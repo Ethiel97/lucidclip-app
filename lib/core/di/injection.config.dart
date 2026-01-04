@@ -25,6 +25,9 @@ import 'package:lucid_clip/core/network/impl/supabase_remote_sync.dart'
     as _i1033;
 import 'package:lucid_clip/core/network/network.dart' as _i183;
 import 'package:lucid_clip/core/network/remote_sync_client.dart' as _i70;
+import 'package:lucid_clip/core/platform/source_app/method_channel_source_app_provider.dart'
+    as _i740;
+import 'package:lucid_clip/core/platform/source_app/source_app.dart' as _i51;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
@@ -92,12 +95,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
-    gh.lazySingleton<_i1016.BaseClipboardManager>(
-      () => _i647.FlutterClipboardManager()..initialize(),
-      dispose: (i) => i.dispose(),
+    gh.lazySingleton<_i51.SourceAppProvider>(
+      () => _i740.MethodChannelSourceAppProvider(),
     );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i1016.BaseClipboardManager>(
+      () => _i647.FlutterClipboardManager(
+        sourceAppProvider: gh<_i51.SourceAppProvider>(),
+      )..initialize(),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingletonAsync<_i407.StorageService>(() {

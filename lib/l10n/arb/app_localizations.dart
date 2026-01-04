@@ -388,7 +388,7 @@ abstract class AppLocalizations {
   /// **'Preview'**
   String get preview;
 
-  /// No description provided for @previewImages.
+  /// Label for the Preview Images setting
   ///
   /// In en, this message translates to:
   /// **'Preview Images'**
@@ -418,7 +418,7 @@ abstract class AppLocalizations {
   /// **'Recent'**
   String get recent;
 
-  /// No description provided for @retentionDays.
+  /// Label for the Retention Days setting
   ///
   /// In en, this message translates to:
   /// **'Retention Days'**

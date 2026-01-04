@@ -32,7 +32,6 @@ class ClipboardItemModel {
       filePath: item.filePath,
       htmlContent: item.htmlContent,
       id: item.id,
-
       imageBytes: item.imageBytes,
       isPinned: item.isPinned,
       isSnippet: item.isSnippet,

@@ -211,7 +211,9 @@
     "description": "Label for the preview of the content"
   },
   "previewImages": "Preview Images",
-  "@previewImages": {},
+  "@previewImages": {
+    "description": "Label for the Preview Images setting"
+  },
   "previewImagesDescription": "Shows a preview of images in the clipboard.",
   "@previewImagesDescription": {
     "description": "Description for the Preview Images setting",
@@ -230,6 +232,9 @@
     "description": "Label for the Recent items"
   },
   "retentionDays": "Retention Days",
+  "@retentionDays": {
+    "description": "Label for the Retention Days setting"
+  },
   "retentionDaysDescription": "Sets how long items are kept in the clipboard.",
   "@retentionDaysDescription": {
     "description": "Description for the Retention Days setting"

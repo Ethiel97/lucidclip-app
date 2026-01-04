@@ -32,6 +32,7 @@ class UserSettingsModel extends Equatable {
       theme: settings.theme,
       shortcuts: settings.shortcuts,
       autoSync: settings.autoSync,
+      incognitoMode: settings.incognitoMode,
       syncIntervalMinutes: settings.syncIntervalMinutes,
       maxHistoryItems: settings.maxHistoryItems,
       retentionDays: settings.retentionDays,

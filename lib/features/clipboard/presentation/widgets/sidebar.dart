@@ -92,11 +92,16 @@ class _SidebarState extends State<Sidebar> {
           const SizedBox(height: AppSpacing.xlg),
           SizedBox(
             height: 40,
-            child: Row(
-              mainAxisAlignment: isExpanded
-                  ? MainAxisAlignment.spaceBetween
-                  : MainAxisAlignment.center,
-              children: const [AppLogo(), _SidebarToggleButton()],
+            child: ClipRect(
+              child: Row(
+                mainAxisAlignment: isExpanded
+                    ? MainAxisAlignment.spaceBetween
+                    : MainAxisAlignment.center,
+                children: [
+                  if (isExpanded) const Flexible(child: AppLogo()),
+                  const _SidebarToggleButton(),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.xlg),

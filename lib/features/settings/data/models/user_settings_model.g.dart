@@ -11,8 +11,17 @@ UserSettingsModel _$UserSettingsModelFromJson(Map<String, dynamic> json) =>
       userId: json['user_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      excludedApps:
+          (json['excluded_apps'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       theme: json['theme'] as String? ?? 'dark',
-      shortcuts: json['shortcuts'] as Map<String, dynamic>? ?? const {},
+      shortcuts:
+          (json['shortcuts'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as String),
+          ) ??
+          const {},
       autoSync: json['auto_sync'] as bool? ?? false,
       syncIntervalMinutes:
           (json['sync_interval_minutes'] as num?)?.toInt() ?? 60,
@@ -39,4 +48,5 @@ Map<String, dynamic> _$UserSettingsModelToJson(UserSettingsModel instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'incognito_mode': instance.incognitoMode,
+      'excluded_apps': instance.excludedApps,
     };

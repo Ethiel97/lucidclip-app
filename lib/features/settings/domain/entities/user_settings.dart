@@ -8,6 +8,7 @@ class UserSettings extends Equatable {
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
+    this.excludedApps = const [],
     this.theme = 'dark',
     this.shortcuts = const {},
     this.autoSync = false,
@@ -34,6 +35,7 @@ class UserSettings extends Equatable {
 
   final String userId;
   final String theme;
+  final List<String>  excludedApps;
   final Map<String, String> shortcuts;
   final bool autoSync;
   final int syncIntervalMinutes;
@@ -50,6 +52,7 @@ class UserSettings extends Equatable {
     String? userId,
     String? theme,
     Map<String, String>? shortcuts,
+    List<String>? excludedApps,
     bool? autoSync,
     int? syncIntervalMinutes,
     int? maxHistoryItems,
@@ -65,6 +68,7 @@ class UserSettings extends Equatable {
       userId: userId ?? this.userId,
       theme: theme ?? this.theme,
       shortcuts: shortcuts ?? this.shortcuts,
+      excludedApps: excludedApps ?? this.excludedApps,
       autoSync: autoSync ?? this.autoSync,
       syncIntervalMinutes: syncIntervalMinutes ?? this.syncIntervalMinutes,
       maxHistoryItems: maxHistoryItems ?? this.maxHistoryItems,
@@ -80,6 +84,7 @@ class UserSettings extends Equatable {
 
   @override
   List<Object?> get props => [
+    excludedApps,
     userId,
     theme,
     shortcuts,

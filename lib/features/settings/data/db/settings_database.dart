@@ -58,11 +58,15 @@ class SettingsDatabase extends _$SettingsDatabase {
 
   // Mapping helpers: entry <-> model
   UserSettingsModel entryToModel(UserSettingsEntry e) {
-    final shortcuts = e.shortcutsJson.isEmpty
+    final shortcuts = e.shortcuts.isEmpty
         ? <String, String>{}
         : Map<String, String>.from(
-            jsonDecode(e.shortcutsJson) as Map<String, String>,
+            jsonDecode(e.shortcuts) as Map<String, String>,
           );
+
+    final excludedApps = e.excludedApps.isEmpty
+        ? <String>[]
+        : List<String>.from(jsonDecode(e.excludedApps) as List<String>);
 
     return UserSettingsModel(
       userId: e.userId,
@@ -76,6 +80,7 @@ class SettingsDatabase extends _$SettingsDatabase {
       previewImages: e.previewImages,
       previewLinks: e.previewLinks,
       incognitoMode: e.incognitoMode,
+      excludedApps: excludedApps,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     );
@@ -85,9 +90,7 @@ class SettingsDatabase extends _$SettingsDatabase {
     return UserSettingsEntriesCompanion(
       userId: Value(m.userId),
       theme: Value(m.theme),
-      shortcutsJson: Value(
-        m.shortcuts.isNotEmpty ? jsonEncode(m.shortcuts) : '{}',
-      ),
+      shortcuts: Value(m.shortcuts.isNotEmpty ? jsonEncode(m.shortcuts) : '{}'),
       autoSync: Value(m.autoSync),
       syncIntervalMinutes: Value(m.syncIntervalMinutes),
       maxHistoryItems: Value(m.maxHistoryItems),
@@ -96,6 +99,7 @@ class SettingsDatabase extends _$SettingsDatabase {
       previewImages: Value(m.previewImages),
       previewLinks: Value(m.previewLinks),
       incognitoMode: Value(m.incognitoMode),
+      excludedApps: Value(jsonEncode(m.excludedApps)),
       createdAt: Value(m.createdAt),
       updatedAt: Value(m.updatedAt),
     );

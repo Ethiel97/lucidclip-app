@@ -28,12 +28,12 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     requiredDuringInsert: false,
     defaultValue: const Constant('dark'),
   );
-  static const VerificationMeta _shortcutsJsonMeta = const VerificationMeta(
-    'shortcutsJson',
+  static const VerificationMeta _shortcutsMeta = const VerificationMeta(
+    'shortcuts',
   );
   @override
-  late final GeneratedColumn<String> shortcutsJson = GeneratedColumn<String>(
-    'shortcuts_json',
+  late final GeneratedColumn<String> shortcuts = GeneratedColumn<String>(
+    'shortcuts',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -54,6 +54,18 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
       'CHECK ("auto_sync" IN (0, 1))',
     ),
     defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _excludedAppsMeta = const VerificationMeta(
+    'excludedApps',
+  );
+  @override
+  late final GeneratedColumn<String> excludedApps = GeneratedColumn<String>(
+    'excluded_apps',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
   );
   static const VerificationMeta _incognitoModeMeta = const VerificationMeta(
     'incognitoMode',
@@ -176,8 +188,9 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
   List<GeneratedColumn> get $columns => [
     userId,
     theme,
-    shortcutsJson,
+    shortcuts,
     autoSync,
+    excludedApps,
     incognitoMode,
     syncIntervalMinutes,
     maxHistoryItems,
@@ -214,19 +227,25 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
         theme.isAcceptableOrUnknown(data['theme']!, _themeMeta),
       );
     }
-    if (data.containsKey('shortcuts_json')) {
+    if (data.containsKey('shortcuts')) {
       context.handle(
-        _shortcutsJsonMeta,
-        shortcutsJson.isAcceptableOrUnknown(
-          data['shortcuts_json']!,
-          _shortcutsJsonMeta,
-        ),
+        _shortcutsMeta,
+        shortcuts.isAcceptableOrUnknown(data['shortcuts']!, _shortcutsMeta),
       );
     }
     if (data.containsKey('auto_sync')) {
       context.handle(
         _autoSyncMeta,
         autoSync.isAcceptableOrUnknown(data['auto_sync']!, _autoSyncMeta),
+      );
+    }
+    if (data.containsKey('excluded_apps')) {
+      context.handle(
+        _excludedAppsMeta,
+        excludedApps.isAcceptableOrUnknown(
+          data['excluded_apps']!,
+          _excludedAppsMeta,
+        ),
       );
     }
     if (data.containsKey('incognito_mode')) {
@@ -325,13 +344,17 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
         DriftSqlType.string,
         data['${effectivePrefix}theme'],
       )!,
-      shortcutsJson: attachedDatabase.typeMapping.read(
+      shortcuts: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}shortcuts_json'],
+        data['${effectivePrefix}shortcuts'],
       )!,
       autoSync: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}auto_sync'],
+      )!,
+      excludedApps: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}excluded_apps'],
       )!,
       incognitoMode: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
@@ -382,8 +405,9 @@ class UserSettingsEntry extends DataClass
     implements Insertable<UserSettingsEntry> {
   final String userId;
   final String theme;
-  final String shortcutsJson;
+  final String shortcuts;
   final bool autoSync;
+  final String excludedApps;
   final bool incognitoMode;
   final int syncIntervalMinutes;
   final int maxHistoryItems;
@@ -396,8 +420,9 @@ class UserSettingsEntry extends DataClass
   const UserSettingsEntry({
     required this.userId,
     required this.theme,
-    required this.shortcutsJson,
+    required this.shortcuts,
     required this.autoSync,
+    required this.excludedApps,
     required this.incognitoMode,
     required this.syncIntervalMinutes,
     required this.maxHistoryItems,
@@ -413,8 +438,9 @@ class UserSettingsEntry extends DataClass
     final map = <String, Expression>{};
     map['user_id'] = Variable<String>(userId);
     map['theme'] = Variable<String>(theme);
-    map['shortcuts_json'] = Variable<String>(shortcutsJson);
+    map['shortcuts'] = Variable<String>(shortcuts);
     map['auto_sync'] = Variable<bool>(autoSync);
+    map['excluded_apps'] = Variable<String>(excludedApps);
     map['incognito_mode'] = Variable<bool>(incognitoMode);
     map['sync_interval_minutes'] = Variable<int>(syncIntervalMinutes);
     map['max_history_items'] = Variable<int>(maxHistoryItems);
@@ -431,8 +457,9 @@ class UserSettingsEntry extends DataClass
     return UserSettingsEntriesCompanion(
       userId: Value(userId),
       theme: Value(theme),
-      shortcutsJson: Value(shortcutsJson),
+      shortcuts: Value(shortcuts),
       autoSync: Value(autoSync),
+      excludedApps: Value(excludedApps),
       incognitoMode: Value(incognitoMode),
       syncIntervalMinutes: Value(syncIntervalMinutes),
       maxHistoryItems: Value(maxHistoryItems),
@@ -453,8 +480,9 @@ class UserSettingsEntry extends DataClass
     return UserSettingsEntry(
       userId: serializer.fromJson<String>(json['userId']),
       theme: serializer.fromJson<String>(json['theme']),
-      shortcutsJson: serializer.fromJson<String>(json['shortcutsJson']),
+      shortcuts: serializer.fromJson<String>(json['shortcuts']),
       autoSync: serializer.fromJson<bool>(json['autoSync']),
+      excludedApps: serializer.fromJson<String>(json['excludedApps']),
       incognitoMode: serializer.fromJson<bool>(json['incognitoMode']),
       syncIntervalMinutes: serializer.fromJson<int>(
         json['syncIntervalMinutes'],
@@ -474,8 +502,9 @@ class UserSettingsEntry extends DataClass
     return <String, dynamic>{
       'userId': serializer.toJson<String>(userId),
       'theme': serializer.toJson<String>(theme),
-      'shortcutsJson': serializer.toJson<String>(shortcutsJson),
+      'shortcuts': serializer.toJson<String>(shortcuts),
       'autoSync': serializer.toJson<bool>(autoSync),
+      'excludedApps': serializer.toJson<String>(excludedApps),
       'incognitoMode': serializer.toJson<bool>(incognitoMode),
       'syncIntervalMinutes': serializer.toJson<int>(syncIntervalMinutes),
       'maxHistoryItems': serializer.toJson<int>(maxHistoryItems),
@@ -491,8 +520,9 @@ class UserSettingsEntry extends DataClass
   UserSettingsEntry copyWith({
     String? userId,
     String? theme,
-    String? shortcutsJson,
+    String? shortcuts,
     bool? autoSync,
+    String? excludedApps,
     bool? incognitoMode,
     int? syncIntervalMinutes,
     int? maxHistoryItems,
@@ -505,8 +535,9 @@ class UserSettingsEntry extends DataClass
   }) => UserSettingsEntry(
     userId: userId ?? this.userId,
     theme: theme ?? this.theme,
-    shortcutsJson: shortcutsJson ?? this.shortcutsJson,
+    shortcuts: shortcuts ?? this.shortcuts,
     autoSync: autoSync ?? this.autoSync,
+    excludedApps: excludedApps ?? this.excludedApps,
     incognitoMode: incognitoMode ?? this.incognitoMode,
     syncIntervalMinutes: syncIntervalMinutes ?? this.syncIntervalMinutes,
     maxHistoryItems: maxHistoryItems ?? this.maxHistoryItems,
@@ -521,10 +552,11 @@ class UserSettingsEntry extends DataClass
     return UserSettingsEntry(
       userId: data.userId.present ? data.userId.value : this.userId,
       theme: data.theme.present ? data.theme.value : this.theme,
-      shortcutsJson: data.shortcutsJson.present
-          ? data.shortcutsJson.value
-          : this.shortcutsJson,
+      shortcuts: data.shortcuts.present ? data.shortcuts.value : this.shortcuts,
       autoSync: data.autoSync.present ? data.autoSync.value : this.autoSync,
+      excludedApps: data.excludedApps.present
+          ? data.excludedApps.value
+          : this.excludedApps,
       incognitoMode: data.incognitoMode.present
           ? data.incognitoMode.value
           : this.incognitoMode,
@@ -556,8 +588,9 @@ class UserSettingsEntry extends DataClass
     return (StringBuffer('UserSettingsEntry(')
           ..write('userId: $userId, ')
           ..write('theme: $theme, ')
-          ..write('shortcutsJson: $shortcutsJson, ')
+          ..write('shortcuts: $shortcuts, ')
           ..write('autoSync: $autoSync, ')
+          ..write('excludedApps: $excludedApps, ')
           ..write('incognitoMode: $incognitoMode, ')
           ..write('syncIntervalMinutes: $syncIntervalMinutes, ')
           ..write('maxHistoryItems: $maxHistoryItems, ')
@@ -575,8 +608,9 @@ class UserSettingsEntry extends DataClass
   int get hashCode => Object.hash(
     userId,
     theme,
-    shortcutsJson,
+    shortcuts,
     autoSync,
+    excludedApps,
     incognitoMode,
     syncIntervalMinutes,
     maxHistoryItems,
@@ -593,8 +627,9 @@ class UserSettingsEntry extends DataClass
       (other is UserSettingsEntry &&
           other.userId == this.userId &&
           other.theme == this.theme &&
-          other.shortcutsJson == this.shortcutsJson &&
+          other.shortcuts == this.shortcuts &&
           other.autoSync == this.autoSync &&
+          other.excludedApps == this.excludedApps &&
           other.incognitoMode == this.incognitoMode &&
           other.syncIntervalMinutes == this.syncIntervalMinutes &&
           other.maxHistoryItems == this.maxHistoryItems &&
@@ -609,8 +644,9 @@ class UserSettingsEntry extends DataClass
 class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   final Value<String> userId;
   final Value<String> theme;
-  final Value<String> shortcutsJson;
+  final Value<String> shortcuts;
   final Value<bool> autoSync;
+  final Value<String> excludedApps;
   final Value<bool> incognitoMode;
   final Value<int> syncIntervalMinutes;
   final Value<int> maxHistoryItems;
@@ -624,8 +660,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   const UserSettingsEntriesCompanion({
     this.userId = const Value.absent(),
     this.theme = const Value.absent(),
-    this.shortcutsJson = const Value.absent(),
+    this.shortcuts = const Value.absent(),
     this.autoSync = const Value.absent(),
+    this.excludedApps = const Value.absent(),
     this.incognitoMode = const Value.absent(),
     this.syncIntervalMinutes = const Value.absent(),
     this.maxHistoryItems = const Value.absent(),
@@ -640,8 +677,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   UserSettingsEntriesCompanion.insert({
     required String userId,
     this.theme = const Value.absent(),
-    this.shortcutsJson = const Value.absent(),
+    this.shortcuts = const Value.absent(),
     this.autoSync = const Value.absent(),
+    this.excludedApps = const Value.absent(),
     this.incognitoMode = const Value.absent(),
     this.syncIntervalMinutes = const Value.absent(),
     this.maxHistoryItems = const Value.absent(),
@@ -658,8 +696,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   static Insertable<UserSettingsEntry> custom({
     Expression<String>? userId,
     Expression<String>? theme,
-    Expression<String>? shortcutsJson,
+    Expression<String>? shortcuts,
     Expression<bool>? autoSync,
+    Expression<String>? excludedApps,
     Expression<bool>? incognitoMode,
     Expression<int>? syncIntervalMinutes,
     Expression<int>? maxHistoryItems,
@@ -674,8 +713,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     return RawValuesInsertable({
       if (userId != null) 'user_id': userId,
       if (theme != null) 'theme': theme,
-      if (shortcutsJson != null) 'shortcuts_json': shortcutsJson,
+      if (shortcuts != null) 'shortcuts': shortcuts,
       if (autoSync != null) 'auto_sync': autoSync,
+      if (excludedApps != null) 'excluded_apps': excludedApps,
       if (incognitoMode != null) 'incognito_mode': incognitoMode,
       if (syncIntervalMinutes != null)
         'sync_interval_minutes': syncIntervalMinutes,
@@ -693,8 +733,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   UserSettingsEntriesCompanion copyWith({
     Value<String>? userId,
     Value<String>? theme,
-    Value<String>? shortcutsJson,
+    Value<String>? shortcuts,
     Value<bool>? autoSync,
+    Value<String>? excludedApps,
     Value<bool>? incognitoMode,
     Value<int>? syncIntervalMinutes,
     Value<int>? maxHistoryItems,
@@ -709,8 +750,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     return UserSettingsEntriesCompanion(
       userId: userId ?? this.userId,
       theme: theme ?? this.theme,
-      shortcutsJson: shortcutsJson ?? this.shortcutsJson,
+      shortcuts: shortcuts ?? this.shortcuts,
       autoSync: autoSync ?? this.autoSync,
+      excludedApps: excludedApps ?? this.excludedApps,
       incognitoMode: incognitoMode ?? this.incognitoMode,
       syncIntervalMinutes: syncIntervalMinutes ?? this.syncIntervalMinutes,
       maxHistoryItems: maxHistoryItems ?? this.maxHistoryItems,
@@ -733,11 +775,14 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     if (theme.present) {
       map['theme'] = Variable<String>(theme.value);
     }
-    if (shortcutsJson.present) {
-      map['shortcuts_json'] = Variable<String>(shortcutsJson.value);
+    if (shortcuts.present) {
+      map['shortcuts'] = Variable<String>(shortcuts.value);
     }
     if (autoSync.present) {
       map['auto_sync'] = Variable<bool>(autoSync.value);
+    }
+    if (excludedApps.present) {
+      map['excluded_apps'] = Variable<String>(excludedApps.value);
     }
     if (incognitoMode.present) {
       map['incognito_mode'] = Variable<bool>(incognitoMode.value);
@@ -777,8 +822,9 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     return (StringBuffer('UserSettingsEntriesCompanion(')
           ..write('userId: $userId, ')
           ..write('theme: $theme, ')
-          ..write('shortcutsJson: $shortcutsJson, ')
+          ..write('shortcuts: $shortcuts, ')
           ..write('autoSync: $autoSync, ')
+          ..write('excludedApps: $excludedApps, ')
           ..write('incognitoMode: $incognitoMode, ')
           ..write('syncIntervalMinutes: $syncIntervalMinutes, ')
           ..write('maxHistoryItems: $maxHistoryItems, ')
@@ -810,8 +856,9 @@ typedef $$UserSettingsEntriesTableCreateCompanionBuilder =
     UserSettingsEntriesCompanion Function({
       required String userId,
       Value<String> theme,
-      Value<String> shortcutsJson,
+      Value<String> shortcuts,
       Value<bool> autoSync,
+      Value<String> excludedApps,
       Value<bool> incognitoMode,
       Value<int> syncIntervalMinutes,
       Value<int> maxHistoryItems,
@@ -827,8 +874,9 @@ typedef $$UserSettingsEntriesTableUpdateCompanionBuilder =
     UserSettingsEntriesCompanion Function({
       Value<String> userId,
       Value<String> theme,
-      Value<String> shortcutsJson,
+      Value<String> shortcuts,
       Value<bool> autoSync,
+      Value<String> excludedApps,
       Value<bool> incognitoMode,
       Value<int> syncIntervalMinutes,
       Value<int> maxHistoryItems,
@@ -860,13 +908,18 @@ class $$UserSettingsEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get shortcutsJson => $composableBuilder(
-    column: $table.shortcutsJson,
+  ColumnFilters<String> get shortcuts => $composableBuilder(
+    column: $table.shortcuts,
     builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<bool> get autoSync => $composableBuilder(
     column: $table.autoSync,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get excludedApps => $composableBuilder(
+    column: $table.excludedApps,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -935,13 +988,18 @@ class $$UserSettingsEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get shortcutsJson => $composableBuilder(
-    column: $table.shortcutsJson,
+  ColumnOrderings<String> get shortcuts => $composableBuilder(
+    column: $table.shortcuts,
     builder: (column) => ColumnOrderings(column),
   );
 
   ColumnOrderings<bool> get autoSync => $composableBuilder(
     column: $table.autoSync,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get excludedApps => $composableBuilder(
+    column: $table.excludedApps,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1006,13 +1064,16 @@ class $$UserSettingsEntriesTableAnnotationComposer
   GeneratedColumn<String> get theme =>
       $composableBuilder(column: $table.theme, builder: (column) => column);
 
-  GeneratedColumn<String> get shortcutsJson => $composableBuilder(
-    column: $table.shortcutsJson,
-    builder: (column) => column,
-  );
+  GeneratedColumn<String> get shortcuts =>
+      $composableBuilder(column: $table.shortcuts, builder: (column) => column);
 
   GeneratedColumn<bool> get autoSync =>
       $composableBuilder(column: $table.autoSync, builder: (column) => column);
+
+  GeneratedColumn<String> get excludedApps => $composableBuilder(
+    column: $table.excludedApps,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get incognitoMode => $composableBuilder(
     column: $table.incognitoMode,
@@ -1101,8 +1162,9 @@ class $$UserSettingsEntriesTableTableManager
               ({
                 Value<String> userId = const Value.absent(),
                 Value<String> theme = const Value.absent(),
-                Value<String> shortcutsJson = const Value.absent(),
+                Value<String> shortcuts = const Value.absent(),
                 Value<bool> autoSync = const Value.absent(),
+                Value<String> excludedApps = const Value.absent(),
                 Value<bool> incognitoMode = const Value.absent(),
                 Value<int> syncIntervalMinutes = const Value.absent(),
                 Value<int> maxHistoryItems = const Value.absent(),
@@ -1116,8 +1178,9 @@ class $$UserSettingsEntriesTableTableManager
               }) => UserSettingsEntriesCompanion(
                 userId: userId,
                 theme: theme,
-                shortcutsJson: shortcutsJson,
+                shortcuts: shortcuts,
                 autoSync: autoSync,
+                excludedApps: excludedApps,
                 incognitoMode: incognitoMode,
                 syncIntervalMinutes: syncIntervalMinutes,
                 maxHistoryItems: maxHistoryItems,
@@ -1133,8 +1196,9 @@ class $$UserSettingsEntriesTableTableManager
               ({
                 required String userId,
                 Value<String> theme = const Value.absent(),
-                Value<String> shortcutsJson = const Value.absent(),
+                Value<String> shortcuts = const Value.absent(),
                 Value<bool> autoSync = const Value.absent(),
+                Value<String> excludedApps = const Value.absent(),
                 Value<bool> incognitoMode = const Value.absent(),
                 Value<int> syncIntervalMinutes = const Value.absent(),
                 Value<int> maxHistoryItems = const Value.absent(),
@@ -1148,8 +1212,9 @@ class $$UserSettingsEntriesTableTableManager
               }) => UserSettingsEntriesCompanion.insert(
                 userId: userId,
                 theme: theme,
-                shortcutsJson: shortcutsJson,
+                shortcuts: shortcuts,
                 autoSync: autoSync,
+                excludedApps: excludedApps,
                 incognitoMode: incognitoMode,
                 syncIntervalMinutes: syncIntervalMinutes,
                 maxHistoryItems: maxHistoryItems,

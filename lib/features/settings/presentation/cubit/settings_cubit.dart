@@ -214,6 +214,22 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
+  Future<void> updateShortcuts(Map<String, String> shortcuts) async {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(currentSettings.copyWith(shortcuts: shortcuts));
+    }
+  }
+
+  Future<void> updateExcludedApps(List<String> excludedApps) async {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(
+        currentSettings.copyWith(excludedApps: excludedApps),
+      );
+    }
+  }
+
   @override
   Future<void> close() {
     _settingsSubscription?.cancel();

@@ -5,11 +5,14 @@ class UserSettingsEntries extends Table {
 
   TextColumn get theme => text().withDefault(const Constant('dark'))();
 
-  TextColumn get shortcutsJson =>
-      text().named('shortcuts_json').withDefault(const Constant('{}'))();
+  TextColumn get shortcuts =>
+      text().named('shortcuts').withDefault(const Constant('{}'))();
 
   BoolColumn get autoSync =>
       boolean().named('auto_sync').withDefault(const Constant(false))();
+
+  TextColumn get excludedApps =>
+      text().named('excluded_apps').withDefault(const Constant('[]'))();
 
   BoolColumn get incognitoMode =>
       boolean().named('incognito_mode').withDefault(const Constant(false))();

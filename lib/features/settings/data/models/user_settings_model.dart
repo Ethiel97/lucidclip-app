@@ -12,6 +12,7 @@ class UserSettingsModel extends Equatable {
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
+    this.excludedApps = const [],
     this.theme = 'dark',
     this.shortcuts = const {},
     this.autoSync = false,
@@ -26,6 +27,7 @@ class UserSettingsModel extends Equatable {
 
   factory UserSettingsModel.fromEntity(UserSettings settings) {
     return UserSettingsModel(
+      excludedApps: settings.excludedApps,
       userId: settings.userId,
       theme: settings.theme,
       shortcuts: settings.shortcuts,
@@ -81,6 +83,9 @@ class UserSettingsModel extends Equatable {
   @JsonKey(name: 'incognito_mode')
   final bool incognitoMode;
 
+  @JsonKey(name: 'excluded_apps')
+  final List<String> excludedApps;
+
   Map<String, dynamic> toJson() => _$UserSettingsModelToJson(this);
 
   UserSettingsModel copyWith({
@@ -95,6 +100,7 @@ class UserSettingsModel extends Equatable {
     bool? previewImages,
     bool? previewLinks,
     bool? incognitoMode,
+    List<String>? excludedApps,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -110,6 +116,7 @@ class UserSettingsModel extends Equatable {
       previewImages: previewImages ?? this.previewImages,
       previewLinks: previewLinks ?? this.previewLinks,
       incognitoMode: incognitoMode ?? this.incognitoMode,
+      excludedApps: excludedApps ?? this.excludedApps,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -117,6 +124,7 @@ class UserSettingsModel extends Equatable {
 
   UserSettings toEntity() {
     return UserSettings(
+      excludedApps: excludedApps,
       userId: userId,
       theme: theme,
       shortcuts: shortcuts,
@@ -135,6 +143,7 @@ class UserSettingsModel extends Equatable {
 
   @override
   List<Object?> get props => [
+    excludedApps,
     userId,
     theme,
     shortcuts,

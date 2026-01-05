@@ -1,4 +1,3 @@
-
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,28 +32,22 @@ class _ClipboardViewState extends State<ClipboardView>
     with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
 
-  final clipboardItemDetailsSlideDuration = const Duration(milliseconds: 300);
   late final AnimationController _animationController;
-  late final Animation<double> _blurAnimation;
   late final Animation<Offset> _clipboardItemDetailsSlideAnimation;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 250),
       vsync: this,
     );
 
-    _blurAnimation = Tween<double>(begin: 0, end: 5).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-
     _clipboardItemDetailsSlideAnimation =
-        Tween<Offset>(begin: const Offset(2, 0), end: Offset.zero).animate(
+        Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: Curves.easeInOut,
+            curve: Curves.easeOutCubic,
           ),
         );
   }
@@ -130,83 +123,92 @@ class _ClipboardViewState extends State<ClipboardView>
         ),
       ],
       child: Scaffold(
-        body: AnimatedBuilder(
-          animation: _animationController,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const PageHeader(),
-                const SizedBox(height: AppSpacing.lg),
-                Expanded(
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    controller: _scrollController,
-                    itemCount: allItems.length,
-                    itemBuilder: (context, index) {
-                      final item = allItems[index];
-                      if (item is SectionHeader) {
-                        return item;
-                      } else if (item is ClipboardItem) {
-                        return ClipboardItemTile(
-                          item: item,
-                          key: ValueKey(item.id),
-                        );
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          builder: (context, child) {
-            final blur = _blurAnimation.value;
-            final blocking = _animationController.value > 0.0;
-
-            return CustomBarrier(
-              backgroundContent: child,
-              blocking: blocking,
-              blurValue: blur,
-              onDismiss: () {
-                context.read<ClipboardDetailCubit>().clearSelection();
-              },
-              child: Align(
-                alignment: Alignment.topRight,
-                child: SlideTransition(
-                  position: _clipboardItemDetailsSlideAnimation,
-                  child: ClipboardItemDetailsView(
-                    clipboardItem:
-                        selectedClipboardItem?.value ?? ClipboardItem.empty(),
-                    onClose: () {
-                      context.read<ClipboardDetailCubit>().clearSelection();
-                    },
-                    onDelete: () {
-                      if (hasClipboardItem) {
-                        context.read<ClipboardDetailCubit>().clearSelection();
-
-                        final clipboardItem = selectedClipboardItem!.data;
-                        context
-                            .read<ClipboardDetailCubit>()
-                            .deleteClipboardItem(clipboardItem);
-                      }
-                    },
-                    onTogglePin: () {
-                      if (hasClipboardItem) {
-                        context
-                            .read<ClipboardDetailCubit>()
-                            .togglePinClipboardItem(
-                              selectedClipboardItem!.data,
+        body: Stack(
+          children: [
+            // Static list view - never rebuilds during animation
+            AbsorbPointer(
+              absorbing: hasClipboardItem,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const PageHeader(),
+                    const SizedBox(height: AppSpacing.lg),
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const ClampingScrollPhysics(),
+                        controller: _scrollController,
+                        itemCount: allItems.length,
+                        addAutomaticKeepAlives: false,
+                        cacheExtent: 500,
+                        itemBuilder: (context, index) {
+                          final item = allItems[index];
+                          if (item is SectionHeader) {
+                            return item;
+                          } else if (item is ClipboardItem) {
+                            return ClipboardItemTile(
+                              item: item,
+                              key: ValueKey(item.id),
                             );
-                      }
-                    },
-                  ),
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+
+            // Animated overlay and details panel
+            // if (hasClipboardItem)
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                final blocking = _animationController.value > 0.0;
+
+                return CustomBarrier(
+                  blocking: blocking,
+                  onDismiss: () {
+                    context.read<ClipboardDetailCubit>().clearSelection();
+                  },
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: SlideTransition(
+                      position: _clipboardItemDetailsSlideAnimation,
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+              child: ClipboardItemDetailsView(
+                clipboardItem:
+                    selectedClipboardItem?.value ?? ClipboardItem.empty(),
+                onClose: () {
+                  context.read<ClipboardDetailCubit>().clearSelection();
+                },
+                onDelete: () {
+                  if (hasClipboardItem) {
+                    context.read<ClipboardDetailCubit>().clearSelection();
+
+                    final clipboardItem = selectedClipboardItem!.data;
+                    context.read<ClipboardDetailCubit>().deleteClipboardItem(
+                      clipboardItem,
+                    );
+                  }
+                },
+                onTogglePin: () {
+                  if (hasClipboardItem) {
+                    context.read<ClipboardDetailCubit>().togglePinClipboardItem(
+                      selectedClipboardItem!.data,
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

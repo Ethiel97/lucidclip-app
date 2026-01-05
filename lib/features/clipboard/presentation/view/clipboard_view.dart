@@ -33,7 +33,7 @@ class ClipboardView extends StatelessWidget {
           Expanded(
             child: Scrollbar(
               child: ListView(
-                physics: const BouncingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 children: [
                   if (pinnedItems.isNotEmpty) ...[
                      SectionHeader(title: l10n.pinned.sentenceCase),

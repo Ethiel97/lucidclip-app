@@ -30,6 +30,9 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
+  late List<SidebarItemConfig<List<List<dynamic>>>> menuItems =
+      <SidebarItemConfig<List<List<dynamic>>>>[];
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +40,29 @@ class _SidebarState extends State<Sidebar> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.tabsRouter.addListener(_handleRouteChange);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    menuItems = [
+      SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedClipboard,
+        label: context.l10n.clipboard.titleCase,
+        route: const ClipboardRoute(),
+      ),
+      SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedNote,
+        label: context.l10n.snippets.titleCase,
+        route: const SnippetsRoute(),
+      ),
+      SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedSettings03,
+        label: context.l10n.settings.titleCase,
+        route: const SettingsRoute(),
+      ),
+    ];
   }
 
   @override
@@ -53,7 +79,6 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final clipboardItemsCount = context.select<ClipboardCubit, int>(
@@ -63,26 +88,9 @@ class _SidebarState extends State<Sidebar> {
       (SettingsCubit cubit) => cubit.state.maxHistoryItems,
     );
 
-    final menuItems = [
-      SidebarItemConfig<List<List<dynamic>>>(
-        icon: HugeIcons.strokeRoundedClipboard,
-        label: l10n.clipboard.titleCase,
-        route: const ClipboardRoute(),
-      ),
-      SidebarItemConfig<List<List<dynamic>>>(
-        icon: HugeIcons.strokeRoundedNote,
-        label: l10n.snippets.titleCase,
-        route: const SnippetsRoute(),
-      ),
-      SidebarItemConfig<List<List<dynamic>>>(
-        icon: HugeIcons.strokeRoundedSettings03,
-        label: l10n.settings.titleCase,
-        route: const SettingsRoute(),
-      ),
-    ];
+    final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
 
     final tabsRouter = context.tabsRouter;
-    final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -111,6 +119,7 @@ class _SidebarState extends State<Sidebar> {
           const SizedBox(height: AppSpacing.xlg),
           Expanded(
             child: ListView.separated(
+              physics: const ClampingScrollPhysics(),
               itemCount: menuItems.length,
               separatorBuilder: (_, __) =>
                   const SizedBox(height: AppSpacing.sm),

@@ -10,7 +10,7 @@ import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
 final Map<String, Uint8List> _imagePreviewCache = {};
 final Map<String, Uint8List> _sourceAppIconCache = {};
-const _sourceAppDisplaySize = 30;
+const _sourceAppDisplaySize = 24;
 
 extension ClipboardUiHelper on ClipboardItem {
   Widget get icon {
@@ -60,9 +60,11 @@ extension ClipboardUiHelper on ClipboardItem {
       return Image.file(
         File(filePath!),
         gaplessPlayback: true,
-        fit: BoxFit.cover,
-        filterQuality: FilterQuality.high,
-        width: 50,
+        fit: BoxFit.contain,
+        // width: 50,
+        // cacheWidth: 150, // 3x for high DPI displays
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.broken_image, size: 50),
       );
     } else if (type case ClipboardItemType.image when imageBytes != null) {
       final cachedKey = 'clipboard_image_$id';
@@ -73,9 +75,12 @@ extension ClipboardUiHelper on ClipboardItem {
       return Image.memory(
         gaplessPlayback: true,
         cachedBytes,
-        fit: BoxFit.cover,
-        filterQuality: FilterQuality.high,
-        width: 50,
+        fit: BoxFit.contain,
+        // width: 50,
+        // cacheWidth: 150,
+        // 3x for high DPI displays
+        errorBuilder: (context, error, stackTrace) =>
+            const Icon(Icons.broken_image, size: 50),
       );
     } else {
       return textPreview;
@@ -91,8 +96,8 @@ extension ClipboardUiHelper on ClipboardItem {
       );
 
       return Image.memory(
-        cacheHeight: _sourceAppDisplaySize,
-        cacheWidth: _sourceAppDisplaySize,
+        cacheHeight: _sourceAppDisplaySize * 2,
+        cacheWidth: _sourceAppDisplaySize * 2,
         cachedBytes,
         gaplessPlayback: true,
         width: _sourceAppDisplaySize.toDouble(),

@@ -41,10 +41,13 @@ class _SidebarItemState extends State<SidebarItem> {
 
     return InkWell(
       onTap: widget.onTap,
+      highlightColor:  Colors.transparent,
       hoverColor: Colors.transparent,
-      splashColor: Colors.transparent ,
-      onHover: (value) {
-        setState(() => _isHovering = value);
+      splashColor: Colors.transparent,
+      onHover: (hovering) {
+        if (hovering != _isHovering) {
+          setState(() => _isHovering = hovering);
+        }
       },
       child: ClipRect(
         child: AnimatedContainer(

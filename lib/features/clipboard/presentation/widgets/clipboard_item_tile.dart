@@ -17,18 +17,12 @@ class ClipboardItemTile extends StatefulWidget {
 }
 
 class _ClipboardItemTileState extends State<ClipboardItemTile> {
-  late LinkPreviewController _linkPreviewController;
+  LinkPreviewController? _linkPreviewController;
   bool isHovering = false;
 
   @override
-  void initState() {
-    super.initState();
-    _linkPreviewController = LinkPreviewController();
-  }
-
-  @override
   void dispose() {
-    _linkPreviewController.dispose();
+    _linkPreviewController?.dispose();
     super.dispose();
   }
 
@@ -41,29 +35,25 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final l10n = context.l10n;
-    final isLinkPreviewEnabled = context.select(
-      (SettingsCubit cubit) => cubit.state.previewLinks,
-    );
-    // // TODO(Ethiel97): Enable image previews once performance issues are resolved
-    /*final isImagePreviewEnabled = context.select<SettingsCubit, bool>(
-      (cubit) => cubit.state.settings.value?.previewImages ?? true,
-    );*/
+
     return InkWell(
       onHover: (hovering) {
-        setState(() {
-          isHovering = hovering;
-        });
+        if (hovering != isHovering) {
+          setState(() {
+            isHovering = hovering;
+          });
+        }
       },
       onTap: () {
         context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
       },
-      splashColor: Colors.transparent ,
+      splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       child: ClipboardContextMenu(
         clipboardItem: widget.item,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+        child: Container(
+          height:  60,
           key: ValueKey(widget.item.id),
           margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           padding: const EdgeInsets.symmetric(
@@ -75,55 +65,20 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize:  MainAxisSize.min,
             children: [
               widget.item.icon,
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: PortalTarget(
-                  anchor: const Aligned(
-                    follower: Alignment.topLeft,
-                    target: Alignment.bottomLeft,
-                  ),
-                  visible: shouldShowLinkPreview,
-                  portalFollower: SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.4,
-                    child: isLinkPreviewEnabled
-                        ? LinkPreview.compact(
-                            controller: _linkPreviewController,
-                            url: widget.item.content,
-                            errorBuilder: (context, error) => Container(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              color: AppColors.surface,
-                              child: Text(
-                                l10n.failedToLoadLinkPreview,
-                                style: textTheme.bodySmall?.copyWith(),
-                              ),
-                            ),
-                            loadingBuilder: (context) => Container(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              color: AppColors.surface,
-                              child: Column(
-                                spacing: AppSpacing.sm,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    l10n.loadingLinkPreview,
-                                    style: textTheme.bodySmall?.copyWith(),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                  child: widget.item.preview(maxLines: 1),
-                ),
+                child: shouldShowLinkPreview && widget.item.type.isUrl
+                    ? _LinkPreviewWidget(
+                        item: widget.item,
+                        controller: _linkPreviewController ??=
+                            LinkPreviewController(),
+                      )
+                    : Align(
+                    alignment: Alignment.centerLeft,
+                    child: widget.item.preview(maxLines: 1)),
               ),
               const SizedBox(width: AppSpacing.sm),
               ClipboardItemTagChip(label: widget.item.type.label),
@@ -142,6 +97,65 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _LinkPreviewWidget extends StatelessWidget {
+  const _LinkPreviewWidget({required this.item, required this.controller});
+
+  final ClipboardItem item;
+  final LinkPreviewController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final l10n = context.l10n;
+    final isLinkPreviewEnabled = context.select(
+      (SettingsCubit cubit) => cubit.state.previewLinks,
+    );
+
+    return PortalTarget(
+      anchor: const Aligned(
+        follower: Alignment.topLeft,
+        target: Alignment.bottomLeft,
+      ),
+      visible: isLinkPreviewEnabled,
+      portalFollower: SizedBox(
+        width: MediaQuery.sizeOf(context).width * 0.4,
+        child: LinkPreview.compact(
+          controller: controller,
+          url: item.content,
+          errorBuilder: (context, error) => Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            color: AppColors.surface,
+            child: Text(
+              l10n.failedToLoadLinkPreview,
+              style: textTheme.bodySmall?.copyWith(),
+            ),
+          ),
+          loadingBuilder: (context) => Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            color: AppColors.surface,
+            child: Column(
+              spacing: AppSpacing.sm,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  l10n.loadingLinkPreview,
+                  style: textTheme.bodySmall?.copyWith(),
+                ),
+                const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      child: item.preview(maxLines: 1),
     );
   }
 }

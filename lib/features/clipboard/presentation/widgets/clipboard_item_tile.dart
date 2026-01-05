@@ -34,66 +34,64 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return InkWell(
-      onHover: (hovering) {
-        if (hovering != isHovering) {
-          setState(() {
-            isHovering = hovering;
-          });
+    return MouseRegion(
+      onEnter: (_) {
+        if (!isHovering) {
+          setState(() => isHovering = true);
         }
       },
-      onTap: () {
-        context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
+      onExit: (_) {
+        if (isHovering) {
+          setState(() => isHovering = false);
+        }
       },
-      splashColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: ClipboardContextMenu(
-        clipboardItem: widget.item,
-        child: Container(
-          height:  60,
-          key: ValueKey(widget.item.id),
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          decoration: BoxDecoration(
-            color: _backgroundColor,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            mainAxisSize:  MainAxisSize.min,
-            children: [
-              widget.item.icon,
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: shouldShowLinkPreview && widget.item.type.isUrl
-                    ? _LinkPreviewWidget(
-                        item: widget.item,
-                        controller: _linkPreviewController ??=
-                            LinkPreviewController(),
-                      )
-                    : Align(
-                    alignment: Alignment.centerLeft,
-                    child: widget.item.preview(maxLines: 1)),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              ClipboardItemTagChip(label: widget.item.type.label),
-              const SizedBox(width: AppSpacing.sm),
-              SizedBox(
-                width: 100,
-                child: Text(
-                  widget.item.timeAgo,
-                  style: textTheme.displaySmall?.copyWith(
-                    fontSize: 12,
-                    color: AppColors.textMuted,
+      child: GestureDetector(
+        onTap: () {
+          context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
+        },
+        child: ClipboardContextMenu(
+          clipboardItem: widget.item,
+          child: Container(
+            height: 60,
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            decoration: BoxDecoration(
+              color: _backgroundColor,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                widget.item.icon,
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: shouldShowLinkPreview && widget.item.type.isUrl
+                      ? _LinkPreviewWidget(
+                          item: widget.item,
+                          controller: _linkPreviewController ??= LinkPreviewController(),
+                        )
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: widget.item.preview(maxLines: 1),
+                        ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                ClipboardItemTagChip(label: widget.item.type.label),
+                const SizedBox(width: AppSpacing.sm),
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    widget.item.timeAgo,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

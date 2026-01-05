@@ -41,7 +41,7 @@ class _SidebarItemState extends State<SidebarItem> {
 
     return InkWell(
       onTap: widget.onTap,
-      highlightColor:  Colors.transparent,
+      highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
       splashColor: Colors.transparent,
       onHover: (hovering) {

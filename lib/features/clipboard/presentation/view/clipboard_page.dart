@@ -140,8 +140,9 @@ class _ClipboardViewState extends State<ClipboardView>
                         physics: const ClampingScrollPhysics(),
                         controller: _scrollController,
                         itemCount: allItems.length,
+                        itemExtent: 65, // 60px height + 12px margin = fixed extent
                         addAutomaticKeepAlives: false,
-                        cacheExtent: 500,
+                        cacheExtent: 200,
                         itemBuilder: (context, index) {
                           final item = allItems[index];
                           if (item is SectionHeader) {

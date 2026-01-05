@@ -7,8 +7,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -57,6 +59,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   );
 
   configureDependencies();
+
+  // Initialize tray manager
+  await trayManager.ensureInitialized();
+  
+  final trayService = getIt<TrayManagerService>();
+  await trayService.initialize();
 
   const windowOptions = WindowOptions(
     minimumSize: Size(900, 600),

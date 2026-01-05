@@ -207,7 +207,7 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final shouldShowSourceApp = context.select<SettingsCubit, bool>(
-      (cubit) => cubit.state.settings.value?.showSourceApp ?? true,
+      (cubit) => cubit.state.showSourceApp,
     );
 
     final isSourceAppValid = clipboardItem.sourceApp?.isValid ?? false;

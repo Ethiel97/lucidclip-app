@@ -231,6 +231,22 @@ For existing users:
 ## Branch Name
 Following conventional commit format: `copilot/create-settings-feature`
 
+
+## Plan settings
+| Feature              | Free   | Pro      |
+| -------------------- |--------|----------|
+| Clipboard history    | 50     | 100 – 5k |
+| Retention            | 1 days | 30–365+  |
+| Pins                 | ❌      | ✅        |
+| Snippets             | ❌      | ✅        |
+| Sync                 | ❌      | ✅        |
+| Sync interval        | ❌      | 1–60 min |
+| App exclusions       | 2 apps | Unlimited |
+| Incognito mode       | ❌      | ✅        |
+| Preview images/links | ✅      | ✅        |
+| Custom shortcuts     | ❌      | ✅        |
+
+
 ## Conclusion
 
 The settings feature has been successfully implemented following:

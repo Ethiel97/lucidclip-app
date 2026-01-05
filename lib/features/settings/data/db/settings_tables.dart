@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 class UserSettingsEntries extends Table {
   TextColumn get userId => text().named('user_id')();
@@ -19,13 +20,15 @@ class UserSettingsEntries extends Table {
 
   IntColumn get syncIntervalMinutes => integer()
       .named('sync_interval_minutes')
-      .withDefault(const Constant(60))();
+      .withDefault(const Constant(defaultSyncIntervalMinutes))();
 
-  IntColumn get maxHistoryItems =>
-      integer().named('max_history_items').withDefault(const Constant(50))();
+  IntColumn get maxHistoryItems => integer()
+      .named('max_history_items')
+      .withDefault(const Constant(defaultMaxHistoryItems))();
 
-  IntColumn get retentionDays =>
-      integer().named('retention_days').withDefault(const Constant(5))();
+  IntColumn get retentionDays => integer()
+      .named('retention_days')
+      .withDefault(const Constant(defaultRetentionDays))();
 
   BoolColumn get showSourceApp =>
       boolean().named('show_source_app').withDefault(const Constant(true))();

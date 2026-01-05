@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:lucid_clip/features/settings/domain/entities/entities.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'user_settings_model.g.dart';
 
@@ -16,9 +16,9 @@ class UserSettingsModel extends Equatable {
     this.theme = 'dark',
     this.shortcuts = const {},
     this.autoSync = false,
-    this.syncIntervalMinutes = 60,
-    this.maxHistoryItems = 50,
-    this.retentionDays = 5,
+    this.syncIntervalMinutes = defaultSyncIntervalMinutes,
+    this.maxHistoryItems = defaultMaxHistoryItems,
+    this.retentionDays = defaultRetentionDays,
     this.incognitoMode = false,
     this.showSourceApp = true,
     this.previewImages = true,

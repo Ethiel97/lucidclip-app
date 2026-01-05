@@ -26,6 +26,7 @@ dependencies:
   flutter_portal: ^1.1.4
   path: ^1.9.1
   flexible_dropdown: ^1.0.8
+  percent_indicator: ^4.2.5
 
   drift: ^2.29.0
   drift_flutter: ^0.2.8

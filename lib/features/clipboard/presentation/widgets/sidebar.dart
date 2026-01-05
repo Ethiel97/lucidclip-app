@@ -6,6 +6,7 @@ import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -58,6 +59,9 @@ class _SidebarState extends State<Sidebar> {
     final clipboardItemsCount = context.select<ClipboardCubit, int>(
       (cubit) => cubit.state.totalItemsCount,
     );
+    final clipboardHistorySize = context.select(
+      (SettingsCubit cubit) => cubit.state.maxHistoryItems,
+    );
 
     final menuItems = [
       SidebarItemConfig<List<List<dynamic>>>(
@@ -92,11 +96,16 @@ class _SidebarState extends State<Sidebar> {
           const SizedBox(height: AppSpacing.xlg),
           SizedBox(
             height: 40,
-            child: Row(
-              mainAxisAlignment: isExpanded
-                  ? MainAxisAlignment.spaceBetween
-                  : MainAxisAlignment.center,
-              children: const [AppLogo(), _SidebarToggleButton()],
+            child: ClipRect(
+              child: Row(
+                mainAxisAlignment: isExpanded
+                    ? MainAxisAlignment.spaceBetween
+                    : MainAxisAlignment.center,
+                children: [
+                  if (isExpanded) const Flexible(child: AppLogo()),
+                  const _SidebarToggleButton(),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.xlg),
@@ -118,7 +127,10 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
           ),
-          StorageIndicator(used: clipboardItemsCount, total: 1000),
+          StorageIndicator(
+            used: clipboardItemsCount,
+            total: clipboardHistorySize,
+          ),
           const SizedBox(height: AppSpacing.md),
         ],
       ),

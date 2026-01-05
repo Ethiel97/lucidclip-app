@@ -148,7 +148,7 @@ class SettingsView extends StatelessWidget {
                     title: l10n.historyLimit.sentenceCase,
                     description: l10n.maxHistoryItemsDescription.sentenceCase,
                     value: settings.maxHistoryItems,
-                    items: const [100, 500, 1000],
+                    items: const [50, 100, 500, 1000],
                     itemLabel: (value) => '$value items',
                     onChanged: (value) {
                       if (value != null) {
@@ -162,7 +162,7 @@ class SettingsView extends StatelessWidget {
                     title: l10n.retentionDays.sentenceCase,
                     description: l10n.retentionDaysDescription.sentenceCase,
                     value: settings.retentionDays,
-                    items: const [7, 14, 30, 60, 90, 180, 365],
+                    items: const [1, 7, 14, 30, 60, 90, 180, 365],
                     itemLabel: (value) => '$value days',
                     onChanged: (value) {
                       if (value != null) {

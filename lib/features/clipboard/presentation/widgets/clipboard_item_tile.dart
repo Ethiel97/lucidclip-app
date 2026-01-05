@@ -70,7 +70,8 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                   child: shouldShowLinkPreview && widget.item.type.isUrl
                       ? _LinkPreviewWidget(
                           item: widget.item,
-                          controller: _linkPreviewController ??= LinkPreviewController(),
+                          controller: _linkPreviewController ??=
+                              LinkPreviewController(),
                         )
                       : Align(
                           alignment: Alignment.centerLeft,
@@ -80,14 +81,11 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                 const SizedBox(width: AppSpacing.sm),
                 ClipboardItemTagChip(label: widget.item.type.label),
                 const SizedBox(width: AppSpacing.sm),
-                SizedBox(
-                  width: 100,
-                  child: Text(
-                    widget.item.timeAgo,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textMuted,
-                    ),
+                Text(
+                  widget.item.timeAgo,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],

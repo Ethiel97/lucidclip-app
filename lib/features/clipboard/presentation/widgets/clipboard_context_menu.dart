@@ -33,14 +33,19 @@ class ClipboardContextMenu extends StatelessWidget {
       // TODO(Ethiel97): the pin feature is for PRO users only,
       //  hide it for free users
       (
-        label: item.isPinned ? l10n.unpin : l10n.pin.sentenceCase,
+        label: item.isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
         icon: item.isPinned
             ? HugeIcons.strokeRoundedPinOff
             : HugeIcons.strokeRoundedPin,
       ),
+      (
+        label: l10n.appendToClipboard.sentenceCase,
+        icon: HugeIcons.strokeRoundedCopy01,
+      ),
       (label: l10n.delete.sentenceCase, icon: HugeIcons.strokeRoundedDelete01),
-      (label: l10n.edit.sentenceCase, icon: HugeIcons.strokeRoundedEdit01),
-      (label: l10n.copy.sentenceCase, icon: HugeIcons.strokeRoundedCopy01),
+
+      if (item.type != ClipboardItemType.image)
+        (label: l10n.edit.sentenceCase, icon: HugeIcons.strokeRoundedEdit01),
     ];
     return menu
         .map(
@@ -59,6 +64,10 @@ class ClipboardContextMenu extends StatelessWidget {
                   context.read<ClipboardDetailCubit>().togglePinClipboardItem(
                     clipboardItem,
                   );
+                case final l when l == l10n.unpin.sentenceCase:
+                  context.read<ClipboardDetailCubit>().togglePinClipboardItem(
+                    clipboardItem,
+                  );
                 case final l when l == l10n.delete.sentenceCase:
                   context.read<ClipboardDetailCubit>().deleteClipboardItem(
                     clipboardItem,
@@ -66,7 +75,7 @@ class ClipboardContextMenu extends StatelessWidget {
                 case final l when l == l10n.edit.sentenceCase:
                   // TODO(Ethiel97): Handle edit action
                   break;
-                case final l when l == l10n.copy.sentenceCase:
+                case final l when l == l10n.appendToClipboard.sentenceCase:
                   getIt<BaseClipboardManager>().setClipboardContent(
                     clipboardItem.toInfrastructure(),
                   );

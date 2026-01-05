@@ -118,6 +118,12 @@ abstract class AppLocalizations {
   /// **'Appearance'**
   String get appearance;
 
+  /// Button text to append content to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Append to Clipboard'**
+  String get appendToClipboard;
+
   /// Label for the Auto Sync setting
   ///
   /// In en, this message translates to:
@@ -357,6 +363,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No {category} items'**
   String noItemsForCategory(String category);
+
+  /// Message shown when no search results are found
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResultsFound;
 
   /// Message shown when no settings are available
   ///

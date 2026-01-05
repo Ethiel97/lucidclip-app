@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appearance => 'Appearance';
 
   @override
+  String get appendToClipboard => 'Append to Clipboard';
+
+  @override
   String get autoSync => 'Auto Sync';
 
   @override
@@ -155,6 +158,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String noItemsForCategory(String category) {
     return 'No $category items';
   }
+
+  @override
+  String get noResultsFound => 'No results found';
 
   @override
   String get noSettingsAvailable => 'No settings available';

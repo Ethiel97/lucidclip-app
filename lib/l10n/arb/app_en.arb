@@ -16,6 +16,10 @@
   "@appearance": {
     "description": "Label for the Appearance settings"
   },
+  "appendToClipboard": "Append to Clipboard",
+  "@appendToClipboard": {
+    "description": "Button text to append content to the clipboard"
+  },
   "autoSync": "Auto Sync",
   "@autoSync": {
     "description": "Label for the Auto Sync setting"
@@ -189,6 +193,10 @@
         "description": "Label of the section"
       }
     }
+  },
+  "noResultsFound": "No results found",
+  "@noResultsFound": {
+    "description": "Message shown when no search results are found"
   },
   "noSettingsAvailable": "No settings available",
   "@noSettingsAvailable": {

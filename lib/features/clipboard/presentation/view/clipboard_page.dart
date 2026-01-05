@@ -135,28 +135,51 @@ class _ClipboardViewState extends State<ClipboardView>
                   children: [
                     const PageHeader(),
                     const SizedBox(height: AppSpacing.lg),
+
                     Expanded(
-                      child: ListView.builder(
-                        physics: const ClampingScrollPhysics(),
-                        controller: _scrollController,
-                        itemCount: allItems.length,
-                        itemExtent: 65, // 60px height + 12px margin = fixed extent
-                        addAutomaticKeepAlives: false,
-                        cacheExtent: 200,
-                        itemBuilder: (context, index) {
-                          final item = allItems[index];
-                          if (item is SectionHeader) {
-                            return item;
-                          } else if (item is ClipboardItem) {
-                            return ClipboardItemTile(
-                              item: item,
-                              key: ValueKey(item.id),
-                            );
-                          } else {
-                            return const SizedBox.shrink();
-                          }
-                        },
-                      ),
+                      child: allItems.isEmpty
+                          ? Center(
+                            child: _EmptyStateWidget(
+                                searchMode: isSearchMode,
+                                key: const ValueKey('pinned_empty'),
+                              ),
+                          )
+                          : ListView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              controller: _scrollController,
+                              itemCount: allItems.length,
+                              addAutomaticKeepAlives: false,
+                              cacheExtent: 200,
+                              findChildIndexCallback: (Key key) {
+                                if (key is ValueKey<String>) {
+                                  final id = key.value;
+
+                                  return allItems.indexWhere(
+                                    (item) =>
+                                        item is ClipboardItem && item.id == id,
+                                  );
+                                }
+                                return null;
+                              },
+                              itemBuilder: (context, index) {
+                                final item = allItems[index];
+
+                                return switch (item) {
+                                  SectionHeader() => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.md,
+                                    ),
+                                    child: item,
+                                  ),
+
+                                  ClipboardItem() => ClipboardItemTile(
+                                    key: ValueKey(item.id),
+                                    item: item,
+                                  ),
+                                  _ => const SizedBox.shrink(),
+                                };
+                              },
+                            ),
                     ),
                   ],
                 ),
@@ -216,49 +239,37 @@ class _ClipboardViewState extends State<ClipboardView>
   }
 }
 
-class ClipboardListRenderer extends StatelessWidget {
-  const ClipboardListRenderer({
-    required this.items,
-    required this.title,
-    this.searchMode = false,
-    super.key,
-  });
+class _EmptyStateWidget extends StatelessWidget {
+  const _EmptyStateWidget({required this.searchMode, super.key});
 
-  final ClipboardItems items;
   final bool searchMode;
-  final String title;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      spacing: AppSpacing.lg,
       children: [
-        SectionHeader(title: title.sentenceCase),
-        const SizedBox(height: AppSpacing.xs),
-
-        if (items.isEmpty)
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: AppSpacing.lg,
-            children: [
-              HugeIcon(
-                icon: searchMode
-                    ? HugeIcons.strokeRoundedSearchVisual
-                    : HugeIcons.strokeRoundedClipboard,
-                size: AppSpacing.xxxxxlg * 2,
-                color: colorScheme.primary,
-              ),
-              Text(
-                context.l10n.noItemsForCategory(title.sentenceCase),
-                style: AppTextStyle.functionalSmall.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+        HugeIcon(
+          icon: searchMode
+              ? HugeIcons.strokeRoundedSearchArea
+              : HugeIcons.strokeRoundedClipboard,
+          size: AppSpacing.xxxxlg * 3,
+          color: colorScheme.onSurface,
+        ),
+        Text(
+          searchMode
+              ? context.l10n.noResultsFound
+              : context.l10n.noItemsForCategory(
+                  context.l10n.recent.sentenceCase,
                 ),
-              ),
-            ],
-          )
-        else
-          ...items.map((i) => ClipboardItemTile(item: i)),
+          style: textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }

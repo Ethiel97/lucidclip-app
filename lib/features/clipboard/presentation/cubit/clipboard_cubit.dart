@@ -91,13 +91,22 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         (item) => item.contentHash == clipboardData.contentHash,
       );
 
-      if (!isDuplicate) {
-        // Convert ClipboardData to ClipboardItem and upsert to local repository
-        final clipboardItem = clipboardData.toDomain(userId: _pendingUserId);
-        await _upsertClipboardItem(clipboardItem);
+      // TODO(Ethiel97): Check duplicate content update
+      if (isDuplicate) {
+        print('Duplicate clipboard item detected; updating timestamp.');
+        final existingItem = currentItems.firstWhere(
+          (item) => item.contentHash == clipboardData.contentHash,
+        );
 
-        // Create clipboard history record
-        await _createClipboardHistory(clipboardItem.id);
+        final updatedItem = existingItem.copyWith(updatedAt: DateTime.now());
+
+        await _upsertClipboardItem(updatedItem);
+        await _createClipboardHistory(updatedItem.id);
+      } else {
+        final newItem = clipboardData.toDomain(userId: _pendingUserId);
+
+        await _upsertClipboardItem(newItem);
+        await _createClipboardHistory(newItem.id);
       }
     });
   }

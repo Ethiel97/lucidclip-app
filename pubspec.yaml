@@ -36,7 +36,7 @@ dependencies:
   bloc: ^9.1.0
   flutter_bloc: ^9.1.1
   hydrated_bloc: ^10.1.1
-  equatable: ^2.0.5
+  equatable: ^2.0.8
   iconsax: ^0.0.8
   window_manager: ^0.5.1
   proper_filesize: ^1.0.2

@@ -55,12 +55,12 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final l10n = context.l10n;
-    final isLinkPreviewEnabled = context.select<SettingsCubit, bool>(
-      (cubit) => cubit.state.previewLinks,
+    final isLinkPreviewEnabled = context.select(
+      (SettingsCubit cubit) => cubit.state.previewLinks,
     );
     // // TODO(Ethiel97): Enable image previews once performance issues are resolved
     /*final isImagePreviewEnabled = context.select<SettingsCubit, bool>(
-      (cubit) => cubit.state.previewImages
+      (cubit) => cubit.state.settings.value?.previewImages ?? true,
     );*/
     return GestureDetector(
       onTap: () {

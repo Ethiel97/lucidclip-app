@@ -192,9 +192,12 @@ class _ClipboardViewState extends State<ClipboardView>
                     },
                     onDelete: () {
                       if (hasClipboardItem) {
+                        context.read<ClipboardDetailCubit>().clearSelection();
+
+                        final clipboardItem = selectedClipboardItem!.data;
                         context
                             .read<ClipboardDetailCubit>()
-                            .deleteClipboardItem(selectedClipboardItem!.data);
+                            .deleteClipboardItem(clipboardItem);
                       }
                     },
                     onTogglePin: () {

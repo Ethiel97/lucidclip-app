@@ -285,10 +285,10 @@ packages:
     dependency: "direct main"
     description:
       name: clipboard
-      sha256: "45f26eb08784c1ef11d58acd8c918ee3690ab619e286ff0ce4e4f78436f8a2b2"
+      sha256: c668fd6ce6715b5054766a3217c88bcf56f993c373ec95121a49c9415a67aa99
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.9"
+    version: "3.0.10"
   clock:
     dependency: transitive
     description:

@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
   intl: ^0.20.2
   supabase_flutter: ^2.10.3
-  clipboard: ^3.0.8
+  clipboard: ^3.0.10
   crypto: ^3.0.3
   pasteboard: ^0.4.0
 #  flutter_context_menu: ^0.4.1

@@ -5,4 +5,5 @@ workflow. Built with a refined UI and a productivity-driven architecture, it off
 high-end capabilities.
 
 ## Screenshots
-<img width="100%" alt="image" src="https://github.com/user-attachments/assets/2e072d94-974f-4c9f-91fd-c3e2c83e263c" />
+
+<img width="100%" alt="LucidClip clipboard manager interface screenshot" src="https://github.com/user-attachments/assets/2e072d94-974f-4c9f-91fd-c3e2c83e263c" />

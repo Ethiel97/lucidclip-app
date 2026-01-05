@@ -1,8 +1,14 @@
 import 'package:equatable/equatable.dart';
 
-//TODO: AUTO SYNC SETTING SHOULD BE FOR PREMIUM USERS ONLY
-// TODO: HISTORY LIMIT SHOULD BE FOR PREMIUM USERS ONLY, FREE USERS GET 100 ITEMS LIMIT
+// TODO(Ethiel97): AUTO SYNC SETTING SHOULD BE FOR PREMIUM USERS ONLY
+//  HISTORY LIMIT SHOULD BE FOR PREMIUM USERS ONLY,
+//  FREE USERS GET 50 ITEMS LIMIT
 //
+
+const defaultMaxHistoryItems = 50;
+const defaultRetentionDays = 1;
+const defaultSyncIntervalMinutes = 30;
+
 class UserSettings extends Equatable {
   const UserSettings({
     required this.userId,
@@ -13,8 +19,8 @@ class UserSettings extends Equatable {
     this.shortcuts = const {},
     this.autoSync = false,
     this.syncIntervalMinutes = 5,
-    this.maxHistoryItems = 1000,
-    this.retentionDays = 30,
+    this.maxHistoryItems = defaultMaxHistoryItems,
+    this.retentionDays = defaultRetentionDays,
     this.showSourceApp = true,
     this.previewImages = true,
     this.previewLinks = true,
@@ -35,7 +41,7 @@ class UserSettings extends Equatable {
 
   final String userId;
   final String theme;
-  final List<String>  excludedApps;
+  final List<String> excludedApps;
   final Map<String, String> shortcuts;
   final bool autoSync;
   final int syncIntervalMinutes;

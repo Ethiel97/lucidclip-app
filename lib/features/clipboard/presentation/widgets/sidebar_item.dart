@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
 class SidebarItem extends StatefulWidget {
   const SidebarItem({
@@ -54,44 +54,44 @@ class _SidebarItemState extends State<SidebarItem> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: isExpanded
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
-            children: [
-              IconTheme(
-                data: IconThemeData(color: contentColor),
-                child: widget.icon,
-              ),
-              if (isExpanded) ...[
-                const SizedBox(width: AppSpacing.sm),
-                Flexible(
-                  child: Text(
-                    widget.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: contentColor,
-                      fontWeight: widget.isSelected
-                          ? FontWeight.w600
-                          : FontWeight.w500,
-                    ),
-                  ),
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: isExpanded
+                  ? MainAxisAlignment.start
+                  : MainAxisAlignment.center,
+              children: [
+                IconTheme(
+                  data: IconThemeData(color: contentColor),
+                  child: widget.icon,
                 ),
-                if (widget.isSelected) ...[
-                  const SizedBox(width: AppSpacing.xs),
-                  Container(
-                    width: AppSpacing.xxs,
-                    height: AppSpacing.sm,
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary,
-                      borderRadius: BorderRadius.circular(2),
+                if (isExpanded) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Text(
+                      widget.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: contentColor,
+                        fontWeight: widget.isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
+                      ),
                     ),
                   ),
+                  if (widget.isSelected) ...[
+                    const SizedBox(width: AppSpacing.sm),
+                    Container(
+                      width: AppSpacing.xxs,
+                      height: AppSpacing.sm,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ],
                 ],
               ],
-            ),
             ),
           ),
         ),

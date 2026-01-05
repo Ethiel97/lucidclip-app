@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
 class AppLogo extends StatelessWidget {
@@ -17,7 +15,7 @@ class AppLogo extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: AppSpacing.lg,
+          height: AppSpacing.xlg,
           width: AppSpacing.lg,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),

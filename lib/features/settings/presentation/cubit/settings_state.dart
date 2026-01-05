@@ -21,6 +21,34 @@ class SettingsState extends Equatable {
     return SettingsState(settings: settings ?? this.settings);
   }
 
+  // add getters for easy access to settings properties
+  bool get isDarkTheme => settings.value?.theme == 'dark';
+
+  bool get isLightTheme => settings.value?.theme == 'light';
+
+  bool get isAutoSyncEnabled => settings.value?.autoSync ?? false;
+
+  int get syncIntervalMinutes =>
+      settings.value?.syncIntervalMinutes ?? defaultSyncIntervalMinutes;
+
+  List<String> get excludedApps => settings.value?.excludedApps ?? [];
+
+  Map<String, String> get shortcuts => settings.value?.shortcuts ?? {};
+
+  bool get incognitoMode => settings.value?.incognitoMode ?? false;
+
+  bool get showSourceApp => settings.value?.showSourceApp ?? true;
+
+  bool get previewImages => settings.value?.previewImages ?? true;
+
+  bool get previewLinks => settings.value?.previewLinks ?? true;
+
+  int get maxHistoryItems =>
+      settings.value?.maxHistoryItems ?? defaultMaxHistoryItems;
+
+  int get retentionDays =>
+      settings.value?.retentionDays ?? defaultRetentionDays;
+
   @override
   List<Object?> get props => [settings];
 

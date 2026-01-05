@@ -6,6 +6,7 @@ import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -57,6 +58,9 @@ class _SidebarState extends State<Sidebar> {
     final colorScheme = theme.colorScheme;
     final clipboardItemsCount = context.select<ClipboardCubit, int>(
       (cubit) => cubit.state.totalItemsCount,
+    );
+    final clipboardHistorySize = context.select(
+      (SettingsCubit cubit) => cubit.state.maxHistoryItems,
     );
 
     final menuItems = [
@@ -123,7 +127,10 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
           ),
-          StorageIndicator(used: clipboardItemsCount, total: 1000),
+          StorageIndicator(
+            used: clipboardItemsCount,
+            total: clipboardHistorySize,
+          ),
           const SizedBox(height: AppSpacing.md),
         ],
       ),

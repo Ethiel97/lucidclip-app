@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
@@ -74,12 +73,6 @@ class _ClipboardViewState extends State<ClipboardView>
             cubit.state.unPinnedItems,
           ),
         );
-
-    log(
-      'ClipboardView: isSearchMode=$isSearchMode, '
-      'pinnedSearchResults=${pinnedSearchResults.length}, '
-      'recentSearchResults=${recentSearchResults.length}',
-    );
 
     if (isSearchMode) {
       return (pinnedSearchResults, recentSearchResults);

@@ -32,19 +32,6 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
     super.dispose();
   }
 
-  void _onHoverEnter() {
-    if (isHovering) return;
-    setState(() {
-      isHovering = true;
-    });
-  }
-
-  void _onHoverExit() {
-    setState(() {
-      isHovering = false;
-    });
-  }
-
   Color get _backgroundColor => isHovering
       ? AppColors.surface2.withValues(alpha: 0.4)
       : AppColors.surface;
@@ -62,94 +49,96 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
     /*final isImagePreviewEnabled = context.select<SettingsCubit, bool>(
       (cubit) => cubit.state.settings.value?.previewImages ?? true,
     );*/
-    return GestureDetector(
+    return InkWell(
+      onHover: (hovering) {
+        setState(() {
+          isHovering = hovering;
+        });
+      },
       onTap: () {
         context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
       },
+      splashColor: Colors.transparent ,
+      hoverColor: Colors.transparent,
       child: ClipboardContextMenu(
         clipboardItem: widget.item,
-        child: MouseRegion(
-          onEnter: (_) => _onHoverEnter(),
-          onExit: (_) => _onHoverExit(),
-          cursor: SystemMouseCursors.click,
-          child: AnimatedContainer(
-            key: ValueKey(widget.item.id),
-            duration: const Duration(milliseconds: 200),
-            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.sm,
-            ),
-            decoration: BoxDecoration(
-              color: _backgroundColor,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                widget.item.icon,
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: PortalTarget(
-                    anchor: const Aligned(
-                      follower: Alignment.topLeft,
-                      target: Alignment.bottomLeft,
-                    ),
-                    visible: shouldShowLinkPreview,
-                    portalFollower: SizedBox(
-                      width: MediaQuery.sizeOf(context).width * 0.4,
-                      child: isLinkPreviewEnabled
-                          ? LinkPreview.compact(
-                              controller: _linkPreviewController,
-                              url: widget.item.content,
-                              errorBuilder: (context, error) => Container(
-                                padding: const EdgeInsets.all(AppSpacing.md),
-                                color: AppColors.surface,
-                                child: Text(
-                                  l10n.failedToLoadLinkPreview,
-                                  style: textTheme.bodySmall?.copyWith(),
-                                ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          key: ValueKey(widget.item.id),
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: _backgroundColor,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              widget.item.icon,
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: PortalTarget(
+                  anchor: const Aligned(
+                    follower: Alignment.topLeft,
+                    target: Alignment.bottomLeft,
+                  ),
+                  visible: shouldShowLinkPreview,
+                  portalFollower: SizedBox(
+                    width: MediaQuery.sizeOf(context).width * 0.4,
+                    child: isLinkPreviewEnabled
+                        ? LinkPreview.compact(
+                            controller: _linkPreviewController,
+                            url: widget.item.content,
+                            errorBuilder: (context, error) => Container(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              color: AppColors.surface,
+                              child: Text(
+                                l10n.failedToLoadLinkPreview,
+                                style: textTheme.bodySmall?.copyWith(),
                               ),
-                              loadingBuilder: (context) => Container(
-                                padding: const EdgeInsets.all(AppSpacing.md),
-                                color: AppColors.surface,
-                                child: Column(
-                                  spacing: AppSpacing.sm,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      l10n.loadingLinkPreview,
-                                      style: textTheme.bodySmall?.copyWith(),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ],
-                                ),
+                            ),
+                            loadingBuilder: (context) => Container(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              color: AppColors.surface,
+                              child: Column(
+                                spacing: AppSpacing.sm,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    l10n.loadingLinkPreview,
+                                    style: textTheme.bodySmall?.copyWith(),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ],
                               ),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                    child: widget.item.preview(maxLines: 1),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  child: widget.item.preview(maxLines: 1),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              ClipboardItemTagChip(label: widget.item.type.label),
+              const SizedBox(width: AppSpacing.sm),
+              SizedBox(
+                width: 100,
+                child: Text(
+                  widget.item.timeAgo,
+                  style: textTheme.displaySmall?.copyWith(
+                    fontSize: 12,
+                    color: AppColors.textMuted,
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                ClipboardItemTagChip(label: widget.item.type.label),
-                const SizedBox(width: AppSpacing.sm),
-                SizedBox(
-                  width: 100,
-                  child: Text(
-                    widget.item.timeAgo,
-                    style: textTheme.displaySmall?.copyWith(
-                      fontSize: 12,
-                      color: AppColors.textMuted,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

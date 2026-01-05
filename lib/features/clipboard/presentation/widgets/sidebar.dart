@@ -113,7 +113,7 @@ class _SidebarState extends State<Sidebar> {
             child: ListView.separated(
               itemCount: menuItems.length,
               separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final item = menuItems[index];
                 final isSelected = tabsRouter.activeIndex == index;

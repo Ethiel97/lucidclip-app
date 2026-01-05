@@ -1,5 +1,6 @@
 //GENERATED BARREL FILE
 export 'app_logo.dart';
+export 'cached_clipboard_image.dart';
 export 'clipboard_context_menu.dart';
 export 'clipboard_item_tag_chip.dart';
 export 'clipboard_item_tile.dart';

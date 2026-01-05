@@ -16,19 +16,19 @@ scripts:
 
   # CI/CD scripts
   ci-analyze:
-    description: CI Script - Analyze Gather App and all local dependencies
+    description: CI Script - Analyze LucidClip App and all local dependencies
     exec:
       failFast: true
-    name: Analyze Gather App
+    name: Analyze LucidClip App
     packageFilters:
       ignore: marketplace_tools
     run: fvm dart analyze --fatal-infos --fatal-warnings
 
   ci-format:
-    description: CI Script - Check code formatting for Gather App and all local dependencies
+    description: CI Script - Check code formatting for LucidClip App and all local dependencies
     exec:
       failFast: true
-    name: Format Gather App
+    name: Format LucidClip App
     packageFilters:
       ignore: marketplace_tools
     run: fvm dart format . --line-length 80 --output none --set-exit-if-changed
@@ -43,7 +43,7 @@ scripts:
 
   ## UTILITY SCRIPTS
   check-coverage:
-    description: Check test coverage of Gather App and its dependencies
+    description: Check test coverage of LucidClip App and its dependencies
     exec:
       failFast: true
     name: Local Unit Tests Coverage
@@ -86,7 +86,7 @@ scripts:
       scope: lucid_clip
 
   install-all:
-    description: Install Gather App project while enforcing lockfile, then install its packages
+    description: Install LucidClip App project while enforcing lockfile, then install its packages
     exec:
       failFast: true
     name: Install Dependencies

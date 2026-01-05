@@ -10,7 +10,6 @@ class ClipboardItemTagChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final tagColor = color ?? Theme.of(context).colorScheme.primary;
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -24,7 +23,11 @@ class ClipboardItemTagChip extends StatelessWidget {
       ),
       child: Text(
         label.sentenceCase,
-        style: textTheme.labelSmall?.copyWith(color: tagColor, fontSize: 12),
+        style: TextStyle(
+          color: tagColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

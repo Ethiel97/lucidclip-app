@@ -110,29 +110,32 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                 thumbVisibility: false,
                 child: SingleChildScrollView(
                   controller: _scrollController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _SectionLabel(l10n.preview.toUpperCase()),
-                      const SizedBox(height: AppSpacing.xs),
-                      _PreviewCard(
-                        previewWidget: widget.clipboardItem.preview(
-                          maxLines: 5000000,
-                        ),
-                        preview: widget.clipboardItem.content,
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-
-                      _SectionLabel(l10n.information.toUpperCase()),
-                      const SizedBox(height: AppSpacing.xs),
-                      _InfoCard(clipboardItem: widget.clipboardItem),
-                      if (widget.clipboardItem.type.label.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.lg),
-                        _SectionLabel(l10n.tags.toUpperCase()),
+                  physics: const ClampingScrollPhysics(),
+                  child: RepaintBoundary(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _SectionLabel(l10n.preview.toUpperCase()),
                         const SizedBox(height: AppSpacing.xs),
-                        _TagsWrap(tags: [widget.clipboardItem.type.label]),
+                        _PreviewCard(
+                          previewWidget: widget.clipboardItem.preview(
+                            maxLines: 500,
+                          ),
+                          preview: widget.clipboardItem.content,
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+
+                        _SectionLabel(l10n.information.toUpperCase()),
+                        const SizedBox(height: AppSpacing.xs),
+                        _InfoCard(clipboardItem: widget.clipboardItem),
+                        if (widget.clipboardItem.type.label.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.lg),
+                          _SectionLabel(l10n.tags.toUpperCase()),
+                          const SizedBox(height: AppSpacing.xs),
+                          _TagsWrap(tags: [widget.clipboardItem.type.label]),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -183,16 +186,18 @@ class _PreviewCard extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
       ),
-      child: SingleChildScrollView(
-        // scrollDirection: Axis.horizontal,
-        child:
-            previewWidget ??
-            Text(
-              preview,
-              style: textTheme.bodySmall?.copyWith(
-                color: AppColors.textPrimary,
+      child: RepaintBoundary(
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child:
+              previewWidget ??
+              Text(
+                preview,
+                style: textTheme.bodySmall?.copyWith(
+                  color: AppColors.textPrimary,
+                ),
               ),
-            ),
+        ),
       ),
     );
   }
@@ -207,7 +212,7 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final shouldShowSourceApp = context.select<SettingsCubit, bool>(
-      (cubit) => cubit.state.settings.value?.showSourceApp ?? true,
+      (cubit) => cubit.state.showSourceApp,
     );
 
     final isSourceAppValid = clipboardItem.sourceApp?.isValid ?? false;

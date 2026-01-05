@@ -10,11 +10,13 @@ class AppLogo extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = context.l10n;
+
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: 32,
-          width: 32,
+          height: AppSpacing.xlg,
+          width: AppSpacing.lg,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
@@ -32,10 +34,14 @@ class AppLogo extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppSpacing.xs),
-        Text(
-          l10n.appName,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: colorScheme.onSurface,
+        Flexible(
+          child: Text(
+            l10n.appName,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: colorScheme.onSurface,
+            ),
+            overflow: TextOverflow.fade,
+            softWrap: false,
           ),
         ),
       ],

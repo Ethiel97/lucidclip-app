@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
 class SidebarItem extends StatefulWidget {
   const SidebarItem({
@@ -35,49 +37,64 @@ class _SidebarItemState extends State<SidebarItem> {
         ? colorScheme.primary.withValues(alpha: 0.1)
         : (_isHovering ? colorScheme.tertiary : Colors.transparent);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovering = true),
-      onExit: (_) => setState(() => _isHovering = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: widget.onTap,
+    final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+
+    return InkWell(
+      onTap: widget.onTap,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onHover: (hovering) {
+        if (hovering != _isHovering) {
+          setState(() => _isHovering = hovering);
+        }
+      },
+      child: ClipRect(
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: isExpanded
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
             children: [
               IconTheme(
-                data: IconThemeData(color: contentColor, size: 20),
+                data: IconThemeData(color: contentColor),
                 child: widget.icon,
               ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(
-                  widget.label,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: contentColor,
-                    fontWeight: widget.isSelected
-                        ? FontWeight.w600
-                        : FontWeight.w500,
+              if (isExpanded) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    widget.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: contentColor,
+                      fontWeight: widget.isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
-              if (widget.isSelected)
-                Container(
-                  width: AppSpacing.xxs,
-                  height: AppSpacing.sm,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primary,
-                    borderRadius: BorderRadius.circular(2),
+                if (widget.isSelected) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  Container(
+                    width: AppSpacing.xxs,
+                    height: AppSpacing.sm,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ),
+                ],
+              ],
             ],
           ),
         ),

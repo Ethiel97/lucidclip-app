@@ -70,10 +70,8 @@ class ClipboardContextMenu extends StatelessWidget {
                   getIt<BaseClipboardManager>().setClipboardContent(
                     clipboardItem.toInfrastructure(),
                   );
-
                 // Add other cases as needed
               }
-
               Navigator.pop(context);
             },
           ),
@@ -82,13 +80,17 @@ class ClipboardContextMenu extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => ContextMenuArea(
-    builder: (context) => getContextMenuItems(
-      l10n: context.l10n,
-      item: clipboardItem,
-      context: context,
+  Widget build(BuildContext context) => Builder(
+    builder: (context) => ContextMenuArea(
+      builder: (innerContext) => [
+        ...getContextMenuItems(
+          l10n: context.l10n,
+          item: clipboardItem,
+          context: context,
+        ),
+      ],
+      verticalPadding: AppSpacing.sm,
+      child: child,
     ),
-    verticalPadding: AppSpacing.sm,
-    child: child,
   );
 }

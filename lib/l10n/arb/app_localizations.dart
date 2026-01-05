@@ -561,6 +561,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// Message shown when the clipboard is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Your clipboard items will appear here.'**
+  String get yourClipboardItemsWillAppearHere;
 }
 
 class _AppLocalizationsDelegate

@@ -30,8 +30,6 @@ class ClipboardView extends StatefulWidget {
 
 class _ClipboardViewState extends State<ClipboardView>
     with TickerProviderStateMixin {
-  final ScrollController _scrollController = ScrollController();
-
   late final AnimationController _animationController;
   late final Animation<Offset> _clipboardItemDetailsSlideAnimation;
 
@@ -77,7 +75,6 @@ class _ClipboardViewState extends State<ClipboardView>
   @override
   void dispose() {
     _animationController.dispose();
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -139,14 +136,13 @@ class _ClipboardViewState extends State<ClipboardView>
                     Expanded(
                       child: allItems.isEmpty
                           ? Center(
-                            child: _EmptyStateWidget(
+                              child: _EmptyStateWidget(
                                 searchMode: isSearchMode,
                                 key: const ValueKey('pinned_empty'),
                               ),
-                          )
+                            )
                           : ListView.builder(
                               physics: const ClampingScrollPhysics(),
-                              controller: _scrollController,
                               itemCount: allItems.length,
                               addAutomaticKeepAlives: false,
                               cacheExtent: 200,
@@ -263,9 +259,7 @@ class _EmptyStateWidget extends StatelessWidget {
         Text(
           searchMode
               ? context.l10n.noResultsFound
-              : context.l10n.noItemsForCategory(
-                  context.l10n.recent.sentenceCase,
-                ),
+              : context.l10n.yourClipboardItemsWillAppearHere,
           style: textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),

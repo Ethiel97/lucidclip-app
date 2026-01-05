@@ -326,5 +326,9 @@
   "version": "Version",
   "@version": {
     "description": "Label for the app version"
+  },
+  "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
+  "@yourClipboardItemsWillAppearHere": {
+    "description": "Message shown when the clipboard is empty"
   }
 }

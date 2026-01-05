@@ -262,4 +262,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get yourClipboardItemsWillAppearHere =>
+      'Your clipboard items will appear here.';
 }

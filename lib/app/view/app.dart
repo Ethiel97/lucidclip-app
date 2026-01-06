@@ -5,6 +5,7 @@ import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/routes/routes.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -43,8 +44,15 @@ class _AppState extends State<App> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<SettingsCubit>()..loadSettings(null),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => getIt<AuthCubit>(),
+        ),
+        BlocProvider(
+          create: (_) => getIt<SettingsCubit>(),
+        ),
+      ],
       child: const _AppView(),
     );
   }
@@ -59,6 +67,29 @@ class _AppView extends StatefulWidget {
 
 class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to auth state changes and load settings accordingly
+    context.read<AuthCubit>().stream.listen((authState) {
+      if (authState.isAuthenticated && authState.user != null) {
+        // Load settings for authenticated user
+        context.read<SettingsCubit>().loadSettings(authState.user!.id);
+      } else {
+        // Load settings for guest user
+        context.read<SettingsCubit>().loadSettings(null);
+      }
+    });
+
+    // Initial settings load
+    final authState = context.read<AuthCubit>().state;
+    if (authState.isAuthenticated && authState.user != null) {
+      context.read<SettingsCubit>().loadSettings(authState.user!.id);
+    } else {
+      context.read<SettingsCubit>().loadSettings(null);
+    }
+  }
 
   @override
   void didChangeDependencies() {

@@ -41,3 +41,14 @@ class AuthException implements Exception {
     return 'AuthException -> $message';
   }
 }
+
+class AuthenticationException implements Exception {
+  const AuthenticationException([this.message]);
+
+  final String? message;
+
+  @override
+  String toString() {
+    return 'AuthenticationException -> $message';
+  }
+}

@@ -181,9 +181,9 @@ class TrayManagerService with TrayListener {
           MenuItem.separator(),
           MenuItem(
             key: 'toggle_tracking',
-            label: isIncognito 
-              ? (l10n?.resumeTracking ?? 'Resume Tracking')
-              : (l10n?.pauseTracking ?? 'Pause Tracking'),
+            label: isIncognito
+                ? (l10n?.resumeTracking ?? 'Resume Tracking')
+                : (l10n?.pauseTracking ?? 'Pause Tracking'),
           ),
           MenuItem.separator(),
           MenuItem.submenu(

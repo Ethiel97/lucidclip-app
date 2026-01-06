@@ -8,6 +8,7 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
+    AutoRoute(path: '/login', page: LoginRoute.page),
     AutoRoute(
       path: '/',
       page: LucidClipRoute.page,
@@ -18,7 +19,5 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'settings', page: SettingsRoute.page),
       ],
     ),
-    // TODO(Ethiel97): Add auth routes
-    // AutoRoute(path: '/login', page: LoginRoute.page),
   ];
 }

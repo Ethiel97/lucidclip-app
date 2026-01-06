@@ -30,9 +30,6 @@ class TrayManagerService with TrayListener {
       // Build and set the initial menu
       await updateTrayMenu();
 
-      // Listen to clipboard changes to update menu dynamically
-      _startWatchingClipboard();
-
       _isInitialized = true;
     } catch (e, stackTrace) {
       developer.log(
@@ -45,8 +42,9 @@ class TrayManagerService with TrayListener {
     }
   }
 
-  /// Start watching clipboard changes to update tray menu
-  void _startWatchingClipboard() {
+  /// Start watching clipboard changes to update tray menu.
+  /// This should be called after the app is fully initialized.
+  void startWatchingClipboard() {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
       _clipboardSubscription = clipboardCubit.stream.listen(

@@ -25,6 +25,8 @@ class _AppState extends State<App> with WindowListener {
   void initState() {
     super.initState();
     windowManager.addListener(this);
+    // Start watching clipboard changes after app is initialized
+    _trayService.startWatchingClipboard();
   }
 
   @override

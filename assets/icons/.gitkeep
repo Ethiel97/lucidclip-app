@@ -1,0 +1,5 @@
+# Placeholder file to maintain directory structure
+# Actual tray icon files should be placed here:
+# - tray_icon.png (macOS 16x16)
+# - tray_icon@2x.png (macOS 32x32)
+# - tray_icon.ico (Windows, multi-size)

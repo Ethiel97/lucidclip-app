@@ -30,7 +30,11 @@ class IncognitoModeToggleButton extends StatelessWidget {
                 : HugeIcons.strokeRoundedPauseCircle,
             size: 22,
           ),
-          label: Text(l10n.incognitoMode.sentenceCase),
+          label: Text(
+            incognitoMode
+                ? l10n.resumeTracking.sentenceCase
+                : l10n.pauseTracking.sentenceCase,
+          ),
         ),
       ),
     );

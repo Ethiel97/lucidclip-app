@@ -56,9 +56,17 @@
   "@chooseYourClipboardThemeDescription": {
     "description": "Description for the Theme settings"
   },
+  "clearClipboardHistory": "Clear Clipboard History",
+  "@clearClipboardHistory": {
+    "description": "Tray menu item to clear all clipboard history"
+  },
   "clipboard": "Clipboard",
   "@clipboard": {
     "description": "Label for the Clipboard feature"
+  },
+  "clipboardHistory": "Clipboard History",
+  "@clipboardHistory": {
+    "description": "Tray menu item for clipboard history submenu"
   },
   "code": "Code",
   "@code": {
@@ -119,6 +127,10 @@
   "general": "General",
   "@general": {
     "description": "Label for the General settings"
+  },
+  "hideWindow": "Hide Window",
+  "@hideWindow": {
+    "description": "Tray menu item to hide the window"
   },
   "history": "History",
   "@history": {
@@ -184,6 +196,10 @@
   "@maxHistoryItemsDescription": {
     "description": "Description for the Max History Items setting"
   },
+  "noClipboardHistory": "No clipboard history",
+  "@noClipboardHistory": {
+    "description": "Message shown when there are no clipboard items"
+  },
   "noItemsForCategory": "No {category} items",
   "@noItemsForCategory": {
     "description": "Message shown when there are no items for a specific label",
@@ -205,6 +221,10 @@
   "notifications": "Notifications",
   "@notifications": {
     "description": "Label for the Notifications settings"
+  },
+  "pauseTracking": "Pause Tracking",
+  "@pauseTracking": {
+    "description": "Tray menu item to pause clipboard tracking (enable incognito mode)"
   },
   "pin": "Pin",
   "@pin": {
@@ -235,9 +255,17 @@
   "@previewLinksDescription": {
     "description": "Description for the Preview Links setting"
   },
+  "quit": "Quit",
+  "@quit": {
+    "description": "Tray menu item to exit the application"
+  },
   "recent": "Recent",
   "@recent": {
     "description": "Label for the Recent items"
+  },
+  "resumeTracking": "Resume Tracking",
+  "@resumeTracking": {
+    "description": "Tray menu item to resume clipboard tracking (disable incognito mode)"
   },
   "retentionDays": "Retention Days",
   "@retentionDays": {
@@ -263,6 +291,10 @@
   "@share": {
     "description": "Button text to share content"
   },
+  "showHideWindow": "Show/Hide Window",
+  "@showHideWindow": {
+    "description": "Tray menu item to toggle window visibility"
+  },
   "showInMenuBar": "Show in Menu Bar",
   "@showInMenuBar": {
     "description": "Label for the Show in Menu Bar setting"
@@ -274,6 +306,10 @@
   "showSourceAppDescription": "Shows the app that copied the content to the clipboard in the item details.",
   "@showSourceAppDescription": {
     "description": "Description for the Show Source App setting"
+  },
+  "showWindow": "Show Window",
+  "@showWindow": {
+    "description": "Tray menu item to show the window"
   },
   "size": "Size",
   "@size": {

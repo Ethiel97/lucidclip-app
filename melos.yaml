@@ -85,6 +85,11 @@ scripts:
     packageFilters:
       scope: lucid_clip
 
+  generate-icons:
+    description: Generate the icons for Project
+    exec: dart run flutter_launcher_icons
+    name: Generate Icons for Project
+
   install-all:
     description: Install LucidClip App project while enforcing lockfile, then install its packages
     exec:

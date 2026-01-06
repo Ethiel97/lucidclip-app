@@ -31,6 +31,9 @@ class AuthState extends Equatable {
   /// Get error message if available
   String? get errorMessage => user.error?.message.toString();
 
+  /// Get user ID if available
+  String? get userId => user.value?.id;
+
   AuthState copyWith({
     ValueWrapper<User?>? user,
   }) {

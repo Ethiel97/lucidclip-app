@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/features/clipboard/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
@@ -19,14 +21,8 @@ class TrayManagerService with TrayListener {
   }
 
   bool _isInitialized = false;
-  StreamSubscription<ClipboardItems>? _clipboardSubscription;
+  StreamSubscription<ClipboardState>? _clipboardSubscription;
   StreamSubscription<SettingsState>? _settingsSubscription;
-  BuildContext? _context;
-
-  /// Set the context for localization
-  void setContext(BuildContext context) {
-    _context = context;
-  }
 
   /// Initialize the tray icon and menu
   Future<void> initialize() async {
@@ -62,10 +58,10 @@ class TrayManagerService with TrayListener {
           // Update tray menu whenever clipboard state changes
           // Don't await to avoid blocking the stream
           unawaited(
-            updateTrayMenu().catchError((e, stackTrace) {
+            updateTrayMenu().catchError((Object error, StackTrace stackTrace) {
               developer.log(
                 'Error updating tray menu from clipboard stream',
-                error: e,
+                error: error,
                 stackTrace: stackTrace,
                 name: 'TrayManagerService',
               );
@@ -88,10 +84,10 @@ class TrayManagerService with TrayListener {
         (_) {
           // Update tray menu whenever settings change
           unawaited(
-            updateTrayMenu().catchError((e, stackTrace) {
+            updateTrayMenu().catchError((Object error, StackTrace stackTrace) {
               developer.log(
                 'Error updating tray menu from settings stream',
-                error: e,
+                error: error,
                 stackTrace: stackTrace,
                 name: 'TrayManagerService',
               );
@@ -120,12 +116,12 @@ class TrayManagerService with TrayListener {
   /// Get the appropriate tray icon path for the current platform
   String _getTrayIconPath() {
     if (Platform.isMacOS) {
-      return 'assets/icons/tray_icon.png';
+      return 'assets/icons/icon.png';
     } else if (Platform.isWindows) {
-      return 'assets/icons/tray_icon.ico';
+      return 'assets/icons/icon.ico';
     } else {
       // Fallback for Linux or other platforms
-      return 'assets/icons/tray_icon.png';
+      return 'assets/icons/icon.png';
     }
   }
 
@@ -137,17 +133,18 @@ class TrayManagerService with TrayListener {
 
       // Get settings to check incognito mode
       final settingsCubit = getIt<SettingsCubit>();
-      final isIncognito = settingsCubit.state.settings.value?.incognitoMode ?? false;
+      final isIncognito =
+          settingsCubit.state.settings.value?.incognitoMode ?? false;
 
       // Get localized strings if context is available
-      final l10n = _context?.l10n;
+      final l10n = appRouter.navigatorKey.currentContext?.l10n;
 
       // Get last 5 items
-      final recentItems = clipboardItems.take(5).toList();
+      final recentItems = clipboardItems.take(8).toList();
 
       // Build submenu items for clipboard history
       final historyMenuItems = <MenuItem>[];
-      
+
       if (recentItems.isEmpty) {
         historyMenuItems.add(
           MenuItem(
@@ -160,7 +157,7 @@ class TrayManagerService with TrayListener {
         for (var i = 0; i < recentItems.length; i++) {
           final item = recentItems[i];
           final preview = _getItemPreview(item);
-          
+
           historyMenuItems.add(
             MenuItem(
               key: 'clipboard_item_$i',
@@ -174,10 +171,7 @@ class TrayManagerService with TrayListener {
       // Build the main menu
       final menu = Menu(
         items: [
-          MenuItem(
-            key: 'show_hide',
-            label: l10n?.showHideWindow ?? 'Show/Hide Window',
-          ),
+          MenuItem(key: 'show_hide', label: 'Show/Hide Window'),
           MenuItem.separator(),
           MenuItem(
             key: 'toggle_tracking',
@@ -196,20 +190,11 @@ class TrayManagerService with TrayListener {
             label: l10n?.clearClipboardHistory ?? 'Clear Clipboard History',
           ),
           MenuItem.separator(),
-          MenuItem(
-            key: 'settings',
-            label: l10n?.settings ?? 'Settings',
-          ),
+          MenuItem(key: 'settings', label: l10n?.settings ?? 'Settings'),
           MenuItem.separator(),
-          MenuItem(
-            key: 'about',
-            label: l10n?.about ?? 'About',
-          ),
+          MenuItem(key: 'about', label: l10n?.about ?? 'About'),
           MenuItem.separator(),
-          MenuItem(
-            key: 'quit',
-            label: l10n?.quit ?? 'Quit',
-          ),
+          MenuItem(key: 'quit', label: l10n?.quit ?? 'Quit'),
         ],
       );
 
@@ -226,27 +211,16 @@ class TrayManagerService with TrayListener {
 
   /// Get a preview string for a clipboard item (max 50 chars)
   String _getItemPreview(ClipboardItem item) {
-    String preview = '';
-    
-    switch (item.type) {
-      case ClipboardItemType.text:
-        preview = item.content;
-        break;
-      case ClipboardItemType.image:
-        preview = '📷 Image';
-        break;
-      case ClipboardItemType.file:
-        preview = '📁 File: ${item.filePath ?? "Unknown"}';
-        break;
-      case ClipboardItemType.url:
-        preview = '🔗 ${item.content}';
-        break;
-      case ClipboardItemType.html:
-        preview = '📄 HTML Content';
-        break;
-      default:
-        preview = 'Unknown type';
-    }
+    var preview = '';
+
+    preview = switch (item.type) {
+      ClipboardItemType.text => item.content,
+      ClipboardItemType.image => '📷 Image',
+      ClipboardItemType.file => '📁 File: ${item.filePath ?? "Unknown"}',
+      ClipboardItemType.url => '🔗 ${item.content}',
+      ClipboardItemType.html => '📄 HTML Content',
+      _ => 'Unknown type',
+    };
 
     // Truncate to 50 characters
     if (preview.length > 50) {
@@ -278,22 +252,16 @@ class TrayManagerService with TrayListener {
     switch (key) {
       case 'show_hide':
         await _toggleWindowVisibility();
-        break;
       case 'toggle_tracking':
         await _toggleTracking();
-        break;
       case 'clear_history':
         await _clearClipboardHistory();
-        break;
       case 'settings':
         await _openSettings();
-        break;
       case 'about':
         await _showAbout();
-        break;
       case 'quit':
         await _quit();
-        break;
       default:
         // Ignore other menu items (like clipboard previews)
         break;
@@ -304,7 +272,7 @@ class TrayManagerService with TrayListener {
   Future<void> _toggleWindowVisibility() async {
     try {
       final isVisible = await windowManager.isVisible();
-      
+
       if (isVisible) {
         await windowManager.hide();
       } else {
@@ -325,12 +293,12 @@ class TrayManagerService with TrayListener {
   Future<void> _toggleTracking() async {
     try {
       final settingsCubit = getIt<SettingsCubit>();
-      final currentIncognito = 
+      final currentIncognito =
           settingsCubit.state.settings.value?.incognitoMode ?? false;
-      
+
       // Toggle incognito mode
       await settingsCubit.updateIncognitoMode(incognitoMode: !currentIncognito);
-      
+
       // Update the tray menu to reflect the change
       await updateTrayMenu();
     } catch (e, stackTrace) {
@@ -347,10 +315,10 @@ class TrayManagerService with TrayListener {
   Future<void> _clearClipboardHistory() async {
     try {
       final localClipboardRepository = getIt<LocalClipboardRepository>();
-      
+
       // Clear all items from the repository
       await localClipboardRepository.clear();
-      
+
       // Update the tray menu after clearing
       await updateTrayMenu();
     } catch (e, stackTrace) {
@@ -372,9 +340,15 @@ class TrayManagerService with TrayListener {
         await windowManager.show();
         await windowManager.focus();
       }
-      
-      // TODO: Navigate to settings page using router
-      // For now, just ensure window is visible
+
+      final context = appRouter.navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+
+        await appRouter.navigate(
+          const LucidClipRoute(children: [SettingsRoute()]),
+        );
+      }
+
       developer.log('Opening settings...', name: 'TrayManagerService');
     } catch (e, stackTrace) {
       developer.log(
@@ -395,8 +369,8 @@ class TrayManagerService with TrayListener {
         await windowManager.show();
         await windowManager.focus();
       }
-      
-      // TODO: Show about dialog
+
+      // TODO(Ethiel): Show about dialog
       developer.log('Showing about dialog...', name: 'TrayManagerService');
     } catch (e, stackTrace) {
       developer.log(
@@ -413,7 +387,7 @@ class TrayManagerService with TrayListener {
     try {
       // Remove the prevent close flag
       await windowManager.setPreventClose(false);
-      
+
       // Destroy the window
       await windowManager.destroy();
     } catch (e, stackTrace) {

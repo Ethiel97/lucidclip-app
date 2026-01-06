@@ -19,7 +19,7 @@ dependencies:
   clipboard: ^3.0.8
   crypto: ^3.0.3
   pasteboard: ^0.4.0
-#  flutter_context_menu: ^0.4.1
+  #  flutter_context_menu: ^0.4.1
   contextmenu: ^3.0.0
   toastification: ^3.0.3
   metalink_flutter: ^1.0.2
@@ -30,8 +30,8 @@ dependencies:
 
   drift: ^2.29.0
   drift_flutter: ^0.2.8
-#  drift: 2.26.1
-#  drift_flutter: ^0.2.7
+  #  drift: 2.26.1
+  #  drift_flutter: ^0.2.7
 
   # State Management
   bloc: ^9.1.0
@@ -124,3 +124,18 @@ flutter_gen:
 
 melos:
   useRootAsPackage: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+  windows:
+    generate: true
+    image_path: "assets/icons/icon.ico"
+    icon_size: 48 # min:48, max:256, default: 48
+
+  macos:
+    generate: true
+    image_path: "assets/icons/icon.png"

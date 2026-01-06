@@ -54,7 +54,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose your preferred color scheme.';
 
   @override
+  String get clearClipboardHistory => 'Clear Clipboard History';
+
+  @override
   String get clipboard => 'Clipboard';
+
+  @override
+  String get clipboardHistory => 'Clipboard History';
 
   @override
   String get code => 'Code';
@@ -100,6 +106,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get general => 'General';
+
+  @override
+  String get hideWindow => 'Hide Window';
 
   @override
   String get history => 'History';
@@ -155,6 +164,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sets the maximum number of items in the clipboard.';
 
   @override
+  String get noClipboardHistory => 'No clipboard history';
+
+  @override
   String noItemsForCategory(String category) {
     return 'No $category items';
   }
@@ -167,6 +179,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications => 'Notifications';
+
+  @override
+  String get pauseTracking => 'Pause Tracking';
 
   @override
   String get pin => 'Pin';
@@ -192,7 +207,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shows a preview of links in the clipboard.';
 
   @override
+  String get quit => 'Quit';
+
+  @override
   String get recent => 'Recent';
+
+  @override
+  String get resumeTracking => 'Resume Tracking';
 
   @override
   String get retentionDays => 'Retention Days';
@@ -214,6 +235,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get share => 'Share';
 
   @override
+  String get showHideWindow => 'Show/Hide Window';
+
+  @override
   String get showInMenuBar => 'Show in Menu Bar';
 
   @override
@@ -222,6 +246,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get showSourceAppDescription =>
       'Shows the app that copied the content to the clipboard in the item details.';
+
+  @override
+  String get showWindow => 'Show Window';
 
   @override
   String get size => 'Size';

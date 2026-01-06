@@ -16,21 +16,13 @@ class AppLogo extends StatelessWidget {
       children: [
         Container(
           height: AppSpacing.xlg,
-          width: AppSpacing.lg,
+          width: AppSpacing.xlg,
           decoration: BoxDecoration(
+            image: const DecorationImage(
+              image: AssetImage('assets/icons/icon.png'),
+              fit: BoxFit.cover,
+            ),
             borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [colorScheme.primary, colorScheme.secondary],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: colorScheme.surface,
-            ),
           ),
         ),
         const SizedBox(width: AppSpacing.xs),

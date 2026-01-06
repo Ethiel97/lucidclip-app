@@ -9,7 +9,7 @@ import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
 
-final _appRouter = AppRouter();
+final appRouter = AppRouter();
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -63,8 +63,6 @@ class _AppViewState extends State<_AppView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Set context for localization in tray service
-    _trayService.setContext(context);
     // Update menu with localized strings
     _trayService.updateTrayMenu();
   }
@@ -83,7 +81,7 @@ class _AppViewState extends State<_AppView> {
             themeMode: themeMode,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: _appRouter.config(),
+            routerConfig: appRouter.config(),
           ),
         );
       },

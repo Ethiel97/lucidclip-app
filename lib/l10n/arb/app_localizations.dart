@@ -178,11 +178,23 @@ abstract class AppLocalizations {
   /// **'Choose your preferred color scheme.'**
   String get chooseYourClipboardThemeDescription;
 
+  /// Tray menu item to clear all clipboard history
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Clipboard History'**
+  String get clearClipboardHistory;
+
   /// Label for the Clipboard feature
   ///
   /// In en, this message translates to:
   /// **'Clipboard'**
   String get clipboard;
+
+  /// Tray menu item for clipboard history submenu
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard History'**
+  String get clipboardHistory;
 
   /// Label for Code input
   ///
@@ -274,6 +286,12 @@ abstract class AppLocalizations {
   /// **'General'**
   String get general;
 
+  /// Tray menu item to hide the window
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Window'**
+  String get hideWindow;
+
   /// Title for the History Page
   ///
   /// In en, this message translates to:
@@ -358,6 +376,12 @@ abstract class AppLocalizations {
   /// **'Sets the maximum number of items in the clipboard.'**
   String get maxHistoryItemsDescription;
 
+  /// Message shown when there are no clipboard items
+  ///
+  /// In en, this message translates to:
+  /// **'No clipboard history'**
+  String get noClipboardHistory;
+
   /// Message shown when there are no items for a specific label
   ///
   /// In en, this message translates to:
@@ -381,6 +405,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+
+  /// Tray menu item to pause clipboard tracking (enable incognito mode)
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Tracking'**
+  String get pauseTracking;
 
   /// Button text to pin an item
   ///
@@ -424,11 +454,23 @@ abstract class AppLocalizations {
   /// **'Shows a preview of links in the clipboard.'**
   String get previewLinksDescription;
 
+  /// Tray menu item to exit the application
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get quit;
+
   /// Label for the Recent items
   ///
   /// In en, this message translates to:
   /// **'Recent'**
   String get recent;
+
+  /// Tray menu item to resume clipboard tracking (disable incognito mode)
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Tracking'**
+  String get resumeTracking;
 
   /// Label for the Retention Days setting
   ///
@@ -466,6 +508,12 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get share;
 
+  /// Tray menu item to toggle window visibility
+  ///
+  /// In en, this message translates to:
+  /// **'Show/Hide Window'**
+  String get showHideWindow;
+
   /// Label for the Show in Menu Bar setting
   ///
   /// In en, this message translates to:
@@ -483,6 +531,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shows the app that copied the content to the clipboard in the item details.'**
   String get showSourceAppDescription;
+
+  /// Tray menu item to show the window
+  ///
+  /// In en, this message translates to:
+  /// **'Show Window'**
+  String get showWindow;
 
   /// Label for the size of the content
   ///

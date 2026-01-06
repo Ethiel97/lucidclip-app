@@ -29,6 +29,14 @@ class AppConstants {
       dotenv.env['FIREBASE_API_KEY'] ??
       const String.fromEnvironment('FIREBASE_API_KEY');
 
+  static final githubClientId =
+      dotenv.env['GITHUB_CLIENT_ID'] ??
+      const String.fromEnvironment('GITHUB_CLIENT_ID');
+
+  static final githubClientSecret =
+      dotenv.env['GITHUB_CLIENT_SECRET'] ??
+      const String.fromEnvironment('GITHUB_CLIENT_SECRET');
+
   static const clipboardItemDetailsViewWidth = 360.0;
   static const clipboardSidebarWidth = 240.0;
   static const collapsedSidebarWidth = 100.0;

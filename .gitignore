@@ -18,7 +18,15 @@ migrate_working_dir/
 *.iws
 .idea/*
 
+# Environment files
 .env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+*.env
+
 
 # Visual Studio Code related
 .classpath

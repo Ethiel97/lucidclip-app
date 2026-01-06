@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/features/clipboard/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
+import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -17,6 +20,13 @@ class TrayManagerService with TrayListener {
 
   bool _isInitialized = false;
   StreamSubscription<ClipboardItems>? _clipboardSubscription;
+  StreamSubscription<SettingsState>? _settingsSubscription;
+  BuildContext? _context;
+
+  /// Set the context for localization
+  void setContext(BuildContext context) {
+    _context = context;
+  }
 
   /// Initialize the tray icon and menu
   Future<void> initialize() async {
@@ -71,6 +81,32 @@ class TrayManagerService with TrayListener {
           );
         },
       );
+
+      // Also watch settings changes to update menu when incognito mode changes
+      final settingsCubit = getIt<SettingsCubit>();
+      _settingsSubscription = settingsCubit.stream.listen(
+        (_) {
+          // Update tray menu whenever settings change
+          unawaited(
+            updateTrayMenu().catchError((e, stackTrace) {
+              developer.log(
+                'Error updating tray menu from settings stream',
+                error: e,
+                stackTrace: stackTrace,
+                name: 'TrayManagerService',
+              );
+            }),
+          );
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          developer.log(
+            'Error watching settings for tray updates',
+            error: error,
+            stackTrace: stackTrace,
+            name: 'TrayManagerService',
+          );
+        },
+      );
     } catch (e, stackTrace) {
       developer.log(
         'Error setting up clipboard watcher',
@@ -99,6 +135,13 @@ class TrayManagerService with TrayListener {
       final clipboardCubit = getIt<ClipboardCubit>();
       final clipboardItems = clipboardCubit.state.clipboardItems.data;
 
+      // Get settings to check incognito mode
+      final settingsCubit = getIt<SettingsCubit>();
+      final isIncognito = settingsCubit.state.settings.value?.incognitoMode ?? false;
+
+      // Get localized strings if context is available
+      final l10n = _context?.l10n;
+
       // Get last 5 items
       final recentItems = clipboardItems.take(5).toList();
 
@@ -109,7 +152,7 @@ class TrayManagerService with TrayListener {
         historyMenuItems.add(
           MenuItem(
             key: 'empty_history',
-            label: 'No clipboard history',
+            label: l10n?.noClipboardHistory ?? 'No clipboard history',
             disabled: true,
           ),
         );
@@ -133,32 +176,39 @@ class TrayManagerService with TrayListener {
         items: [
           MenuItem(
             key: 'show_hide',
-            label: 'Show/Hide Window',
+            label: l10n?.showHideWindow ?? 'Show/Hide Window',
+          ),
+          MenuItem.separator(),
+          MenuItem(
+            key: 'toggle_tracking',
+            label: isIncognito 
+              ? (l10n?.resumeTracking ?? 'Resume Tracking')
+              : (l10n?.pauseTracking ?? 'Pause Tracking'),
           ),
           MenuItem.separator(),
           MenuItem.submenu(
             key: 'clipboard_history',
-            label: 'Clipboard History',
+            label: l10n?.clipboardHistory ?? 'Clipboard History',
             submenu: Menu(items: historyMenuItems),
           ),
           MenuItem(
             key: 'clear_history',
-            label: 'Clear Clipboard History',
+            label: l10n?.clearClipboardHistory ?? 'Clear Clipboard History',
           ),
           MenuItem.separator(),
           MenuItem(
             key: 'settings',
-            label: 'Settings',
+            label: l10n?.settings ?? 'Settings',
           ),
           MenuItem.separator(),
           MenuItem(
             key: 'about',
-            label: 'About',
+            label: l10n?.about ?? 'About',
           ),
           MenuItem.separator(),
           MenuItem(
             key: 'quit',
-            label: 'Quit',
+            label: l10n?.quit ?? 'Quit',
           ),
         ],
       );
@@ -229,6 +279,9 @@ class TrayManagerService with TrayListener {
       case 'show_hide':
         await _toggleWindowVisibility();
         break;
+      case 'toggle_tracking':
+        await _toggleTracking();
+        break;
       case 'clear_history':
         await _clearClipboardHistory();
         break;
@@ -261,6 +314,28 @@ class TrayManagerService with TrayListener {
     } catch (e, stackTrace) {
       developer.log(
         'Error toggling window visibility',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
+    }
+  }
+
+  /// Toggle clipboard tracking (incognito mode)
+  Future<void> _toggleTracking() async {
+    try {
+      final settingsCubit = getIt<SettingsCubit>();
+      final currentIncognito = 
+          settingsCubit.state.settings.value?.incognitoMode ?? false;
+      
+      // Toggle incognito mode
+      await settingsCubit.updateIncognitoMode(incognitoMode: !currentIncognito);
+      
+      // Update the tray menu to reflect the change
+      await updateTrayMenu();
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error toggling tracking',
         error: e,
         stackTrace: stackTrace,
         name: 'TrayManagerService',
@@ -355,6 +430,7 @@ class TrayManagerService with TrayListener {
   @disposeMethod
   void dispose() {
     _clipboardSubscription?.cancel();
+    _settingsSubscription?.cancel();
     trayManager.removeListener(this);
   }
 }

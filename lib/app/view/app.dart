@@ -50,8 +50,24 @@ class _AppState extends State<App> with WindowListener {
   }
 }
 
-class _AppView extends StatelessWidget {
+class _AppView extends StatefulWidget {
   const _AppView();
+
+  @override
+  State<_AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<_AppView> {
+  final TrayManagerService _trayService = getIt<TrayManagerService>();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set context for localization in tray service
+    _trayService.setContext(context);
+    // Update menu with localized strings
+    _trayService.updateTrayMenu();
+  }
 
   @override
   Widget build(BuildContext context) {

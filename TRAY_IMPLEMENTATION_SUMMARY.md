@@ -1,7 +1,7 @@
 # Tray Manager Integration - Implementation Summary
 
 ## Overview
-This implementation adds system tray functionality to the LucidClip app using the `tray_manager` package (v0.2.4). The tray provides quick access to clipboard management features and allows the app to minimize to the system tray instead of closing.
+This implementation adds system tray functionality to the LucidClip app using the `tray_manager` package (v0.2.4). The tray provides quick access to clipboard management features, pause/resume tracking capability, and allows the app to minimize to the system tray instead of closing. All menu items are localized using the app's l10n system.
 
 ## Changes Made
 
@@ -17,9 +17,11 @@ A comprehensive service that manages all tray functionality:
 
 #### Features:
 - **Tray Icon Management**: Sets platform-specific icons (PNG for macOS, ICO for Windows)
-- **Dynamic Menu Updates**: Automatically updates menu when clipboard changes
+- **Dynamic Menu Updates**: Automatically updates menu when clipboard or settings change
+- **Localization**: All menu items use localized strings via `context.l10n` with English fallbacks
 - **Menu Actions**:
   - **Show/Hide Window**: Toggle main window visibility
+  - **Pause/Resume Tracking**: Toggle clipboard tracking (incognito mode)
   - **Clipboard History**: Submenu with last 5 clipboard items (50 char preview max)
   - **Clear Clipboard History**: Clears all items using `LocalClipboardRepository`
   - **Settings**: Shows window (navigation pending implementation)
@@ -29,12 +31,25 @@ A comprehensive service that manages all tray functionality:
 #### Implementation Details:
 - Implements `TrayListener` for handling tray events
 - Registered as `@lazySingleton` in DI container
-- Listens to `ClipboardCubit` stream for dynamic updates
+- Listens to `ClipboardCubit` stream for clipboard updates
+- Listens to `SettingsCubit` stream for settings updates (incognito mode changes)
 - Uses `developer.log()` for consistent logging
 - Proper error handling with stack traces
-- Resource cleanup in `dispose()` method
+- Resource cleanup in `dispose()` method (both subscriptions)
+- Context-aware for localization access
 
-### 3. Dependency Injection
+### 3. Localization
+**File**: `lib/l10n/arb/app_en.arb`
+- Added localized strings for all tray menu items:
+  - `showHideWindow`: "Show/Hide Window"
+  - `clipboardHistory`: "Clipboard History"
+  - `clearClipboardHistory`: "Clear Clipboard History"
+  - `quit`: "Quit"
+  - `noClipboardHistory`: "No clipboard history"
+  - `pauseTracking`: "Pause Tracking"
+  - `resumeTracking`: "Resume Tracking"
+
+### 4. Dependency Injection
 **File**: `lib/core/di/injection.config.dart`
 - Manually added `TrayManagerService` registration
 - Configured with disposal method
@@ -42,20 +57,23 @@ A comprehensive service that manages all tray functionality:
 **File**: `lib/core/services/services.dart`
 - Created barrel file for services
 
-### 4. Bootstrap Integration
+### 5. Bootstrap Integration
 **File**: `lib/bootstrap.dart`
 - Added `tray_manager` initialization
 - Tray service initialized before window shows
 - Ensures tray is available from app start
 
-### 5. Window Close Behavior
+### 6. Window Close Behavior
 **File**: `lib/app/view/app.dart`
 - Changed `App` from `StatelessWidget` to `StatefulWidget`
 - Implements `WindowListener` mixin
 - Overrides `onWindowClose()` to hide instead of close
-- Starts watching clipboard after app initialization
+- Starts watching clipboard and settings after app initialization
+- Changed `_AppView` from `StatelessWidget` to `StatefulWidget`
+- Sets context for tray service in `didChangeDependencies()`
+- Updates tray menu with localized strings on initialization
 
-### 6. Assets Structure
+### 7. Assets Structure
 **Directory**: `assets/icons/`
 - Created directory for tray icons
 - Added README.md with icon specifications
@@ -67,12 +85,27 @@ A comprehensive service that manages all tray functionality:
 1. `bootstrap.dart`: Initialize tray manager
 2. `bootstrap.dart`: Initialize tray service
 3. `bootstrap.dart`: Setup window manager
-4. `app.dart`: App widget created
-5. `app.dart.initState()`: Start watching clipboard changes
-6. Tray menu updates dynamically as clipboard changes
+4. `app.dart.initState()`: Start watching clipboard and settings changes
+5. `_AppView.didChangeDependencies()`: Set context for localization
+6. Tray menu updates dynamically as clipboard or settings change
 
 ### Menu Update Flow:
-1. Clipboard item copied/added
+1. Clipboard item copied/added OR settings changed (incognito mode)
+2. Respective `Cubit` state changes
+3. `TrayManagerService` stream listener triggered
+4. `updateTrayMenu()` called with latest data and localized strings
+5. Tray menu rebuilt with new items and appropriate labels
+
+### Pause/Resume Tracking Flow:
+1. User clicks "Pause Tracking" or "Resume Tracking" in tray menu
+2. `_toggleTracking()` method called
+3. Gets current incognito mode state from `SettingsCubit`
+4. Calls `settingsCubit.updateIncognitoMode()` with toggled value
+5. Settings state change triggers menu update
+6. Menu label changes to opposite action (Pause ↔ Resume)
+7. Clipboard tracking stops/starts based on incognito mode
+
+### Window Visibility Flow:
 2. `ClipboardCubit` state changes
 3. `TrayManagerService` stream listener triggered
 4. `updateTrayMenu()` called with latest items

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
@@ -33,8 +34,13 @@ class TrayManagerService with TrayListener {
       _startWatchingClipboard();
 
       _isInitialized = true;
-    } catch (e) {
-      print('Error initializing tray manager: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error initializing tray manager',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
       rethrow;
     }
   }
@@ -43,12 +49,37 @@ class TrayManagerService with TrayListener {
   void _startWatchingClipboard() {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
-      _clipboardSubscription = clipboardCubit.stream.listen((_) {
-        // Update tray menu whenever clipboard state changes
-        updateTrayMenu();
-      });
-    } catch (e) {
-      print('Error setting up clipboard watcher: $e');
+      _clipboardSubscription = clipboardCubit.stream.listen(
+        (_) {
+          // Update tray menu whenever clipboard state changes
+          // Don't await to avoid blocking the stream
+          unawaited(
+            updateTrayMenu().catchError((e, stackTrace) {
+              developer.log(
+                'Error updating tray menu from clipboard stream',
+                error: e,
+                stackTrace: stackTrace,
+                name: 'TrayManagerService',
+              );
+            }),
+          );
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          developer.log(
+            'Error watching clipboard for tray updates',
+            error: error,
+            stackTrace: stackTrace,
+            name: 'TrayManagerService',
+          );
+        },
+      );
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error setting up clipboard watcher',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 
@@ -135,8 +166,13 @@ class TrayManagerService with TrayListener {
       );
 
       await trayManager.setContextMenu(menu);
-    } catch (e) {
-      print('Error updating tray menu: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error updating tray menu',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 
@@ -224,8 +260,13 @@ class TrayManagerService with TrayListener {
         await windowManager.show();
         await windowManager.focus();
       }
-    } catch (e) {
-      print('Error toggling window visibility: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error toggling window visibility',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 
@@ -239,8 +280,13 @@ class TrayManagerService with TrayListener {
       
       // Update the tray menu after clearing
       await updateTrayMenu();
-    } catch (e) {
-      print('Error clearing clipboard history: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error clearing clipboard history',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 
@@ -256,9 +302,14 @@ class TrayManagerService with TrayListener {
       
       // TODO: Navigate to settings page using router
       // For now, just ensure window is visible
-      print('Opening settings...');
-    } catch (e) {
-      print('Error opening settings: $e');
+      developer.log('Opening settings...', name: 'TrayManagerService');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error opening settings',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 
@@ -273,9 +324,14 @@ class TrayManagerService with TrayListener {
       }
       
       // TODO: Show about dialog
-      print('Showing about dialog...');
-    } catch (e) {
-      print('Error showing about: $e');
+      developer.log('Showing about dialog...', name: 'TrayManagerService');
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error showing about',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 
@@ -285,14 +341,15 @@ class TrayManagerService with TrayListener {
       // Remove the prevent close flag
       await windowManager.setPreventClose(false);
       
-      // Destroy the window and quit
+      // Destroy the window
       await windowManager.destroy();
-      
-      // Exit the application
-      exit(0);
-    } catch (e) {
-      print('Error quitting application: $e');
-      exit(1);
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error quitting application',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
     }
   }
 

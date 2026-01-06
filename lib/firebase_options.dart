@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:lucid_clip/core/constants/constants.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -49,8 +50,8 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDk8TyrndPhSX0Wr4vEvH6ZdILzZBsJNCs',
+  static final FirebaseOptions macos = FirebaseOptions(
+    apiKey: AppConstants.firebaseApiKey,
     appId: '1:913076611910:ios:2740763da59b4709aa5347',
     messagingSenderId: '913076611910',
     projectId: 'lucidclip',
@@ -58,8 +59,8 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.devEnthusiast.lucidClip',
   );
 
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBm7FpXi07-K3ADkmmaMSu6n4OfkyFgpm0',
+  static final FirebaseOptions windows = FirebaseOptions(
+    apiKey: AppConstants.firebaseApiKey,
     appId: '1:913076611910:web:c833372e6bfc4764aa5347',
     messagingSenderId: '913076611910',
     projectId: 'lucidclip',

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
@@ -258,13 +257,9 @@ class TrayManagerService with TrayListener {
         await _clearClipboardHistory();
       case 'settings':
         await _openSettings();
-      case 'about':
-        await _showAbout();
       case 'quit':
         await _quit();
       default:
-        // Ignore other menu items (like clipboard previews)
-        break;
     }
   }
 
@@ -343,7 +338,6 @@ class TrayManagerService with TrayListener {
 
       final context = appRouter.navigatorKey.currentContext;
       if (context != null && context.mounted) {
-
         await appRouter.navigate(
           const LucidClipRoute(children: [SettingsRoute()]),
         );
@@ -353,28 +347,6 @@ class TrayManagerService with TrayListener {
     } catch (e, stackTrace) {
       developer.log(
         'Error opening settings',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'TrayManagerService',
-      );
-    }
-  }
-
-  /// Show about dialog
-  Future<void> _showAbout() async {
-    try {
-      // First, show the window if it's hidden
-      final isVisible = await windowManager.isVisible();
-      if (!isVisible) {
-        await windowManager.show();
-        await windowManager.focus();
-      }
-
-      // TODO(Ethiel): Show about dialog
-      developer.log('Showing about dialog...', name: 'TrayManagerService');
-    } catch (e, stackTrace) {
-      developer.log(
-        'Error showing about',
         error: e,
         stackTrace: stackTrace,
         name: 'TrayManagerService',

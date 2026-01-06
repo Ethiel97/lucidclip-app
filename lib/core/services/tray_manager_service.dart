@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:injectable/injectable.dart';
@@ -14,6 +15,7 @@ class TrayManagerService with TrayListener {
   }
 
   bool _isInitialized = false;
+  StreamSubscription<ClipboardItems>? _clipboardSubscription;
 
   /// Initialize the tray icon and menu
   Future<void> initialize() async {
@@ -27,10 +29,26 @@ class TrayManagerService with TrayListener {
       // Build and set the initial menu
       await updateTrayMenu();
 
+      // Listen to clipboard changes to update menu dynamically
+      _startWatchingClipboard();
+
       _isInitialized = true;
     } catch (e) {
       print('Error initializing tray manager: $e');
       rethrow;
+    }
+  }
+
+  /// Start watching clipboard changes to update tray menu
+  void _startWatchingClipboard() {
+    try {
+      final clipboardCubit = getIt<ClipboardCubit>();
+      _clipboardSubscription = clipboardCubit.stream.listen((_) {
+        // Update tray menu whenever clipboard state changes
+        updateTrayMenu();
+      });
+    } catch (e) {
+      print('Error setting up clipboard watcher: $e');
     }
   }
 
@@ -214,17 +232,10 @@ class TrayManagerService with TrayListener {
   /// Clear clipboard history
   Future<void> _clearClipboardHistory() async {
     try {
-      final clipboardCubit = getIt<ClipboardCubit>();
-      final items = clipboardCubit.state.clipboardItems.data;
+      final localClipboardRepository = getIt<LocalClipboardRepository>();
       
-      // Delete all non-pinned items
-      for (final item in items) {
-        if (!item.isPinned) {
-          // TODO: Add delete method to ClipboardCubit
-          // For now, this is a placeholder
-          print('Would delete item: ${item.id}');
-        }
-      }
+      // Clear all items from the repository
+      await localClipboardRepository.clear();
       
       // Update the tray menu after clearing
       await updateTrayMenu();
@@ -288,6 +299,7 @@ class TrayManagerService with TrayListener {
   /// Dispose resources
   @disposeMethod
   void dispose() {
+    _clipboardSubscription?.cancel();
     trayManager.removeListener(this);
   }
 }

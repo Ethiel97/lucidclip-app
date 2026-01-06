@@ -12,6 +12,7 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (previous, current) => previous.hasError != current.hasError,
       listener: (context, state) {
         if (state.hasError) {
           toastification.show(

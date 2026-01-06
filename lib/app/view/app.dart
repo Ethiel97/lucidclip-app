@@ -73,9 +73,9 @@ class _AppViewState extends State<_AppView> {
     super.initState();
     // Listen to auth state changes and load settings accordingly
     context.read<AuthCubit>().stream.listen((authState) {
-      if (authState.isAuthenticated && authState.user != null) {
+      if (authState.isAuthenticated && authState.user.value != null) {
         // Load settings for authenticated user
-        context.read<SettingsCubit>().loadSettings(authState.user!.id);
+        context.read<SettingsCubit>().loadSettings(authState.user.value!.id);
       } else {
         // Load settings for guest user
         context.read<SettingsCubit>().loadSettings(null);
@@ -84,8 +84,8 @@ class _AppViewState extends State<_AppView> {
 
     // Initial settings load
     final authState = context.read<AuthCubit>().state;
-    if (authState.isAuthenticated && authState.user != null) {
-      context.read<SettingsCubit>().loadSettings(authState.user!.id);
+    if (authState.isAuthenticated && authState.user.value != null) {
+      context.read<SettingsCubit>().loadSettings(authState.user.value!.id);
     } else {
       context.read<SettingsCubit>().loadSettings(null);
     }

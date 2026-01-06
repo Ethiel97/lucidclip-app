@@ -3,51 +3,50 @@ part of 'auth_cubit.dart';
 /// Authentication state
 class AuthState extends Equatable {
   const AuthState({
-    this.user,
-    this.status = AuthStatus.unauthenticated,
-    this.errorMessage,
+    this.user = const ValueWrapper(),
   });
 
-  final User? user;
-  final AuthStatus status;
-  final String? errorMessage;
+  factory AuthState.fromJson(Map<String, dynamic> json) {
+    return AuthState(
+      user: ValueWrapper(
+        value: json['user'] != null
+            ? UserModel.fromJson(json['user'] as Map<String, dynamic>)
+                .toEntity()
+            : null,
+      ),
+    );
+  }
+
+  final ValueWrapper<User?> user;
 
   /// Check if user is authenticated
-  bool get isAuthenticated => status == AuthStatus.authenticated && user != null;
+  bool get isAuthenticated => user.hasData && user.value != null && user.value!.isNotEmpty;
 
   /// Check if authentication is in progress
-  bool get isLoading => status == AuthStatus.loading;
+  bool get isLoading => user.isLoading;
 
   /// Check if there's an error
-  bool get hasError => status == AuthStatus.error;
+  bool get hasError => user.isError;
+
+  /// Get error message if available
+  String? get errorMessage => user.error?.message.toString();
 
   AuthState copyWith({
-    User? user,
-    AuthStatus? status,
-    String? errorMessage,
+    ValueWrapper<User?>? user,
   }) {
     return AuthState(
       user: user ?? this.user,
-      status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [user, status, errorMessage];
-}
+  List<Object?> get props => [user];
 
-/// Authentication status enum
-enum AuthStatus {
-  /// User is not authenticated
-  unauthenticated,
-  
-  /// Authentication is in progress
-  loading,
-  
-  /// User is authenticated
-  authenticated,
-  
-  /// Authentication error occurred
-  error,
+  Map<String, dynamic> toJson() {
+    return {
+      'user': user.value != null
+          ? UserModel.fromEntity(user.value!).toJson()
+          : null,
+    };
+  }
 }

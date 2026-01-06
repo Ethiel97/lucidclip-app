@@ -4,12 +4,13 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
+import 'package:lucid_clip/features/auth/data/data_sources/auth_data_source.dart';
 import 'package:lucid_clip/features/auth/data/models/models.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Data source for Supabase authentication operations
-@lazySingleton
-class SupabaseAuthDataSource {
+@LazySingleton(as: AuthDataSource)
+class SupabaseAuthDataSource implements AuthDataSource {
   SupabaseAuthDataSource({
     required SupabaseClient supabaseClient,
     required SecureStorageService secureStorage,
@@ -19,7 +20,7 @@ class SupabaseAuthDataSource {
   final SupabaseClient _supabase;
   final SecureStorageService _secureStorage;
 
-  /// Sign in with GitHub OAuth
+  @override
   Future<UserModel?> signInWithGitHub() async {
     try {
       // Use the platform-specific deep link scheme
@@ -59,7 +60,7 @@ class SupabaseAuthDataSource {
     }
   }
 
-  /// Sign out the current user
+  @override
   Future<void> signOut() async {
     try {
       await _supabase.auth.signOut();
@@ -79,7 +80,7 @@ class SupabaseAuthDataSource {
     }
   }
 
-  /// Get the currently authenticated user
+  @override
   Future<UserModel?> getCurrentUser() async {
     try {
       final currentUser = _supabase.auth.currentUser;
@@ -95,7 +96,7 @@ class SupabaseAuthDataSource {
     }
   }
 
-  /// Stream of authentication state changes
+  @override
   Stream<UserModel?> get authStateChanges {
     return _supabase.auth.onAuthStateChange.map((event) {
       final user = event.session?.user;

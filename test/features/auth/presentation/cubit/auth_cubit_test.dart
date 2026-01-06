@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -27,10 +28,10 @@ void main() {
   });
 
   group('AuthCubit', () {
-    test('initial state is unauthenticated', () {
+    test('initial state has no user', () {
       final cubit = AuthCubit(authRepository: mockAuthRepository);
-      expect(cubit.state.status, AuthStatus.unauthenticated);
-      expect(cubit.state.user, isNull);
+      expect(cubit.state.user.value, isNull);
+      expect(cubit.state.isAuthenticated, isFalse);
       cubit.close();
     });
 
@@ -47,10 +48,17 @@ void main() {
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.checkAuthStatus(),
       expect: () => [
-        const AuthState(
-          user: User(id: 'test-id', email: 'test@example.com'),
-          status: AuthStatus.authenticated,
-        ),
+        isA<AuthState>()
+            .having(
+              (s) => s.user.value?.id,
+              'user id',
+              'test-id',
+            )
+            .having(
+              (s) => s.isAuthenticated,
+              'isAuthenticated',
+              isTrue,
+            ),
       ],
     );
 
@@ -63,7 +71,17 @@ void main() {
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.checkAuthStatus(),
       expect: () => [
-        const AuthState(status: AuthStatus.unauthenticated),
+        isA<AuthState>()
+            .having(
+              (s) => s.user.value,
+              'user',
+              isNull,
+            )
+            .having(
+              (s) => s.isAuthenticated,
+              'isAuthenticated',
+              isFalse,
+            ),
       ],
     );
 
@@ -80,11 +98,10 @@ void main() {
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.signInWithGitHub(),
       expect: () => [
-        const AuthState(status: AuthStatus.loading),
-        const AuthState(
-          user: User(id: 'github-id', email: 'github@example.com'),
-          status: AuthStatus.authenticated,
-        ),
+        isA<AuthState>().having((s) => s.isLoading, 'isLoading', isTrue),
+        isA<AuthState>()
+            .having((s) => s.user.value?.id, 'user id', 'github-id')
+            .having((s) => s.isAuthenticated, 'isAuthenticated', isTrue),
       ],
     );
 
@@ -97,9 +114,9 @@ void main() {
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.signInWithGitHub(),
       expect: () => [
-        const AuthState(status: AuthStatus.loading),
+        isA<AuthState>().having((s) => s.isLoading, 'isLoading', isTrue),
         isA<AuthState>()
-            .having((s) => s.status, 'status', AuthStatus.error)
+            .having((s) => s.hasError, 'hasError', isTrue)
             .having(
               (s) => s.errorMessage,
               'errorMessage',
@@ -114,23 +131,23 @@ void main() {
         when(() => mockAuthRepository.signOut()).thenAnswer((_) async {});
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
-      seed: () => const AuthState(
-        user: User(id: 'test-id', email: 'test@example.com'),
-        status: AuthStatus.authenticated,
+      seed: () => AuthState(
+        user: const ValueWrapper(
+          value: User(id: 'test-id', email: 'test@example.com'),
+          status: Status.success,
+        ),
       ),
       act: (cubit) => cubit.signOut(),
       expect: () => [
-        const AuthState(status: AuthStatus.unauthenticated),
+        isA<AuthState>()
+            .having((s) => s.user.value, 'user', isNull)
+            .having((s) => s.isAuthenticated, 'isAuthenticated', isFalse),
       ],
     );
 
     blocTest<AuthCubit, AuthState>(
       'emits authenticated when auth state stream emits a user',
       setUp: () {
-        const user = User(
-          id: 'stream-id',
-          email: 'stream@example.com',
-        );
         when(() => mockAuthRepository.getCurrentUser())
             .thenAnswer((_) async => null);
       },
@@ -142,10 +159,9 @@ void main() {
       },
       skip: 1, // Skip initial state
       expect: () => [
-        const AuthState(
-          user: User(id: 'stream-id', email: 'stream@example.com'),
-          status: AuthStatus.authenticated,
-        ),
+        isA<AuthState>()
+            .having((s) => s.user.value?.id, 'user id', 'stream-id')
+            .having((s) => s.isAuthenticated, 'isAuthenticated', isTrue),
       ],
     );
 
@@ -165,7 +181,9 @@ void main() {
       },
       skip: 1, // Skip initial authenticated state
       expect: () => [
-        const AuthState(status: AuthStatus.unauthenticated),
+        isA<AuthState>()
+            .having((s) => s.user.value, 'user', isNull)
+            .having((s) => s.isAuthenticated, 'isAuthenticated', isFalse),
       ],
     );
   });

@@ -6,10 +6,10 @@ import 'package:lucid_clip/features/auth/domain/domain.dart';
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
-    required SupabaseAuthDataSource dataSource,
+    required AuthDataSource dataSource,
   }) : _dataSource = dataSource;
 
-  final SupabaseAuthDataSource _dataSource;
+  final AuthDataSource _dataSource;
 
   @override
   Future<User?> signInWithGitHub() async {

@@ -5,8 +5,11 @@ class User extends Equatable {
   const User({
     required this.id,
     required this.email,
+    this.displayName,
+    this.phone,
     this.userMetadata,
     this.createdAt,
+    this.lastSignInAt,
   });
 
   /// User ID from Supabase Auth
@@ -15,11 +18,20 @@ class User extends Equatable {
   /// User's email address
   final String? email;
 
+  /// User's display name
+  final String? displayName;
+
+  /// User's phone number
+  final String? phone;
+
   /// Additional user metadata from the auth provider
   final Map<String, dynamic>? userMetadata;
 
   /// When the user account was created
   final DateTime? createdAt;
+
+  /// When the user last signed in
+  final DateTime? lastSignInAt;
 
   /// Create an empty user
   factory User.empty() {
@@ -39,7 +51,10 @@ class User extends Equatable {
   List<Object?> get props => [
         id,
         email,
+        displayName,
+        phone,
         userMetadata,
         createdAt,
+        lastSignInAt,
       ];
 }

@@ -161,7 +161,11 @@ class TrayManagerService with TrayListener {
             MenuItem(
               key: 'clipboard_item_$i',
               label: preview,
-              disabled: true, // Preview only, clicking won't do anything
+              onClick: (item) {
+                // copy to clipboard when clicked
+                //TODO(ETHIEL97): clipboardCubit.(itemKey: 'clipboard_item_$i');
+              },
+              // Preview only, clicking won't do anything
             ),
           );
         }
@@ -172,11 +176,34 @@ class TrayManagerService with TrayListener {
         items: [
           MenuItem(key: 'show_hide', label: 'Show/Hide Window'),
           MenuItem.separator(),
-          MenuItem(
-            key: 'toggle_tracking',
+          MenuItem.submenu(
+            key: 'private_session',
             label: isIncognito
                 ? (l10n?.resumeTracking ?? 'Resume Tracking')
-                : (l10n?.pauseTracking ?? 'Pause Tracking'),
+                : (l10n?.startPrivateSession ?? 'Start Private Session'),
+            submenu: Menu(
+              items: isIncognito
+                  ? [
+                      MenuItem(
+                        key: 'stop_private_session',
+                        label: l10n?.resumeTracking ?? 'Resume Tracking',
+                      ),
+                    ]
+                  : [
+                      MenuItem(
+                        key: 'private_session_15min',
+                        label: l10n?.fifteenMinutes ?? '15 Minutes',
+                      ),
+                      MenuItem(
+                        key: 'private_session_1hour',
+                        label: l10n?.oneHour ?? '1 Hour',
+                      ),
+                      MenuItem(
+                        key: 'private_session_until_disabled',
+                        label: l10n?.untilDisabled ?? 'Until Disabled',
+                      ),
+                    ],
+            ),
           ),
           MenuItem.separator(),
           MenuItem.submenu(
@@ -251,8 +278,14 @@ class TrayManagerService with TrayListener {
     switch (key) {
       case 'show_hide':
         await _toggleWindowVisibility();
-      case 'toggle_tracking':
-        await _toggleTracking();
+      case 'stop_private_session':
+        await _stopPrivateSession();
+      case 'private_session_15min':
+        await _startPrivateSession(15);
+      case 'private_session_1hour':
+        await _startPrivateSession(60);
+      case 'private_session_until_disabled':
+        await _startPrivateSession(null);
       case 'clear_history':
         await _clearClipboardHistory();
       case 'settings':
@@ -284,21 +317,36 @@ class TrayManagerService with TrayListener {
     }
   }
 
-  /// Toggle clipboard tracking (incognito mode)
-  Future<void> _toggleTracking() async {
+  /// Start a private session with the specified duration
+  /// [durationMinutes] - Duration in minutes (null = until disabled)
+  Future<void> _startPrivateSession(int? durationMinutes) async {
     try {
       final settingsCubit = getIt<SettingsCubit>();
-      final currentIncognito =
-          settingsCubit.state.settings.value?.incognitoMode ?? false;
-
-      // Toggle incognito mode
-      await settingsCubit.updateIncognitoMode(incognitoMode: !currentIncognito);
+      await settingsCubit.startPrivateSession(durationMinutes: durationMinutes);
 
       // Update the tray menu to reflect the change
       await updateTrayMenu();
     } catch (e, stackTrace) {
       developer.log(
-        'Error toggling tracking',
+        'Error starting private session',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
+    }
+  }
+
+  /// Stop the current private session
+  Future<void> _stopPrivateSession() async {
+    try {
+      final settingsCubit = getIt<SettingsCubit>();
+      await settingsCubit.updateIncognitoMode();
+
+      // Update the tray menu to reflect the change
+      await updateTrayMenu();
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error stopping private session',
         error: e,
         stackTrace: stackTrace,
         name: 'TrayManagerService',

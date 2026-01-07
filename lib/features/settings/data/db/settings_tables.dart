@@ -43,6 +43,13 @@ class UserSettingsEntries extends Table {
 
   DateTimeColumn get updatedAt => dateTime().named('updated_at')();
 
+  IntColumn get incognitoSessionDurationMinutes => integer()
+      .named('incognito_session_duration_minutes')
+      .nullable()();
+
+  DateTimeColumn get incognitoSessionEndTime =>
+      dateTime().named('incognito_session_end_time').nullable()();
+
   @override
   Set<Column> get primaryKey => {userId};
 }

@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -16,8 +18,15 @@ class SettingsDatabase extends _$SettingsDatabase {
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dir = await getApplicationDocumentsDirectory();
+      final dir = await getLibraryDirectory();
       final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
+
+      if (dbFile.existsSync()) {
+        if (!AppConstants.isProd) {
+          await dbFile.delete();
+        }
+      }
+
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);
       }
@@ -85,6 +94,8 @@ class SettingsDatabase extends _$SettingsDatabase {
       excludedApps: excludedApps,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
+      incognitoSessionDurationMinutes: e.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: e.incognitoSessionEndTime,
     );
   }
 
@@ -104,6 +115,8 @@ class SettingsDatabase extends _$SettingsDatabase {
       excludedApps: Value(jsonEncode(m.excludedApps)),
       createdAt: Value(m.createdAt),
       updatedAt: Value(m.updatedAt),
+      incognitoSessionDurationMinutes: Value(m.incognitoSessionDurationMinutes),
+      incognitoSessionEndTime: Value(m.incognitoSessionEndTime),
     );
   }
 }

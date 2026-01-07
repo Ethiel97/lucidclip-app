@@ -23,6 +23,8 @@ class UserSettingsModel extends Equatable {
     this.showSourceApp = true,
     this.previewImages = true,
     this.previewLinks = true,
+    this.incognitoSessionDurationMinutes,
+    this.incognitoSessionEndTime,
   });
 
   factory UserSettingsModel.fromEntity(UserSettings settings) {
@@ -41,6 +43,8 @@ class UserSettingsModel extends Equatable {
       previewLinks: settings.previewLinks,
       createdAt: settings.createdAt,
       updatedAt: settings.updatedAt,
+      incognitoSessionDurationMinutes: settings.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: settings.incognitoSessionEndTime,
     );
   }
 
@@ -87,6 +91,12 @@ class UserSettingsModel extends Equatable {
   @JsonKey(name: 'excluded_apps')
   final List<String> excludedApps;
 
+  @JsonKey(name: 'incognito_session_duration_minutes')
+  final int? incognitoSessionDurationMinutes;
+
+  @JsonKey(name: 'incognito_session_end_time')
+  final DateTime? incognitoSessionEndTime;
+
   Map<String, dynamic> toJson() => _$UserSettingsModelToJson(this);
 
   UserSettingsModel copyWith({
@@ -102,6 +112,8 @@ class UserSettingsModel extends Equatable {
     bool? previewLinks,
     bool? incognitoMode,
     List<String>? excludedApps,
+    int? incognitoSessionDurationMinutes,
+    DateTime? incognitoSessionEndTime,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -120,6 +132,8 @@ class UserSettingsModel extends Equatable {
       excludedApps: excludedApps ?? this.excludedApps,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes ?? this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: incognitoSessionEndTime ?? this.incognitoSessionEndTime,
     );
   }
 
@@ -139,6 +153,8 @@ class UserSettingsModel extends Equatable {
       previewLinks: previewLinks,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: incognitoSessionEndTime,
     );
   }
 
@@ -158,5 +174,7 @@ class UserSettingsModel extends Equatable {
     createdAt,
     updatedAt,
     incognitoMode,
+    incognitoSessionDurationMinutes,
+    incognitoSessionEndTime,
   ];
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart'; // pour ClipboardItemModel
@@ -16,9 +17,15 @@ class ClipboardDatabase extends _$ClipboardDatabase {
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dir = await getApplicationDocumentsDirectory();
+      final dir = await getLibraryDirectory();
       final dbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
-      // crée le dossier si nécessaire
+
+      if (dbFile.existsSync()) {
+        if (!AppConstants.isProd) {
+          await dbFile.delete();
+        }
+      }
+
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);
       }

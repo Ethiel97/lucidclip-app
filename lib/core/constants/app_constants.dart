@@ -40,4 +40,6 @@ class AppConstants {
   static const clipboardItemDetailsViewWidth = 360.0;
   static const clipboardSidebarWidth = 240.0;
   static const collapsedSidebarWidth = 100.0;
+
+  static const isProd = bool.fromEnvironment('dart.vm.product');
 }

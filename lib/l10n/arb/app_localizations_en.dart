@@ -41,6 +41,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get build => 'Build';
 
   @override
+  String get cancel => 'Cancel';
+
+  @override
   String get characters => 'Characters';
 
   @override
@@ -226,6 +229,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get startPrivateSession => 'Start Private Session';
+
+  @override
+  String get privateSessionDuration => 'Private Session Duration';
+
+  @override
+  String get fifteenMinutes => '15 Minutes';
+
+  @override
+  String get oneHour => '1 Hour';
+
+  @override
+  String get untilDisabled => 'Until Disabled';
+
+  @override
   String get searchHint => 'Search...';
 
   @override
@@ -293,4 +311,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get yourClipboardItemsWillAppearHere =>
       'Your clipboard items will appear here.';
+
+  @override
+  String get stopClipboardCapture => 'Stop clipboard capture';
+
+  @override
+  String get resumeClipboardCapture => 'Resume clipboard capture';
+
+  @override
+  String get clipboardCaptureStarted => 'Clipboard capture started';
 }

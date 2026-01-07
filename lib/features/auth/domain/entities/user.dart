@@ -12,6 +12,14 @@ class User extends Equatable {
     this.lastSignInAt,
   });
 
+  /// Create an empty user
+  factory User.empty() {
+    return const User(
+      id: '',
+      email: null,
+    );
+  }
+
   /// User ID from Supabase Auth
   final String id;
 
@@ -32,14 +40,6 @@ class User extends Equatable {
 
   /// When the user last signed in
   final DateTime? lastSignInAt;
-
-  /// Create an empty user
-  factory User.empty() {
-    return const User(
-      id: '',
-      email: null,
-    );
-  }
 
   /// Check if user is empty
   bool get isEmpty => id.isEmpty;

@@ -46,12 +46,8 @@ class _AppState extends State<App> with WindowListener {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => getIt<AuthCubit>(),
-        ),
-        BlocProvider(
-          create: (_) => getIt<SettingsCubit>(),
-        ),
+        BlocProvider(create: (_) => getIt<AuthCubit>()),
+        BlocProvider(create: (_) => getIt<SettingsCubit>()),
       ],
       child: const _AppView(),
     );
@@ -71,24 +67,8 @@ class _AppViewState extends State<_AppView> {
   @override
   void initState() {
     super.initState();
-    // Listen to auth state changes and load settings accordingly
-    context.read<AuthCubit>().stream.listen((authState) {
-      if (authState.isAuthenticated && authState.userId != null) {
-        // Load settings for authenticated user
-        context.read<SettingsCubit>().loadSettings(authState.userId);
-      } else {
-        // Load settings for guest user
-        context.read<SettingsCubit>().loadSettings(null);
-      }
-    });
 
-    // Initial settings load
-    final authState = context.read<AuthCubit>().state;
-    if (authState.isAuthenticated && authState.userId != null) {
-      context.read<SettingsCubit>().loadSettings(authState.userId);
-    } else {
-      context.read<SettingsCubit>().loadSettings(null);
-    }
+    context.read<SettingsCubit>().loadSettings();
   }
 
   @override

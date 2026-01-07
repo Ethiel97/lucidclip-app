@@ -24,9 +24,13 @@ UserSettingsModel _$UserSettingsModelFromJson(Map<String, dynamic> json) =>
           const {},
       autoSync: json['auto_sync'] as bool? ?? false,
       syncIntervalMinutes:
-          (json['sync_interval_minutes'] as num?)?.toInt() ?? 60,
-      maxHistoryItems: (json['max_history_items'] as num?)?.toInt() ?? 50,
-      retentionDays: (json['retention_days'] as num?)?.toInt() ?? 5,
+          (json['sync_interval_minutes'] as num?)?.toInt() ??
+          defaultSyncIntervalMinutes,
+      maxHistoryItems:
+          (json['max_history_items'] as num?)?.toInt() ??
+          defaultMaxHistoryItems,
+      retentionDays:
+          (json['retention_days'] as num?)?.toInt() ?? defaultRetentionDays,
       incognitoMode: json['incognito_mode'] as bool? ?? false,
       showSourceApp: json['show_source_app'] as bool? ?? true,
       previewImages: json['preview_images'] as bool? ?? true,

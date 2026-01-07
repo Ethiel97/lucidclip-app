@@ -10,7 +10,8 @@ class IdGenerator {
   }
 
   /// Generates a unique ID with a custom prefix
-  /// Example: generateWithPrefix('clip') returns 'clip_550e8400-e29b-41d4-a716-446655440000'
+  /// Example: generateWithPrefix('clip')
+  /// returns 'clip_550e8400-e29b-41d4-a716-446655440000'
   static String generateWithPrefix(String prefix) {
     return '${prefix}_${_uuid.v4()}';
   }

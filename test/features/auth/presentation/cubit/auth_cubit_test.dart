@@ -131,8 +131,8 @@ void main() {
         when(() => mockAuthRepository.signOut()).thenAnswer((_) async {});
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
-      seed: () => AuthState(
-        user: const ValueWrapper(
+      seed: () => const AuthState(
+        user: ValueWrapper(
           value: User(id: 'test-id', email: 'test@example.com'),
           status: Status.success,
         ),

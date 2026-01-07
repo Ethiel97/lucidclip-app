@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
@@ -15,12 +16,14 @@ part 'clipboard_state.dart';
 @lazySingleton
 class ClipboardCubit extends HydratedCubit<ClipboardState> {
   ClipboardCubit({
+    required this.authRepository,
     required this.clipboardManager,
     required this.clipboardRepository,
     required this.localClipboardRepository,
     required this.localClipboardHistoryRepository,
     required this.localSettingsRepository,
   }) : super(const ClipboardState()) {
+    _initializeAuthListener();
     _loadData();
     _startWatchingClipboard();
     _watchSettings();
@@ -40,6 +43,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalClipboardRepository localClipboardRepository;
   final LocalClipboardHistoryRepository localClipboardHistoryRepository;
   final LocalSettingsRepository localSettingsRepository;
+  final AuthRepository authRepository;
 
   StreamSubscription<ClipboardData>? _clipboardSubscription;
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
@@ -49,12 +53,18 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   UserSettings? _userSettings;
 
   // TODO(Ethiel97): Placeholder for userId until auth context is available
-  static const String _pendingUserId = '';
+  String _currentUserId = '';
+
+  void _initializeAuthListener() {
+    authRepository.authStateChanges.listen((user) {
+      _currentUserId = user?.id ?? 'guest';
+    });
+  }
 
   void _watchSettings() {
     _userSettingsSubscription?.cancel();
     _userSettingsSubscription = localSettingsRepository
-        .watchSettings(_pendingUserId.isEmpty ? 'guest' : _pendingUserId)
+        .watchSettings(_currentUserId)
         .listen((s) {
           _userSettings = s;
         });
@@ -93,7 +103,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       // TODO(Ethiel97): Check duplicate content update
       if (isDuplicate) {
-        print('Duplicate clipboard item detected; updating timestamp.');
+        developer.log('Duplicate clipboard item detected; updating timestamp.');
         final existingItem = currentItems.firstWhere(
           (item) => item.contentHash == clipboardData.contentHash,
         );
@@ -103,7 +113,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         await _upsertClipboardItem(updatedItem);
         await _createClipboardHistory(updatedItem.id);
       } else {
-        final newItem = clipboardData.toDomain(userId: _pendingUserId);
+        final newItem = clipboardData.toDomain(userId: _currentUserId);
 
         await _upsertClipboardItem(newItem);
         await _createClipboardHistory(newItem.id);
@@ -131,7 +141,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         id: IdGenerator.generate(),
         clipboardItemId: clipboardItemId,
         action: ClipboardAction.copy,
-        userId: _pendingUserId,
+        userId: _currentUserId,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

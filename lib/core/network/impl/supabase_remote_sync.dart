@@ -6,9 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 @Singleton(as: RemoteSyncClient)
 class SupabaseRemoteSync implements RemoteSyncClient {
-  SupabaseRemoteSync({
-    required SupabaseClient supabase,
-  }) : _supabase = supabase;
+  SupabaseRemoteSync({required SupabaseClient supabase}) : _supabase = supabase;
 
   final SupabaseClient _supabase;
 
@@ -80,7 +78,7 @@ class SupabaseRemoteSync implements RemoteSyncClient {
 
     return stream.map((event) {
       return List<T>.from(event as List);
-    });
+    }).distinct();
   }
 
   @override

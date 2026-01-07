@@ -12,8 +12,9 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Future<void> upsert(ClipboardItem item) async {
     try {
-      final existing =
-          await _localDataSource.getByContentHash(item.contentHash);
+      final existing = await _localDataSource.getByContentHash(
+        item.contentHash,
+      );
       if (existing != null && existing.id != item.id) {
         return;
       }
@@ -118,9 +119,9 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Stream<List<ClipboardItem>> watchAll() {
     try {
-      return _localDataSource
-          .watchAll()
-          .map((records) => records.map((r) => r.toEntity()).toList());
+      return _localDataSource.watchAll().distinct().map(
+        (records) => records.map((r) => r.toEntity()).toList(),
+      );
     } catch (e) {
       throw CacheException('Failed to watch all clipboard items: $e');
     }

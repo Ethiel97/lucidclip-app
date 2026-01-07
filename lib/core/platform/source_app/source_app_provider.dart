@@ -32,6 +32,7 @@ class SourceApp extends Equatable {
   List<Object?> get props => [bundleId, name];
 }
 
+//ignore: one_member_abstracts
 abstract class SourceAppProvider {
   Future<SourceApp?> getFrontmostApp();
 }

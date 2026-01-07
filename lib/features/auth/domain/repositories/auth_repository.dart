@@ -16,4 +16,6 @@ abstract class AuthRepository {
   /// Stream of authentication state changes
   /// Emits the current user when authenticated, null when not
   Stream<User?> get authStateChanges;
+
+  Future<String?> get currentUserId;
 }

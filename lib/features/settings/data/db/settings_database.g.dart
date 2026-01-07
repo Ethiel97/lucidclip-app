@@ -91,7 +91,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(60),
+    defaultValue: const Constant(defaultSyncIntervalMinutes),
   );
   static const VerificationMeta _maxHistoryItemsMeta = const VerificationMeta(
     'maxHistoryItems',
@@ -103,7 +103,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(50),
+    defaultValue: const Constant(defaultMaxHistoryItems),
   );
   static const VerificationMeta _retentionDaysMeta = const VerificationMeta(
     'retentionDays',
@@ -115,7 +115,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultValue: const Constant(5),
+    defaultValue: const Constant(defaultRetentionDays),
   );
   static const VerificationMeta _showSourceAppMeta = const VerificationMeta(
     'showSourceApp',

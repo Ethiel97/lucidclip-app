@@ -28,12 +28,21 @@ import 'package:lucid_clip/core/network/remote_sync_client.dart' as _i70;
 import 'package:lucid_clip/core/platform/source_app/method_channel_source_app_provider.dart'
     as _i740;
 import 'package:lucid_clip/core/platform/source_app/source_app.dart' as _i51;
-import 'package:lucid_clip/core/services/tray_manager_service.dart' as _i1001;
+import 'package:lucid_clip/core/services/tray_manager_service.dart' as _i926;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
     as _i443;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
+import 'package:lucid_clip/features/auth/auth.dart' as _i895;
+import 'package:lucid_clip/features/auth/data/data.dart' as _i13;
+import 'package:lucid_clip/features/auth/data/data_sources/supabase_auth_data_source.dart'
+    as _i647;
+import 'package:lucid_clip/features/auth/data/repositories/auth_repository_impl.dart'
+    as _i409;
+import 'package:lucid_clip/features/auth/domain/domain.dart' as _i922;
+import 'package:lucid_clip/features/auth/presentation/cubit/auth_cubit.dart'
+    as _i408;
 import 'package:lucid_clip/features/clipboard/clipboard.dart' as _i42;
 import 'package:lucid_clip/features/clipboard/data/data.dart' as _i669;
 import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_history_local_data_source.dart'
@@ -98,11 +107,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
-    gh.lazySingleton<_i677.SidebarCubit>(() => _i677.SidebarCubit());
-    gh.lazySingleton<_i1001.TrayManagerService>(
-      () => _i1001.TrayManagerService(),
+    gh.lazySingleton<_i926.TrayManagerService>(
+      () => _i926.TrayManagerService(),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i677.SidebarCubit>(() => _i677.SidebarCubit());
     gh.lazySingleton<_i51.SourceAppProvider>(
       () => _i740.MethodChannelSourceAppProvider(),
     );
@@ -135,6 +144,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i72.SettingsLocalDataSource>(
       () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
     );
+    gh.lazySingleton<_i13.AuthDataSource>(
+      () => _i647.SupabaseAuthDataSource(
+        supabaseClient: gh<_i454.SupabaseClient>(),
+        secureStorage: gh<_i407.SecureStorageService>(),
+      ),
+    );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
     );
@@ -159,6 +174,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i958.LocalSettingsRepositoryImpl(
         gh<_i173.SettingsLocalDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i922.AuthRepository>(
+      () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
+    );
+    gh.lazySingleton<_i408.AuthCubit>(
+      () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
     );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
       () => _i175.SupabaseSettingsRemoteDataSource(
@@ -187,6 +208,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(
+        authRepository: gh<_i895.AuthRepository>(),
         clipboardManager: gh<_i108.BaseClipboardManager>(),
         clipboardRepository: gh<_i42.ClipboardRepository>(),
         localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
@@ -198,6 +220,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i966.SettingsCubit>(
       () => _i966.SettingsCubit(
+        authRepository: gh<_i922.AuthRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
         settingsRepository: gh<_i340.SettingsRepository>(),
       ),

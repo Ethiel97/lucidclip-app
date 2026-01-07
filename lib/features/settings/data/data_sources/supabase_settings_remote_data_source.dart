@@ -25,34 +25,25 @@ class SupabaseSettingsRemoteDataSource implements SettingsRemoteDataSource {
 
       if (response.isEmpty) return null;
 
-      return UserSettingsModel.fromJson(
-        response.first,
-      );
+      return UserSettingsModel.fromJson(response.first);
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to fetch settings: $e $stack',
-      );
+      throw NetworkException('Failed to fetch settings: $e $stack');
     }
   }
 
   @override
   Future<void> upsertSettings(Map<String, dynamic> data) async {
     try {
-      await _networkClient.upsert(
-        table: userSettingsTable,
-        data: data,
-      );
+      await _networkClient.upsert(table: userSettingsTable, data: data);
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to upsert settings: $e $stack',
-      );
+      throw NetworkException('Failed to upsert settings: $e $stack');
     }
   }
 
   @override
   Stream<UserSettingsModel?> watchSettings(String userId) {
     try {
-      final stream = _networkClient.watch(
+      final stream = _networkClient.watch<UserSettingsModel>(
         table: userSettingsTable,
         filters: {'user_id': userId},
       );
@@ -64,9 +55,7 @@ class SupabaseSettingsRemoteDataSource implements SettingsRemoteDataSource {
         );
       });
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to watch settings: $e $stack',
-      );
+      throw NetworkException('Failed to watch settings: $e $stack');
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 part 'user_model.g.dart';
 
@@ -16,6 +17,40 @@ class UserModel extends Equatable {
     this.createdAt,
     this.lastSignInAt,
   });
+
+  /// Create a UserModel from a Supabase Auth User
+  factory UserModel.fromSupabaseUser(sb.User supabaseUser) {
+    return UserModel(
+      id: supabaseUser.id,
+      email: supabaseUser.email,
+      displayName:
+          supabaseUser.userMetadata?['full_name'] as String? ??
+          supabaseUser.userMetadata?['name'] as String?,
+      phone: supabaseUser.phone,
+      userMetadata: supabaseUser.userMetadata,
+      createdAt: DateTime.parse(supabaseUser.createdAt),
+      lastSignInAt: supabaseUser.lastSignInAt != null
+          ? DateTime.parse(supabaseUser.lastSignInAt!)
+          : null,
+    );
+  }
+
+  /// Create a UserModel from a domain entity
+  factory UserModel.fromEntity(User user) {
+    return UserModel(
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
+      phone: user.phone,
+      userMetadata: user.userMetadata,
+      createdAt: user.createdAt,
+      lastSignInAt: user.lastSignInAt,
+    );
+  }
+
+  /// Create a UserModel from JSON
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 
   /// User ID from Supabase Auth
   final String id;
@@ -42,43 +77,6 @@ class UserModel extends Equatable {
   @JsonKey(name: 'last_sign_in_at')
   final DateTime? lastSignInAt;
 
-  /// Create a UserModel from a Supabase Auth User
-  factory UserModel.fromSupabaseUser(
-    dynamic supabaseUser,
-  ) {
-    return UserModel(
-      id: supabaseUser.id as String,
-      email: supabaseUser.email as String?,
-      displayName: supabaseUser.userMetadata?['full_name'] as String? ??
-          supabaseUser.userMetadata?['name'] as String?,
-      phone: supabaseUser.phone as String?,
-      userMetadata: supabaseUser.userMetadata as Map<String, dynamic>?,
-      createdAt: supabaseUser.createdAt != null
-          ? DateTime.parse(supabaseUser.createdAt as String)
-          : null,
-      lastSignInAt: supabaseUser.lastSignInAt != null
-          ? DateTime.parse(supabaseUser.lastSignInAt as String)
-          : null,
-    );
-  }
-
-  /// Create a UserModel from a domain entity
-  factory UserModel.fromEntity(User user) {
-    return UserModel(
-      id: user.id,
-      email: user.email,
-      displayName: user.displayName,
-      phone: user.phone,
-      userMetadata: user.userMetadata,
-      createdAt: user.createdAt,
-      lastSignInAt: user.lastSignInAt,
-    );
-  }
-
-  /// Create a UserModel from JSON
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
-
   /// Convert to JSON
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
@@ -97,12 +95,12 @@ class UserModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        email,
-        displayName,
-        phone,
-        userMetadata,
-        createdAt,
-        lastSignInAt,
-      ];
+    id,
+    email,
+    displayName,
+    phone,
+    userMetadata,
+    createdAt,
+    lastSignInAt,
+  ];
 }

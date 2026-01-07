@@ -12,6 +12,11 @@
   "@appName": {
     "description": "Name of the app"
   },
+  "appTagLine": "A smarter clipboard. On your terms",
+  "@appTagLine": {
+    "description": "Tagline for the app",
+    "placeholders": {}
+  },
   "appearance": "Appearance",
   "@appearance": {
     "description": "Label for the Appearance settings"
@@ -19,6 +24,11 @@
   "appendToClipboard": "Append to Clipboard",
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
+  },
+  "authenticationError": "Authentication Error",
+  "@authenticationError": {
+    "description": "Error message shown when authentication fails",
+    "placeholders": {}
   },
   "autoSync": "Auto Sync",
   "@autoSync": {
@@ -128,6 +138,7 @@
   "@general": {
     "description": "Label for the General settings"
   },
+  "github": "GitHub",
   "hideWindow": "Hide Window",
   "@hideWindow": {
     "description": "Tray menu item to hide the window"
@@ -311,6 +322,29 @@
   "@showWindow": {
     "description": "Tray menu item to show the window"
   },
+  "signIn": "Sign in",
+  "@signIn": {
+    "description": "Button text to sign in"
+  },
+  "signInWith": "Sign in with {provider}",
+  "@signInWith": {
+    "description": "Button text to sign in with a specific provider",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "description": "Name of the provider",
+        "example": "GitHub"
+      }
+    }
+  },
+  "signOut": "Sign out",
+  "@signOut": {
+    "description": "Button text to sign out"
+  },
+  "signingIn": "Signing in...",
+  "@signingIn": {
+    "description": "Message shown when signing in"
+  },
   "size": "Size",
   "@size": {
     "description": "Label for the size of the content"
@@ -326,6 +360,14 @@
   "storage": "Storage",
   "@storage": {
     "description": "Label for the Storage settings"
+  },
+  "successfullySignedIn": "Successfully signed in!",
+  "@successfullySignedIn": {
+    "description": "Message shown when the user successfully signs in"
+  },
+  "successfullySignedOut": "Successfully signed out!",
+  "@successfullySignedOut": {
+    "description": "Message shown when the user successfully signs out"
   },
   "sync": "Sync",
   "@sync": {

@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:lucid_clip/features/auth/presentation/cubit/cubit.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/theme/app_spacing.dart';
+import 'package:lucid_clip/features/auth/presentation/presentation.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:recase/recase.dart';
 import 'package:toastification/toastification.dart';
 
-/// Login view widget
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
     return BlocListener<AuthCubit, AuthState>(
       listenWhen: (previous, current) => previous.hasError != current.hasError,
       listener: (context, state) {
@@ -19,152 +26,208 @@ class LoginView extends StatelessWidget {
             context: context,
             type: ToastificationType.error,
             style: ToastificationStyle.fillColored,
-            title: const Text('Authentication Error'),
-            description: Text(state.errorMessage ?? 'An error occurred'),
+            title: Text(l10n.authenticationError.sentenceCase),
+            description: Text(
+              state.errorMessage ?? l10n.errorOccurred.sentenceCase,
+            ),
             autoCloseDuration: const Duration(seconds: 5),
           );
         }
       },
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-              ],
+        body: Stack(
+          children: [
+            // Base background
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colorScheme.surface, // matches your dark style
+                ),
+              ),
             ),
-          ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 400),
-                  child: Card(
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(48.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // App Logo/Icon
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Icon(
-                              Iconsax.clipboard_text,
-                              size: 48,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          
-                          // App Name
-                          Text(
-                            'LucidClip',
-                            style: GoogleFonts.poppins(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          
-                          // Tagline
-                          Text(
-                            'Your clipboard, synchronized',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.6),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 48),
-                          
-                          // Sign in with GitHub Button
-                          BlocBuilder<AuthCubit, AuthState>(
-                            builder: (context, state) {
-                              return SizedBox(
-                                width: double.infinity,
-                                height: 56,
-                                child: ElevatedButton.icon(
-                                  onPressed: state.isLoading
-                                      ? null
-                                      : () {
-                                          context
-                                              .read<AuthCubit>()
-                                              .signInWithGitHub();
-                                        },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    foregroundColor:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 2,
-                                  ),
-                                  icon: state.isLoading
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
-                                          ),
-                                        )
-                                      : const Icon(Iconsax.unlock),
-                                  label: Text(
-                                    state.isLoading
-                                        ? 'Signing in...'
-                                        : 'Sign in with GitHub',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 24),
-                          
-                          // Privacy note
-                          Text(
-                            'By signing in, you agree to sync your clipboard\nacross your devices securely.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.5),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+
+            // Subtle glow (very soft, premium)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: const Alignment(-0.6, -0.8),
+                      radius: 1.2,
+                      colors: [
+                        colorScheme.primary.withValues(alpha: 0.14),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.75],
                     ),
                   ),
                 ),
               ),
             ),
+
+            // Content
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.xlg),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: _LoginCard(
+                    title: l10n.appName,
+                    subtitle: l10n.appTagLine.sentenceCase,
+                    textTheme: textTheme,
+                    colorScheme: colorScheme,
+                  ),
+                ),
+              ),
+            ),
+
+            Positioned(
+              top: 16,
+              right: 16,
+              child: IconButton(
+                onPressed: () {},
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedCancel01,
+                  size: AppSpacing.xlg,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginCard extends StatelessWidget {
+  const _LoginCard({
+    required this.title,
+    required this.subtitle,
+    required this.textTheme,
+    required this.colorScheme,
+  });
+
+  final String title;
+  final String subtitle;
+  final TextTheme textTheme;
+  final ColorScheme colorScheme;
+
+  @override
+  Widget build(BuildContext context) {
+    final border = Border.all(
+      color: colorScheme.onSurface.withValues(alpha: 0.08),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: border,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 30,
+            offset: const Offset(0, 18),
+          ),
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.08),
+            blurRadius: 40,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xxxlg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppLogo(),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.65),
+                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxxlg),
+
+            const _GitHubSignInButton(),
+
+            const SizedBox(height: AppSpacing.lg),
+
+            // Trust / privacy note (soft)
+            Text(
+              'Local-first by default. Sign in only when you want to sync.',
+              textAlign: TextAlign.center,
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
+                height: 1.35,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GitHubSignInButton extends StatelessWidget {
+  const _GitHubSignInButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+
+    return BlocBuilder<AuthCubit, AuthState>(
+      buildWhen: (p, c) => p.isLoading != c.isLoading,
+      builder: (context, state) => SizedBox(
+        width: double.infinity,
+        height: 52,
+        child: ElevatedButton(
+          onPressed: state.isLoading
+              ? null
+              : () => context.read<AuthCubit>().signInWithGitHub(),
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: colorScheme.primary.withValues(alpha: 0.92),
+            foregroundColor: colorScheme.onPrimary,
+            disabledBackgroundColor: colorScheme.primary.withValues(
+              alpha: 0.35,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (state.isLoading)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              else
+                const HugeIcon(icon: HugeIcons.strokeRoundedGithub),
+              const SizedBox(width: 10),
+              Text(
+                state.isLoading
+                    ? l10n.signingIn.sentenceCase
+                    : l10n.signInWith(l10n.github),
+                style: textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       ),

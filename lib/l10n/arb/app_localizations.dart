@@ -112,6 +112,12 @@ abstract class AppLocalizations {
   /// **'LucidClip'**
   String get appName;
 
+  /// Tagline for the app
+  ///
+  /// In en, this message translates to:
+  /// **'A smarter clipboard. On your terms'**
+  String get appTagLine;
+
   /// Label for the Appearance settings
   ///
   /// In en, this message translates to:
@@ -123,6 +129,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Append to Clipboard'**
   String get appendToClipboard;
+
+  /// Error message shown when authentication fails
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication Error'**
+  String get authenticationError;
 
   /// Label for the Auto Sync setting
   ///
@@ -285,6 +297,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'General'**
   String get general;
+
+  /// No description provided for @github.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub'**
+  String get github;
 
   /// Tray menu item to hide the window
   ///
@@ -538,6 +556,30 @@ abstract class AppLocalizations {
   /// **'Show Window'**
   String get showWindow;
 
+  /// Button text to sign in
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// Button text to sign in with a specific provider
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with {provider}'**
+  String signInWith(String provider);
+
+  /// Button text to sign out
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// Message shown when signing in
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in...'**
+  String get signingIn;
+
   /// Label for the size of the content
   ///
   /// In en, this message translates to:
@@ -561,6 +603,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Storage'**
   String get storage;
+
+  /// Message shown when the user successfully signs in
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully signed in!'**
+  String get successfullySignedIn;
+
+  /// Message shown when the user successfully signs out
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully signed out!'**
+  String get successfullySignedOut;
 
   /// Button text to sync content
   ///

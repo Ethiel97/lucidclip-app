@@ -38,7 +38,7 @@ class SettingsView extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       // TODO(Ethiel97): Pull user ID from auth cubit
-                      context.read<SettingsCubit>().loadSettings(null);
+                      context.read<SettingsCubit>().loadSettings();
                     },
                     child: Text(l10n.retry.sentenceCase),
                   ),

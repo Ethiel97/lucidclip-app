@@ -18,10 +18,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'LucidClip';
 
   @override
+  String get appTagLine => 'A smarter clipboard. On your terms';
+
+  @override
   String get appearance => 'Appearance';
 
   @override
   String get appendToClipboard => 'Append to Clipboard';
+
+  @override
+  String get authenticationError => 'Authentication Error';
 
   @override
   String get autoSync => 'Auto Sync';
@@ -106,6 +112,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get general => 'General';
+
+  @override
+  String get github => 'GitHub';
 
   @override
   String get hideWindow => 'Hide Window';
@@ -251,6 +260,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showWindow => 'Show Window';
 
   @override
+  String get signIn => 'Sign in';
+
+  @override
+  String signInWith(String provider) {
+    return 'Sign in with $provider';
+  }
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get signingIn => 'Signing in...';
+
+  @override
   String get size => 'Size';
 
   @override
@@ -261,6 +284,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storage => 'Storage';
+
+  @override
+  String get successfullySignedIn => 'Successfully signed in!';
+
+  @override
+  String get successfullySignedOut => 'Successfully signed out!';
 
   @override
   String get sync => 'Sync';

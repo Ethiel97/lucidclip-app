@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/features/auth/domain/domain.dart';
 import 'package:lucid_clip/features/settings/data/models/models.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
@@ -12,38 +13,45 @@ part 'settings_state.dart';
 @lazySingleton
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({
+    required this.authRepository,
     required this.localSettingsRepository,
     required this.settingsRepository,
-  }) : super(const SettingsState());
+  }) : super(const SettingsState()) {
+    _initializeAuthListener();
+  }
 
+  final AuthRepository authRepository;
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository settingsRepository;
 
   StreamSubscription<UserSettings?>? _settingsSubscription;
 
   // Use a local storage key for unauthenticated users
-  static const String _guestUserId = 'guest';
+  String _currentUserId = '';
 
-  UserSettings _createDefaultSettings(String userId) {
+  void _initializeAuthListener() {
+    authRepository.authStateChanges.listen((user) {
+      _currentUserId = user?.id ?? 'guest';
+      loadSettings();
+      watchSettings();
+    });
+  }
+
+  UserSettings _createDefaultSettings() {
     return UserSettings(
-      userId: userId,
+      userId: _currentUserId,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
   }
 
-  Future<void> loadSettings(String? userId) async {
-    // Use guest userId if not authenticated
-    final effectiveUserId = (userId?.isNotEmpty ?? false)
-        ? userId!
-        : _guestUserId;
-
+  Future<void> loadSettings() async {
     emit(state.copyWith(settings: state.settings.toLoading()));
 
     try {
       // First load from local
       final localSettings = await localSettingsRepository.getSettings(
-        effectiveUserId,
+        _currentUserId,
       );
 
       if (localSettings != null) {
@@ -51,9 +59,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       }
 
       // Only try to sync with remote if user is authenticated
-      if (userId?.isNotEmpty ?? false) {
+      if (_currentUserId != 'guest') {
         try {
-          final remoteSettings = await settingsRepository.getSettings(userId!);
+          final remoteSettings = await settingsRepository.getSettings(
+            _currentUserId,
+          );
           if (remoteSettings != null) {
             await localSettingsRepository.upsertSettings(remoteSettings);
             emit(
@@ -63,14 +73,14 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
             );
           } else if (localSettings == null) {
             // Create default settings
-            final defaultSettings = _createDefaultSettings(userId);
+            final defaultSettings = _createDefaultSettings();
             await updateSettings(defaultSettings);
           }
         } catch (e) {
           // If remote fails but we have local, that's okay
           if (localSettings == null) {
             // Create default settings locally
-            final defaultSettings = _createDefaultSettings(userId!);
+            final defaultSettings = _createDefaultSettings();
             await localSettingsRepository.upsertSettings(defaultSettings);
             emit(
               state.copyWith(
@@ -81,7 +91,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         }
       } else if (localSettings == null) {
         // Create default settings for guest
-        final defaultSettings = _createDefaultSettings(_guestUserId);
+        final defaultSettings = _createDefaultSettings();
         await localSettingsRepository.upsertSettings(defaultSettings);
         emit(
           state.copyWith(settings: state.settings.toSuccess(defaultSettings)),
@@ -98,14 +108,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
-  void watchSettings(String? userId) {
-    final effectiveUserId = (userId?.isNotEmpty ?? false)
-        ? userId!
-        : _guestUserId;
-
+  void watchSettings() {
     _settingsSubscription?.cancel();
     _settingsSubscription = localSettingsRepository
-        .watchSettings(effectiveUserId)
+        .watchSettings(_currentUserId)
         .listen((settings) {
           if (settings != null) {
             emit(state.copyWith(settings: state.settings.toSuccess(settings)));
@@ -122,7 +128,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       emit(state.copyWith(settings: state.settings.toSuccess(updatedSettings)));
 
       // Only sync to remote if user is authenticated (not guest)
-      if (updatedSettings.userId != _guestUserId) {
+      if (updatedSettings.userId != _currentUserId) {
         try {
           await settingsRepository.updateSettings(updatedSettings);
         } catch (e) {
@@ -230,6 +236,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() {
     _settingsSubscription?.cancel();

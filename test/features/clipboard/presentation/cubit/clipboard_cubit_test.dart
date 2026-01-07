@@ -20,8 +20,7 @@ void main() {
   late MockClipboardManager mockClipboardManager;
   late MockClipboardRepository mockClipboardRepository;
   late MockLocalClipboardRepository mockLocalClipboardRepository;
-  late MockLocalClipboardHistoryRepository
-      mockLocalClipboardHistoryRepository;
+  late MockLocalClipboardHistoryRepository mockLocalClipboardHistoryRepository;
   late StreamController<ClipboardData> clipboardStreamController;
 
   setUp(() {
@@ -32,18 +31,23 @@ void main() {
     clipboardStreamController = StreamController<ClipboardData>.broadcast();
 
     // Setup default mock behaviors
-    when(() => mockClipboardManager.watchClipboard())
-        .thenAnswer((_) => clipboardStreamController.stream);
+    when(
+      () => mockClipboardManager.watchClipboard(),
+    ).thenAnswer((_) => clipboardStreamController.stream);
     when(() => mockClipboardManager.dispose()).thenAnswer((_) async {});
-    when(() => mockClipboardRepository.fetchClipboardHistory())
-        .thenAnswer((_) async => []);
+    when(
+      () => mockClipboardRepository.fetchClipboardHistory(),
+    ).thenAnswer((_) async => []);
     when(() => mockClipboardRepository.fetchTags()).thenAnswer((_) async => []);
-    when(() => mockLocalClipboardRepository.getAll())
-        .thenAnswer((_) async => []);
-    when(() => mockLocalClipboardRepository.upsert(any()))
-        .thenAnswer((_) async {});
-    when(() => mockLocalClipboardHistoryRepository.upsert(any()))
-        .thenAnswer((_) async {});
+    when(
+      () => mockLocalClipboardRepository.getAll(),
+    ).thenAnswer((_) async => []);
+    when(
+      () => mockLocalClipboardRepository.upsert(any()),
+    ).thenAnswer((_) async {});
+    when(
+      () => mockLocalClipboardHistoryRepository.upsert(any()),
+    ).thenAnswer((_) async {});
   });
 
   tearDown(() {
@@ -125,8 +129,9 @@ void main() {
           timestamp: DateTime.now(),
         );
         // Add the same clipboard data twice
-        clipboardStreamController.add(clipboardData);
-        clipboardStreamController.add(clipboardData);
+        clipboardStreamController
+          ..add(clipboardData)
+          ..add(clipboardData);
       },
       wait: const Duration(milliseconds: 100),
       verify: (cubit) {
@@ -156,8 +161,9 @@ void main() {
           contentHash: 'hash2',
           timestamp: DateTime.now(),
         );
-        clipboardStreamController.add(clipboardData1);
-        clipboardStreamController.add(clipboardData2);
+        clipboardStreamController
+          ..add(clipboardData1)
+          ..add(clipboardData2);
       },
       wait: const Duration(milliseconds: 100),
       verify: (cubit) {
@@ -195,9 +201,10 @@ void main() {
           contentHash: 'image_hash',
           timestamp: DateTime.now(),
         );
-        clipboardStreamController.add(textData);
-        clipboardStreamController.add(urlData);
-        clipboardStreamController.add(imageData);
+        clipboardStreamController
+          ..add(textData)
+          ..add(urlData)
+          ..add(imageData);
       },
       wait: const Duration(milliseconds: 100),
       verify: (cubit) {
@@ -231,32 +238,36 @@ void main() {
       verify(() => mockClipboardManager.dispose()).called(1);
     });
 
-    test('upserts clipboard item to local repository on new clipboard data',
-        () async {
-      final cubit = ClipboardCubit(
-        clipboardManager: mockClipboardManager,
-        clipboardRepository: mockClipboardRepository,
-        localClipboardRepository: mockLocalClipboardRepository,
-        localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
-      );
+    test(
+      'upserts clipboard item to local repository on new clipboard data',
+      () async {
+        final cubit = ClipboardCubit(
+          clipboardManager: mockClipboardManager,
+          clipboardRepository: mockClipboardRepository,
+          localClipboardRepository: mockLocalClipboardRepository,
+          localClipboardHistoryRepository: mockLocalClipboardHistoryRepository,
+        );
 
-      final clipboardData = ClipboardData(
-        type: ClipboardContentType.text,
-        text: 'Test content',
-        contentHash: 'hash123',
-        timestamp: DateTime.now(),
-      );
+        final clipboardData = ClipboardData(
+          type: ClipboardContentType.text,
+          text: 'Test content',
+          contentHash: 'hash123',
+          timestamp: DateTime.now(),
+        );
 
-      clipboardStreamController.add(clipboardData);
+        clipboardStreamController.add(clipboardData);
 
-      // Wait for async operations to complete
-      await Future.delayed(const Duration(milliseconds: 100));
+        // Wait for async operations to complete
+        await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      // Verify upsert was called
-      verify(() => mockLocalClipboardRepository.upsert(any())).called(1);
-      verify(() => mockLocalClipboardHistoryRepository.upsert(any())).called(1);
+        // Verify upsert was called
+        verify(() => mockLocalClipboardRepository.upsert(any())).called(1);
+        verify(
+          () => mockLocalClipboardHistoryRepository.upsert(any()),
+        ).called(1);
 
-      await cubit.close();
-    });
+        await cubit.close();
+      },
+    );
   });
 }

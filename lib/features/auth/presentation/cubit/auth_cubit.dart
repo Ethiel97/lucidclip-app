@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
-import 'package:lucid_clip/features/auth/data/models/models.dart';
+import 'package:lucid_clip/features/auth/data/data.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
 
 part 'auth_state.dart';
@@ -13,10 +13,9 @@ part 'auth_state.dart';
 /// Cubit for managing authentication state
 @lazySingleton
 class AuthCubit extends HydratedCubit<AuthState> {
-  AuthCubit({
-    required AuthRepository authRepository,
-  })  : _authRepository = authRepository,
-        super(const AuthState()) {
+  AuthCubit({required AuthRepository authRepository})
+    : _authRepository = authRepository,
+      super(const AuthState()) {
     _initializeAuthState();
   }
 
@@ -29,7 +28,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     // Listen to auth state changes
     _authStateSubscription = _authRepository.authStateChanges.listen(
       _onAuthStateChanged,
-      onError: (error) {
+      onError: (Object error) {
         log('Auth state change error: $error');
         emit(
           state.copyWith(
@@ -48,18 +47,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
   /// Handle auth state changes from the stream
   void _onAuthStateChanged(User? user) {
     if (user != null && user.isNotEmpty) {
-      emit(
-        state.copyWith(
-          user: state.user.toSuccess(user),
-        ),
-      );
+      emit(state.copyWith(user: state.user.toSuccess(user)));
       log('User authenticated: ${user.email}');
     } else {
-      emit(
-        state.copyWith(
-          user: const ValueWrapper<User?>(),
-        ),
-      );
+      emit(state.copyWith(user: const ValueWrapper<User?>()));
       log('User unauthenticated');
     }
   }
@@ -68,26 +59,20 @@ class AuthCubit extends HydratedCubit<AuthState> {
   Future<void> checkAuthStatus() async {
     try {
       final user = await _authRepository.getCurrentUser();
-      
+
       if (user != null && user.isNotEmpty) {
-        emit(
-          state.copyWith(
-            user: state.user.toSuccess(user),
-          ),
-        );
+        emit(state.copyWith(user: state.user.toSuccess(user)));
       } else {
-        emit(
-          state.copyWith(
-            user: const ValueWrapper<User?>(),
-          ),
-        );
+        emit(state.copyWith(user: const ValueWrapper<User?>()));
       }
     } catch (e) {
       log('Error checking auth status: $e');
       emit(
         state.copyWith(
           user: state.user.toError(
-            ErrorDetails(message: 'Failed to check authentication status'),
+            const ErrorDetails(
+              message: 'Failed to check authentication status',
+            ),
           ),
         ),
       );
@@ -102,11 +87,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       final user = await _authRepository.signInWithGitHub();
 
       if (user != null && user.isNotEmpty) {
-        emit(
-          state.copyWith(
-            user: state.user.toSuccess(user),
-          ),
-        );
+        emit(state.copyWith(user: state.user.toSuccess(user)));
         log('Successfully signed in with GitHub: ${user.email}');
       } else {
         emit(
@@ -149,6 +130,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() {
     _authStateSubscription?.cancel();

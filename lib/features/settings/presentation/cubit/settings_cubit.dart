@@ -279,18 +279,6 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
-  /// Get remaining time for the current private session
-  Duration? getRemainingSessionTime() {
-    final currentSettings = state.settings.value;
-    if (currentSettings != null &&
-        currentSettings.incognitoMode &&
-        currentSettings.incognitoSessionEndTime != null) {
-      final remaining = currentSettings.incognitoSessionEndTime!.difference(DateTime.now());
-      return remaining.isNegative ? Duration.zero : remaining;
-    }
-    return null;
-  }
-
   /// Check and restore the private session timer if one is active
   Future<void> _checkAndRestorePrivateSession(UserSettings settings) async {
     if (settings.incognitoMode && settings.incognitoSessionEndTime != null) {

@@ -49,6 +49,20 @@ class SettingsState extends Equatable {
   int get retentionDays =>
       settings.value?.retentionDays ?? defaultRetentionDays;
 
+  /// Get remaining time for the current private session
+  Duration? get remainingSessionTime {
+    final currentSettings = settings.value;
+    if (currentSettings != null &&
+        currentSettings.incognitoMode &&
+        currentSettings.incognitoSessionEndTime != null) {
+      final remaining = currentSettings.incognitoSessionEndTime!.difference(
+        DateTime.now(),
+      );
+      return remaining.isNegative ? Duration.zero : remaining;
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [settings];
 

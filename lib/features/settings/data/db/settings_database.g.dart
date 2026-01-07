@@ -8,7 +8,9 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
+
   $UserSettingsEntriesTable(this.attachedDatabase, [this._alias]);
+
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<String> userId = GeneratedColumn<String>(
@@ -184,6 +186,29 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _incognitoSessionDurationMinutesMeta =
+      const VerificationMeta('incognitoSessionDurationMinutes');
+  @override
+  late final GeneratedColumn<int> incognitoSessionDurationMinutes =
+      GeneratedColumn<int>(
+        'incognito_session_duration_minutes',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _incognitoSessionEndTimeMeta =
+      const VerificationMeta('incognitoSessionEndTime');
+  @override
+  late final GeneratedColumn<DateTime> incognitoSessionEndTime =
+      GeneratedColumn<DateTime>(
+        'incognito_session_end_time',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+
   @override
   List<GeneratedColumn> get $columns => [
     userId,
@@ -200,12 +225,17 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     previewLinks,
     createdAt,
     updatedAt,
+    incognitoSessionDurationMinutes,
+    incognitoSessionEndTime,
   ];
+
   @override
   String get aliasedName => _alias ?? actualTableName;
+
   @override
   String get actualTableName => $name;
   static const String $name = 'user_settings_entries';
+
   @override
   VerificationContext validateIntegrity(
     Insertable<UserSettingsEntry> instance, {
@@ -327,11 +357,30 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('incognito_session_duration_minutes')) {
+      context.handle(
+        _incognitoSessionDurationMinutesMeta,
+        incognitoSessionDurationMinutes.isAcceptableOrUnknown(
+          data['incognito_session_duration_minutes']!,
+          _incognitoSessionDurationMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('incognito_session_end_time')) {
+      context.handle(
+        _incognitoSessionEndTimeMeta,
+        incognitoSessionEndTime.isAcceptableOrUnknown(
+          data['incognito_session_end_time']!,
+          _incognitoSessionEndTimeMeta,
+        ),
+      );
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {userId};
+
   @override
   UserSettingsEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -392,6 +441,14 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      incognitoSessionDurationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}incognito_session_duration_minutes'],
+      ),
+      incognitoSessionEndTime: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}incognito_session_end_time'],
+      ),
     );
   }
 
@@ -417,6 +474,9 @@ class UserSettingsEntry extends DataClass
   final bool previewLinks;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int? incognitoSessionDurationMinutes;
+  final DateTime? incognitoSessionEndTime;
+
   const UserSettingsEntry({
     required this.userId,
     required this.theme,
@@ -432,7 +492,10 @@ class UserSettingsEntry extends DataClass
     required this.previewLinks,
     required this.createdAt,
     required this.updatedAt,
+    this.incognitoSessionDurationMinutes,
+    this.incognitoSessionEndTime,
   });
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -450,6 +513,16 @@ class UserSettingsEntry extends DataClass
     map['preview_links'] = Variable<bool>(previewLinks);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || incognitoSessionDurationMinutes != null) {
+      map['incognito_session_duration_minutes'] = Variable<int>(
+        incognitoSessionDurationMinutes,
+      );
+    }
+    if (!nullToAbsent || incognitoSessionEndTime != null) {
+      map['incognito_session_end_time'] = Variable<DateTime>(
+        incognitoSessionEndTime,
+      );
+    }
     return map;
   }
 
@@ -469,6 +542,13 @@ class UserSettingsEntry extends DataClass
       previewLinks: Value(previewLinks),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      incognitoSessionDurationMinutes:
+          incognitoSessionDurationMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(incognitoSessionDurationMinutes),
+      incognitoSessionEndTime: incognitoSessionEndTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(incognitoSessionEndTime),
     );
   }
 
@@ -494,8 +574,15 @@ class UserSettingsEntry extends DataClass
       previewLinks: serializer.fromJson<bool>(json['previewLinks']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      incognitoSessionDurationMinutes: serializer.fromJson<int?>(
+        json['incognitoSessionDurationMinutes'],
+      ),
+      incognitoSessionEndTime: serializer.fromJson<DateTime?>(
+        json['incognitoSessionEndTime'],
+      ),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -514,6 +601,12 @@ class UserSettingsEntry extends DataClass
       'previewLinks': serializer.toJson<bool>(previewLinks),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'incognitoSessionDurationMinutes': serializer.toJson<int?>(
+        incognitoSessionDurationMinutes,
+      ),
+      'incognitoSessionEndTime': serializer.toJson<DateTime?>(
+        incognitoSessionEndTime,
+      ),
     };
   }
 
@@ -532,6 +625,8 @@ class UserSettingsEntry extends DataClass
     bool? previewLinks,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<int?> incognitoSessionDurationMinutes = const Value.absent(),
+    Value<DateTime?> incognitoSessionEndTime = const Value.absent(),
   }) => UserSettingsEntry(
     userId: userId ?? this.userId,
     theme: theme ?? this.theme,
@@ -547,7 +642,14 @@ class UserSettingsEntry extends DataClass
     previewLinks: previewLinks ?? this.previewLinks,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    incognitoSessionDurationMinutes: incognitoSessionDurationMinutes.present
+        ? incognitoSessionDurationMinutes.value
+        : this.incognitoSessionDurationMinutes,
+    incognitoSessionEndTime: incognitoSessionEndTime.present
+        ? incognitoSessionEndTime.value
+        : this.incognitoSessionEndTime,
   );
+
   UserSettingsEntry copyWithCompanion(UserSettingsEntriesCompanion data) {
     return UserSettingsEntry(
       userId: data.userId.present ? data.userId.value : this.userId,
@@ -580,6 +682,13 @@ class UserSettingsEntry extends DataClass
           : this.previewLinks,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      incognitoSessionDurationMinutes:
+          data.incognitoSessionDurationMinutes.present
+          ? data.incognitoSessionDurationMinutes.value
+          : this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: data.incognitoSessionEndTime.present
+          ? data.incognitoSessionEndTime.value
+          : this.incognitoSessionEndTime,
     );
   }
 
@@ -599,7 +708,11 @@ class UserSettingsEntry extends DataClass
           ..write('previewImages: $previewImages, ')
           ..write('previewLinks: $previewLinks, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write(
+            'incognitoSessionDurationMinutes: $incognitoSessionDurationMinutes, ',
+          )
+          ..write('incognitoSessionEndTime: $incognitoSessionEndTime')
           ..write(')'))
         .toString();
   }
@@ -620,7 +733,10 @@ class UserSettingsEntry extends DataClass
     previewLinks,
     createdAt,
     updatedAt,
+    incognitoSessionDurationMinutes,
+    incognitoSessionEndTime,
   );
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -638,7 +754,10 @@ class UserSettingsEntry extends DataClass
           other.previewImages == this.previewImages &&
           other.previewLinks == this.previewLinks &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.incognitoSessionDurationMinutes ==
+              this.incognitoSessionDurationMinutes &&
+          other.incognitoSessionEndTime == this.incognitoSessionEndTime);
 }
 
 class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
@@ -656,7 +775,10 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   final Value<bool> previewLinks;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<int?> incognitoSessionDurationMinutes;
+  final Value<DateTime?> incognitoSessionEndTime;
   final Value<int> rowid;
+
   const UserSettingsEntriesCompanion({
     this.userId = const Value.absent(),
     this.theme = const Value.absent(),
@@ -672,8 +794,11 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     this.previewLinks = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.incognitoSessionDurationMinutes = const Value.absent(),
+    this.incognitoSessionEndTime = const Value.absent(),
     this.rowid = const Value.absent(),
   });
+
   UserSettingsEntriesCompanion.insert({
     required String userId,
     this.theme = const Value.absent(),
@@ -689,10 +814,13 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     this.previewLinks = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.incognitoSessionDurationMinutes = const Value.absent(),
+    this.incognitoSessionEndTime = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : userId = Value(userId),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
+
   static Insertable<UserSettingsEntry> custom({
     Expression<String>? userId,
     Expression<String>? theme,
@@ -708,6 +836,8 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     Expression<bool>? previewLinks,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<int>? incognitoSessionDurationMinutes,
+    Expression<DateTime>? incognitoSessionEndTime,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -726,6 +856,10 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
       if (previewLinks != null) 'preview_links': previewLinks,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (incognitoSessionDurationMinutes != null)
+        'incognito_session_duration_minutes': incognitoSessionDurationMinutes,
+      if (incognitoSessionEndTime != null)
+        'incognito_session_end_time': incognitoSessionEndTime,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -745,6 +879,8 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     Value<bool>? previewLinks,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<int?>? incognitoSessionDurationMinutes,
+    Value<DateTime?>? incognitoSessionEndTime,
     Value<int>? rowid,
   }) {
     return UserSettingsEntriesCompanion(
@@ -762,6 +898,11 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
       previewLinks: previewLinks ?? this.previewLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      incognitoSessionDurationMinutes:
+          incognitoSessionDurationMinutes ??
+          this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime:
+          incognitoSessionEndTime ?? this.incognitoSessionEndTime,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -811,6 +952,16 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (incognitoSessionDurationMinutes.present) {
+      map['incognito_session_duration_minutes'] = Variable<int>(
+        incognitoSessionDurationMinutes.value,
+      );
+    }
+    if (incognitoSessionEndTime.present) {
+      map['incognito_session_end_time'] = Variable<DateTime>(
+        incognitoSessionEndTime.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -834,6 +985,10 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
           ..write('previewLinks: $previewLinks, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write(
+            'incognitoSessionDurationMinutes: $incognitoSessionDurationMinutes, ',
+          )
+          ..write('incognitoSessionEndTime: $incognitoSessionEndTime, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -842,12 +997,15 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
 
 abstract class _$SettingsDatabase extends GeneratedDatabase {
   _$SettingsDatabase(QueryExecutor e) : super(e);
+
   $SettingsDatabaseManager get managers => $SettingsDatabaseManager(this);
   late final $UserSettingsEntriesTable userSettingsEntries =
       $UserSettingsEntriesTable(this);
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [userSettingsEntries];
 }
@@ -868,6 +1026,8 @@ typedef $$UserSettingsEntriesTableCreateCompanionBuilder =
       Value<bool> previewLinks,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<int?> incognitoSessionDurationMinutes,
+      Value<DateTime?> incognitoSessionEndTime,
       Value<int> rowid,
     });
 typedef $$UserSettingsEntriesTableUpdateCompanionBuilder =
@@ -886,6 +1046,8 @@ typedef $$UserSettingsEntriesTableUpdateCompanionBuilder =
       Value<bool> previewLinks,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<int?> incognitoSessionDurationMinutes,
+      Value<DateTime?> incognitoSessionEndTime,
       Value<int> rowid,
     });
 
@@ -898,6 +1060,7 @@ class $$UserSettingsEntriesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   ColumnFilters<String> get userId => $composableBuilder(
     column: $table.userId,
     builder: (column) => ColumnFilters(column),
@@ -967,6 +1130,16 @@ class $$UserSettingsEntriesTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<int> get incognitoSessionDurationMinutes => $composableBuilder(
+    column: $table.incognitoSessionDurationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get incognitoSessionEndTime => $composableBuilder(
+    column: $table.incognitoSessionEndTime,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$UserSettingsEntriesTableOrderingComposer
@@ -978,6 +1151,7 @@ class $$UserSettingsEntriesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   ColumnOrderings<String> get userId => $composableBuilder(
     column: $table.userId,
     builder: (column) => ColumnOrderings(column),
@@ -1047,6 +1221,17 @@ class $$UserSettingsEntriesTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get incognitoSessionDurationMinutes =>
+      $composableBuilder(
+        column: $table.incognitoSessionDurationMinutes,
+        builder: (column) => ColumnOrderings(column),
+      );
+
+  ColumnOrderings<DateTime> get incognitoSessionEndTime => $composableBuilder(
+    column: $table.incognitoSessionEndTime,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UserSettingsEntriesTableAnnotationComposer
@@ -1058,6 +1243,7 @@ class $$UserSettingsEntriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
 
@@ -1115,6 +1301,17 @@ class $$UserSettingsEntriesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get incognitoSessionDurationMinutes =>
+      $composableBuilder(
+        column: $table.incognitoSessionDurationMinutes,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<DateTime> get incognitoSessionEndTime => $composableBuilder(
+    column: $table.incognitoSessionEndTime,
+    builder: (column) => column,
+  );
 }
 
 class $$UserSettingsEntriesTableTableManager
@@ -1174,6 +1371,9 @@ class $$UserSettingsEntriesTableTableManager
                 Value<bool> previewLinks = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<int?> incognitoSessionDurationMinutes =
+                    const Value.absent(),
+                Value<DateTime?> incognitoSessionEndTime = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserSettingsEntriesCompanion(
                 userId: userId,
@@ -1190,6 +1390,9 @@ class $$UserSettingsEntriesTableTableManager
                 previewLinks: previewLinks,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                incognitoSessionDurationMinutes:
+                    incognitoSessionDurationMinutes,
+                incognitoSessionEndTime: incognitoSessionEndTime,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -1208,6 +1411,9 @@ class $$UserSettingsEntriesTableTableManager
                 Value<bool> previewLinks = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<int?> incognitoSessionDurationMinutes =
+                    const Value.absent(),
+                Value<DateTime?> incognitoSessionEndTime = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserSettingsEntriesCompanion.insert(
                 userId: userId,
@@ -1224,6 +1430,9 @@ class $$UserSettingsEntriesTableTableManager
                 previewLinks: previewLinks,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                incognitoSessionDurationMinutes:
+                    incognitoSessionDurationMinutes,
+                incognitoSessionEndTime: incognitoSessionEndTime,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -1258,7 +1467,9 @@ typedef $$UserSettingsEntriesTableProcessedTableManager =
 
 class $SettingsDatabaseManager {
   final _$SettingsDatabase _db;
+
   $SettingsDatabaseManager(this._db);
+
   $$UserSettingsEntriesTableTableManager get userSettingsEntries =>
       $$UserSettingsEntriesTableTableManager(_db, _db.userSettingsEntries);
 }

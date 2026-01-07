@@ -166,6 +166,12 @@ abstract class AppLocalizations {
   /// **'Build'**
   String get build;
 
+  /// Button text to cancel an action
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
   /// Label for the number of characters
   ///
   /// In en, this message translates to:
@@ -514,6 +520,36 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
+  /// Button text to start a private/incognito session
+  ///
+  /// In en, this message translates to:
+  /// **'Start Private Session'**
+  String get startPrivateSession;
+
+  /// Label for private session duration options
+  ///
+  /// In en, this message translates to:
+  /// **'Private Session Duration'**
+  String get privateSessionDuration;
+
+  /// Duration option: 15 minutes
+  ///
+  /// In en, this message translates to:
+  /// **'15 Minutes'**
+  String get fifteenMinutes;
+
+  /// Duration option: 1 hour
+  ///
+  /// In en, this message translates to:
+  /// **'1 Hour'**
+  String get oneHour;
+
+  /// Duration option: until manually disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Until Disabled'**
+  String get untilDisabled;
+
   /// Hint shown in the Search Bar
   ///
   /// In en, this message translates to:
@@ -681,6 +717,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your clipboard items will appear here.'**
   String get yourClipboardItemsWillAppearHere;
+
+  /// Button text to stop clipboard capture
+  ///
+  /// In en, this message translates to:
+  /// **'Stop clipboard capture'**
+  String get stopClipboardCapture;
+
+  /// Button text to resume clipboard capture
+  ///
+  /// In en, this message translates to:
+  /// **'Resume clipboard capture'**
+  String get resumeClipboardCapture;
+
+  /// Message shown when clipboard capture has started
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard capture started'**
+  String get clipboardCaptureStarted;
 }
 
 class _AppLocalizationsDelegate

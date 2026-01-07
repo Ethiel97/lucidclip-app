@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
@@ -30,12 +31,17 @@ class SupabaseAuthDataSource implements AuthDataSource {
       final response = await _supabase.auth.signInWithOAuth(
         OAuthProvider.github,
         redirectTo: redirectTo,
+        authScreenLaunchMode: kIsWeb
+            ? LaunchMode.platformDefault
+            : LaunchMode.externalApplication,
       );
 
       if (!response) {
         log('GitHub OAuth failed or was cancelled');
         return null;
       }
+
+      log('Response from GitHub OAuth: $response');
 
       // Wait for the auth state to update
       await Future<void>.delayed(const Duration(seconds: 2));

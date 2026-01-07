@@ -2,10 +2,7 @@ import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
-import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
@@ -76,9 +73,7 @@ class ClipboardContextMenu extends StatelessWidget {
                   // TODO(Ethiel97): Handle edit action
                   break;
                 case final l when l == l10n.appendToClipboard.sentenceCase:
-                  getIt<BaseClipboardManager>().setClipboardContent(
-                    clipboardItem.toInfrastructure(),
-                  );
+                  context.read<ClipboardCubit>().copyToClipboard(clipboardItem);
                 // Add other cases as needed
               }
               Navigator.pop(context);

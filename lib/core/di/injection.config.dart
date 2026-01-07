@@ -111,7 +111,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i926.TrayManagerService(),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i677.SidebarCubit>(() => _i677.SidebarCubit());
+    gh.lazySingleton<_i677.SidebarCubit>(
+      () => _i677.SidebarCubit(),
+      dispose: (i) => i.close(),
+    );
     gh.lazySingleton<_i51.SourceAppProvider>(
       () => _i740.MethodChannelSourceAppProvider(),
     );
@@ -180,6 +183,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i408.AuthCubit>(
       () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
       () => _i175.SupabaseSettingsRemoteDataSource(
@@ -224,6 +228,7 @@ extension GetItInjectableX on _i174.GetIt {
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
         settingsRepository: gh<_i340.SettingsRepository>(),
       ),
+      dispose: (i) => i.close(),
     );
     return this;
   }

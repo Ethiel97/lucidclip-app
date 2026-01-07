@@ -218,6 +218,20 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         );
   }
 
+  Future<void> copyToClipboard(ClipboardItem item) async {
+    try {
+      await clipboardManager.setClipboardContent(item.toInfrastructure());
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to copy content to clipboard',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+      // Handle error if necessary
+    }
+  }
+
   Future<void> loadClipboardItems() async {
     try {
       emit(state.copyWith(clipboardItems: state.clipboardItems.toLoading()));

@@ -232,6 +232,12 @@ abstract class AppLocalizations {
   /// **'Copy'**
   String get copy;
 
+  /// Button text to copy the last item to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copy last item'**
+  String get copyLastItem;
+
   /// Button text to copy content to the clipboard
   ///
   /// In en, this message translates to:

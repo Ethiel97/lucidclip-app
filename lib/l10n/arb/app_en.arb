@@ -94,6 +94,10 @@
   "@copy": {
     "description": "Button text to copy content"
   },
+  "copyLastItem": "Copy last item",
+  "@copyLastItem": {
+    "description": "Button text to copy the last item to the clipboard"
+  },
   "copyToClipboard": "Copy to Clipboard",
   "@copyToClipboard": {
     "description": "Button text to copy content to the clipboard"

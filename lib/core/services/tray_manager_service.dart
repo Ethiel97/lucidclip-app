@@ -179,6 +179,10 @@ class TrayManagerService with TrayListener {
                 : (l10n?.pauseTracking ?? 'Pause Tracking'),
           ),
           MenuItem.separator(),
+          MenuItem(
+            key: 'copy_last_item',
+            label: l10n?.copyLastItem ?? 'Copy Last Item',
+          ),
           MenuItem.submenu(
             key: 'clipboard_history',
             label: l10n?.clipboardHistory ?? 'Clipboard History',
@@ -249,6 +253,8 @@ class TrayManagerService with TrayListener {
   /// Handle menu item clicks
   Future<void> _handleMenuItemClick(String key) async {
     switch (key) {
+      case 'copy_last_item':
+        await _copyLastItem();
       case 'show_hide':
         await _toggleWindowVisibility();
       case 'toggle_tracking':
@@ -277,6 +283,25 @@ class TrayManagerService with TrayListener {
     } catch (e, stackTrace) {
       developer.log(
         'Error toggling window visibility',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
+    }
+  }
+
+  Future<void> _copyLastItem() async {
+    try {
+      final clipboardCubit = getIt<ClipboardCubit>();
+      final clipboardItems = clipboardCubit.state.clipboardItems.data;
+
+      if (clipboardItems.isNotEmpty) {
+        final lastItem = clipboardItems.first;
+        await clipboardCubit.copyToClipboard(lastItem);
+      }
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error copying last clipboard item',
         error: e,
         stackTrace: stackTrace,
         name: 'TrayManagerService',

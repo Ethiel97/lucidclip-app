@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -18,22 +19,28 @@ class LoginView extends StatelessWidget {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
-    return BlocListener<AuthCubit, AuthState>(
-      listenWhen: (previous, current) => previous.hasError != current.hasError,
-      listener: (context, state) {
-        if (state.hasError) {
-          toastification.show(
-            context: context,
-            type: ToastificationType.error,
-            style: ToastificationStyle.fillColored,
-            title: Text(l10n.authenticationError.sentenceCase),
-            description: Text(
-              state.errorMessage ?? l10n.errorOccurred.sentenceCase,
-            ),
-            autoCloseDuration: const Duration(seconds: 5),
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthCubit, AuthState>(
+          listenWhen: (previous, current) => previous.user != current.user,
+          listener: (context, state) {
+            if (state.hasError) {
+              toastification.show(
+                context: context,
+                type: ToastificationType.error,
+                style: ToastificationStyle.fillColored,
+                title: Text(l10n.authenticationError.sentenceCase),
+                description: Text(
+                  state.errorMessage ?? l10n.errorOccurred.sentenceCase,
+                ),
+                autoCloseDuration: const Duration(seconds: 5),
+              );
+            } else if (state.isAuthenticated) {
+              context.router.root.back();
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         body: Stack(
           children: [

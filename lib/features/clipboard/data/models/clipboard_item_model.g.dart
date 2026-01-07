@@ -45,7 +45,7 @@ Map<String, dynamic> _$ClipboardItemModelToJson(ClipboardItemModel instance) =>
       'is_snippet': instance.isSnippet,
       'is_synced': instance.isSynced,
       'metadata': instance.metadata,
-      'type': _$ClipboardItemTypeModelEnumMap[instance.type],
+      'type': _$ClipboardItemTypeModelEnumMap[instance.type]!,
       'updated_at': instance.updatedAt.toIso8601String(),
       'user_id': instance.userId,
     };

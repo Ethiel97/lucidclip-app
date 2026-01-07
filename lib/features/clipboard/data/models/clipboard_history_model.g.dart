@@ -26,7 +26,7 @@ ClipboardHistoryModel _$ClipboardHistoryModelFromJson(
 Map<String, dynamic> _$ClipboardHistoryModelToJson(
   ClipboardHistoryModel instance,
 ) => <String, dynamic>{
-  'action': _$ClipboardActionModelEnumMap[instance.action],
+  'action': _$ClipboardActionModelEnumMap[instance.action]!,
   'clipboard_item_id': instance.clipboardItemId,
   'created_at': instance.createdAt.toIso8601String(),
   'id': instance.id,

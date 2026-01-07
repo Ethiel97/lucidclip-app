@@ -28,7 +28,7 @@ import 'package:lucid_clip/core/network/remote_sync_client.dart' as _i70;
 import 'package:lucid_clip/core/platform/source_app/method_channel_source_app_provider.dart'
     as _i740;
 import 'package:lucid_clip/core/platform/source_app/source_app.dart' as _i51;
-import 'package:lucid_clip/core/services/tray_manager_service.dart' as _i1001;
+import 'package:lucid_clip/core/services/tray_manager_service.dart' as _i926;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
@@ -98,11 +98,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
-    gh.lazySingleton<_i677.SidebarCubit>(() => _i677.SidebarCubit());
-    gh.lazySingleton<_i1001.TrayManagerService>(
-      () => _i1001.TrayManagerService(),
+    gh.lazySingleton<_i926.TrayManagerService>(
+      () => _i926.TrayManagerService(),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i677.SidebarCubit>(() => _i677.SidebarCubit());
     gh.lazySingleton<_i51.SourceAppProvider>(
       () => _i740.MethodChannelSourceAppProvider(),
     );

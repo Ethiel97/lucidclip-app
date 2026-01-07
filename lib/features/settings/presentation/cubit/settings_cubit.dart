@@ -220,11 +220,15 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       await updateSettings(
         currentSettings.copyWith(
           incognitoMode: incognitoMode,
-          incognitoSessionDurationMinutes: !incognitoMode ? null : currentSettings.incognitoSessionDurationMinutes,
-          incognitoSessionEndTime: !incognitoMode ? null : currentSettings.incognitoSessionEndTime,
+          incognitoSessionDurationMinutes: !incognitoMode
+              ? null
+              : currentSettings.incognitoSessionDurationMinutes,
+          incognitoSessionEndTime: !incognitoMode
+              ? null
+              : currentSettings.incognitoSessionEndTime,
         ),
       );
-      
+
       // Cancel timer when disabling incognito mode
       if (!incognitoMode) {
         _incognitoSessionTimer?.cancel();
@@ -253,16 +257,13 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       // Set up timer to auto-disable when duration expires
       if (durationMinutes != null && endTime != null) {
         _incognitoSessionTimer?.cancel();
-        _incognitoSessionTimer = Timer(
-          Duration(minutes: durationMinutes),
-          () {
-            // Use try-catch to handle any potential errors
-            updateIncognitoMode(incognitoMode: false).catchError((error) {
-              // Log error but don't propagate - timer callback can't be async
-              // Error will be logged by updateIncognitoMode if it fails
-            });
-          },
-        );
+        _incognitoSessionTimer = Timer(Duration(minutes: durationMinutes), () {
+          // Use try-catch to handle any potential errors
+          updateIncognitoMode().catchError((error) {
+            // Log error but don't propagate - timer callback can't be async
+            // Error will be logged by updateIncognitoMode if it fails
+          });
+        });
       }
     }
   }
@@ -274,7 +275,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         currentSettings.incognitoMode &&
         currentSettings.incognitoSessionEndTime != null) {
       if (DateTime.now().isAfter(currentSettings.incognitoSessionEndTime!)) {
-        await updateIncognitoMode(incognitoMode: false);
+        await updateIncognitoMode();
       }
     }
   }
@@ -287,21 +288,17 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
       if (now.isAfter(endTime)) {
         // Session has expired, disable it
-        await updateIncognitoMode(incognitoMode: false);
+        await updateIncognitoMode();
       } else {
         // Session is still active, restore the timer
-        final remainingDuration = endTime.difference(now);
         _incognitoSessionTimer?.cancel();
-        _incognitoSessionTimer = Timer(
-          remainingDuration,
-          () {
-            // Use catchError to handle any potential errors
-            updateIncognitoMode(incognitoMode: false).catchError((error) {
-              // Log error but don't propagate - timer callback can't be async
-              // Error will be logged by updateIncognitoMode if it fails
-            });
-          },
-        );
+        _incognitoSessionTimer = Timer(state.remainingSessionTime!, () {
+          // Use catchError to handle any potential errors
+          updateIncognitoMode().catchError((error) {
+            // Log error but don't propagate - timer callback can't be async
+            // Error will be logged by updateIncognitoMode if it fails
+          });
+        });
       }
     }
   }

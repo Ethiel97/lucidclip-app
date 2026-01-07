@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/generated/assets.gen.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
 class AppLogo extends StatelessWidget {
@@ -18,8 +19,8 @@ class AppLogo extends StatelessWidget {
           height: AppSpacing.xlg,
           width: AppSpacing.xlg,
           decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage('assets/icons/icon.png'),
+            image: DecorationImage(
+              image: Assets.icons.iconPng.image().image,
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(12),

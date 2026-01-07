@@ -24,6 +24,7 @@ class SettingsView extends StatelessWidget {
         elevation: 0,
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
+        buildWhen: (previous, current) => previous.settings != current.settings,
         builder: (context, state) {
           return state.settings.maybeWhen(
             orElse: () => Center(

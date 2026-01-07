@@ -161,7 +161,11 @@ class TrayManagerService with TrayListener {
             MenuItem(
               key: 'clipboard_item_$i',
               label: preview,
-              disabled: true, // Preview only, clicking won't do anything
+              onClick: (item) {
+                // copy to clipboard when clicked
+                //TODO(ETHIEL97): clipboardCubit.(itemKey: 'clipboard_item_$i');
+              },
+              // Preview only, clicking won't do anything
             ),
           );
         }
@@ -318,9 +322,7 @@ class TrayManagerService with TrayListener {
   Future<void> _startPrivateSession(int? durationMinutes) async {
     try {
       final settingsCubit = getIt<SettingsCubit>();
-      await settingsCubit.startPrivateSession(
-        durationMinutes: durationMinutes,
-      );
+      await settingsCubit.startPrivateSession(durationMinutes: durationMinutes);
 
       // Update the tray menu to reflect the change
       await updateTrayMenu();
@@ -338,7 +340,7 @@ class TrayManagerService with TrayListener {
   Future<void> _stopPrivateSession() async {
     try {
       final settingsCubit = getIt<SettingsCubit>();
-      await settingsCubit.updateIncognitoMode(incognitoMode: false);
+      await settingsCubit.updateIncognitoMode();
 
       // Update the tray menu to reflect the change
       await updateTrayMenu();

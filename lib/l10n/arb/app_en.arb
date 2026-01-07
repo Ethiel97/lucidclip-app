@@ -390,5 +390,17 @@
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"
+  },
+  "stopClipboardCapture": "Stop clipboard capture",
+  "@stopClipboardCapture": {
+    "description": "Button text to stop clipboard capture"
+  },
+  "resumeClipboardCapture": "Resume clipboard capture",
+  "@resumeClipboardCapture": {
+    "description": "Button text to resume clipboard capture"
+  },
+  "clipboardCaptureStarted": "Clipboard capture started",
+  "@clipboardCaptureStarted": {
+    "description": "Message shown when clipboard capture has started"
   }
 }

@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -16,8 +18,15 @@ class SettingsDatabase extends _$SettingsDatabase {
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dir = await getApplicationDocumentsDirectory();
+      final dir = await getLibraryDirectory();
       final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
+
+      if (dbFile.existsSync()) {
+        if (!AppConstants.isProd) {
+          await dbFile.delete();
+        }
+      }
+
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);
       }
@@ -26,25 +35,12 @@ class SettingsDatabase extends _$SettingsDatabase {
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) async {
       await m.createAll();
-    },
-    onUpgrade: (Migrator m, int from, int to) async {
-      if (from < 2) {
-        // Add new columns for private session duration tracking
-        await m.addColumn(
-          userSettingsEntries,
-          userSettingsEntries.incognitoSessionDurationMinutes,
-        );
-        await m.addColumn(
-          userSettingsEntries,
-          userSettingsEntries.incognitoSessionEndTime,
-        );
-      }
     },
   );
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -23,8 +23,8 @@ class IncognitoModeToggleButton extends StatelessWidget {
               onTap: () {
                 Navigator.of(dialogContext).pop();
                 context.read<SettingsCubit>().startPrivateSession(
-                      durationMinutes: 15,
-                    );
+                  durationMinutes: 15,
+                );
               },
             ),
             ListTile(
@@ -32,17 +32,15 @@ class IncognitoModeToggleButton extends StatelessWidget {
               onTap: () {
                 Navigator.of(dialogContext).pop();
                 context.read<SettingsCubit>().startPrivateSession(
-                      durationMinutes: 60,
-                    );
+                  durationMinutes: 60,
+                );
               },
             ),
             ListTile(
               title: Text(l10n.untilDisabled.sentenceCase),
               onTap: () {
                 Navigator.of(dialogContext).pop();
-                context.read<SettingsCubit>().startPrivateSession(
-                      durationMinutes: null,
-                    );
+                context.read<SettingsCubit>().startPrivateSession();
               },
             ),
           ],
@@ -69,9 +67,7 @@ class IncognitoModeToggleButton extends StatelessWidget {
         child: FilledButton.icon(
           onPressed: () {
             if (incognitoMode) {
-              context.read<SettingsCubit>().updateIncognitoMode(
-                    incognitoMode: false,
-                  );
+              context.read<SettingsCubit>().updateIncognitoMode();
             } else {
               _showPrivateSessionDialog(context);
             }
@@ -84,8 +80,8 @@ class IncognitoModeToggleButton extends StatelessWidget {
           ),
           label: Text(
             incognitoMode
-                ? l10n.resumeTracking.sentenceCase
-                : l10n.pauseTracking.sentenceCase,
+                ? l10n.resumeClipboardCapture.sentenceCase
+                : l10n.stopClipboardCapture.sentenceCase,
           ),
         ),
       ),

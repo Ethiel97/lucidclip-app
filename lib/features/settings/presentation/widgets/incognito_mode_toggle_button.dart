@@ -50,7 +50,7 @@ class IncognitoModeToggleButton extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel.sentenceCase),
           ),
         ],
       ),

@@ -40,6 +40,10 @@
   "@build": {
     "description": "Label for the app build number"
   },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button text to cancel an action"
+  },
   "characters": "Characters",
   "@characters": {
     "description": "Label for the number of characters"

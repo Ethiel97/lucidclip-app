@@ -220,8 +220,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       await updateSettings(
         currentSettings.copyWith(
           incognitoMode: incognitoMode,
-          incognitoSessionDurationMinutes: incognitoMode ? currentSettings.incognitoSessionDurationMinutes : null,
-          incognitoSessionEndTime: incognitoMode ? currentSettings.incognitoSessionEndTime : null,
+          incognitoSessionDurationMinutes: !incognitoMode ? null : currentSettings.incognitoSessionDurationMinutes,
+          incognitoSessionEndTime: !incognitoMode ? null : currentSettings.incognitoSessionEndTime,
         ),
       );
       

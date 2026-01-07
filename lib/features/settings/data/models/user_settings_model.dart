@@ -112,10 +112,10 @@ class UserSettingsModel extends Equatable {
     bool? previewLinks,
     bool? incognitoMode,
     List<String>? excludedApps,
-    DateTime? createdAt,
-    DateTime? updatedAt,
     int? incognitoSessionDurationMinutes,
     DateTime? incognitoSessionEndTime,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return UserSettingsModel(
       userId: userId ?? this.userId,

@@ -71,10 +71,10 @@ class UserSettings extends Equatable {
     bool? previewImages,
     bool? previewLinks,
     bool? incognitoMode,
-    DateTime? createdAt,
-    DateTime? updatedAt,
     int? incognitoSessionDurationMinutes,
     DateTime? incognitoSessionEndTime,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return UserSettings(
       userId: userId ?? this.userId,

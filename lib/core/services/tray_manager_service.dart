@@ -313,28 +313,6 @@ class TrayManagerService with TrayListener {
     }
   }
 
-  /// Toggle clipboard tracking (incognito mode)
-  Future<void> _toggleTracking() async {
-    try {
-      final settingsCubit = getIt<SettingsCubit>();
-      final currentIncognito =
-          settingsCubit.state.settings.value?.incognitoMode ?? false;
-
-      // Toggle incognito mode
-      await settingsCubit.updateIncognitoMode(incognitoMode: !currentIncognito);
-
-      // Update the tray menu to reflect the change
-      await updateTrayMenu();
-    } catch (e, stackTrace) {
-      developer.log(
-        'Error toggling tracking',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'TrayManagerService',
-      );
-    }
-  }
-
   /// Start a private session with the specified duration
   /// [durationMinutes] - Duration in minutes (null = until disabled)
   Future<void> _startPrivateSession(int? durationMinutes) async {

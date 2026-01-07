@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
 import 'package:lucid_clip/features/auth/data/data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
@@ -14,11 +15,14 @@ class SupabaseAuthDataSource implements AuthDataSource {
   SupabaseAuthDataSource({
     required SupabaseClient supabaseClient,
     required SecureStorageService secureStorage,
-  }) : _supabase = supabaseClient,
-       _secureStorage = secureStorage;
+    required DeepLinkService deepLinkService,
+  })  : _supabase = supabaseClient,
+        _secureStorage = secureStorage,
+        _deepLinkService = deepLinkService;
 
   final SupabaseClient _supabase;
   final SecureStorageService _secureStorage;
+  final DeepLinkService _deepLinkService;
 
   @override
   Future<UserModel?> signInWithGitHub() async {
@@ -28,6 +32,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
       log('Starting GitHub OAuth with redirect: $redirectTo');
 
+      // Launch OAuth flow
       final response = await _supabase.auth.signInWithOAuth(
         OAuthProvider.github,
         redirectTo: redirectTo,
@@ -41,11 +46,29 @@ class SupabaseAuthDataSource implements AuthDataSource {
         return null;
       }
 
-      log('Response from GitHub OAuth: $response');
+      log('OAuth flow initiated, waiting for deep link callback...');
 
-      // Wait for the auth state to update
-      await Future<void>.delayed(const Duration(seconds: 2));
+      // Wait for the deep link callback with the auth code
+      final deepLinkUri = await _deepLinkService.waitForDeepLink(
+        timeout: const Duration(minutes: 5),
+        filter: (uri) {
+          // Filter for our auth callback scheme
+          return uri.scheme == 'lucidclip' && uri.host == 'auth-callback';
+        },
+      );
 
+      if (deepLinkUri == null) {
+        log('Deep link callback timeout or cancelled');
+        return null;
+      }
+
+      log('Deep link received: $deepLinkUri');
+
+      // Extract the session from the deep link URI
+      // Supabase sends the session info as query parameters or fragment
+      await _handleAuthCallback(deepLinkUri);
+
+      // Get the current user after session is established
       final currentUser = _supabase.auth.currentUser;
       if (currentUser == null) {
         log('No user found after OAuth completion');
@@ -64,6 +87,25 @@ class SupabaseAuthDataSource implements AuthDataSource {
     } catch (e, stack) {
       log('Unexpected error during GitHub sign in: $e', stackTrace: stack);
       throw AuthenticationException('An unexpected error occurred: $e');
+    }
+  }
+
+  /// Handle the OAuth callback from the deep link
+  Future<void> _handleAuthCallback(Uri uri) async {
+    try {
+      // The URI will contain either query parameters or a fragment
+      // with the access_token and other session data
+      final uriString = uri.toString();
+      
+      log('Processing auth callback URI: $uriString');
+
+      // Supabase Flutter SDK can handle the callback URL
+      await _supabase.auth.getSessionFromUrl(uri);
+      
+      log('Session established from callback');
+    } catch (e, stack) {
+      log('Error handling auth callback: $e', stackTrace: stack);
+      throw AuthenticationException('Failed to process auth callback: $e');
     }
   }
 

@@ -164,6 +164,9 @@ class TrayManagerService with TrayListener {
               disabled: true, // Preview only, clicking won't do anything
             ),
           );
+          if (i < recentItems.length - 1) {
+            historyMenuItems.add(MenuItem.separator());
+          }
         }
       }
 

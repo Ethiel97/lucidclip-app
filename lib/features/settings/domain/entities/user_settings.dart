@@ -25,6 +25,8 @@ class UserSettings extends Equatable {
     this.previewImages = true,
     this.previewLinks = true,
     this.incognitoMode = false,
+    this.incognitoSessionDurationMinutes,
+    this.incognitoSessionEndTime,
   });
 
   factory UserSettings.empty() {
@@ -53,6 +55,8 @@ class UserSettings extends Equatable {
   final bool previewLinks;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int? incognitoSessionDurationMinutes; // null = until disabled
+  final DateTime? incognitoSessionEndTime;
 
   UserSettings copyWith({
     String? userId,
@@ -69,6 +73,8 @@ class UserSettings extends Equatable {
     bool? incognitoMode,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? incognitoSessionDurationMinutes,
+    DateTime? incognitoSessionEndTime,
   }) {
     return UserSettings(
       userId: userId ?? this.userId,
@@ -85,6 +91,8 @@ class UserSettings extends Equatable {
       previewLinks: previewLinks ?? this.previewLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes ?? this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: incognitoSessionEndTime ?? this.incognitoSessionEndTime,
     );
   }
 
@@ -104,6 +112,8 @@ class UserSettings extends Equatable {
     previewLinks,
     createdAt,
     updatedAt,
+    incognitoSessionDurationMinutes,
+    incognitoSessionEndTime,
   ];
 }
 

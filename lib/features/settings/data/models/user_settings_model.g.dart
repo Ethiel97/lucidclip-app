@@ -31,6 +31,11 @@ UserSettingsModel _$UserSettingsModelFromJson(Map<String, dynamic> json) =>
       showSourceApp: json['show_source_app'] as bool? ?? true,
       previewImages: json['preview_images'] as bool? ?? true,
       previewLinks: json['preview_links'] as bool? ?? true,
+      incognitoSessionDurationMinutes:
+          (json['incognito_session_duration_minutes'] as num?)?.toInt(),
+      incognitoSessionEndTime: json['incognito_session_end_time'] == null
+          ? null
+          : DateTime.parse(json['incognito_session_end_time'] as String),
     );
 
 Map<String, dynamic> _$UserSettingsModelToJson(UserSettingsModel instance) =>
@@ -49,4 +54,8 @@ Map<String, dynamic> _$UserSettingsModelToJson(UserSettingsModel instance) =>
       'updated_at': instance.updatedAt.toIso8601String(),
       'incognito_mode': instance.incognitoMode,
       'excluded_apps': instance.excludedApps,
+      'incognito_session_duration_minutes':
+          instance.incognitoSessionDurationMinutes,
+      'incognito_session_end_time':
+          instance.incognitoSessionEndTime?.toIso8601String(),
     };

@@ -9,6 +9,54 @@ import 'package:recase/recase.dart';
 class IncognitoModeToggleButton extends StatelessWidget {
   const IncognitoModeToggleButton({super.key});
 
+  void _showPrivateSessionDialog(BuildContext context) {
+    final l10n = context.l10n;
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.startPrivateSession.sentenceCase),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(l10n.fifteenMinutes.sentenceCase),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                context.read<SettingsCubit>().startPrivateSession(
+                      durationMinutes: 15,
+                    );
+              },
+            ),
+            ListTile(
+              title: Text(l10n.oneHour.sentenceCase),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                context.read<SettingsCubit>().startPrivateSession(
+                      durationMinutes: 60,
+                    );
+              },
+            ),
+            ListTile(
+              title: Text(l10n.untilDisabled.sentenceCase),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                context.read<SettingsCubit>().startPrivateSession(
+                      durationMinutes: null,
+                    );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -20,9 +68,13 @@ class IncognitoModeToggleButton extends StatelessWidget {
         onPressed: () {},
         child: FilledButton.icon(
           onPressed: () {
-            context.read<SettingsCubit>().updateIncognitoMode(
-              incognitoMode: !incognitoMode,
-            );
+            if (incognitoMode) {
+              context.read<SettingsCubit>().updateIncognitoMode(
+                    incognitoMode: false,
+                  );
+            } else {
+              _showPrivateSessionDialog(context);
+            }
           },
           icon: HugeIcon(
             icon: incognitoMode

@@ -20,6 +20,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   final SettingsRepository settingsRepository;
 
   StreamSubscription<UserSettings?>? _settingsSubscription;
+  Timer? _incognitoSessionTimer;
 
   // Use a local storage key for unauthenticated users
   static const String _guestUserId = 'guest';
@@ -208,10 +209,75 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   Future<void> updateIncognitoMode({bool incognitoMode = false}) async {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
+      // When disabling incognito mode, clear the session data
       await updateSettings(
-        currentSettings.copyWith(incognitoMode: incognitoMode),
+        currentSettings.copyWith(
+          incognitoMode: incognitoMode,
+          incognitoSessionDurationMinutes: incognitoMode ? currentSettings.incognitoSessionDurationMinutes : null,
+          incognitoSessionEndTime: incognitoMode ? currentSettings.incognitoSessionEndTime : null,
+        ),
       );
+      
+      // Cancel timer when disabling incognito mode
+      if (!incognitoMode) {
+        _incognitoSessionTimer?.cancel();
+        _incognitoSessionTimer = null;
+      }
     }
+  }
+
+  /// Start a private session with an optional duration
+  /// [durationMinutes] - Duration in minutes (null = until manually disabled)
+  Future<void> startPrivateSession({int? durationMinutes}) async {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      final endTime = durationMinutes != null
+          ? DateTime.now().add(Duration(minutes: durationMinutes))
+          : null;
+
+      await updateSettings(
+        currentSettings.copyWith(
+          incognitoMode: true,
+          incognitoSessionDurationMinutes: durationMinutes,
+          incognitoSessionEndTime: endTime,
+        ),
+      );
+
+      // Set up timer to auto-disable when duration expires
+      if (durationMinutes != null && endTime != null) {
+        _incognitoSessionTimer?.cancel();
+        _incognitoSessionTimer = Timer(
+          Duration(minutes: durationMinutes),
+          () async {
+            await updateIncognitoMode(incognitoMode: false);
+          },
+        );
+      }
+    }
+  }
+
+  /// Check if the current incognito session has expired and disable if needed
+  Future<void> checkIncognitoSessionExpiry() async {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null &&
+        currentSettings.incognitoMode &&
+        currentSettings.incognitoSessionEndTime != null) {
+      if (DateTime.now().isAfter(currentSettings.incognitoSessionEndTime!)) {
+        await updateIncognitoMode(incognitoMode: false);
+      }
+    }
+  }
+
+  /// Get remaining time for the current private session
+  Duration? getRemainingSessionTime() {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null &&
+        currentSettings.incognitoMode &&
+        currentSettings.incognitoSessionEndTime != null) {
+      final remaining = currentSettings.incognitoSessionEndTime!.difference(DateTime.now());
+      return remaining.isNegative ? Duration.zero : remaining;
+    }
+    return null;
   }
 
   Future<void> updateShortcuts(Map<String, String> shortcuts) async {
@@ -233,6 +299,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   @override
   Future<void> close() {
     _settingsSubscription?.cancel();
+    _incognitoSessionTimer?.cancel();
     return super.close();
   }
 

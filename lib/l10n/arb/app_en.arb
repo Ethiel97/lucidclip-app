@@ -279,6 +279,26 @@
   "@retry": {
     "description": "Button text to retry an operation"
   },
+  "startPrivateSession": "Start Private Session",
+  "@startPrivateSession": {
+    "description": "Button text to start a private/incognito session"
+  },
+  "privateSessionDuration": "Private Session Duration",
+  "@privateSessionDuration": {
+    "description": "Label for private session duration options"
+  },
+  "fifteenMinutes": "15 Minutes",
+  "@fifteenMinutes": {
+    "description": "Duration option: 15 minutes"
+  },
+  "oneHour": "1 Hour",
+  "@oneHour": {
+    "description": "Duration option: 1 hour"
+  },
+  "untilDisabled": "Until Disabled",
+  "@untilDisabled": {
+    "description": "Duration option: until manually disabled"
+  },
   "searchHint": "Search...",
   "@searchHint": {
     "description": "Hint shown in the Search Bar"

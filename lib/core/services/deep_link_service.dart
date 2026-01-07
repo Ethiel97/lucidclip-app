@@ -3,22 +3,24 @@ import 'dart:developer' as developer;
 
 import 'package:app_links/app_links.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/services/deep_link_service_interface.dart';
 
-/// Service for handling deep link callbacks, particularly for OAuth flows
-@lazySingleton
-class DeepLinkService {
-  DeepLinkService() : _appLinks = AppLinks();
+/// Implementation of DeepLinkService for handling deep link callbacks
+@LazySingleton(as: DeepLinkService)
+class AppLinksDeepLinkService implements DeepLinkService {
+  AppLinksDeepLinkService({
+    required AppLinks appLinks,
+  }) : _appLinks = appLinks;
 
   final AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
 
-  /// Listen for incoming deep links
-  /// Returns a stream of URIs that the app receives
+  @override
   Stream<Uri> get linkStream {
     return _appLinks.uriLinkStream;
   }
 
-  /// Get the initial link that opened the app (if any)
+  @override
   Future<Uri?> getInitialLink() async {
     try {
       final uri = await _appLinks.getInitialLink();
@@ -40,8 +42,7 @@ class DeepLinkService {
     }
   }
 
-  /// Listen for a specific deep link with a timeout
-  /// Returns the URI if received within the timeout, otherwise null
+  @override
   Future<Uri?> waitForDeepLink({
     required Duration timeout,
     bool Function(Uri)? filter,
@@ -94,7 +95,7 @@ class DeepLinkService {
     return completer.future;
   }
 
-  /// Dispose resources
+  @override
   Future<void> dispose() async {
     await _linkSubscription?.cancel();
     _linkSubscription = null;

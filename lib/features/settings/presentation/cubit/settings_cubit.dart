@@ -112,11 +112,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     _settingsSubscription?.cancel();
     _settingsSubscription = localSettingsRepository
         .watchSettings(effectiveUserId)
-        .listen((settings) {
+        .listen((settings) async {
           if (settings != null) {
             emit(state.copyWith(settings: state.settings.toSuccess(settings)));
             // Restore private session timer if needed when settings change
-            _checkAndRestorePrivateSession(settings);
+            await _checkAndRestorePrivateSession(settings);
           }
         });
   }
@@ -255,8 +255,12 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = Timer(
           Duration(minutes: durationMinutes),
-          () async {
-            await updateIncognitoMode(incognitoMode: false);
+          () {
+            // Use try-catch to handle any potential errors
+            updateIncognitoMode(incognitoMode: false).catchError((error) {
+              // Log error but don't propagate - timer callback can't be async
+              // Error will be logged by updateIncognitoMode if it fails
+            });
           },
         );
       }
@@ -302,8 +306,12 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = Timer(
           remainingDuration,
-          () async {
-            await updateIncognitoMode(incognitoMode: false);
+          () {
+            // Use catchError to handle any potential errors
+            updateIncognitoMode(incognitoMode: false).catchError((error) {
+              // Log error but don't propagate - timer callback can't be async
+              // Error will be logged by updateIncognitoMode if it fails
+            });
           },
         );
       }

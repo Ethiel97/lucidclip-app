@@ -49,6 +49,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
       if (localSettings != null) {
         emit(state.copyWith(settings: state.settings.toSuccess(localSettings)));
+        // Check if we need to restore or expire an active session
+        await _checkAndRestorePrivateSession(localSettings);
       }
 
       // Only try to sync with remote if user is authenticated
@@ -62,6 +64,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
                 settings: state.settings.toSuccess(remoteSettings),
               ),
             );
+            // Check if we need to restore or expire an active session
+            await _checkAndRestorePrivateSession(remoteSettings);
           } else if (localSettings == null) {
             // Create default settings
             final defaultSettings = _createDefaultSettings(userId);
@@ -87,6 +91,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         emit(
           state.copyWith(settings: state.settings.toSuccess(defaultSettings)),
         );
+        // No need to restore session for new default settings
       }
     } catch (e) {
       emit(
@@ -110,6 +115,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         .listen((settings) {
           if (settings != null) {
             emit(state.copyWith(settings: state.settings.toSuccess(settings)));
+            // Restore private session timer if needed when settings change
+            _checkAndRestorePrivateSession(settings);
           }
         });
   }
@@ -278,6 +285,29 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       return remaining.isNegative ? Duration.zero : remaining;
     }
     return null;
+  }
+
+  /// Check and restore the private session timer if one is active
+  Future<void> _checkAndRestorePrivateSession(UserSettings settings) async {
+    if (settings.incognitoMode && settings.incognitoSessionEndTime != null) {
+      final now = DateTime.now();
+      final endTime = settings.incognitoSessionEndTime!;
+
+      if (now.isAfter(endTime)) {
+        // Session has expired, disable it
+        await updateIncognitoMode(incognitoMode: false);
+      } else {
+        // Session is still active, restore the timer
+        final remainingDuration = endTime.difference(now);
+        _incognitoSessionTimer?.cancel();
+        _incognitoSessionTimer = Timer(
+          remainingDuration,
+          () async {
+            await updateIncognitoMode(incognitoMode: false);
+          },
+        );
+      }
+    }
   }
 
   Future<void> updateShortcuts(Map<String, String> shortcuts) async {

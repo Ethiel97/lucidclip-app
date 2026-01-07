@@ -26,12 +26,25 @@ class SettingsDatabase extends _$SettingsDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) async {
       await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        // Add new columns for private session duration tracking
+        await m.addColumn(
+          userSettingsEntries,
+          userSettingsEntries.incognitoSessionDurationMinutes,
+        );
+        await m.addColumn(
+          userSettingsEntries,
+          userSettingsEntries.incognitoSessionEndTime,
+        );
+      }
     },
   );
 
@@ -85,6 +98,8 @@ class SettingsDatabase extends _$SettingsDatabase {
       excludedApps: excludedApps,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
+      incognitoSessionDurationMinutes: e.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: e.incognitoSessionEndTime,
     );
   }
 
@@ -104,6 +119,8 @@ class SettingsDatabase extends _$SettingsDatabase {
       excludedApps: Value(jsonEncode(m.excludedApps)),
       createdAt: Value(m.createdAt),
       updatedAt: Value(m.updatedAt),
+      incognitoSessionDurationMinutes: Value(m.incognitoSessionDurationMinutes),
+      incognitoSessionEndTime: Value(m.incognitoSessionEndTime),
     );
   }
 }

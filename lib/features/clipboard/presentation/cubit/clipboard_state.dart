@@ -5,6 +5,8 @@ class ClipboardState extends Equatable {
     this.clipboardHistory = const ValueWrapper(value: []),
     this.clipboardItems = const ValueWrapper(value: []),
     this.clipboardItemTags = const ValueWrapper(value: []),
+    this.excludeAppResult = const ValueWrapper(value: ''),
+    this.includeAppResult = const ValueWrapper(value: ''),
     // this.localClipboardItems = const [],
     this.tags = const ValueWrapper(value: []),
   });
@@ -25,6 +27,12 @@ class ClipboardState extends Equatable {
             ) ??
             [],
       ),
+      excludeAppResult: ValueWrapper(
+        value: json['excludeAppResult'] as String? ?? '',
+      ),
+      includeAppResult: ValueWrapper(
+        value: json['includeAppResult'] as String? ?? '',
+      ),
       tags: ValueWrapper(
         value:
             ClipboardMapper.tagsFromJson(json['tags'] as List<dynamic>?) ?? [],
@@ -43,6 +51,8 @@ class ClipboardState extends Equatable {
   final ValueWrapper<ClipboardItems> clipboardItems;
 
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
+  final ValueWrapper<String> excludeAppResult;
+  final ValueWrapper<String> includeAppResult;
 
   // final List<ClipboardData> localClipboardItems;
   final ValueWrapper<Tags> tags;
@@ -51,6 +61,8 @@ class ClipboardState extends Equatable {
     ValueWrapper<ClipboardHistories>? clipboardHistory,
     ValueWrapper<ClipboardItems>? clipboardItems,
     ValueWrapper<ClipboardItemTags>? clipboardItemTags,
+    ValueWrapper<String>? excludeAppResult,
+    ValueWrapper<String>? includeAppResult,
     List<ClipboardData>? localClipboardItems,
     ValueWrapper<Tags>? tags,
   }) {
@@ -59,6 +71,8 @@ class ClipboardState extends Equatable {
       clipboardItems: clipboardItems ?? this.clipboardItems,
       clipboardItemTags: clipboardItemTags ?? this.clipboardItemTags,
       // localClipboardItems: localClipboardItems ?? this.localClipboardItems,
+      excludeAppResult: excludeAppResult ?? this.excludeAppResult,
+      includeAppResult: includeAppResult ?? this.includeAppResult,
       tags: tags ?? this.tags,
     );
   }
@@ -68,6 +82,8 @@ class ClipboardState extends Equatable {
     return {
       'clipboardHistory': ClipboardMapper.historyToJson(clipboardHistory.value),
       'clipboardItems': ClipboardMapper.itemsToJson(clipboardItems.value),
+      'excludeAppResult': excludeAppResult.value,
+      'includeAppResult': includeAppResult.value,
       'tags': ClipboardMapper.tagsToJson(tags.value),
       'clipboardItemTags': ClipboardMapper.clipboardItemTagsToJson(
         clipboardItemTags.value,
@@ -90,6 +106,8 @@ class ClipboardState extends Equatable {
     clipboardHistory,
     clipboardItems,
     clipboardItemTags,
+    excludeAppResult,
+    includeAppResult,
     // localClipboardItems,
     tags,
   ];

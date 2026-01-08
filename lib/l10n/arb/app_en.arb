@@ -8,9 +8,53 @@
   "@allTypes": {
     "description": "Label for the All Types filter"
   },
+  "appExcludedFromTracking": "{appName} excluded from tracking",
+  "@appExcludedFromTracking": {
+    "description": "Label for an app that is excluded from tracking",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
+  "appIncludedInTracking": "{appName} included in tracking",
+  "@appIncludedInTracking": {
+    "description": "Label for an app that is included in tracking",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
   "appName": "LucidClip",
   "@appName": {
     "description": "Name of the app"
+  },
+  "appNoLongerTracked": "{appName} no longer tracked",
+  "@appNoLongerTracked": {
+    "description": "Message shown when an app is no longer tracked",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
+  "appNoLongerTrackedDescription": "ClipboardItem from {appName} will no longer be saved. You can change this in the Settings.",
+  "@appNoLongerTrackedDescription": {
+    "description": "Description shown when an app is no longer tracked",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
   },
   "appTagLine": "A smarter clipboard. On your terms",
   "@appTagLine": {
@@ -78,6 +122,10 @@
   "@clipboard": {
     "description": "Label for the Clipboard feature"
   },
+  "clipboardCaptureStarted": "Clipboard capture started",
+  "@clipboardCaptureStarted": {
+    "description": "Message shown when clipboard capture has started"
+  },
   "clipboardHistory": "Clipboard History",
   "@clipboardHistory": {
     "description": "Tray menu item for clipboard history submenu"
@@ -90,6 +138,10 @@
   "@command": {
     "description": "Label for Command input"
   },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Button text to confirm an action"
+  },
   "copied": "Copied",
   "@copied": {
     "description": "Message shown when content is copied to the clipboard"
@@ -101,6 +153,10 @@
   "copyLastItem": "Copy last item",
   "@copyLastItem": {
     "description": "Button text to copy the last item to the clipboard"
+  },
+  "copyPath": "Copy path",
+  "@copyPath": {
+    "description": "Button text to copy the path of a file"
   },
   "copyToClipboard": "Copy to Clipboard",
   "@copyToClipboard": {
@@ -130,9 +186,22 @@
   "@errorOccurred": {
     "description": "Error message shown when an error occurs"
   },
+  "exclude": "Exclude",
+  "@exclude": {
+    "description": "Button text to exclude an app from tracking",
+    "placeholders": {}
+  },
+  "excluded": "Excluded",
+  "@excluded": {
+    "description": "Label for the Excluded feature"
+  },
   "failedToLoadLinkPreview": "Failed to load link preview",
   "@failedToLoadLinkPreview": {
     "description": "Message shown when the preview failed to load"
+  },
+  "fifteenMinutes": "15 Minutes",
+  "@fifteenMinutes": {
+    "description": "Duration option: 15 minutes"
   },
   "fileOnly": "File Only",
   "@fileOnly": {
@@ -166,6 +235,33 @@
   "imageOnly": "Image Only",
   "@imageOnly": {
     "description": "Label for the Image Only filter"
+  },
+  "include": "Include",
+  "@include": {
+    "description": "Button text to include an app in tracking",
+    "placeholders": {}
+  },
+  "includeApp": "Include {appName}",
+  "@includeApp": {
+    "description": "Label for the Include App setting",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
+  "includeAppConfirmation": "Include {appName} in clipboard tracking?",
+  "@includeAppConfirmation": {
+    "description": "Confirmation dialog shown when including an app in clipboard tracking",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
   },
   "incognitoMode": "Incognito Mode",
   "@incognitoMode": {
@@ -237,9 +333,21 @@
   "@noSettingsAvailable": {
     "description": "Message shown when no settings are available"
   },
+  "notification": "Notification",
+  "@notification": {
+    "description": "Label for a notification"
+  },
   "notifications": "Notifications",
   "@notifications": {
     "description": "Label for the Notifications settings"
+  },
+  "oneHour": "1 Hour",
+  "@oneHour": {
+    "description": "Duration option: 1 hour"
+  },
+  "openLink": "Open link",
+  "@openLink": {
+    "description": "Button text to open a link"
   },
   "pauseTracking": "Pause Tracking",
   "@pauseTracking": {
@@ -274,6 +382,10 @@
   "@previewLinksDescription": {
     "description": "Description for the Preview Links setting"
   },
+  "privateSessionDuration": "Private Session Duration",
+  "@privateSessionDuration": {
+    "description": "Label for private session duration options"
+  },
   "quit": "Quit",
   "@quit": {
     "description": "Tray menu item to exit the application"
@@ -282,10 +394,26 @@
   "@recent": {
     "description": "Label for the Recent items"
   },
+  "resumeClipboardCapture": "Resume clipboard capture",
+  "@resumeClipboardCapture": {
+    "description": "Button text to resume clipboard capture"
+  },
   "resumeTracking": "Resume Tracking",
   "@resumeTracking": {
     "description": "Tray menu item to resume clipboard tracking (disable incognito mode)"
   },
+  "resumeTrackingApp": "Resume tracking {appName}",
+  "@resumeTrackingApp": {
+    "description": "Label for resuming tracking an app",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
+  "resumeTrackingAppConfirmation": "Resume clipboard tracking for {appName}?",
   "retentionDays": "Retention Days",
   "@retentionDays": {
     "description": "Label for the Retention Days setting"
@@ -297,26 +425,6 @@
   "retry": "Retry",
   "@retry": {
     "description": "Button text to retry an operation"
-  },
-  "startPrivateSession": "Start Private Session",
-  "@startPrivateSession": {
-    "description": "Button text to start a private/incognito session"
-  },
-  "privateSessionDuration": "Private Session Duration",
-  "@privateSessionDuration": {
-    "description": "Label for private session duration options"
-  },
-  "fifteenMinutes": "15 Minutes",
-  "@fifteenMinutes": {
-    "description": "Duration option: 15 minutes"
-  },
-  "oneHour": "1 Hour",
-  "@oneHour": {
-    "description": "Duration option: 1 hour"
-  },
-  "untilDisabled": "Until Disabled",
-  "@untilDisabled": {
-    "description": "Duration option: until manually disabled"
   },
   "searchHint": "Search...",
   "@searchHint": {
@@ -385,6 +493,36 @@
   "@source": {
     "description": "Label for the source of the content"
   },
+  "startPrivateSession": "Start Private Session",
+  "@startPrivateSession": {
+    "description": "Button text to start a private/incognito session"
+  },
+  "stopClipboardCapture": "Stop clipboard capture",
+  "@stopClipboardCapture": {
+    "description": "Button text to stop clipboard capture"
+  },
+  "stopTrackingApp": "Stop tracking {appName}",
+  "@stopTrackingApp": {
+    "description": "Label for stopping tracking an app",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
+  "stopTrackingAppConfirmation": "LucidClip will no longer save clipboard items copied from {appName}.",
+  "@stopTrackingAppConfirmation": {
+    "description": "Confirmation text shown when stop tracking an app",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
   "storage": "Storage",
   "@storage": {
     "description": "Label for the Storage settings"
@@ -425,9 +563,35 @@
   "@theme": {
     "description": "Label for the Theme settings"
   },
+  "trackingResumedForApp": "Tracking resumed for {appName}",
+  "@trackingResumedForApp": {
+    "description": "Message shown when tracking is resumed for an app",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
+  "trackingResumedForAppDescription": "Clipboard items from {appName} will now appear in your history.",
+  "@trackingResumedForAppDescription": {
+    "description": "Description shown when tracking is resumed for an app",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
   "unpin": "Unpin",
   "@unpin": {
     "description": "Button text to unpin an item"
+  },
+  "untilDisabled": "Until Disabled",
+  "@untilDisabled": {
+    "description": "Duration option: until manually disabled"
   },
   "version": "Version",
   "@version": {
@@ -436,26 +600,5 @@
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"
-  },
-  "stopClipboardCapture": "Stop clipboard capture",
-  "@stopClipboardCapture": {
-    "description": "Button text to stop clipboard capture"
-  },
-  "resumeClipboardCapture": "Resume clipboard capture",
-  "@resumeClipboardCapture": {
-    "description": "Button text to resume clipboard capture"
-  },
-  "clipboardCaptureStarted": "Clipboard capture started",
-  "@clipboardCaptureStarted": {
-    "description": "Message shown when clipboard capture has started"
-  },
-  "openLink": "Open link",
-  "@openLink": {
-    "description": "Button text to open a link"
-  },
-  "copyPath": "Copy path",
-  "@copyPath": {
-    "description": "Button text to copy the path of a file"
   }
-
 }

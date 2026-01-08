@@ -79,7 +79,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                         ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                ClipboardItemTagChip(label: widget.item.type.label),
+                ClipboardBadge(label: widget.item.type.label),
                 const SizedBox(width: AppSpacing.sm),
                 SizedBox(
                   width: 110,

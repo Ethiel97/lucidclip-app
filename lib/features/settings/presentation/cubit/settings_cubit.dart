@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -29,7 +30,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   Timer? _incognitoSessionTimer;
 
   // Use a local storage key for unauthenticated users
-  String _currentUserId = '';
+  String _currentUserId = 'guest';
 
   User? _currentUser;
 
@@ -126,6 +127,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         .watchSettings(_currentUserId)
         .listen((settings) async {
           if (settings != null) {
+            log(
+              'Settings updated for user $_currentUserId: $settings',
+              name: 'SettingsCubit',
+            );
+
             emit(state.copyWith(settings: state.settings.toSuccess(settings)));
             // Restore private session timer if needed when settings change
             await _checkAndRestorePrivateSession(settings);

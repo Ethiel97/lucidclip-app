@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:recase/recase.dart';
 
-class ClipboardItemTagChip extends StatelessWidget {
-  const ClipboardItemTagChip({required this.label, this.color, super.key});
+class ClipboardBadge extends StatelessWidget {
+  const ClipboardBadge({required this.label, this.color, super.key});
 
   final String label;
   final Color? color;

@@ -106,11 +106,35 @@ abstract class AppLocalizations {
   /// **'All Types'**
   String get allTypes;
 
+  /// Label for an app that is excluded from tracking
+  ///
+  /// In en, this message translates to:
+  /// **'{appName} excluded from tracking'**
+  String appExcludedFromTracking(String appName);
+
+  /// Label for an app that is included in tracking
+  ///
+  /// In en, this message translates to:
+  /// **'{appName} included in tracking'**
+  String appIncludedInTracking(String appName);
+
   /// Name of the app
   ///
   /// In en, this message translates to:
   /// **'LucidClip'**
   String get appName;
+
+  /// Message shown when an app is no longer tracked
+  ///
+  /// In en, this message translates to:
+  /// **'{appName} no longer tracked'**
+  String appNoLongerTracked(String appName);
+
+  /// Description shown when an app is no longer tracked
+  ///
+  /// In en, this message translates to:
+  /// **'ClipboardItem from {appName} will no longer be saved. You can change this in the Settings.'**
+  String appNoLongerTrackedDescription(String appName);
 
   /// Tagline for the app
   ///
@@ -208,6 +232,12 @@ abstract class AppLocalizations {
   /// **'Clipboard'**
   String get clipboard;
 
+  /// Message shown when clipboard capture has started
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard capture started'**
+  String get clipboardCaptureStarted;
+
   /// Tray menu item for clipboard history submenu
   ///
   /// In en, this message translates to:
@@ -226,6 +256,12 @@ abstract class AppLocalizations {
   /// **'Command'**
   String get command;
 
+  /// Button text to confirm an action
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
   /// Message shown when content is copied to the clipboard
   ///
   /// In en, this message translates to:
@@ -243,6 +279,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copy last item'**
   String get copyLastItem;
+
+  /// Button text to copy the path of a file
+  ///
+  /// In en, this message translates to:
+  /// **'Copy path'**
+  String get copyPath;
 
   /// Button text to copy content to the clipboard
   ///
@@ -286,11 +328,29 @@ abstract class AppLocalizations {
   /// **'An error occurred. Please try again later.'**
   String get errorOccurred;
 
+  /// Button text to exclude an app from tracking
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude'**
+  String get exclude;
+
+  /// Label for the Excluded feature
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded'**
+  String get excluded;
+
   /// Message shown when the preview failed to load
   ///
   /// In en, this message translates to:
   /// **'Failed to load link preview'**
   String get failedToLoadLinkPreview;
+
+  /// Duration option: 15 minutes
+  ///
+  /// In en, this message translates to:
+  /// **'15 Minutes'**
+  String get fifteenMinutes;
 
   /// Label for the File Only filter
   ///
@@ -345,6 +405,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Image Only'**
   String get imageOnly;
+
+  /// Button text to include an app in tracking
+  ///
+  /// In en, this message translates to:
+  /// **'Include'**
+  String get include;
+
+  /// Label for the Include App setting
+  ///
+  /// In en, this message translates to:
+  /// **'Include {appName}'**
+  String includeApp(String appName);
+
+  /// Confirmation dialog shown when including an app in clipboard tracking
+  ///
+  /// In en, this message translates to:
+  /// **'Include {appName} in clipboard tracking?'**
+  String includeAppConfirmation(String appName);
 
   /// Label for the Incognito Mode setting
   ///
@@ -430,11 +508,29 @@ abstract class AppLocalizations {
   /// **'No settings available'**
   String get noSettingsAvailable;
 
+  /// Label for a notification
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get notification;
+
   /// Label for the Notifications settings
   ///
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+
+  /// Duration option: 1 hour
+  ///
+  /// In en, this message translates to:
+  /// **'1 Hour'**
+  String get oneHour;
+
+  /// Button text to open a link
+  ///
+  /// In en, this message translates to:
+  /// **'Open link'**
+  String get openLink;
 
   /// Tray menu item to pause clipboard tracking (enable incognito mode)
   ///
@@ -484,6 +580,12 @@ abstract class AppLocalizations {
   /// **'Shows a preview of links in the clipboard.'**
   String get previewLinksDescription;
 
+  /// Label for private session duration options
+  ///
+  /// In en, this message translates to:
+  /// **'Private Session Duration'**
+  String get privateSessionDuration;
+
   /// Tray menu item to exit the application
   ///
   /// In en, this message translates to:
@@ -496,11 +598,29 @@ abstract class AppLocalizations {
   /// **'Recent'**
   String get recent;
 
+  /// Button text to resume clipboard capture
+  ///
+  /// In en, this message translates to:
+  /// **'Resume clipboard capture'**
+  String get resumeClipboardCapture;
+
   /// Tray menu item to resume clipboard tracking (disable incognito mode)
   ///
   /// In en, this message translates to:
   /// **'Resume Tracking'**
   String get resumeTracking;
+
+  /// Label for resuming tracking an app
+  ///
+  /// In en, this message translates to:
+  /// **'Resume tracking {appName}'**
+  String resumeTrackingApp(String appName);
+
+  /// No description provided for @resumeTrackingAppConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume clipboard tracking for {appName}?'**
+  String resumeTrackingAppConfirmation(Object appName);
 
   /// Label for the Retention Days setting
   ///
@@ -519,36 +639,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
-
-  /// Button text to start a private/incognito session
-  ///
-  /// In en, this message translates to:
-  /// **'Start Private Session'**
-  String get startPrivateSession;
-
-  /// Label for private session duration options
-  ///
-  /// In en, this message translates to:
-  /// **'Private Session Duration'**
-  String get privateSessionDuration;
-
-  /// Duration option: 15 minutes
-  ///
-  /// In en, this message translates to:
-  /// **'15 Minutes'**
-  String get fifteenMinutes;
-
-  /// Duration option: 1 hour
-  ///
-  /// In en, this message translates to:
-  /// **'1 Hour'**
-  String get oneHour;
-
-  /// Duration option: until manually disabled
-  ///
-  /// In en, this message translates to:
-  /// **'Until Disabled'**
-  String get untilDisabled;
 
   /// Hint shown in the Search Bar
   ///
@@ -640,6 +730,30 @@ abstract class AppLocalizations {
   /// **'Source'**
   String get source;
 
+  /// Button text to start a private/incognito session
+  ///
+  /// In en, this message translates to:
+  /// **'Start Private Session'**
+  String get startPrivateSession;
+
+  /// Button text to stop clipboard capture
+  ///
+  /// In en, this message translates to:
+  /// **'Stop clipboard capture'**
+  String get stopClipboardCapture;
+
+  /// Label for stopping tracking an app
+  ///
+  /// In en, this message translates to:
+  /// **'Stop tracking {appName}'**
+  String stopTrackingApp(String appName);
+
+  /// Confirmation text shown when stop tracking an app
+  ///
+  /// In en, this message translates to:
+  /// **'LucidClip will no longer save clipboard items copied from {appName}.'**
+  String stopTrackingAppConfirmation(String appName);
+
   /// Label for the Storage settings
   ///
   /// In en, this message translates to:
@@ -700,11 +814,29 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get theme;
 
+  /// Message shown when tracking is resumed for an app
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking resumed for {appName}'**
+  String trackingResumedForApp(String appName);
+
+  /// Description shown when tracking is resumed for an app
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard items from {appName} will now appear in your history.'**
+  String trackingResumedForAppDescription(String appName);
+
   /// Button text to unpin an item
   ///
   /// In en, this message translates to:
   /// **'Unpin'**
   String get unpin;
+
+  /// Duration option: until manually disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Until Disabled'**
+  String get untilDisabled;
 
   /// Label for the app version
   ///
@@ -717,36 +849,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your clipboard items will appear here.'**
   String get yourClipboardItemsWillAppearHere;
-
-  /// Button text to stop clipboard capture
-  ///
-  /// In en, this message translates to:
-  /// **'Stop clipboard capture'**
-  String get stopClipboardCapture;
-
-  /// Button text to resume clipboard capture
-  ///
-  /// In en, this message translates to:
-  /// **'Resume clipboard capture'**
-  String get resumeClipboardCapture;
-
-  /// Message shown when clipboard capture has started
-  ///
-  /// In en, this message translates to:
-  /// **'Clipboard capture started'**
-  String get clipboardCaptureStarted;
-
-  /// Button text to open a link
-  ///
-  /// In en, this message translates to:
-  /// **'Open link'**
-  String get openLink;
-
-  /// Button text to copy the path of a file
-  ///
-  /// In en, this message translates to:
-  /// **'Copy path'**
-  String get copyPath;
 }
 
 class _AppLocalizationsDelegate

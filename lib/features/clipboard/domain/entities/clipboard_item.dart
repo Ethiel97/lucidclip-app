@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:jiffy/jiffy.dart' hide Unit;
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
-import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:proper_filesize/proper_filesize.dart';
 import 'package:recase/recase.dart';
 
@@ -122,6 +121,15 @@ class ClipboardItem extends Equatable {
       }
     }
     return null;
+  }
+
+  bool getIsSourceAppExcluded(List<String> excludedApps) {
+    final app = sourceApp;
+    if (app != null) {
+      return excludedApps.contains(app.bundleId) ||
+          excludedApps.contains(app.name);
+    }
+    return false;
   }
 
   @override

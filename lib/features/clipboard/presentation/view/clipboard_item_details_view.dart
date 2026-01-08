@@ -169,6 +169,7 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
+// TODO(Ethiel97): Improve preview card to handle different content types better
 class _PreviewCard extends StatelessWidget {
   const _PreviewCard({required this.preview, this.previewWidget});
 
@@ -215,7 +216,14 @@ class _InfoCard extends StatelessWidget {
       (cubit) => cubit.state.showSourceApp,
     );
 
+    final excludedApps = context.select<SettingsCubit, List<String>>(
+      (cubit) => cubit.state.excludedApps,
+    );
+
     final isSourceAppValid = clipboardItem.sourceApp?.isValid ?? false;
+    final isSourceAppExcluded = clipboardItem.getIsSourceAppExcluded(
+      excludedApps,
+    );
 
     return Column(
       spacing: AppSpacing.sm,
@@ -223,16 +231,24 @@ class _InfoCard extends StatelessWidget {
         if (shouldShowSourceApp && isSourceAppValid)
           _InfoRow(
             label: l10n.source.sentenceCase,
+            actionWidget: SourceAppPrivacyControl(clipboardItem: clipboardItem),
             valueWidget: Row(
-              spacing: AppSpacing.xs,
+              spacing: AppSpacing.sm,
               children: [
-                clipboardItem.sourceAppIcon,
-                Text(
-                  clipboardItem.sourceApp!.name,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(fontSize: 12),
+                Row(
+                  spacing: AppSpacing.xxs,
+                  children: [
+                    clipboardItem.sourceAppIcon,
+                    Text(
+                      clipboardItem.sourceApp!.name,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(fontSize: 12),
+                    ),
+                  ],
                 ),
+
+                if (isSourceAppExcluded) const ExcludedSourceAppBadge(),
               ],
             ),
             value: clipboardItem.sourceApp!.name,
@@ -263,6 +279,7 @@ class _InfoRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
+    this.actionWidget,
     this.valueWidget,
   });
 
@@ -270,6 +287,7 @@ class _InfoRow extends StatelessWidget {
   final String value;
   final Widget icon;
   final Widget? valueWidget;
+  final Widget? actionWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -281,46 +299,54 @@ class _InfoRow extends StatelessWidget {
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.sm,
         children: [
-          Container(
-            height: 28,
-            width: 28,
-            decoration: BoxDecoration(
-              color: colorScheme.tertiary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: IconTheme(
-              data: IconThemeData(
-                size: AppSpacing.sm,
-                color: colorScheme.onTertiary,
-              ),
-              child: icon,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurface.withValues(alpha: .7),
-                    fontSize: 11,
-                  ),
+          Row(
+            children: [
+              Container(
+                height: 28,
+                width: 28,
+                decoration: BoxDecoration(
+                  color: colorScheme.tertiary,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: AppSpacing.xxxs),
-                valueWidget ??
+                child: IconTheme(
+                  data: IconThemeData(
+                    size: AppSpacing.sm,
+                    color: colorScheme.onTertiary,
+                  ),
+                  child: icon,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      value,
+                      label,
                       style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface,
+                        color: colorScheme.onSurface.withValues(alpha: .7),
+                        fontSize: 11,
                       ),
                     ),
-              ],
-            ),
+                    const SizedBox(height: AppSpacing.xxxs),
+                    valueWidget ??
+                        Text(
+                          value,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
+                  ],
+                ),
+              ),
+            ],
           ),
+
+          ?actionWidget,
         ],
       ),
     );
@@ -337,7 +363,7 @@ class _TagsWrap extends StatelessWidget {
     return Wrap(
       spacing: AppSpacing.xs,
       runSpacing: AppSpacing.xxxs,
-      children: tags.map((t) => ClipboardItemTagChip(label: t)).toList(),
+      children: tags.map((t) => ClipboardBadge(label: t)).toList(),
     );
   }
 }

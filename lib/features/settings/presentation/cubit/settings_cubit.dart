@@ -25,13 +25,19 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   final SettingsRepository settingsRepository;
 
   StreamSubscription<UserSettings?>? _settingsSubscription;
+  StreamSubscription<User?>? _authSubscription;
   Timer? _incognitoSessionTimer;
 
   // Use a local storage key for unauthenticated users
   String _currentUserId = '';
 
+  User? _currentUser;
+
+  bool get isAuthenticated => _currentUser != null && _currentUserId != 'guest';
+
   void _initializeAuthListener() {
-    authRepository.authStateChanges.listen((user) {
+    _authSubscription = authRepository.authStateChanges.listen((user) {
+      _currentUser = user;
       _currentUserId = user?.id ?? 'guest';
       loadSettings();
       watchSettings();
@@ -62,7 +68,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       }
 
       // Only try to sync with remote if user is authenticated
-      if (_currentUserId != 'guest') {
+      if (isAuthenticated) {
         try {
           final remoteSettings = await settingsRepository.getSettings(
             _currentUserId,
@@ -136,7 +142,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       emit(state.copyWith(settings: state.settings.toSuccess(updatedSettings)));
 
       // Only sync to remote if user is authenticated (not guest)
-      if (updatedSettings.userId != _currentUserId) {
+      if (isAuthenticated) {
         try {
           await settingsRepository.updateSettings(updatedSettings);
         } catch (e) {
@@ -328,6 +334,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   @disposeMethod
   @override
   Future<void> close() {
+    _authSubscription?.cancel();
     _settingsSubscription?.cancel();
     _incognitoSessionTimer?.cancel();
     return super.close();

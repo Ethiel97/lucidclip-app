@@ -49,6 +49,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
   StreamSubscription<ClipboardHistories>? _localHistorySubscription;
   StreamSubscription<UserSettings?>? _userSettingsSubscription;
+  StreamSubscription<User?>? _authSubscription;
 
   UserSettings? _userSettings;
 
@@ -56,7 +57,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   String _currentUserId = '';
 
   void _initializeAuthListener() {
-    authRepository.authStateChanges.listen((user) {
+    _authSubscription = authRepository.authStateChanges.listen((user) {
       _currentUserId = user?.id ?? 'guest';
     });
   }
@@ -372,10 +373,12 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   @disposeMethod
   @override
   Future<void> close() async {
+    await _authSubscription?.cancel();
     await _clipboardSubscription?.cancel();
     await clipboardManager.dispose();
     await _localHistorySubscription?.cancel();
     await _localItemsSubscription?.cancel();
+    await _userSettingsSubscription?.cancel();
     return super.close();
   }
 }

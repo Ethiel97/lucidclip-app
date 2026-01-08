@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:app_links/app_links.dart' as _i327;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
@@ -28,6 +29,10 @@ import 'package:lucid_clip/core/network/remote_sync_client.dart' as _i70;
 import 'package:lucid_clip/core/platform/source_app/method_channel_source_app_provider.dart'
     as _i740;
 import 'package:lucid_clip/core/platform/source_app/source_app.dart' as _i51;
+import 'package:lucid_clip/core/services/deep_link_service.dart' as _i100;
+import 'package:lucid_clip/core/services/deep_link_service_interface.dart'
+    as _i233;
+import 'package:lucid_clip/core/services/services.dart' as _i212;
 import 'package:lucid_clip/core/services/tray_manager_service.dart' as _i926;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
@@ -107,6 +112,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
+    gh.lazySingleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
     gh.lazySingleton<_i926.TrayManagerService>(
       () => _i926.TrayManagerService(),
       dispose: (i) => i.dispose(),
@@ -134,6 +140,10 @@ extension GetItInjectableX on _i174.GetIt {
       );
       return i.initialize().then((_) => i);
     }, dispose: (i) => i.dispose());
+    gh.lazySingleton<_i233.DeepLinkService>(
+      () => _i100.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i669.ClipboardLocalDataSource>(
       () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
       dispose: (i) => i.clear(),
@@ -151,6 +161,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i647.SupabaseAuthDataSource(
         supabaseClient: gh<_i454.SupabaseClient>(),
         secureStorage: gh<_i407.SecureStorageService>(),
+        deepLinkService: gh<_i212.DeepLinkService>(),
       ),
     );
     gh.singleton<_i70.RemoteSyncClient>(
@@ -173,17 +184,13 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i782.LocalClipboardHistoryRepository>(),
       ),
     );
+    gh.lazySingleton<_i922.AuthRepository>(
+      () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
+    );
     gh.lazySingleton<_i340.LocalSettingsRepository>(
       () => _i958.LocalSettingsRepositoryImpl(
         gh<_i173.SettingsLocalDataSource>(),
       ),
-    );
-    gh.lazySingleton<_i922.AuthRepository>(
-      () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
-    );
-    gh.lazySingleton<_i408.AuthCubit>(
-      () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
-      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
       () => _i175.SupabaseSettingsRemoteDataSource(
@@ -199,6 +206,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i997.SearchCubit(
         localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
       ),
+    );
+    gh.lazySingleton<_i408.AuthCubit>(
+      () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i340.SettingsRepository>(
       () => _i758.SettingsRepositoryImpl(

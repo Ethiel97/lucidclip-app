@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:path/path.dart' as p;
@@ -21,11 +20,11 @@ class SettingsDatabase extends _$SettingsDatabase {
       final dir = await getLibraryDirectory();
       final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
 
-      if (dbFile.existsSync()) {
+      /*if (dbFile.existsSync()) {
         if (!AppConstants.isProd) {
           await dbFile.delete();
         }
-      }
+      }*/
 
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);

@@ -8,9 +8,7 @@ import 'package:lucid_clip/core/services/deep_link_service_interface.dart';
 /// Implementation of DeepLinkService for handling deep link callbacks
 @LazySingleton(as: DeepLinkService)
 class AppLinksDeepLinkService implements DeepLinkService {
-  AppLinksDeepLinkService({
-    required AppLinks appLinks,
-  }) : _appLinks = appLinks;
+  AppLinksDeepLinkService({required AppLinks appLinks}) : _appLinks = appLinks;
 
   final AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -61,10 +59,7 @@ class AppLinksDeepLinkService implements DeepLinkService {
     // Listen for deep links
     subscription = linkStream.listen(
       (uri) {
-        developer.log(
-          'Deep link received: $uri',
-          name: 'DeepLinkService',
-        );
+        developer.log('Deep link received: $uri', name: 'DeepLinkService');
 
         // Apply filter if provided
         if (filter != null && !filter(uri)) {
@@ -77,7 +72,7 @@ class AppLinksDeepLinkService implements DeepLinkService {
           completer.complete(uri);
         }
       },
-      onError: (error, stackTrace) {
+      onError: (Object error, StackTrace stackTrace) {
         developer.log(
           'Error in deep link stream',
           error: error,
@@ -95,6 +90,7 @@ class AppLinksDeepLinkService implements DeepLinkService {
     return completer.future;
   }
 
+  @disposeMethod
   @override
   Future<void> dispose() async {
     await _linkSubscription?.cancel();

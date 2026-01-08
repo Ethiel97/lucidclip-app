@@ -735,6 +735,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clipboard capture started'**
   String get clipboardCaptureStarted;
+
+  /// Button text to open a link
+  ///
+  /// In en, this message translates to:
+  /// **'Open link'**
+  String get openLink;
+
+  /// Button text to copy the path of a file
+  ///
+  /// In en, this message translates to:
+  /// **'Copy path'**
+  String get copyPath;
 }
 
 class _AppLocalizationsDelegate

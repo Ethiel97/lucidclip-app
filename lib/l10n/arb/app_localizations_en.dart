@@ -352,4 +352,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clipboardCaptureStarted => 'Clipboard capture started';
+
+  @override
+  String get openLink => 'Open link';
+
+  @override
+  String get copyPath => 'Copy path';
 }

@@ -448,5 +448,14 @@
   "clipboardCaptureStarted": "Clipboard capture started",
   "@clipboardCaptureStarted": {
     "description": "Message shown when clipboard capture has started"
+  },
+  "openLink": "Open link",
+  "@openLink": {
+    "description": "Button text to open a link"
+  },
+  "copyPath": "Copy path",
+  "@copyPath": {
+    "description": "Button text to copy the path of a file"
   }
+
 }

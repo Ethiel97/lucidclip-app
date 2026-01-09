@@ -74,14 +74,14 @@ class IncognitoModeToggleButton extends StatelessWidget {
           },
           icon: HugeIcon(
             icon: incognitoMode
-                ? HugeIcons.strokeRoundedPlayCircle
-                : HugeIcons.strokeRoundedPauseCircle,
-            size: 22,
+                ? HugeIcons.strokeRoundedPlay
+                : HugeIcons.strokeRoundedPause,
+            size: 20,
           ),
           label: Text(
             incognitoMode
-                ? l10n.resumeClipboardCapture.sentenceCase
-                : l10n.stopClipboardCapture.sentenceCase,
+                ? l10n.resumeTracking.sentenceCase
+                : l10n.pauseTracking.sentenceCase,
           ),
         ),
       ),

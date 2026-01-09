@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'user_settings_model.g.dart';
@@ -29,7 +30,9 @@ class UserSettingsModel extends Equatable {
 
   factory UserSettingsModel.fromEntity(UserSettings settings) {
     return UserSettingsModel(
-      excludedApps: settings.excludedApps,
+      excludedApps: settings.excludedApps
+          .map(SourceAppModel.fromEntity)
+          .toList(),
       userId: settings.userId,
       theme: settings.theme,
       shortcuts: settings.shortcuts,
@@ -89,7 +92,7 @@ class UserSettingsModel extends Equatable {
   final bool incognitoMode;
 
   @JsonKey(name: 'excluded_apps')
-  final List<String> excludedApps;
+  final List<SourceAppModel> excludedApps;
 
   @JsonKey(name: 'incognito_session_duration_minutes')
   final int? incognitoSessionDurationMinutes;
@@ -111,7 +114,7 @@ class UserSettingsModel extends Equatable {
     bool? previewImages,
     bool? previewLinks,
     bool? incognitoMode,
-    List<String>? excludedApps,
+    List<SourceAppModel>? excludedApps,
     int? incognitoSessionDurationMinutes,
     DateTime? incognitoSessionEndTime,
     DateTime? createdAt,
@@ -132,14 +135,17 @@ class UserSettingsModel extends Equatable {
       excludedApps: excludedApps ?? this.excludedApps,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes ?? this.incognitoSessionDurationMinutes,
-      incognitoSessionEndTime: incognitoSessionEndTime ?? this.incognitoSessionEndTime,
+      incognitoSessionDurationMinutes:
+          incognitoSessionDurationMinutes ??
+          this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime:
+          incognitoSessionEndTime ?? this.incognitoSessionEndTime,
     );
   }
 
   UserSettings toEntity() {
     return UserSettings(
-      excludedApps: excludedApps,
+      excludedApps: excludedApps.map((e) => e.toEntity()).toList(),
       userId: userId,
       theme: theme,
       shortcuts: shortcuts,

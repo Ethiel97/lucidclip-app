@@ -5,8 +5,8 @@ class ClipboardState extends Equatable {
     this.clipboardHistory = const ValueWrapper(value: []),
     this.clipboardItems = const ValueWrapper(value: []),
     this.clipboardItemTags = const ValueWrapper(value: []),
-    this.excludeAppResult = const ValueWrapper(value: ''),
-    this.includeAppResult = const ValueWrapper(value: ''),
+    this.excludeAppResult = const ValueWrapper(),
+    this.includeAppResult = const ValueWrapper(),
     // this.localClipboardItems = const [],
     this.tags = const ValueWrapper(value: []),
   });
@@ -28,10 +28,14 @@ class ClipboardState extends Equatable {
             [],
       ),
       excludeAppResult: ValueWrapper(
-        value: json['excludeAppResult'] as String? ?? '',
+        value: SourceAppModel.fromJson(
+          json['excludeAppResult'] as Map<String, dynamic>? ?? {},
+        ).toEntity(),
       ),
       includeAppResult: ValueWrapper(
-        value: json['includeAppResult'] as String? ?? '',
+        value: SourceAppModel.fromJson(
+          json['includeAppResult'] as Map<String, dynamic>? ?? {},
+        ).toEntity(),
       ),
       tags: ValueWrapper(
         value:
@@ -51,8 +55,8 @@ class ClipboardState extends Equatable {
   final ValueWrapper<ClipboardItems> clipboardItems;
 
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
-  final ValueWrapper<String> excludeAppResult;
-  final ValueWrapper<String> includeAppResult;
+  final ValueWrapper<SourceApp> excludeAppResult;
+  final ValueWrapper<SourceApp> includeAppResult;
 
   // final List<ClipboardData> localClipboardItems;
   final ValueWrapper<Tags> tags;
@@ -61,8 +65,8 @@ class ClipboardState extends Equatable {
     ValueWrapper<ClipboardHistories>? clipboardHistory,
     ValueWrapper<ClipboardItems>? clipboardItems,
     ValueWrapper<ClipboardItemTags>? clipboardItemTags,
-    ValueWrapper<String>? excludeAppResult,
-    ValueWrapper<String>? includeAppResult,
+    ValueWrapper<SourceApp>? excludeAppResult,
+    ValueWrapper<SourceApp>? includeAppResult,
     List<ClipboardData>? localClipboardItems,
     ValueWrapper<Tags>? tags,
   }) {
@@ -82,8 +86,12 @@ class ClipboardState extends Equatable {
     return {
       'clipboardHistory': ClipboardMapper.historyToJson(clipboardHistory.value),
       'clipboardItems': ClipboardMapper.itemsToJson(clipboardItems.value),
-      'excludeAppResult': excludeAppResult.value,
-      'includeAppResult': includeAppResult.value,
+      'excludeAppResult': excludeAppResult.value != null
+          ? SourceAppModel.fromEntity(excludeAppResult.value!).toJson()
+          : null,
+      'includeAppResult': includeAppResult.value != null
+          ? SourceAppModel.fromEntity(includeAppResult.value!).toJson()
+          : null,
       'tags': ClipboardMapper.tagsToJson(tags.value),
       'clipboardItemTags': ClipboardMapper.clipboardItemTagsToJson(
         clipboardItemTags.value,

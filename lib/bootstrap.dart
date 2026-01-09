@@ -10,6 +10,7 @@ import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/firebase_options.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -90,22 +91,24 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   });
 
   await getIt<TrayManagerService>().initialize();
+  
+  // Only clear app data in development when explicitly needed
   // await clearAppData();
 
   runApp(await builder());
 }
 
 Future<void> resetClipboardDatabase() async {
-  final dir = await getApplicationDocumentsDirectory();
-  final clipboardDbFile = File('${dir.path}/clipboard_db.sqlite');
+  final dir = await getLibraryDirectory();
+  final clipboardDbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
   if (clipboardDbFile.existsSync()) {
     await clipboardDbFile.delete();
   }
 }
 
 Future<void> resetSettingsDatabase() async {
-  final dir = await getApplicationDocumentsDirectory();
-  final settingsDbFile = File('${dir.path}/settings_db.sqlite');
+  final dir = await getLibraryDirectory();
+  final settingsDbFile = File(p.join(dir.path, 'settings_db.sqlite'));
   if (settingsDbFile.existsSync()) {
     await settingsDbFile.delete();
   }

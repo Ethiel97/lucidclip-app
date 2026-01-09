@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
@@ -8,6 +10,7 @@ import 'package:lucid_clip/features/settings/presentation/widgets/widgets.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
+//TODO(Ethiel97): Add excluded apps management
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
@@ -132,6 +135,17 @@ class SettingsView extends StatelessWidget {
                       context.read<SettingsCubit>().updateIncognitoMode(
                         incognitoMode: value,
                       );
+                    },
+                  ),
+                  SettingsNavigationItem(
+                    title: l10n.ignoredApps.sentenceCase,
+                    description: l10n.ignoredAppsDescription,
+                    valueText: settings.excludedApps.isEmpty
+                        ? l10n.none.sentenceCase
+                        : l10n.appsCount(settings.excludedApps.length),
+
+                    onTap: () {
+                      context.router.navigate(const IgnoredAppsRoute());
                     },
                   ),
                   SettingsSwitchItem(

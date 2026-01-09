@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
 import 'package:lucid_clip/features/settings/data/models/models.dart';
@@ -328,7 +329,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
-  Future<void> updateExcludedApps(List<String> excludedApps) async {
+  Future<void> updateExcludedApps(List<SourceApp> excludedApps) async {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
       await updateSettings(

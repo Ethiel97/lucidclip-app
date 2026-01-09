@@ -31,7 +31,7 @@ class SettingsState extends Equatable {
   int get syncIntervalMinutes =>
       settings.value?.syncIntervalMinutes ?? defaultSyncIntervalMinutes;
 
-  List<String> get excludedApps => settings.value?.excludedApps ?? [];
+  List<SourceApp> get excludedApps => settings.value?.excludedApps ?? [];
 
   Map<String, String> get shortcuts => settings.value?.shortcuts ?? {};
 

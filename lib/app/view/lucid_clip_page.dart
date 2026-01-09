@@ -14,20 +14,22 @@ class LucidClipPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<ClipboardCubit>()),
-        BlocProvider(create: (_) => getIt<SearchCubit>()),
         BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
+        BlocProvider(create: (_) => getIt<SearchCubit>()),
         BlocProvider(create: (_) => getIt<SidebarCubit>()),
       ],
       child: Scaffold(
         body: AutoTabsRouter(
           routes: const [ClipboardRoute(), SnippetsRoute(), SettingsRoute()],
           builder: (context, child) {
-            return Row(
-              children: [
-                const Sidebar(),
-                const VerticalDivider(width: 1, thickness: .08),
-                Expanded(child: child),
-              ],
+            return SourceAppPrivacyControlListener(
+              child: Row(
+                children: [
+                  const Sidebar(),
+                  const VerticalDivider(width: 1, thickness: .08),
+                  Expanded(child: child),
+                ],
+              ),
             );
           },
         ),

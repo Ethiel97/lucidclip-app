@@ -221,6 +221,14 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i42.ClipboardRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i966.SettingsCubit>(
+      () => _i966.SettingsCubit(
+        authRepository: gh<_i922.AuthRepository>(),
+        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
+        settingsRepository: gh<_i340.SettingsRepository>(),
+      ),
+      dispose: (i) => i.close(),
+    );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(
         authRepository: gh<_i895.AuthRepository>(),
@@ -230,14 +238,6 @@ extension GetItInjectableX on _i174.GetIt {
         localClipboardHistoryRepository:
             gh<_i42.LocalClipboardHistoryRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-      ),
-      dispose: (i) => i.close(),
-    );
-    gh.lazySingleton<_i966.SettingsCubit>(
-      () => _i966.SettingsCubit(
-        authRepository: gh<_i922.AuthRepository>(),
-        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-        settingsRepository: gh<_i340.SettingsRepository>(),
       ),
       dispose: (i) => i.close(),
     );

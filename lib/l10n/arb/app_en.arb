@@ -69,6 +69,25 @@
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
   },
+  "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {apps}}",
+  "@appsCount": {
+    "description": "Label showing the number of apps with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of apps",
+        "example": "3"
+      }
+    }
+  },
+  "appsIgnoredDuringClipboardTracking": "Apps ignored during clipboard tracking",
+  "@appsIgnoredDuringClipboardTracking": {
+    "description": "Title for the Apps Ignored During Clipboard Tracking section"
+  },
+  "appsNotTrackedDuringClipboardTracking": "Apps not tracked during clipboard tracking",
+  "@appsNotTrackedDuringClipboardTracking": {
+    "description": "Title for the Apps Not Tracked During Clipboard Tracking section"
+  },
   "authenticationError": "Authentication Error",
   "@authenticationError": {
     "description": "Error message shown when authentication fails",
@@ -232,6 +251,14 @@
   "@ignorePasswords": {
     "description": "Label for the Ignore Copied Passwords setting"
   },
+  "ignoredApps": "Ignored Apps",
+  "@ignoredApps": {
+    "description": "Label for the Ignored Apps settings"
+  },
+  "ignoredAppsDescription": "Apps ignored during clipboard tracking",
+  "@ignoredAppsDescription": {
+    "description": "Description for the Ignored Apps settings"
+  },
   "imageOnly": "Image Only",
   "@imageOnly": {
     "description": "Label for the Image Only filter"
@@ -311,6 +338,10 @@
   "@maxHistoryItemsDescription": {
     "description": "Description for the Max History Items setting"
   },
+  "noAppsAreCurrentlyIgnored": "No apps are currently ignored.",
+  "@noAppsAreCurrentlyIgnored": {
+    "description": "Message shown when there are no apps ignored during clipboard tracking"
+  },
   "noClipboardHistory": "No clipboard history",
   "@noClipboardHistory": {
     "description": "Message shown when there are no clipboard items"
@@ -332,6 +363,10 @@
   "noSettingsAvailable": "No settings available",
   "@noSettingsAvailable": {
     "description": "Message shown when no settings are available"
+  },
+  "none": "None",
+  "@none": {
+    "description": "None"
   },
   "notification": "Notification",
   "@notification": {
@@ -600,5 +635,9 @@
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"
+  },
+  "trackingPreferencesUpdated": "Tracking preferences updated!",
+  "@trackingPreferencesUpdated": {
+    "description": "Message shown when the user updates their tracking preferences"
   }
 }

@@ -47,6 +47,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appendToClipboard => 'Append to Clipboard';
 
   @override
+  String appsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'apps',
+      one: '1 app',
+      zero: 'No apps',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get appsIgnoredDuringClipboardTracking =>
+      'Apps ignored during clipboard tracking';
+
+  @override
+  String get appsNotTrackedDuringClipboardTracking =>
+      'Apps not tracked during clipboard tracking';
+
+  @override
   String get authenticationError => 'Authentication Error';
 
   @override
@@ -173,6 +193,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ignorePasswords => 'Ignore Copied Passwords';
 
   @override
+  String get ignoredApps => 'Ignored Apps';
+
+  @override
+  String get ignoredAppsDescription => 'Apps ignored during clipboard tracking';
+
+  @override
   String get imageOnly => 'Image Only';
 
   @override
@@ -230,6 +256,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sets the maximum number of items in the clipboard.';
 
   @override
+  String get noAppsAreCurrentlyIgnored => 'No apps are currently ignored.';
+
+  @override
   String get noClipboardHistory => 'No clipboard history';
 
   @override
@@ -242,6 +271,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSettingsAvailable => 'No settings available';
+
+  @override
+  String get none => 'None';
 
   @override
   String get notification => 'Notification';
@@ -433,4 +465,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get yourClipboardItemsWillAppearHere =>
       'Your clipboard items will appear here.';
+
+  @override
+  String get trackingPreferencesUpdated => 'Tracking preferences updated!';
 }

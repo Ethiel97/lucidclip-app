@@ -6,6 +6,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
@@ -90,14 +91,15 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       }
 
       //excluded apps check
-      final excluded = settings?.excludedApps ?? const <String>[];
-      final bundleId = clipboardData.sourceApp?.bundleId;
+      final excluded = settings?.excludedApps ?? const <SourceApp>[];
+      final sourceApp = clipboardData.sourceApp;
 
-      if (bundleId != null &&
-          bundleId.isNotEmpty &&
-          excluded.contains(bundleId)) {
+      if (sourceApp != null &&
+          sourceApp.isValid &&
+          excluded.contains(clipboardData.sourceApp)) {
         developer.log(
-          'Clipboard data from excluded app ($bundleId); skipping storage.',
+          'Clipboard data from excluded app (${sourceApp.bundleId}); '
+          'skipping storage.',
           name: 'ClipboardCubit',
         );
         return;
@@ -266,27 +268,29 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     }
   }
 
-  Future<void> toggleAppExclusion(ClipboardItem clipboardItem) async {
+  Future<void> toggleAppExclusion(SourceApp? sourceApp) async {
     try {
       UserSettings? newSettings;
 
-      final appBundleId = clipboardItem.sourceApp?.bundleId;
-      final appName = clipboardItem.sourceApp?.name;
+      if (sourceApp == null) {
+        throw Exception('Source app is null');
+      }
+
       if (_userSettings != null) {
-        final wasExcluded = _userSettings!.excludedApps.contains(appBundleId);
+        final wasExcluded = _userSettings!.excludedApps.contains(sourceApp);
 
         if (wasExcluded) {
-          final updatedExcludedApps = List<String>.from(
+          final updatedExcludedApps = List<SourceApp>.from(
             _userSettings!.excludedApps,
-          )..remove(appBundleId);
+          )..remove(sourceApp);
 
           newSettings = _userSettings!.copyWith(
             excludedApps: updatedExcludedApps,
           );
         } else {
-          final updatedExcludedApps = List<String>.from(
+          final updatedExcludedApps = List<SourceApp>.from(
             _userSettings!.excludedApps,
-          )..add(appBundleId!);
+          )..add(sourceApp);
 
           newSettings = _userSettings!.copyWith(
             excludedApps: updatedExcludedApps,
@@ -297,13 +301,13 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         if (wasExcluded) {
           emit(
             state.copyWith(
-              includeAppResult: state.includeAppResult.toSuccess(appName),
+              includeAppResult: state.includeAppResult.toSuccess(sourceApp),
             ),
           );
         } else {
           emit(
             state.copyWith(
-              excludeAppResult: state.excludeAppResult.toSuccess(appName),
+              excludeAppResult: state.excludeAppResult.toSuccess(sourceApp),
             ),
           );
         }

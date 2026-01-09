@@ -154,6 +154,24 @@ abstract class AppLocalizations {
   /// **'Append to Clipboard'**
   String get appendToClipboard;
 
+  /// Label showing the number of apps with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {No apps} =1 {1 app} other {apps}}'**
+  String appsCount(int count);
+
+  /// Title for the Apps Ignored During Clipboard Tracking section
+  ///
+  /// In en, this message translates to:
+  /// **'Apps ignored during clipboard tracking'**
+  String get appsIgnoredDuringClipboardTracking;
+
+  /// Title for the Apps Not Tracked During Clipboard Tracking section
+  ///
+  /// In en, this message translates to:
+  /// **'Apps not tracked during clipboard tracking'**
+  String get appsNotTrackedDuringClipboardTracking;
+
   /// Error message shown when authentication fails
   ///
   /// In en, this message translates to:
@@ -400,6 +418,18 @@ abstract class AppLocalizations {
   /// **'Ignore Copied Passwords'**
   String get ignorePasswords;
 
+  /// Label for the Ignored Apps settings
+  ///
+  /// In en, this message translates to:
+  /// **'Ignored Apps'**
+  String get ignoredApps;
+
+  /// Description for the Ignored Apps settings
+  ///
+  /// In en, this message translates to:
+  /// **'Apps ignored during clipboard tracking'**
+  String get ignoredAppsDescription;
+
   /// Label for the Image Only filter
   ///
   /// In en, this message translates to:
@@ -484,6 +514,12 @@ abstract class AppLocalizations {
   /// **'Sets the maximum number of items in the clipboard.'**
   String get maxHistoryItemsDescription;
 
+  /// Message shown when there are no apps ignored during clipboard tracking
+  ///
+  /// In en, this message translates to:
+  /// **'No apps are currently ignored.'**
+  String get noAppsAreCurrentlyIgnored;
+
   /// Message shown when there are no clipboard items
   ///
   /// In en, this message translates to:
@@ -507,6 +543,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No settings available'**
   String get noSettingsAvailable;
+
+  /// None
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get none;
 
   /// Label for a notification
   ///
@@ -849,6 +891,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your clipboard items will appear here.'**
   String get yourClipboardItemsWillAppearHere;
+
+  /// Message shown when the user updates their tracking preferences
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking preferences updated!'**
+  String get trackingPreferencesUpdated;
 }
 
 class _AppLocalizationsDelegate

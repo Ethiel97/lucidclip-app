@@ -114,20 +114,19 @@ class ClipboardItem extends Equatable {
   }
 
   SourceApp? get sourceApp {
-    if (metadata.containsKey('sourceApp')) {
-      final sourceAppData = metadata['sourceApp'];
+    if (metadata.containsKey('source_app')) {
+      final sourceAppData = metadata['source_app'];
       if (sourceAppData is Map<String, dynamic>) {
-        return SourceApp.fromMap(sourceAppData);
+        return SourceAppModel.fromJson(sourceAppData).toEntity();
       }
     }
     return null;
   }
 
-  bool getIsSourceAppExcluded(List<String> excludedApps) {
+  bool getIsSourceAppExcluded(List<SourceApp> excludedApps) {
     final app = sourceApp;
     if (app != null) {
-      return excludedApps.contains(app.bundleId) ||
-          excludedApps.contains(app.name);
+      return excludedApps.contains(app);
     }
     return false;
   }

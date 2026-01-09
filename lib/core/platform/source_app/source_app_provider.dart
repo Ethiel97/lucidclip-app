@@ -1,35 +1,36 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
-class SourceApp extends Equatable {
-  const SourceApp({required this.bundleId, required this.name, this.icon});
+final Map<String, Uint8List> _sourceAppIconCache = {};
+const _sourceAppDisplaySize = 18;
 
-  factory SourceApp.fromMap(Map<dynamic, dynamic> map) {
-    final b64 = map['icon'] as String?;
-    return SourceApp(
-      bundleId: (map['bundleId'] as String?) ?? '',
-      name: (map['name'] as String?) ?? '',
-      icon: b64 == null ? null : base64Decode(b64),
-    );
+extension SourceAppHelper on SourceApp {
+  Widget get iconWidget {
+    if (icon != null) {
+      final cachedKey = bundleId;
+      final cachedBytes = _sourceAppIconCache.putIfAbsent(
+        cachedKey,
+        () => Uint8List.fromList(icon!),
+      );
+
+      return CachedClipboardImage.memory(
+        bytes: cachedBytes,
+        width: _sourceAppDisplaySize.toDouble(),
+        height: _sourceAppDisplaySize.toDouble(),
+      );
+    } else {
+      return const HugeIcon(
+        icon: HugeIcons.strokeRounded0Square,
+        size: 20,
+        color: AppColors.textMuted,
+      );
+    }
   }
-
-  final String bundleId;
-  final String name;
-
-  final Uint8List? icon;
-
-  bool get isValid => bundleId.trim().isNotEmpty;
-
-  Map<String, dynamic> toJson() => {
-    'bundleId': bundleId,
-    'name': name,
-    'icon': icon != null ? base64Encode(icon!) : null,
-  };
-
-  @override
-  List<Object?> get props => [bundleId, name];
 }
 
 //ignore: one_member_abstracts

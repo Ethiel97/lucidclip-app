@@ -12,4 +12,5 @@ export 'section_header.dart';
 export 'sidebar.dart';
 export 'sidebar_item.dart';
 export 'source_app_privacy_control.dart';
+export 'source_app_privacy_control_listener.dart';
 export 'storage_indicator.dart';

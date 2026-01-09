@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 
 // TODO(Ethiel97): AUTO SYNC SETTING SHOULD BE FOR PREMIUM USERS ONLY
 //  HISTORY LIMIT SHOULD BE FOR PREMIUM USERS ONLY,
@@ -43,7 +44,7 @@ class UserSettings extends Equatable {
 
   final String userId;
   final String theme;
-  final List<String> excludedApps;
+  final List<SourceApp> excludedApps;
   final Map<String, String> shortcuts;
   final bool autoSync;
   final int syncIntervalMinutes;
@@ -62,7 +63,7 @@ class UserSettings extends Equatable {
     String? userId,
     String? theme,
     Map<String, String>? shortcuts,
-    List<String>? excludedApps,
+    List<SourceApp>? excludedApps,
     bool? autoSync,
     int? syncIntervalMinutes,
     int? maxHistoryItems,
@@ -91,8 +92,11 @@ class UserSettings extends Equatable {
       previewLinks: previewLinks ?? this.previewLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes ?? this.incognitoSessionDurationMinutes,
-      incognitoSessionEndTime: incognitoSessionEndTime ?? this.incognitoSessionEndTime,
+      incognitoSessionDurationMinutes:
+          incognitoSessionDurationMinutes ??
+          this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime:
+          incognitoSessionEndTime ?? this.incognitoSessionEndTime,
     );
   }
 

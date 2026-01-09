@@ -23,7 +23,7 @@ class PageHeader extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      spacing: AppSpacing.md,
+      spacing: AppSpacing.xs,
       children: [
         const Expanded(child: SearchField()),
         const ClipboardItemTypeFilter(),

@@ -13,7 +13,7 @@ UserSettingsModel _$UserSettingsModelFromJson(Map<String, dynamic> json) =>
       updatedAt: DateTime.parse(json['updated_at'] as String),
       excludedApps:
           (json['excluded_apps'] as List<dynamic>?)
-              ?.map((e) => e as String)
+              ?.map((e) => SourceAppModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       theme: json['theme'] as String? ?? 'dark',
@@ -57,7 +57,7 @@ Map<String, dynamic> _$UserSettingsModelToJson(UserSettingsModel instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'incognito_mode': instance.incognitoMode,
-      'excluded_apps': instance.excludedApps,
+      'excluded_apps': instance.excludedApps.map((e) => e.toJson()).toList(),
       'incognito_session_duration_minutes':
           instance.incognitoSessionDurationMinutes,
       'incognito_session_end_time': instance.incognitoSessionEndTime

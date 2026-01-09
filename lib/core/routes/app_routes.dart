@@ -16,7 +16,14 @@ class AppRouter extends RootStackRouter {
         RedirectRoute(path: '', redirectTo: 'clipboard'),
         AutoRoute(path: 'clipboard', page: ClipboardRoute.page),
         AutoRoute(path: 'snippets', page: SnippetsRoute.page),
-        AutoRoute(path: 'settings', page: SettingsRoute.page),
+        AutoRoute(
+          path: 'settings',
+          page: SettingsRouterRoute.page,
+          children: [
+            AutoRoute(path: '',  page: SettingsRoute.page),
+            AutoRoute(path: 'ignored-apps', page: IgnoredAppsRoute.page),
+          ],
+        ),
       ],
     ),
   ];

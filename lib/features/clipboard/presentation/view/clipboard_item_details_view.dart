@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/app_colors.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
@@ -216,7 +217,7 @@ class _InfoCard extends StatelessWidget {
       (cubit) => cubit.state.showSourceApp,
     );
 
-    final excludedApps = context.select<SettingsCubit, List<String>>(
+    final excludedApps = context.select<SettingsCubit, List<SourceApp>>(
       (cubit) => cubit.state.excludedApps,
     );
 

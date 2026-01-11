@@ -29,11 +29,7 @@ class PageHeader extends StatelessWidget {
         const IncognitoModeToggleButton(),
         FilledButton.icon(
           style: FilledButton.styleFrom(
-            side: BorderSide(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
-            ),
+            side: BorderSide(color: Theme.of(context).colorScheme.outline),
           ),
           onPressed: () {
             if (isAuthenticated) {

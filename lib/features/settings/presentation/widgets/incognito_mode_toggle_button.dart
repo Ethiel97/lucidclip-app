@@ -62,34 +62,27 @@ class IncognitoModeToggleButton extends StatelessWidget {
       selector: (state) {
         return state.incognitoMode;
       },
-      builder: (context, incognitoMode) => FilledButton(
-        onPressed: () {},
-        child: FilledButton.icon(
-          style: FilledButton.styleFrom(
-            side: BorderSide(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
-            ),
-          ),
-          onPressed: () {
-            if (incognitoMode) {
-              context.read<SettingsCubit>().updateIncognitoMode();
-            } else {
-              _showPrivateSessionDialog(context);
-            }
-          },
-          icon: HugeIcon(
-            icon: incognitoMode
-                ? HugeIcons.strokeRoundedPlay
-                : HugeIcons.strokeRoundedPause,
-            size: 18,
-          ),
-          label: Text(
-            incognitoMode
-                ? l10n.resumeTracking.sentenceCase
-                : l10n.pauseTracking.sentenceCase,
-          ),
+      builder: (context, incognitoMode) => FilledButton.icon(
+        style: FilledButton.styleFrom(
+          side: BorderSide(color: Theme.of(context).colorScheme.outline),
+        ),
+        onPressed: () {
+          if (incognitoMode) {
+            context.read<SettingsCubit>().updateIncognitoMode();
+          } else {
+            _showPrivateSessionDialog(context);
+          }
+        },
+        icon: HugeIcon(
+          icon: incognitoMode
+              ? HugeIcons.strokeRoundedPlay
+              : HugeIcons.strokeRoundedPause,
+          size: 18,
+        ),
+        label: Text(
+          incognitoMode
+              ? l10n.resumeTracking.sentenceCase
+              : l10n.pauseTracking.sentenceCase,
         ),
       ),
     );

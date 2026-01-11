@@ -57,6 +57,7 @@ class SettingsView extends StatelessWidget {
               }
 
               return ListView(
+                physics: const ClampingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
                   vertical: AppSpacing.md,

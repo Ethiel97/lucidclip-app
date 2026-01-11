@@ -139,7 +139,7 @@ abstract class AppLocalizations {
   /// Tagline for the app
   ///
   /// In en, this message translates to:
-  /// **'A smarter clipboard. On your terms'**
+  /// **'LucidClip - Your clipboard, finally under control.'**
   String get appTagLine;
 
   /// Label for the Appearance settings

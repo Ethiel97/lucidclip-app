@@ -66,7 +66,7 @@ class ClipboardItemTypeFilter extends StatelessWidget {
             .toList();
 
     return FlexibleDropdown(
-      duration: const Duration(milliseconds: 120),
+      duration: const Duration(milliseconds: 100),
       animationType: AnimationType.fade,
       overlayChild: Material(
         color: colorScheme.surface.toTinyColor().darken(5).color,

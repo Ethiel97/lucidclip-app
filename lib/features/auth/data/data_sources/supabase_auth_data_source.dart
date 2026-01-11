@@ -16,9 +16,9 @@ class SupabaseAuthDataSource implements AuthDataSource {
     required SupabaseClient supabaseClient,
     required SecureStorageService secureStorage,
     required DeepLinkService deepLinkService,
-  })  : _supabase = supabaseClient,
-        _secureStorage = secureStorage,
-        _deepLinkService = deepLinkService;
+  }) : _supabase = supabaseClient,
+       _secureStorage = secureStorage,
+       _deepLinkService = deepLinkService;
 
   final SupabaseClient _supabase;
   final SecureStorageService _secureStorage;
@@ -63,9 +63,9 @@ class SupabaseAuthDataSource implements AuthDataSource {
       }
 
       log('Deep link received: $deepLinkUri');
-
       // Extract the session from the deep link URI
       // Supabase sends the session info as query parameters or fragment
+
       await _handleAuthCallback(deepLinkUri);
 
       // Get the current user after session is established
@@ -96,12 +96,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
       // The URI will contain either query parameters or a fragment
       // with the access_token and other session data
       final uriString = uri.toString();
-      
+
       log('Processing auth callback URI: $uriString');
 
       // Supabase Flutter SDK can handle the callback URL
       await _supabase.auth.getSessionFromUrl(uri);
-      
+
       log('Session established from callback');
     } catch (e, stack) {
       log('Error handling auth callback: $e', stackTrace: stack);
@@ -147,7 +147,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   @override
   Stream<UserModel?> get authStateChanges {
-    return _supabase.auth.onAuthStateChange.map((event) {
+    return _supabase.auth.onAuthStateChange.distinct().map((event) {
       final user = event.session?.user;
       if (user == null) {
         return null;

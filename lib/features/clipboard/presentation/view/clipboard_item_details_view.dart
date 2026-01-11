@@ -271,11 +271,13 @@ class _InfoCard extends StatelessWidget {
           value: clipboardItem.userFacingSize,
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
         ),
-        _InfoRow(
-          label: l10n.characters.sentenceCase,
-          value: clipboardItem.content.length.toString(),
-          icon: const HugeIcon(icon: HugeIcons.strokeRoundedText),
-        ),
+
+        if (clipboardItem.type.isText || clipboardItem.type.isUrl)
+          _InfoRow(
+            label: l10n.characters.sentenceCase,
+            value: clipboardItem.content.length.toString(),
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedText),
+          ),
       ],
     );
   }

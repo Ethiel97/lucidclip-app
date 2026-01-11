@@ -80,7 +80,7 @@ class LoginView extends StatelessWidget {
                   constraints: const BoxConstraints(maxWidth: 420),
                   child: _LoginCard(
                     title: l10n.appName,
-                    subtitle: l10n.appTagLine.sentenceCase,
+                    subtitle: l10n.appTagLine,
                     textTheme: textTheme,
                     colorScheme: colorScheme,
                   ),
@@ -92,7 +92,9 @@ class LoginView extends StatelessWidget {
               top: 16,
               right: 16,
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.router.back();
+                },
                 icon: const HugeIcon(
                   icon: HugeIcons.strokeRoundedCancel01,
                   size: AppSpacing.xlg,
@@ -122,7 +124,7 @@ class _LoginCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final border = Border.all(
-      color: colorScheme.onSurface.withValues(alpha: 0.08),
+      color: colorScheme.outline.withValues(alpha: 0.8),
     );
 
     return Container(

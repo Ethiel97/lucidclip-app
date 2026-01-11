@@ -56,7 +56,7 @@
       }
     }
   },
-  "appTagLine": "A smarter clipboard. On your terms",
+  "appTagLine": "LucidClip - Your clipboard, finally under control.",
   "@appTagLine": {
     "description": "Tagline for the app",
     "placeholders": {}

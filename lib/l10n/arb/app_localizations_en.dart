@@ -38,7 +38,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get appTagLine => 'A smarter clipboard. On your terms';
+  String get appTagLine => 'LucidClip - Your clipboard, finally under control.';
 
   @override
   String get appearance => 'Appearance';

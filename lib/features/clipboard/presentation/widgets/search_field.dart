@@ -34,9 +34,7 @@ class _SearchFieldState extends State<SearchField> {
       decoration: BoxDecoration(
         color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(100),
-        border: Border.all(
-          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.05),
-        ),
+        border: Border.all(color: theme.colorScheme.outline),
       ),
       child: BlocListener<SearchCubit, SearchState>(
         listenWhen: (previous, current) =>

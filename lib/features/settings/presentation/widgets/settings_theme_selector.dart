@@ -29,9 +29,7 @@ class SettingsThemeSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.04),
-        ),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

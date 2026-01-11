@@ -76,7 +76,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
               color: getBackgroundColor(context),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.04),
+                color: colorScheme.outline.withValues(alpha: .5),
               ),
             ),
             child: Row(
@@ -149,7 +149,7 @@ class _LinkPreviewWidget extends StatelessWidget {
           url: item.content,
           errorBuilder: (context, error) => Container(
             padding: const EdgeInsets.all(AppSpacing.md),
-            color: AppColors.surface,
+            color: colorScheme.surface,
             child: Text(
               l10n.failedToLoadLinkPreview,
               style: textTheme.bodySmall?.copyWith(),
@@ -157,7 +157,7 @@ class _LinkPreviewWidget extends StatelessWidget {
           ),
           loadingBuilder: (context) => Container(
             padding: const EdgeInsets.all(AppSpacing.md),
-            color: AppColors.surface,
+            color: colorScheme.surface,
             child: Column(
               spacing: AppSpacing.sm,
               mainAxisSize: MainAxisSize.min,

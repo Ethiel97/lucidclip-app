@@ -3,14 +3,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
-import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
 final Map<String, Uint8List> _sourceAppIconCache = {};
 const _sourceAppDisplaySize = 18;
 
 extension SourceAppHelper on SourceApp {
-  Widget get iconWidget {
+  Widget getIconWidget(ColorScheme colorScheme) {
     if (icon != null) {
       final cachedKey = bundleId;
       final cachedBytes = _sourceAppIconCache.putIfAbsent(
@@ -24,10 +23,10 @@ extension SourceAppHelper on SourceApp {
         height: _sourceAppDisplaySize.toDouble(),
       );
     } else {
-      return const HugeIcon(
+      return HugeIcon(
         icon: HugeIcons.strokeRounded0Square,
         size: 20,
-        color: AppColors.textMuted,
+        color: colorScheme.onSurfaceVariant,
       );
     }
   }

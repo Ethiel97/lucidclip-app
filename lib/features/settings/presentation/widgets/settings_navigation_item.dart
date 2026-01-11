@@ -39,9 +39,7 @@ class SettingsNavigationItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.04),
-          ),
+          border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
         ),
         child: Row(
           children: [
@@ -80,8 +78,11 @@ class SettingsNavigationItem extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: AppColors.surface2,
+                color: colorScheme.tertiary,
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: 0.5),
+                ),
               ),
               child: Text(
                 valueText,

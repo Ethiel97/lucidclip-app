@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
-import 'package:lucid_clip/core/theme/app_colors.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
@@ -165,9 +164,12 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Text(
       text.toUpperCase(),
-      style: AppTextStyle.functionalSmall.copyWith(color: AppColors.textMuted),
+      style: AppTextStyle.functionalSmall.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }
@@ -199,7 +201,7 @@ class _PreviewCard extends StatelessWidget {
               Text(
                 preview,
                 style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onSurface,
                 ),
               ),
         ),
@@ -216,6 +218,7 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
     final shouldShowSourceApp = context.select<SettingsCubit, bool>(
       (cubit) => cubit.state.showSourceApp,
     );
@@ -242,7 +245,7 @@ class _InfoCard extends StatelessWidget {
                 Row(
                   spacing: AppSpacing.xxs,
                   children: [
-                    clipboardItem.sourceAppIcon,
+                    clipboardItem.getSourceAppIcon(colorScheme),
                     Text(
                       clipboardItem.sourceApp!.name,
                       style: Theme.of(

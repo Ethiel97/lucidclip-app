@@ -36,9 +36,7 @@ class SettingsDropdownItem<T> extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.04),
-        ),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -70,8 +68,11 @@ class SettingsDropdownItem<T> extends StatelessWidget {
               vertical: AppSpacing.xs,
             ),
             decoration: BoxDecoration(
-              color: AppColors.surface2,
+              color: colorScheme.tertiary,
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.5),
+              ),
             ),
             child: DropdownButton<T>(
               value: value,
@@ -80,7 +81,7 @@ class SettingsDropdownItem<T> extends StatelessWidget {
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurface,
               ),
-              dropdownColor: AppColors.surface2,
+              dropdownColor: colorScheme.tertiary,
               items: items.map((T item) {
                 return DropdownMenuItem<T>(
                   value: item,

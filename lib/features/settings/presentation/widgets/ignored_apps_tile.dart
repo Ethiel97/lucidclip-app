@@ -32,7 +32,7 @@ class IgnoredAppsTile extends StatelessWidget {
       child: Row(
         spacing: AppSpacing.xs,
         children: [
-          app.iconWidget,
+          app.getIconWidget(colorScheme),
           Expanded(
             child: Text(
               app.name,

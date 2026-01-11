@@ -76,12 +76,12 @@ extension ClipboardUiHelper on ClipboardItem {
     }
   }
 
-  Widget get sourceAppIcon {
-    return sourceApp?.iconWidget ??
-        const HugeIcon(
+  Widget getSourceAppIcon(ColorScheme colorScheme) {
+    return sourceApp?.getIconWidget(colorScheme) ??
+        HugeIcon(
           icon: HugeIcons.strokeRounded0Square,
           size: 20,
-          color: AppColors.textMuted,
+          color: colorScheme.onSurfaceVariant,
         );
   }
 }

@@ -7,24 +7,24 @@ class SectionHeader extends StatelessWidget {
   final String title;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-    child: Row(
-      children: [
-        Text(
-          title.toUpperCase(),
-          style: AppTextStyle.functionalSmall.copyWith(
-            color: AppColors.textMuted,
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+      child: Row(
+        children: [
+          Text(
+            title.toUpperCase(),
+            style: AppTextStyle.functionalSmall.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Divider(
-            color: AppColors.textMuted.withValues(alpha: 0.2),
-            thickness: 1,
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Divider(color: colorScheme.outline.withValues(alpha: .8)),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

@@ -35,9 +35,7 @@ class StorageIndicator extends StatelessWidget {
             .color
             .withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.05),
-        ),
+        border: Border.all(color: colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

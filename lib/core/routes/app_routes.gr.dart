@@ -112,7 +112,9 @@ class SettingsRoute extends _i8.PageRouteInfo<SettingsRouteArgs> {
       final queryParams = data.queryParams;
       final args = data.argsAs<SettingsRouteArgs>(
         orElse: () => SettingsRouteArgs(
-          section: queryParams.get('section', SettingsSection.general),
+          section:
+              queryParams.get('section', SettingsSection.general)
+                  as _i5.SettingsSection,
         ),
       );
       return _i5.SettingsPage(key: args.key, section: args.section);

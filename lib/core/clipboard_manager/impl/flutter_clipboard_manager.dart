@@ -39,7 +39,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   void _startPolling() {
     _pollingTimer?.cancel();
     _pollingTimer = Timer.periodic(
-      BaseClipboardManager.clipboardPollingInterval,
+      BaseClipboardManager.clipboardManagerPollingInterval,
       (_) => _checkClipboardChange(),
     );
   }
@@ -63,11 +63,9 @@ class FlutterClipboardManager implements BaseClipboardManager {
     final timestamp = DateTime.now();
 
     // print("Source app: $sourceApp");
-
-
     final metadata = <String, dynamic>{
       if (sourceApp != null)
-        'source_app': SourceAppModel.fromEntity(sourceApp).toJson(),
+        'source_app': SourceAppModel.fromEntity(sourceApp).toJsonWithIcon(),
     };
 
     // print('Clipboard Metadata: $metadata');

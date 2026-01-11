@@ -141,7 +141,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         stackTrace: stackTrace,
         name: 'ClipboardCubit',
       );
-      // The item is still added to the in-memory list
     }
   }
 
@@ -165,7 +164,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         stackTrace: stackTrace,
         name: 'ClipboardCubit',
       );
-      // Continue working even if history creation fails
     }
   }
 

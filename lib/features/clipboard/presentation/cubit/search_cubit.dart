@@ -34,7 +34,7 @@ class SearchCubit extends Cubit<SearchState> {
       onError: (Object error, StackTrace stackTrace) {
         emit(
           state.copyWith(
-            searchResults: <ClipboardItems>[].toError(
+            searchResults: <ClipboardItem>[].toError(
               ErrorDetails(
                 message: 'Error watching local clipboard items',
                 stackTrace: stackTrace,

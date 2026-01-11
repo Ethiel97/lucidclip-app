@@ -21,18 +21,13 @@ class SourceAppPrivacyControl extends StatelessWidget {
       (SettingsCubit cubit) => cubit.state.settings.value!,
     );
 
-    final isExcluded = settings.excludedApps.contains(
-      clipboardItem.sourceApp,
-    );
+    final isExcluded = settings.excludedApps.contains(clipboardItem.sourceApp);
 
-    return FilledButton(
+    return TextButton(
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        backgroundColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
-        foregroundColor: colorScheme.onPrimary.withValues(alpha: 0.75),
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(8),
-        // ),
+        backgroundColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.08),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       onPressed: () {
         ScaffoldMessenger.of(context)
@@ -65,8 +60,8 @@ class SourceAppPrivacyControl extends StatelessWidget {
             : l10n.stopTrackingApp(clipboardItem.sourceApp?.name ?? ''),
         style: textTheme.bodySmall?.copyWith(
           fontWeight: FontWeight.w500,
-          fontSize: 12,
-          color: colorScheme.onPrimary.withValues(alpha: 0.75),
+          fontSize: 11,
+          color: colorScheme.onPrimary.withValues(alpha: 0.95),
         ),
       ),
     );

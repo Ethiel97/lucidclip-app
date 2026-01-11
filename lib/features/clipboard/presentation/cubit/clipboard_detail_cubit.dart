@@ -48,7 +48,8 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         clipboardItem: clipboardItem,
         action: ClipboardAction.delete,
       );
-    } catch (e) {
+    } catch (e, stack) {
+      print("Error deleting clipboard item: $e at $stack");
       emit(state.copyWith(deletionStatus: null.toError()));
     }
   }
@@ -75,7 +76,8 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         updatedAt: DateTime.now(),
       );
       await localClipboardHistoryRepository.upsert(history);
-    } catch (e) {
+    } catch (e, stack) {
+      print("Error upserting clipboard history: $e at $stack");
       // Handle error if necessary
     }
   }

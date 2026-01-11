@@ -9,10 +9,10 @@ import 'package:recase/recase.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 class StorageIndicator extends StatelessWidget {
-  const StorageIndicator({required this.used, required this.total, super.key});
+  const StorageIndicator({required this.total, required this.used, super.key});
 
-  final int used;
   final int total;
+  final int used;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,10 @@ class StorageIndicator extends StatelessWidget {
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.tertiary
             .toTinyColor()
@@ -41,7 +44,7 @@ class StorageIndicator extends StatelessWidget {
             mainAxisAlignment: isExpanded
                 ? MainAxisAlignment.start
                 : MainAxisAlignment.center,
-            spacing: AppSpacing.sm,
+            spacing: AppSpacing.xxs,
             children: [
               const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
               if (isExpanded)

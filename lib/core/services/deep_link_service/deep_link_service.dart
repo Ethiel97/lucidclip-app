@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:app_links/app_links.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/services/deep_link_service_interface.dart';
+import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart';
 
 /// Implementation of DeepLinkService for handling deep link callbacks
 @LazySingleton(as: DeepLinkService)

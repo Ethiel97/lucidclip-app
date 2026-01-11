@@ -91,7 +91,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   });
 
   await getIt<TrayManagerService>().initialize();
-  
+
   // Only clear app data in development when explicitly needed
   // await clearAppData();
 

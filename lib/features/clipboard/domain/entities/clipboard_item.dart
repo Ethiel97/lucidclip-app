@@ -116,8 +116,9 @@ class ClipboardItem extends Equatable {
   SourceApp? get sourceApp {
     if (metadata.containsKey('source_app')) {
       final sourceAppData = metadata['source_app'];
+
       if (sourceAppData is Map<String, dynamic>) {
-        return SourceAppModel.fromJson(sourceAppData).toEntity();
+        return SourceAppModel.fromJsonWithIcon(sourceAppData).toEntity();
       }
     }
     return null;

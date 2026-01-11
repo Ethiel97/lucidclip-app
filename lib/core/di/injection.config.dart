@@ -209,11 +209,6 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'sourceAppCache',
     );
-    gh.lazySingleton<_i340.LocalSettingsRepository>(
-      () => _i958.LocalSettingsRepositoryImpl(
-        gh<_i173.SettingsLocalDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i51.SourceAppProvider>(
       () => _i740.MethodChannelSourceAppProvider(
         gh<_i212.CacheService<_i51.SourceAppModel>>(
@@ -266,6 +261,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i244.SupabaseRepositoryImpl(
         remoteDataSource: gh<_i42.ClipboardRemoteDataSource>(),
         iconService: gh<_i212.SourceAppIconService>(),
+      ),
+    );
+    gh.lazySingleton<_i340.LocalSettingsRepository>(
+      () => _i958.LocalSettingsRepositoryImpl(
+        iconService: gh<_i212.SourceAppIconService>(),
+        localDataSource: gh<_i173.SettingsLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i966.SettingsCubit>(

@@ -6,7 +6,7 @@ import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
 final Map<String, Uint8List> _sourceAppIconCache = {};
-const _sourceAppDisplaySize = 18;
+const _sourceAppDisplaySize = 20;
 
 extension SourceAppHelper on SourceApp {
   Widget getIconWidget(ColorScheme colorScheme) {

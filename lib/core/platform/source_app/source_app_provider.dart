@@ -6,7 +6,7 @@ import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 
 final Map<String, Uint8List> _sourceAppIconCache = {};
-const _sourceAppDisplaySize = 20;
+const _sourceAppDisplaySize = 18;
 
 extension SourceAppHelper on SourceApp {
   Widget getIconWidget(ColorScheme colorScheme) {
@@ -17,10 +17,13 @@ extension SourceAppHelper on SourceApp {
         () => Uint8List.fromList(icon!),
       );
 
-      return CachedClipboardImage.memory(
-        bytes: cachedBytes,
-        width: _sourceAppDisplaySize.toDouble(),
-        height: _sourceAppDisplaySize.toDouble(),
+      return Transform.scale(
+        scale: 1.25,
+        child: CachedClipboardImage.memory(
+          bytes: cachedBytes,
+          width: _sourceAppDisplaySize.toDouble(),
+          height: _sourceAppDisplaySize.toDouble(),
+        ),
       );
     } else {
       return HugeIcon(

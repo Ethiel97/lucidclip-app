@@ -51,10 +51,6 @@ class LocalSettingsRepositoryImpl implements LocalSettingsRepository {
       return localDataSource.watchSettings(userId).distinct().asyncMap((
         model,
       ) async {
-        //inject the user settings excluded apps icon from cache
-        // to the entity when emitting the stream
-        // by Copilot AI
-
         if (model == null) return null;
 
         final entity = model.toEntity();
@@ -63,17 +59,17 @@ class LocalSettingsRepositoryImpl implements LocalSettingsRepository {
           final excluded = entity.excludedApps;
           if (excluded.isEmpty) return entity;
 
-          final updated = <SourceApp>[];
+          final updatedExcludedApps = <SourceApp>[];
           for (final app in excluded) {
             try {
               final icon = await iconService.getIcon(app.bundleId);
-              updated.add(app.copyWith(icon: icon ?? app.icon));
+              updatedExcludedApps.add(app.copyWith(icon: icon ?? app.icon));
             } catch (_) {
-              updated.add(app);
+              updatedExcludedApps.add(app);
             }
           }
 
-          return entity.copyWith(excludedApps: updated);
+          return entity.copyWith(excludedApps: updatedExcludedApps);
         } catch (_) {
           return entity;
         }

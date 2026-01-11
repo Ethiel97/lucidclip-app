@@ -68,7 +68,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   await Supabase.initialize(
     url: AppConstants.supabaseProjectUrl,
     debug: true,
-    anonKey: AppConstants.supabaseAnonKey,
+    anonKey: AppConstants.supabasePublishableKey,
   );
 
   configureDependencies();

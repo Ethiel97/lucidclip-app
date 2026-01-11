@@ -385,6 +385,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
+  String get signedInSuccessfully => 'Signed in successfully!';
+
+  @override
   String get signingIn => 'Signing in...';
 
   @override
@@ -444,6 +447,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme => 'Theme';
 
   @override
+  String get trackingPreferencesUpdated => 'Tracking preferences updated!';
+
+  @override
   String trackingResumedForApp(String appName) {
     return 'Tracking resumed for $appName';
   }
@@ -465,7 +471,4 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get yourClipboardItemsWillAppearHere =>
       'Your clipboard items will appear here.';
-
-  @override
-  String get trackingPreferencesUpdated => 'Tracking preferences updated!';
 }

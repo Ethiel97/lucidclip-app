@@ -748,6 +748,12 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOut;
 
+  /// Message shown when the user signs in successfully
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in successfully!'**
+  String get signedInSuccessfully;
+
   /// Message shown when signing in
   ///
   /// In en, this message translates to:
@@ -856,6 +862,12 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get theme;
 
+  /// Message shown when the user updates their tracking preferences
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking preferences updated!'**
+  String get trackingPreferencesUpdated;
+
   /// Message shown when tracking is resumed for an app
   ///
   /// In en, this message translates to:
@@ -891,12 +903,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your clipboard items will appear here.'**
   String get yourClipboardItemsWillAppearHere;
-
-  /// Message shown when the user updates their tracking preferences
-  ///
-  /// In en, this message translates to:
-  /// **'Tracking preferences updated!'**
-  String get trackingPreferencesUpdated;
 }
 
 class _AppLocalizationsDelegate

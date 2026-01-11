@@ -24,7 +24,7 @@ class SourceAppPrivacyControlListener extends StatelessWidget {
               toastification.show(
                 context: context,
                 type: ToastificationType.success,
-                style: ToastificationStyle.fillColored,
+                style: ToastificationStyle.minimal,
                 title: Text(l10n.appNoLongerTracked(app.name)),
                 description: Text(l10n.appNoLongerTrackedDescription(app.name)),
                 autoCloseDuration: const Duration(seconds: 10),
@@ -44,7 +44,7 @@ class SourceAppPrivacyControlListener extends StatelessWidget {
               toastification.show(
                 context: context,
                 type: ToastificationType.success,
-                style: ToastificationStyle.fillColored,
+                style: ToastificationStyle.minimal,
                 title: Text(l10n.trackingResumedForApp(app.name)),
                 description: Text(
                   l10n.trackingResumedForAppDescription(app.name),

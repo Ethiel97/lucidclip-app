@@ -28,7 +28,7 @@ class LoginView extends StatelessWidget {
               toastification.show(
                 context: context,
                 type: ToastificationType.error,
-                style: ToastificationStyle.fillColored,
+                style: ToastificationStyle.minimal,
                 title: Text(l10n.authenticationError.sentenceCase),
                 description: Text(
                   state.errorMessage ?? l10n.errorOccurred.sentenceCase,
@@ -36,6 +36,14 @@ class LoginView extends StatelessWidget {
                 autoCloseDuration: const Duration(seconds: 5),
               );
             } else if (state.isAuthenticated) {
+              toastification.show(
+                context: context,
+                type: ToastificationType.success,
+                style: ToastificationStyle.minimal,
+                title: Text(l10n.signedInSuccessfully.sentenceCase),
+                autoCloseDuration: const Duration(seconds: 5),
+              );
+
               context.router.root.back();
             }
           },

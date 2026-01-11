@@ -512,6 +512,10 @@
   "@signOut": {
     "description": "Button text to sign out"
   },
+  "signedInSuccessfully": "Signed in successfully!",
+  "@signedInSuccessfully": {
+    "description": "Message shown when the user signs in successfully"
+  },
   "signingIn": "Signing in...",
   "@signingIn": {
     "description": "Message shown when signing in"
@@ -598,6 +602,10 @@
   "@theme": {
     "description": "Label for the Theme settings"
   },
+  "trackingPreferencesUpdated": "Tracking preferences updated!",
+  "@trackingPreferencesUpdated": {
+    "description": "Message shown when the user updates their tracking preferences"
+  },
   "trackingResumedForApp": "Tracking resumed for {appName}",
   "@trackingResumedForApp": {
     "description": "Message shown when tracking is resumed for an app",
@@ -635,9 +643,5 @@
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"
-  },
-  "trackingPreferencesUpdated": "Tracking preferences updated!",
-  "@trackingPreferencesUpdated": {
-    "description": "Message shown when the user updates their tracking preferences"
   }
 }

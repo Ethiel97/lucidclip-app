@@ -20,7 +20,11 @@ class LucidClipPage extends StatelessWidget {
       ],
       child: Scaffold(
         body: AutoTabsRouter(
-          routes: const [ClipboardRoute(), SnippetsRoute(), SettingsRoute()],
+          routes: [
+            const ClipboardRoute(),
+            const SnippetsRoute(),
+            SettingsRoute(),
+          ],
           builder: (context, child) {
             return SourceAppPrivacyControlListener(
               child: Row(

@@ -5,14 +5,67 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
-import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
-import 'package:lucid_clip/features/settings/presentation/widgets/widgets.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
 //TODO(Ethiel97): Add excluded apps management
-class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
+class SettingsView extends StatefulWidget {
+  const SettingsView({required this.section, super.key});
+
+  final SettingsSection section;
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  final ScrollController _scrollController = ScrollController();
+
+  final Map<SettingsSection, GlobalKey> _sectionKeys = {
+    SettingsSection.general: GlobalKey(),
+    SettingsSection.appearance: GlobalKey(),
+    SettingsSection.clipboard: GlobalKey(),
+    SettingsSection.sync: GlobalKey(),
+    SettingsSection.about: GlobalKey(),
+  };
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToSection(widget.section);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant SettingsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.section != widget.section) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToSection(widget.section);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSection(SettingsSection section) {
+    final keyContext = _sectionKeys[section]?.currentContext;
+    if (keyContext != null) {
+      Scrollable.ensureVisible(
+        keyContext,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +118,7 @@ class SettingsView extends StatelessWidget {
                 children: [
                   // General Section
                   SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.general],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings02,
                     ),
@@ -96,6 +150,7 @@ class SettingsView extends StatelessWidget {
                   // Appearance Section
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.appearance],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedPaintBoard,
                     ),
@@ -112,6 +167,7 @@ class SettingsView extends StatelessWidget {
                   // Clipboard Section
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.clipboard],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedClipboard,
                     ),

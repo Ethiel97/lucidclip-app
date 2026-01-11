@@ -414,9 +414,7 @@ class TrayManagerService with TrayListener {
 
       final context = appRouter.navigatorKey.currentContext;
       if (context != null && context.mounted) {
-        await appRouter.navigate(
-          const LucidClipRoute(children: [SettingsRoute()]),
-        );
+        await appRouter.navigate(LucidClipRoute(children: [SettingsRoute()]));
       }
 
       developer.log('Opening settings...', name: 'TrayManagerService');

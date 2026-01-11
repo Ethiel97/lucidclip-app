@@ -36,10 +36,10 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
     return isHovering
         ? colorScheme.tertiary
               .toTinyColor()
-              .darken(3)
+              .darken(5)
               .color
               .withValues(alpha: 0.5)
-        : colorScheme.surface;
+        : colorScheme.surface.toTinyColor().darken(2).color;
   }
 
   bool get shouldShowLinkPreview => widget.item.type.isUrl && isHovering;

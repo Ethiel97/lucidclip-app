@@ -67,9 +67,9 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
     final l10n = context.l10n;
     return Container(
       width: AppConstants.clipboardItemDetailsViewWidth,
-      decoration: const BoxDecoration(
-        color: AppColors.surface2,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: colorScheme.tertiary,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(AppSpacing.lg),
           bottomLeft: Radius.circular(AppSpacing.lg),
         ),
@@ -86,7 +86,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                   child: Text(
                     l10n.itemDetails.sentenceCase,
                     style: textTheme.headlineSmall?.copyWith(
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -95,10 +95,10 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                   onPressed: () {
                     widget.onClose?.call();
                   },
-                  icon: const HugeIcon(
+                  icon: HugeIcon(
                     icon: HugeIcons.strokeRoundedCancel01,
                     size: 20,
-                    color: AppColors.textSecondary,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -182,12 +182,13 @@ class _PreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.5,
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
       ),
       child: RepaintBoundary(
@@ -299,7 +300,7 @@ class _InfoRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -432,9 +433,7 @@ class _ActionsRow extends StatelessWidget {
           ),
           label: Text(
             isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
-            style: textTheme.labelSmall?.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: textTheme.labelSmall?.copyWith(color: colorScheme.onSurface),
           ),
         ),
         const SizedBox(width: AppSpacing.xs),

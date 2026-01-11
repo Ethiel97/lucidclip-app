@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flexible_dropdown/flexible_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class ClipboardItemTypeFilter extends StatelessWidget {
   const ClipboardItemTypeFilter({super.key});
@@ -16,6 +18,7 @@ class ClipboardItemTypeFilter extends StatelessWidget {
     final selectedFilterType = context.select(
       (SearchCubit cubit) => cubit.state.filterType,
     );
+    final textStyle = Theme.of(context).textTheme.bodySmall;
     final colorScheme = Theme.of(context).colorScheme;
 
     final entries =
@@ -36,7 +39,12 @@ class ClipboardItemTypeFilter extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(filterType.filterTypeLabel(l10n).titleCase),
+                        child: Text(
+                          filterType.filterTypeLabel(l10n).titleCase,
+                          style: textStyle?.copyWith(
+                            color: colorScheme.onPrimary,
+                          ),
+                        ),
                       ),
                       if (filterType == selectedFilterType) ...[
                         const SizedBox(width: 8),
@@ -49,24 +57,33 @@ class ClipboardItemTypeFilter extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  context.read<SearchCubit>().setFilterType(filterType);
-                  Navigator.pop(context);
+                  final cubit = context.read<SearchCubit>();
+                  context.pop();
+                  cubit.setFilterType(filterType);
                 },
               ),
             )
             .toList();
 
     return FlexibleDropdown(
+      duration: const Duration(milliseconds: 120),
       animationType: AnimationType.fade,
       overlayChild: Material(
-        color: colorScheme.surface,
+        color: colorScheme.surface.toTinyColor().darken(5).color,
         borderRadius: BorderRadius.circular(8),
         child: Container(
           constraints: const BoxConstraints(maxWidth: 200),
-          child: Column(mainAxisSize: MainAxisSize.min, children: entries),
+          child: Column(
+            spacing: AppSpacing.sm,
+            mainAxisSize: MainAxisSize.min,
+            children: entries,
+          ),
         ),
       ),
-      child: const HugeIcon(icon: HugeIcons.strokeRoundedFilter),
+      child: HugeIcon(
+        icon: HugeIcons.strokeRoundedFilter,
+        color: colorScheme.onSurface,
+      ),
     );
   }
 }

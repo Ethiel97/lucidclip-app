@@ -62,13 +62,10 @@ class FlutterClipboardManager implements BaseClipboardManager {
     final files = await Pasteboard.files();
     final timestamp = DateTime.now();
 
-    // print("Source app: $sourceApp");
     final metadata = <String, dynamic>{
       if (sourceApp != null)
         'source_app': SourceAppModel.fromEntity(sourceApp).toJsonWithIcon(),
     };
-
-    // print('Clipboard Metadata: $metadata');
 
     if (files.isNotEmpty) {
       for (final file in files) {

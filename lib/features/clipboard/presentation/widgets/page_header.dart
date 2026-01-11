@@ -7,7 +7,6 @@ import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/auth/presentation/presentation.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
-
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -29,6 +28,13 @@ class PageHeader extends StatelessWidget {
         const ClipboardItemTypeFilter(),
         const IncognitoModeToggleButton(),
         FilledButton.icon(
+          style: FilledButton.styleFrom(
+            side: BorderSide(
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
+            ),
+          ),
           onPressed: () {
             if (isAuthenticated) {
               // TODO(Ethiel97): Sync functionality
@@ -36,7 +42,10 @@ class PageHeader extends StatelessWidget {
               context.router.root.navigate(const LoginRoute());
             }
           },
-          icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabaseSync),
+          icon: const HugeIcon(
+            icon: HugeIcons.strokeRoundedDatabaseSync01,
+            size: 18,
+          ),
           label: Text(l10n.sync.sentenceCase),
         ),
       ],

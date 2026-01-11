@@ -2,10 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -27,7 +25,6 @@ class IgnoredAppsPage extends StatelessWidget {
         builder: (context, state) {
           final l10n = context.l10n;
           final textTheme = Theme.of(context).textTheme;
-          final colorScheme = Theme.of(context).colorScheme;
           final settings = state.settings.value;
           final excluded = settings?.excludedApps ?? [];
 
@@ -58,42 +55,9 @@ class IgnoredAppsPage extends StatelessWidget {
             itemCount: excluded.length,
             itemBuilder: (context, index) {
               final app = excluded[index];
-
-              return Container(
-                margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.md,
-                ),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  spacing: AppSpacing.sm,
-                  children: [
-                    app.iconWidget,
-                    Expanded(
-                      child: Text(
-                        app.name,
-                        style: textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: colorScheme.primary.withValues(
-                          alpha: 0.9,
-                        ),
-                      ),
-                      onPressed: () {
-                        context.read<ClipboardCubit>().toggleAppExclusion(app);
-                      },
-                      child: Text(l10n.resumeTracking),
-                    ),
-                  ],
-                ),
+              return IgnoredAppsTile(
+                app: app,
+                key: ValueKey('ignored_app_tile_${app.bundleId}'),
               );
             },
           );

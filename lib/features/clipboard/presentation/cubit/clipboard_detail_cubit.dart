@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
@@ -49,8 +51,9 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         action: ClipboardAction.delete,
       );
     } catch (e, stack) {
-      print("Error deleting clipboard item: $e at $stack");
       emit(state.copyWith(deletionStatus: null.toError()));
+
+      log('Error deleting clipboard item: $e', stackTrace: stack);
     }
   }
 
@@ -77,7 +80,7 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
       );
       await localClipboardHistoryRepository.upsert(history);
     } catch (e, stack) {
-      print("Error upserting clipboard history: $e at $stack");
+      log('Error upserting clipboard history: $e', stackTrace: stack);
       // Handle error if necessary
     }
   }

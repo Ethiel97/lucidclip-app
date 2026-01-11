@@ -102,7 +102,7 @@ class SettingsView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   SettingsThemeSelector(
-                    currentTheme: settings.theme,
+                    currentTheme: settings.theme.toLowerCase(),
                     onThemeChanged: (theme) {
                       context.read<SettingsCubit>().updateTheme(theme);
                     },

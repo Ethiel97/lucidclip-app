@@ -34,8 +34,11 @@ class SettingsDropdownItem<T> extends StatelessWidget {
         vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.04),
+        ),
       ),
       child: Row(
         children: [

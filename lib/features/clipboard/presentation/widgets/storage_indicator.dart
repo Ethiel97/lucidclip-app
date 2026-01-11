@@ -35,6 +35,9 @@ class StorageIndicator extends StatelessWidget {
             .color
             .withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.05),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +68,7 @@ class StorageIndicator extends StatelessWidget {
                 Text(
                   '$used/${l10n.itemsCount(total)}',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onPrimary,
+                    color: colorScheme.onSurface,
                   ),
                 ),
 
@@ -89,13 +92,13 @@ class StorageIndicator extends StatelessWidget {
                   radius: 24,
                   lineWidth: 4,
                   percent: ratio.clamp(0.0, 1.0),
-                  backgroundColor: colorScheme.onPrimary.withValues(
+                  backgroundColor: colorScheme.onSurface.withValues(
                     alpha: 0.04,
                   ),
                   center: Text(
                     '${(ratio * 100).toStringAsFixed(0)}%',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   linearGradient: LinearGradient(

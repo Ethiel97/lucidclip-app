@@ -52,12 +52,12 @@ extension ClipboardUiHelper on ClipboardItem {
   bool get isImageFile =>
       (filePath?.isNotEmpty ?? true) && File(filePath!).isImage;
 
-  Widget preview({int? maxLines}) {
+  Widget preview({required ColorScheme colorScheme, int? maxLines}) {
     final textPreview = Text(
       content,
       overflow: TextOverflow.ellipsis,
       maxLines: maxLines,
-      style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+      style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
     );
 
     if (type case ClipboardItemType.text || ClipboardItemType.url) {

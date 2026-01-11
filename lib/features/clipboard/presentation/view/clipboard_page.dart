@@ -94,6 +94,10 @@ class _ClipboardViewState extends State<ClipboardView>
       (SearchCubit cubit) => cubit.state.isSearchMode,
     );
 
+    final searchFilterType = context.select(
+      (SearchCubit cubit) => cubit.state.filterType,
+    );
+
     final (pinnedItems, recentItems) = getListItems(context);
 
     final allItems = [
@@ -142,6 +146,11 @@ class _ClipboardViewState extends State<ClipboardView>
                               ),
                             )
                           : ListView.builder(
+                              // key: ValueKey(value)
+                              key: ValueKey(
+                                'list_${isSearchMode}_$searchFilterType',
+                              ),
+
                               physics: const ClampingScrollPhysics(),
                               itemCount: allItems.length,
                               addAutomaticKeepAlives: false,

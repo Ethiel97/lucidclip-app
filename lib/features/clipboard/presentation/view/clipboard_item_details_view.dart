@@ -63,6 +63,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     return Container(
       width: AppConstants.clipboardItemDetailsViewWidth,
@@ -121,6 +122,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                         _PreviewCard(
                           previewWidget: widget.clipboardItem.preview(
                             maxLines: 500,
+                            colorScheme: colorScheme,
                           ),
                           preview: widget.clipboardItem.content,
                         ),

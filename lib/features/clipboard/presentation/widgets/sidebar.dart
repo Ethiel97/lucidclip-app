@@ -9,6 +9,7 @@ import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class SidebarItemConfig<T> {
   const SidebarItemConfig({
@@ -97,7 +98,7 @@ class _SidebarState extends State<Sidebar> {
       width: isExpanded
           ? AppConstants.clipboardSidebarWidth
           : AppConstants.collapsedSidebarWidth,
-      color: colorScheme.surface,
+      color: colorScheme.surface.toTinyColor().darken(5).color,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
         children: [

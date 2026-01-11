@@ -6,6 +6,7 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:metalink_flutter/metalink_flutter.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class ClipboardItemTile extends StatefulWidget {
   const ClipboardItemTile({required this.item, super.key});
@@ -16,9 +17,13 @@ class ClipboardItemTile extends StatefulWidget {
   State<ClipboardItemTile> createState() => _ClipboardItemTileState();
 }
 
-class _ClipboardItemTileState extends State<ClipboardItemTile> {
-  LinkPreviewController? _linkPreviewController;
+class _ClipboardItemTileState extends State<ClipboardItemTile>
+    with AutomaticKeepAliveClientMixin {
   bool isHovering = false;
+  LinkPreviewController? _linkPreviewController;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -26,14 +31,23 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
     super.dispose();
   }
 
-  Color get _backgroundColor => isHovering
-      ? AppColors.surface2.withValues(alpha: 0.4)
-      : AppColors.surface;
+  Color getBackgroundColor(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return isHovering
+        ? colorScheme.tertiary
+              .toTinyColor()
+              .darken(3)
+              .color
+              .withValues(alpha: 0.5)
+        : colorScheme.surface;
+  }
 
   bool get shouldShowLinkPreview => widget.item.type.isUrl && isHovering;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    super.build(context);
     return MouseRegion(
       onEnter: (_) {
         if (!isHovering) {
@@ -59,8 +73,11 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
               vertical: AppSpacing.sm,
             ),
             decoration: BoxDecoration(
-              color: _backgroundColor,
+              color: getBackgroundColor(context),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.04),
+              ),
             ),
             child: Row(
               children: [
@@ -75,7 +92,10 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
                         )
                       : Align(
                           alignment: Alignment.centerLeft,
-                          child: widget.item.preview(maxLines: 1),
+                          child: widget.item.preview(
+                            maxLines: 1,
+                            colorScheme: colorScheme,
+                          ),
                         ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -110,6 +130,7 @@ class _LinkPreviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     final isLinkPreviewEnabled = context.select(
       (SettingsCubit cubit) => cubit.state.previewLinks,
@@ -155,7 +176,7 @@ class _LinkPreviewWidget extends StatelessWidget {
           ),
         ),
       ),
-      child: item.preview(maxLines: 1),
+      child: item.preview(maxLines: 1, colorScheme: colorScheme),
     );
   }
 }

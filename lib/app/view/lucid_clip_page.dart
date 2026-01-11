@@ -26,7 +26,7 @@ class LucidClipPage extends StatelessWidget {
               child: Row(
                 children: [
                   const Sidebar(),
-                  const VerticalDivider(width: 1, thickness: .08),
+                  const VerticalDivider(width: 1, thickness: .25),
                   Expanded(child: child),
                 ],
               ),

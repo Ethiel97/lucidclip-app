@@ -65,6 +65,13 @@ class IncognitoModeToggleButton extends StatelessWidget {
       builder: (context, incognitoMode) => FilledButton(
         onPressed: () {},
         child: FilledButton.icon(
+          style: FilledButton.styleFrom(
+            side: BorderSide(
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
+            ),
+          ),
           onPressed: () {
             if (incognitoMode) {
               context.read<SettingsCubit>().updateIncognitoMode();
@@ -76,7 +83,7 @@ class IncognitoModeToggleButton extends StatelessWidget {
             icon: incognitoMode
                 ? HugeIcons.strokeRoundedPlay
                 : HugeIcons.strokeRoundedPause,
-            size: 20,
+            size: 18,
           ),
           label: Text(
             incognitoMode

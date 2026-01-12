@@ -74,8 +74,8 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   configureDependencies();
 
   const windowOptions = WindowOptions(
-    minimumSize: Size(900, 600),
-    size: Size(1000, 700),
+    minimumSize: Size(800, 500),
+    size: Size(800, 500),
     center: true,
     title: 'LucidClip',
     // backgroundColor: Colors.transparent,

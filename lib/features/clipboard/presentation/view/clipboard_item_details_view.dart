@@ -240,6 +240,7 @@ class _InfoCard extends StatelessWidget {
           _InfoRow(
             label: l10n.source.sentenceCase,
             actionWidget: ProGateOverlay(
+              isPro: true,
               child: SourceAppPrivacyControl(clipboardItem: clipboardItem),
             ),
             valueWidget: Row(

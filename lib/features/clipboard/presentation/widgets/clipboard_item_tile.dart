@@ -66,7 +66,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
         child: ClipboardContextMenu(
           clipboardItem: widget.item,
           child: Container(
-            height: 60,
+            height: 52,
             margin: const EdgeInsets.only(bottom: AppSpacing.sm),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,

@@ -3,11 +3,13 @@ abstract class RemoteSyncClient {
   Future<void> upsert({
     required String table,
     required Map<String, dynamic> data,
+    String? onConflict,
   });
 
   Future<void> upsertBatch({
     required String table,
     required List<Map<String, dynamic>> data,
+    String? onConflict,
   });
 
   Future<List<Map<String, dynamic>>> fetch({
@@ -29,6 +31,7 @@ abstract class RemoteSyncClient {
   Stream<List<T>> watch<T>({
     required String table,
     Map<String, dynamic>? filters,
+    String? primaryKey,
   });
 
   Future<void> delete({

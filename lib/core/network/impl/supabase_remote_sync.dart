@@ -51,24 +51,29 @@ class SupabaseRemoteSync implements RemoteSyncClient {
   Future<void> upsert({
     required String table,
     required Map<String, dynamic> data,
+    String? onConflict,
   }) async {
-    await _supabase.from(table).upsert(data, onConflict: 'id');
+    await _supabase.from(table).upsert(data, onConflict: onConflict ?? 'id');
   }
 
   @override
   Future<void> upsertBatch({
     required String table,
     required List<Map<String, dynamic>> data,
+    String? onConflict,
   }) async {
-    await _supabase.from(table).upsert(data, onConflict: 'id');
+    await _supabase.from(table).upsert(data, onConflict: onConflict ?? 'id');
   }
 
   @override
   Stream<List<T>> watch<T>({
     required String table,
     Map<String, dynamic>? filters,
+    String? primaryKey,
   }) {
-    final stream = _supabase.from(table).stream(primaryKey: ['id']);
+    final stream = _supabase
+        .from(table)
+        .stream(primaryKey: [primaryKey ?? 'id']);
 
     if (filters != null) {
       filters.forEach((key, value) {

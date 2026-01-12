@@ -153,6 +153,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         try {
           await settingsRepository.updateSettings(updatedSettings);
         } catch (e) {
+          log(
+            'Failed to sync settings to remote for user $_currentUserId: $e',
+            name: 'SettingsCubit',
+          );
           // Log but don't fail if remote sync fails
           // The settings are already saved locally
         }

@@ -34,7 +34,11 @@ class SupabaseSettingsRemoteDataSource implements SettingsRemoteDataSource {
   @override
   Future<void> upsertSettings(Map<String, dynamic> data) async {
     try {
-      await _networkClient.upsert(table: userSettingsTable, data: data);
+      await _networkClient.upsert(
+        table: userSettingsTable,
+        data: data,
+        onConflict: 'user_id',
+      );
     } catch (e, stack) {
       throw NetworkException('Failed to upsert settings: $e $stack');
     }
@@ -46,6 +50,7 @@ class SupabaseSettingsRemoteDataSource implements SettingsRemoteDataSource {
       final stream = _networkClient.watch<UserSettingsModel>(
         table: userSettingsTable,
         filters: {'user_id': userId},
+        primaryKey: 'user_id',
       );
 
       return stream.map((response) {

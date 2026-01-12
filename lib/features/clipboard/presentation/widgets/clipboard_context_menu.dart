@@ -69,6 +69,7 @@ class ClipboardContextMenu extends StatelessWidget {
               child: HugeIcon(icon: item.icon as List<List>),
             ),
             onTap: () {
+              Navigator.pop(context);
               switch (item.label) {
                 case final l when l == l10n.copyPath.sentenceCase:
                   Clipboard.setData(
@@ -95,7 +96,6 @@ class ClipboardContextMenu extends StatelessWidget {
                   context.read<ClipboardCubit>().copyToClipboard(clipboardItem);
                 // Add other cases as needed
               }
-              Navigator.pop(context);
             },
           ),
         )

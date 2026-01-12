@@ -21,5 +21,5 @@ class CacheEntry<T> {
       canExpire != null &&
       canExpire!() &&
       expiresAt != null &&
-      DateTime.now().isAfter(expiresAt!);
+      DateTime.now().toUtc().isAfter(expiresAt!);
 }

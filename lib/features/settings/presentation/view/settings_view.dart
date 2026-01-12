@@ -189,6 +189,7 @@ class _SettingsViewState extends State<SettingsView> {
                     description: l10n.incognitoModeDescription.sentenceCase,
                     value: settings.incognitoMode,
                     onChanged: (value) {
+                      print("Toggling incognito mode to: $value");
                       context.read<SettingsCubit>().updateIncognitoMode(
                         incognitoMode: value,
                       );

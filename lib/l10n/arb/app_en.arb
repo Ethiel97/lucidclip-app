@@ -230,6 +230,10 @@
   "@format": {
     "description": "Label for the format of the content"
   },
+  "free": "Free",
+  "@free": {
+    "description": "Name of the free plan"
+  },
   "general": "General",
   "@general": {
     "description": "Label for the General settings"
@@ -420,6 +424,10 @@
   "privateSessionDuration": "Private Session Duration",
   "@privateSessionDuration": {
     "description": "Label for private session duration options"
+  },
+  "pro": "Pro",
+  "@pro": {
+    "description": "Name of the pro plan"
   },
   "quit": "Quit",
   "@quit": {

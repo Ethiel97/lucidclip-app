@@ -58,10 +58,16 @@ class IncognitoModeToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+
+    final incognitoMode = context.select(
+      (SettingsCubit cubit) =>
+          cubit.state.settings.value?.incognitoMode ?? false,
+    );
+
+    print("incognito mode: $incognitoMode ");
+
     return BlocSelector<SettingsCubit, SettingsState, bool>(
-      selector: (state) {
-        return state.incognitoMode;
-      },
+      selector: (state) => state.incognitoMode,
       builder: (context, incognitoMode) => FilledButton.icon(
         style: FilledButton.styleFrom(
           side: BorderSide(color: Theme.of(context).colorScheme.outline),

@@ -5,6 +5,7 @@ import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -238,7 +239,9 @@ class _InfoCard extends StatelessWidget {
         if (shouldShowSourceApp && isSourceAppValid)
           _InfoRow(
             label: l10n.source.sentenceCase,
-            actionWidget: SourceAppPrivacyControl(clipboardItem: clipboardItem),
+            actionWidget: ProGateOverlay(
+              child: SourceAppPrivacyControl(clipboardItem: clipboardItem),
+            ),
             valueWidget: Row(
               spacing: AppSpacing.sm,
               children: [
@@ -418,27 +421,31 @@ class _ActionsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
 
         // Pin
-        OutlinedButton.icon(
-          onPressed: onTogglePin,
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: colorScheme.outline),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xxs,
+        ProGateOverlay(
+          child: OutlinedButton.icon(
+            onPressed: onTogglePin,
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: colorScheme.outline),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xxs,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(999),
+              ),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(999),
+            icon: HugeIcon(
+              icon: isPinned
+                  ? HugeIcons.strokeRoundedPinOff
+                  : HugeIcons.strokeRoundedPin,
+              size: 16,
             ),
-          ),
-          icon: HugeIcon(
-            icon: isPinned
-                ? HugeIcons.strokeRoundedPinOff
-                : HugeIcons.strokeRoundedPin,
-            size: 16,
-          ),
-          label: Text(
-            isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
-            style: textTheme.labelSmall?.copyWith(color: colorScheme.onSurface),
+            label: Text(
+              isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
+              style: textTheme.labelSmall?.copyWith(
+                color: colorScheme.onSurface,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: AppSpacing.xs),

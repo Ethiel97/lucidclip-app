@@ -382,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Format'**
   String get format;
 
+  /// Name of the free plan
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get free;
+
   /// Label for the General settings
   ///
   /// In en, this message translates to:
@@ -627,6 +633,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Private Session Duration'**
   String get privateSessionDuration;
+
+  /// Name of the pro plan
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get pro;
 
   /// Tray menu item to exit the application
   ///

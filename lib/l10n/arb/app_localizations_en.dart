@@ -175,6 +175,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get format => 'Format';
 
   @override
+  String get free => 'Free';
+
+  @override
   String get general => 'General';
 
   @override
@@ -315,6 +318,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privateSessionDuration => 'Private Session Duration';
+
+  @override
+  String get pro => 'Pro';
 
   @override
   String get quit => 'Quit';

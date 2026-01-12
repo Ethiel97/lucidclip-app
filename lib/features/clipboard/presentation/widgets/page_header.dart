@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/auth/presentation/presentation.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
@@ -27,22 +28,25 @@ class PageHeader extends StatelessWidget {
         const Expanded(child: SearchField()),
         const ClipboardItemTypeFilter(),
         const IncognitoModeToggleButton(),
-        FilledButton.icon(
-          style: FilledButton.styleFrom(
-            side: BorderSide(color: Theme.of(context).colorScheme.outline),
+        ProGateOverlay(
+          blockInteractions: false,
+          child: FilledButton.icon(
+            style: FilledButton.styleFrom(
+              side: BorderSide(color: Theme.of(context).colorScheme.outline),
+            ),
+            onPressed: () {
+              if (isAuthenticated) {
+                // TODO(Ethiel97): Sync functionality
+              } else {
+                context.router.root.navigate(const LoginRoute());
+              }
+            },
+            icon: const HugeIcon(
+              icon: HugeIcons.strokeRoundedDatabaseSync01,
+              size: 18,
+            ),
+            label: Text(l10n.sync.sentenceCase),
           ),
-          onPressed: () {
-            if (isAuthenticated) {
-              // TODO(Ethiel97): Sync functionality
-            } else {
-              context.router.root.navigate(const LoginRoute());
-            }
-          },
-          icon: const HugeIcon(
-            icon: HugeIcons.strokeRoundedDatabaseSync01,
-            size: 18,
-          ),
-          label: Text(l10n.sync.sentenceCase),
         ),
       ],
     );

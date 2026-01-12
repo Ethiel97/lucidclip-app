@@ -41,7 +41,7 @@ class DiskCacheService<T, S> implements CacheService<T> {
 
     if (ttl != null) {
       final metaFile = File('$path/${_getCacheFileName(key)}.meta');
-      final expiry = DateTime.now().add(ttl).millisecondsSinceEpoch;
+      final expiry = DateTime.now().toUtc().add(ttl).millisecondsSinceEpoch;
       await metaFile.writeAsString('$expiry');
     }
   }
@@ -58,7 +58,7 @@ class DiskCacheService<T, S> implements CacheService<T> {
       if (metaFile.existsSync()) {
         final expiryStr = await metaFile.readAsString();
         final expiry = int.parse(expiryStr);
-        if (DateTime.now().millisecondsSinceEpoch > expiry) {
+        if (DateTime.now().toUtc().millisecondsSinceEpoch > expiry) {
           await remove(key);
           return null;
         }

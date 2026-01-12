@@ -31,10 +31,10 @@ class ClipboardItem extends Equatable {
     return ClipboardItem(
       content: '',
       contentHash: '',
-      createdAt: DateTime.now(),
+      createdAt: DateTime.now().toUtc(),
       id: '',
       type: ClipboardItemType.unknown,
-      updatedAt: DateTime.now(),
+      updatedAt: DateTime.now().toUtc(),
       userId: '',
     );
   }
@@ -199,5 +199,5 @@ extension ClipboardItemHelper on ClipboardItem {
   };
 
   String get timeAgo =>
-      Jiffy.parseFromDateTime(createdAt).fromNow().sentenceCase;
+      Jiffy.parseFromDateTime(createdAt).toUtc().fromNow().sentenceCase;
 }

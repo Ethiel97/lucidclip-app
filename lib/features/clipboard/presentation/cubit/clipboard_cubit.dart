@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as developer;
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -27,7 +28,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     _initializeAuthListener();
     _loadData();
     _startWatchingClipboard();
-    _watchSettings();
   }
 
   Future<void> _loadData() async {
@@ -59,6 +59,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   void _initializeAuthListener() {
     _authSubscription = authRepository.authStateChanges.listen((user) {
       _currentUserId = user?.id ?? 'guest';
+
+      _watchSettings();
     });
   }
 
@@ -80,6 +82,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       clipboardData,
     ) async {
       final settings = _userSettings;
+
+      log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
 
       if (settings?.incognitoMode ?? false) {
         // In incognito mode, do not store clipboard data
@@ -118,7 +122,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
           (item) => item.contentHash == clipboardData.contentHash,
         );
 
-        final updatedItem = existingItem.copyWith(updatedAt: DateTime.now());
+        final updatedItem = existingItem.copyWith(
+          updatedAt: DateTime.now().toUtc(),
+        );
 
         await _upsertClipboardItem(updatedItem);
         await _createClipboardHistory(updatedItem.id);
@@ -151,8 +157,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         clipboardItemId: clipboardItemId,
         action: ClipboardAction.copy,
         userId: _currentUserId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
       );
 
       // Store history locally

@@ -55,9 +55,9 @@ class SettingsState extends Equatable {
     if (currentSettings != null &&
         currentSettings.incognitoMode &&
         currentSettings.incognitoSessionEndTime != null) {
-      final remaining = currentSettings.incognitoSessionEndTime!.difference(
-        DateTime.now(),
-      );
+      final remaining = currentSettings.incognitoSessionEndTime!
+          .toUtc()
+          .difference(DateTime.now().toUtc());
       return remaining.isNegative ? Duration.zero : remaining;
     }
     return null;

@@ -49,8 +49,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   UserSettings _createDefaultSettings() {
     return UserSettings(
       userId: _currentUserId,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: DateTime.now().toUtc(),
+      updatedAt: DateTime.now().toUtc(),
     );
   }
 
@@ -142,7 +142,9 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
   Future<void> updateSettings(UserSettings settings) async {
     try {
-      final updatedSettings = settings.copyWith(updatedAt: DateTime.now());
+      final updatedSettings = settings.copyWith(
+        updatedAt: DateTime.now().toUtc(),
+      );
 
       // Update local first for immediate feedback
       await localSettingsRepository.upsertSettings(updatedSettings);
@@ -161,7 +163,12 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
           // The settings are already saved locally
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      log(
+        'Error updating settings for user $_currentUserId: $e',
+        stackTrace: stack,
+        name: 'SettingsCubit',
+      );
       emit(
         state.copyWith(
           settings: state.settings.toError(
@@ -239,21 +246,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   Future<void> updateIncognitoMode({bool incognitoMode = false}) async {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
-      // When disabling incognito mode, clear the session data
-      await updateSettings(
-        currentSettings.copyWith(
-          incognitoMode: incognitoMode,
-          incognitoSessionDurationMinutes: !incognitoMode
-              ? null
-              : currentSettings.incognitoSessionDurationMinutes,
-          incognitoSessionEndTime: !incognitoMode
-              ? null
-              : currentSettings.incognitoSessionEndTime,
-        ),
-      );
-
-      // Cancel timer when disabling incognito mode
-      if (!incognitoMode) {
+      if (incognitoMode) {
+        await startPrivateSession();
+      } else {
+        await updateSettings(currentSettings.copyWith(incognitoMode: false));
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = null;
       }
@@ -266,7 +262,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
       final endTime = durationMinutes != null
-          ? DateTime.now().add(Duration(minutes: durationMinutes))
+          ? DateTime.now().toUtc().add(Duration(minutes: durationMinutes))
           : null;
 
       await updateSettings(
@@ -282,10 +278,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = Timer(Duration(minutes: durationMinutes), () {
           // Use try-catch to handle any potential errors
-          updateIncognitoMode().catchError((error) {
-            // Log error but don't propagate - timer callback can't be async
-            // Error will be logged by updateIncognitoMode if it fails
-          });
+          updateIncognitoMode().catchError((error) {});
         });
       }
     }
@@ -297,7 +290,9 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     if (currentSettings != null &&
         currentSettings.incognitoMode &&
         currentSettings.incognitoSessionEndTime != null) {
-      if (DateTime.now().isAfter(currentSettings.incognitoSessionEndTime!)) {
+      if (DateTime.now().toUtc().isAfter(
+        currentSettings.incognitoSessionEndTime!.toUtc(),
+      )) {
         await updateIncognitoMode();
       }
     }
@@ -306,17 +301,17 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   /// Check and restore the private session timer if one is active
   Future<void> _checkAndRestorePrivateSession(UserSettings settings) async {
     if (settings.incognitoMode && settings.incognitoSessionEndTime != null) {
-      final now = DateTime.now();
-      final endTime = settings.incognitoSessionEndTime!;
+      final now = DateTime.now().toUtc();
+      final endTime = settings.incognitoSessionEndTime!.toUtc();
 
       if (now.isAfter(endTime)) {
         // Session has expired, disable it
-        await updateIncognitoMode();
+        if (state.settings.value?.incognitoMode ?? false) {
+          await updateIncognitoMode();
+        }
       } else {
-        // Session is still active, restore the timer
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = Timer(state.remainingSessionTime!, () {
-          // Use catchError to handle any potential errors
           updateIncognitoMode().catchError((error) {
             // Log error but don't propagate - timer callback can't be async
             // Error will be logged by updateIncognitoMode if it fails

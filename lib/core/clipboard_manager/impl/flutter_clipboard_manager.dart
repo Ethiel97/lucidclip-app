@@ -60,7 +60,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   Future<ClipboardData?> getClipboardContent() async {
     final sourceApp = await sourceAppProvider.getFrontmostApp();
     final files = await Pasteboard.files();
-    final timestamp = DateTime.now();
+    final timestamp = DateTime.now().toUtc();
 
     final metadata = <String, dynamic>{
       if (sourceApp != null)

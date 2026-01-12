@@ -75,8 +75,8 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         clipboardItemId: clipboardItem.id,
         action: action,
         userId: _pendingUserId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
       );
       await localClipboardHistoryRepository.upsert(history);
     } catch (e, stack) {

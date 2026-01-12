@@ -33,8 +33,8 @@ class UserSettings extends Equatable {
   factory UserSettings.empty() {
     return UserSettings(
       userId: '',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: DateTime.now().toUtc(),
+      updatedAt: DateTime.now().toUtc(),
     );
   }
 
@@ -98,6 +98,20 @@ class UserSettings extends Equatable {
       incognitoSessionEndTime:
           incognitoSessionEndTime ?? this.incognitoSessionEndTime,
     );
+  }
+
+  @override
+  String toString() {
+    return 'UserSettings(userId: $userId, theme: $theme, '
+        'excludedApps: $excludedApps, shortcuts: $shortcuts, '
+        'autoSync: $autoSync, syncIntervalMinutes: $syncIntervalMinutes, '
+        'maxHistoryItems: $maxHistoryItems, '
+        'retentionDays: $retentionDays, showSourceApp: $showSourceApp, '
+        'incognitoMode: $incognitoMode, previewImages: $previewImages, '
+        'previewLinks: $previewLinks, createdAt: $createdAt, '
+        'updatedAt: $updatedAt, '
+        'incognitoSessionDurationMinutes: $incognitoSessionDurationMinutes, '
+        'incognitoSessionEndTime: $incognitoSessionEndTime)';
   }
 
   @override

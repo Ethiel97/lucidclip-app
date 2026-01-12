@@ -31,10 +31,10 @@ class ClipboardItem extends Equatable {
     return ClipboardItem(
       content: '',
       contentHash: '',
-      createdAt: DateTime.now(),
+      createdAt: DateTime.now().toUtc(),
       id: '',
       type: ClipboardItemType.unknown,
-      updatedAt: DateTime.now(),
+      updatedAt: DateTime.now().toUtc(),
       userId: '',
     );
   }
@@ -114,13 +114,22 @@ class ClipboardItem extends Equatable {
   }
 
   SourceApp? get sourceApp {
-    if (metadata.containsKey('sourceApp')) {
-      final sourceAppData = metadata['sourceApp'];
+    if (metadata.containsKey('source_app')) {
+      final sourceAppData = metadata['source_app'];
+
       if (sourceAppData is Map<String, dynamic>) {
-        return SourceApp.fromMap(sourceAppData);
+        return SourceAppModel.fromJsonWithIcon(sourceAppData).toEntity();
       }
     }
     return null;
+  }
+
+  bool getIsSourceAppExcluded(List<SourceApp> excludedApps) {
+    final app = sourceApp;
+    if (app != null) {
+      return excludedApps.contains(app);
+    }
+    return false;
   }
 
   @override
@@ -190,5 +199,5 @@ extension ClipboardItemHelper on ClipboardItem {
   };
 
   String get timeAgo =>
-      Jiffy.parseFromDateTime(createdAt).fromNow().sentenceCase;
+      Jiffy.parseFromDateTime(createdAt).toUtc().fromNow().sentenceCase;
 }

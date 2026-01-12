@@ -39,7 +39,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   void _startPolling() {
     _pollingTimer?.cancel();
     _pollingTimer = Timer.periodic(
-      BaseClipboardManager.clipboardPollingInterval,
+      BaseClipboardManager.clipboardManagerPollingInterval,
       (_) => _checkClipboardChange(),
     );
   }
@@ -60,10 +60,11 @@ class FlutterClipboardManager implements BaseClipboardManager {
   Future<ClipboardData?> getClipboardContent() async {
     final sourceApp = await sourceAppProvider.getFrontmostApp();
     final files = await Pasteboard.files();
-    final timestamp = DateTime.now();
+    final timestamp = DateTime.now().toUtc();
 
     final metadata = <String, dynamic>{
-      if (sourceApp != null) 'sourceApp': sourceApp.toJson(),
+      if (sourceApp != null)
+        'source_app': SourceAppModel.fromEntity(sourceApp).toJsonWithIcon(),
     };
 
     if (files.isNotEmpty) {

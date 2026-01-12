@@ -9,10 +9,6 @@ class AppConstants {
       dotenv.env['SUPABASE_PROJECT_URL'] ??
       const String.fromEnvironment('SUPABASE_PROJECT_URL');
 
-  static final supabaseAnonKey =
-      dotenv.env['SUPABASE_ANON_KEY'] ??
-      const String.fromEnvironment('SUPABASE_ANON_KEY');
-
   static final supabaseProjectId =
       dotenv.env['SUPABASE_PROJECT_ID'] ??
       const String.fromEnvironment('SUPABASE_PROJECT_ID');
@@ -21,7 +17,7 @@ class AppConstants {
       dotenv.env['SUPABASE_TOKEN'] ??
       const String.fromEnvironment('SUPABASE_TOKEN');
 
-  static final supabaseApiKey =
+  static final supabasePublishableKey =
       dotenv.env['SUPABASE_API_KEY'] ??
       const String.fromEnvironment('SUPABASE_API_KEY');
 

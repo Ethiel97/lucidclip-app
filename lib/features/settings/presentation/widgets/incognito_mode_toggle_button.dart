@@ -58,31 +58,37 @@ class IncognitoModeToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+
+    final incognitoMode = context.select(
+      (SettingsCubit cubit) =>
+          cubit.state.settings.value?.incognitoMode ?? false,
+    );
+
+    print("incognito mode: $incognitoMode ");
+
     return BlocSelector<SettingsCubit, SettingsState, bool>(
-      selector: (state) {
-        return state.incognitoMode;
-      },
-      builder: (context, incognitoMode) => FilledButton(
-        onPressed: () {},
-        child: FilledButton.icon(
-          onPressed: () {
-            if (incognitoMode) {
-              context.read<SettingsCubit>().updateIncognitoMode();
-            } else {
-              _showPrivateSessionDialog(context);
-            }
-          },
-          icon: HugeIcon(
-            icon: incognitoMode
-                ? HugeIcons.strokeRoundedPlayCircle
-                : HugeIcons.strokeRoundedPauseCircle,
-            size: 22,
-          ),
-          label: Text(
-            incognitoMode
-                ? l10n.resumeClipboardCapture.sentenceCase
-                : l10n.stopClipboardCapture.sentenceCase,
-          ),
+      selector: (state) => state.incognitoMode,
+      builder: (context, incognitoMode) => FilledButton.icon(
+        style: FilledButton.styleFrom(
+          side: BorderSide(color: Theme.of(context).colorScheme.outline),
+        ),
+        onPressed: () {
+          if (incognitoMode) {
+            context.read<SettingsCubit>().updateIncognitoMode();
+          } else {
+            _showPrivateSessionDialog(context);
+          }
+        },
+        icon: HugeIcon(
+          icon: incognitoMode
+              ? HugeIcons.strokeRoundedPlay
+              : HugeIcons.strokeRoundedPause,
+          size: 18,
+        ),
+        label: Text(
+          incognitoMode
+              ? l10n.resumeTracking.sentenceCase
+              : l10n.pauseTracking.sentenceCase,
         ),
       ),
     );

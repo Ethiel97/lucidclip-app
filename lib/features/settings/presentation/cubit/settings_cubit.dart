@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/features/auth/domain/domain.dart';
 import 'package:lucid_clip/features/settings/data/models/models.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
@@ -12,39 +15,52 @@ part 'settings_state.dart';
 @lazySingleton
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({
+    required this.authRepository,
     required this.localSettingsRepository,
     required this.settingsRepository,
-  }) : super(const SettingsState());
+  }) : super(const SettingsState()) {
+    _initializeAuthListener();
+  }
 
+  final AuthRepository authRepository;
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository settingsRepository;
 
   StreamSubscription<UserSettings?>? _settingsSubscription;
+  StreamSubscription<User?>? _authSubscription;
   Timer? _incognitoSessionTimer;
 
   // Use a local storage key for unauthenticated users
-  static const String _guestUserId = 'guest';
+  String _currentUserId = 'guest';
 
-  UserSettings _createDefaultSettings(String userId) {
+  User? _currentUser;
+
+  bool get isAuthenticated => _currentUser != null && _currentUserId != 'guest';
+
+  void _initializeAuthListener() {
+    _authSubscription = authRepository.authStateChanges.listen((user) {
+      _currentUser = user;
+      _currentUserId = user?.id ?? 'guest';
+      loadSettings();
+      watchSettings();
+    });
+  }
+
+  UserSettings _createDefaultSettings() {
     return UserSettings(
-      userId: userId,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      userId: _currentUserId,
+      createdAt: DateTime.now().toUtc(),
+      updatedAt: DateTime.now().toUtc(),
     );
   }
 
-  Future<void> loadSettings(String? userId) async {
-    // Use guest userId if not authenticated
-    final effectiveUserId = (userId?.isNotEmpty ?? false)
-        ? userId!
-        : _guestUserId;
-
+  Future<void> loadSettings() async {
     emit(state.copyWith(settings: state.settings.toLoading()));
 
     try {
       // First load from local
       final localSettings = await localSettingsRepository.getSettings(
-        effectiveUserId,
+        _currentUserId,
       );
 
       if (localSettings != null) {
@@ -54,9 +70,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       }
 
       // Only try to sync with remote if user is authenticated
-      if (userId?.isNotEmpty ?? false) {
+      if (isAuthenticated) {
         try {
-          final remoteSettings = await settingsRepository.getSettings(userId!);
+          final remoteSettings = await settingsRepository.getSettings(
+            _currentUserId,
+          );
           if (remoteSettings != null) {
             await localSettingsRepository.upsertSettings(remoteSettings);
             emit(
@@ -68,14 +86,14 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
             await _checkAndRestorePrivateSession(remoteSettings);
           } else if (localSettings == null) {
             // Create default settings
-            final defaultSettings = _createDefaultSettings(userId);
+            final defaultSettings = _createDefaultSettings();
             await updateSettings(defaultSettings);
           }
         } catch (e) {
           // If remote fails but we have local, that's okay
           if (localSettings == null) {
             // Create default settings locally
-            final defaultSettings = _createDefaultSettings(userId!);
+            final defaultSettings = _createDefaultSettings();
             await localSettingsRepository.upsertSettings(defaultSettings);
             emit(
               state.copyWith(
@@ -86,7 +104,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         }
       } else if (localSettings == null) {
         // Create default settings for guest
-        final defaultSettings = _createDefaultSettings(_guestUserId);
+        final defaultSettings = _createDefaultSettings();
         await localSettingsRepository.upsertSettings(defaultSettings);
         emit(
           state.copyWith(settings: state.settings.toSuccess(defaultSettings)),
@@ -104,16 +122,17 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
-  void watchSettings(String? userId) {
-    final effectiveUserId = (userId?.isNotEmpty ?? false)
-        ? userId!
-        : _guestUserId;
-
+  void watchSettings() {
     _settingsSubscription?.cancel();
     _settingsSubscription = localSettingsRepository
-        .watchSettings(effectiveUserId)
+        .watchSettings(_currentUserId)
         .listen((settings) async {
           if (settings != null) {
+            log(
+              'Settings updated for user $_currentUserId: $settings',
+              name: 'SettingsCubit',
+            );
+
             emit(state.copyWith(settings: state.settings.toSuccess(settings)));
             // Restore private session timer if needed when settings change
             await _checkAndRestorePrivateSession(settings);
@@ -123,22 +142,33 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
   Future<void> updateSettings(UserSettings settings) async {
     try {
-      final updatedSettings = settings.copyWith(updatedAt: DateTime.now());
+      final updatedSettings = settings.copyWith(
+        updatedAt: DateTime.now().toUtc(),
+      );
 
       // Update local first for immediate feedback
       await localSettingsRepository.upsertSettings(updatedSettings);
       emit(state.copyWith(settings: state.settings.toSuccess(updatedSettings)));
 
       // Only sync to remote if user is authenticated (not guest)
-      if (updatedSettings.userId != _guestUserId) {
+      if (isAuthenticated) {
         try {
           await settingsRepository.updateSettings(updatedSettings);
         } catch (e) {
+          log(
+            'Failed to sync settings to remote for user $_currentUserId: $e',
+            name: 'SettingsCubit',
+          );
           // Log but don't fail if remote sync fails
           // The settings are already saved locally
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      log(
+        'Error updating settings for user $_currentUserId: $e',
+        stackTrace: stack,
+        name: 'SettingsCubit',
+      );
       emit(
         state.copyWith(
           settings: state.settings.toError(
@@ -216,21 +246,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   Future<void> updateIncognitoMode({bool incognitoMode = false}) async {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
-      // When disabling incognito mode, clear the session data
-      await updateSettings(
-        currentSettings.copyWith(
-          incognitoMode: incognitoMode,
-          incognitoSessionDurationMinutes: !incognitoMode
-              ? null
-              : currentSettings.incognitoSessionDurationMinutes,
-          incognitoSessionEndTime: !incognitoMode
-              ? null
-              : currentSettings.incognitoSessionEndTime,
-        ),
-      );
-
-      // Cancel timer when disabling incognito mode
-      if (!incognitoMode) {
+      if (incognitoMode) {
+        await startPrivateSession();
+      } else {
+        await updateSettings(currentSettings.copyWith(incognitoMode: false));
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = null;
       }
@@ -243,7 +262,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
       final endTime = durationMinutes != null
-          ? DateTime.now().add(Duration(minutes: durationMinutes))
+          ? DateTime.now().toUtc().add(Duration(minutes: durationMinutes))
           : null;
 
       await updateSettings(
@@ -259,10 +278,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = Timer(Duration(minutes: durationMinutes), () {
           // Use try-catch to handle any potential errors
-          updateIncognitoMode().catchError((error) {
-            // Log error but don't propagate - timer callback can't be async
-            // Error will be logged by updateIncognitoMode if it fails
-          });
+          updateIncognitoMode().catchError((error) {});
         });
       }
     }
@@ -274,7 +290,9 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     if (currentSettings != null &&
         currentSettings.incognitoMode &&
         currentSettings.incognitoSessionEndTime != null) {
-      if (DateTime.now().isAfter(currentSettings.incognitoSessionEndTime!)) {
+      if (DateTime.now().toUtc().isAfter(
+        currentSettings.incognitoSessionEndTime!.toUtc(),
+      )) {
         await updateIncognitoMode();
       }
     }
@@ -283,17 +301,17 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   /// Check and restore the private session timer if one is active
   Future<void> _checkAndRestorePrivateSession(UserSettings settings) async {
     if (settings.incognitoMode && settings.incognitoSessionEndTime != null) {
-      final now = DateTime.now();
-      final endTime = settings.incognitoSessionEndTime!;
+      final now = DateTime.now().toUtc();
+      final endTime = settings.incognitoSessionEndTime!.toUtc();
 
       if (now.isAfter(endTime)) {
         // Session has expired, disable it
-        await updateIncognitoMode();
+        if (state.settings.value?.incognitoMode ?? false) {
+          await updateIncognitoMode();
+        }
       } else {
-        // Session is still active, restore the timer
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = Timer(state.remainingSessionTime!, () {
-          // Use catchError to handle any potential errors
           updateIncognitoMode().catchError((error) {
             // Log error but don't propagate - timer callback can't be async
             // Error will be logged by updateIncognitoMode if it fails
@@ -310,7 +328,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
-  Future<void> updateExcludedApps(List<String> excludedApps) async {
+  Future<void> updateExcludedApps(List<SourceApp> excludedApps) async {
     final currentSettings = state.settings.value;
     if (currentSettings != null) {
       await updateSettings(
@@ -319,8 +337,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() {
+    _authSubscription?.cancel();
     _settingsSubscription?.cancel();
     _incognitoSessionTimer?.cancel();
     return super.close();

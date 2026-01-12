@@ -96,9 +96,9 @@ class DriftClipboardHistoryLocalDataSource
   @override
   Stream<List<ClipboardHistoryModel>> watchAll() {
     try {
-      return _db
-          .watchAllHistories()
-          .map((rows) => rows.map(_historyEntryToModel).toList());
+      return _db.watchAllHistories().map(
+        (rows) => rows.map(_historyEntryToModel).toList(),
+      );
     } catch (e) {
       rethrow;
     }
@@ -118,7 +118,8 @@ class DriftClipboardHistoryLocalDataSource
       );
     } catch (e) {
       developer.log(
-        'Enum mismatch: action "${entry.action}" from database not found in ClipboardActionModel. Using copy as fallback.',
+        'Enum mismatch: action "${entry.action}" from database not found '
+        'in ClipboardActionModel. Using copy as fallback.',
         name: 'DriftClipboardHistoryLocalDataSource',
         level: 900, // WARNING: 900 is standard warning level in dart:developer
       );

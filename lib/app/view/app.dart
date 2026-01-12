@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:lucid_clip/app/routes/routes.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/routes/routes.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -43,8 +44,11 @@ class _AppState extends State<App> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<SettingsCubit>()..loadSettings(null),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<AuthCubit>()),
+        BlocProvider(create: (_) => getIt<SettingsCubit>()),
+      ],
       child: const _AppView(),
     );
   }
@@ -59,6 +63,13 @@ class _AppView extends StatefulWidget {
 
 class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<SettingsCubit>().loadSettings();
+  }
 
   @override
   void didChangeDependencies() {

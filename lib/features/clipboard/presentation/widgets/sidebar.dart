@@ -2,13 +2,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
-import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class SidebarItemConfig<T> {
   const SidebarItemConfig({
@@ -60,7 +61,7 @@ class _SidebarState extends State<Sidebar> {
       SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedSettings03,
         label: context.l10n.settings.titleCase,
-        route: const SettingsRoute(),
+        route: SettingsRoute(),
       ),
     ];
   }
@@ -97,7 +98,7 @@ class _SidebarState extends State<Sidebar> {
       width: isExpanded
           ? AppConstants.clipboardSidebarWidth
           : AppConstants.collapsedSidebarWidth,
-      color: colorScheme.surface,
+      color: colorScheme.surface.toTinyColor().darken(5).color,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
         children: [

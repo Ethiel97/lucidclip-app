@@ -112,7 +112,7 @@ class ClipboardMapper {
 
 extension ClipboardDataMapper on ClipboardData {
   ClipboardItem toDomain({required String userId}) {
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     return ClipboardItem(
       id: IdGenerator.generate(),
       content: text ?? '',

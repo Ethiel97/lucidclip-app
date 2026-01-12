@@ -1,15 +1,71 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
-import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
-import 'package:lucid_clip/features/settings/presentation/widgets/widgets.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
-class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
+//TODO(Ethiel97): Add excluded apps management
+class SettingsView extends StatefulWidget {
+  const SettingsView({required this.section, super.key});
+
+  final String section;
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  final ScrollController _scrollController = ScrollController();
+
+  final Map<String, GlobalKey> _sectionKeys = {
+    SettingsSection.general.name: GlobalKey(),
+    SettingsSection.appearance.name: GlobalKey(),
+    SettingsSection.clipboard.name: GlobalKey(),
+    SettingsSection.sync.name: GlobalKey(),
+    SettingsSection.about.name: GlobalKey(),
+  };
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToSection(widget.section);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant SettingsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.section != widget.section) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToSection(widget.section);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSection(String section) {
+    final keyContext = _sectionKeys[section]?.currentContext;
+    if (keyContext != null) {
+      Scrollable.ensureVisible(
+        keyContext,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +95,7 @@ class SettingsView extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       // TODO(Ethiel97): Pull user ID from auth cubit
-                      context.read<SettingsCubit>().loadSettings(null);
+                      context.read<SettingsCubit>().loadSettings();
                     },
                     child: Text(l10n.retry.sentenceCase),
                   ),
@@ -54,6 +110,7 @@ class SettingsView extends StatelessWidget {
               }
 
               return ListView(
+                physics: const ClampingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.lg,
                   vertical: AppSpacing.md,
@@ -61,6 +118,7 @@ class SettingsView extends StatelessWidget {
                 children: [
                   // General Section
                   SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.general.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings02,
                     ),
@@ -92,6 +150,7 @@ class SettingsView extends StatelessWidget {
                   // Appearance Section
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.appearance.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedPaintBoard,
                     ),
@@ -99,7 +158,7 @@ class SettingsView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   SettingsThemeSelector(
-                    currentTheme: settings.theme,
+                    currentTheme: settings.theme.toLowerCase(),
                     onThemeChanged: (theme) {
                       context.read<SettingsCubit>().updateTheme(theme);
                     },
@@ -108,6 +167,7 @@ class SettingsView extends StatelessWidget {
                   // Clipboard Section
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.clipboard.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedClipboard,
                     ),
@@ -129,9 +189,21 @@ class SettingsView extends StatelessWidget {
                     description: l10n.incognitoModeDescription.sentenceCase,
                     value: settings.incognitoMode,
                     onChanged: (value) {
+                      print("Toggling incognito mode to: $value");
                       context.read<SettingsCubit>().updateIncognitoMode(
                         incognitoMode: value,
                       );
+                    },
+                  ),
+                  SettingsNavigationItem(
+                    title: l10n.ignoredApps.sentenceCase,
+                    description: l10n.ignoredAppsDescription,
+                    valueText: settings.excludedApps.isEmpty
+                        ? l10n.none.sentenceCase
+                        : l10n.appsCount(settings.excludedApps.length),
+
+                    onTap: () {
+                      context.router.navigate(const IgnoredAppsRoute());
                     },
                   ),
                   SettingsSwitchItem(

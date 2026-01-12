@@ -33,7 +33,7 @@ class MainFlutterWindow: NSWindow {
             }()
 
             result([
-              "bundleId": bundleId,
+              "bundle_id": bundleId,
               "name": name,
               "icon": iconB64 as Any
             ])

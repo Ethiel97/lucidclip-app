@@ -12,6 +12,7 @@ class FlutterSecureStorageService implements SecureStorageService {
     _secureStorage = const FlutterSecureStorage(
       aOptions: _androidOptions,
       iOptions: _iosOptions,
+      mOptions: _macOsOptions,
     );
     _isInitialized = true;
   }
@@ -20,9 +21,13 @@ class FlutterSecureStorageService implements SecureStorageService {
   bool _isInitialized = false;
 
   static const AndroidOptions _androidOptions = AndroidOptions(
-    encryptedSharedPreferences: true,
-    sharedPreferencesName: 'wallinice_secure_prefs',
-    preferencesKeyPrefix: 'wallinice_',
+    sharedPreferencesName: 'lucid_clip_secure_storage',
+    preferencesKeyPrefix: 'lucid_clip_',
+  );
+
+  static const MacOsOptions _macOsOptions = MacOsOptions(
+    accountName: 'lucid_clip_keychain',
+    accessibility: KeychainAccessibility.first_unlock_this_device,
   );
 
   static const IOSOptions _iosOptions = IOSOptions(
@@ -35,7 +40,8 @@ class FlutterSecureStorageService implements SecureStorageService {
 
   @override
   Future<void> initialize() async {
-    // Already initialized in constructor, but keep method for interface compliance
+    // Already initialized in constructor,
+    // but keep method for interface compliance
   }
 
   @override

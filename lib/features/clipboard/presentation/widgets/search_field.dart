@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
-import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
@@ -35,6 +34,7 @@ class _SearchFieldState extends State<SearchField> {
       decoration: BoxDecoration(
         color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(100),
+        border: Border.all(color: theme.colorScheme.outline),
       ),
       child: BlocListener<SearchCubit, SearchState>(
         listenWhen: (previous, current) =>

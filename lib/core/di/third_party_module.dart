@@ -1,3 +1,4 @@
+import 'package:app_links/app_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
@@ -19,6 +20,9 @@ abstract class ThirdPartyModule {
       accessibility: KeychainAccessibility.first_unlock_this_device,
     ),
   );
+
+  @lazySingleton
+  AppLinks get appLinks => AppLinks();
 
   @singleton
   ClipboardDatabase get clipboardDatabase => ClipboardDatabase();

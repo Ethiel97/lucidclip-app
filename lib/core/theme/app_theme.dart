@@ -77,6 +77,23 @@ class AppTheme {
     textButtonTheme: _lightTextButtonTheme,
     chipTheme: _lightChipTheme,
     dialogTheme: _lightDialogTheme,
+
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.grey[850],
+      closeIconColor: Colors.white,
+      contentTextStyle: AppTextStyle.bodyMedium.copyWith(
+        color: Colors.white,
+        fontSize: 13,
+      ),
+      actionTextColor: AppColors.primary,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey[700]!.withValues(alpha: 0.5)),
+      ),
+      elevation: 4,
+      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.2),
+    ),
   );
 
   /// Dark theme – primary for LucidClip
@@ -155,6 +172,25 @@ class AppTheme {
     textButtonTheme: _textButtonTheme,
     chipTheme: _chipTheme,
     dialogTheme: _dialogTheme,
+    snackBarTheme: SnackBarThemeData(
+      showCloseIcon: true,
+      closeIconColor: AppColors.textSecondary,
+      backgroundColor: AppColors.surface2.toTinyColor().lighten().color,
+      contentTextStyle: AppTextStyle.bodyMedium.copyWith(
+        color: AppColors.textPrimary,
+        fontSize:  13,
+      ),
+
+      actionTextColor: AppColors.primary,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+
+        side: BorderSide(color: AppColors.borderSubtle.withValues(alpha: 0.5)),
+      ),
+      elevation: 4,
+      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.2),
+    ),
   );
 
   /// Mapping AppTextStyle → TextTheme

@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:lucid_clip/core/constants/constants.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:path/path.dart' as p;
@@ -21,11 +21,11 @@ class SettingsDatabase extends _$SettingsDatabase {
       final dir = await getLibraryDirectory();
       final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
 
-      if (dbFile.existsSync()) {
+      /* if (dbFile.existsSync()) {
         if (!AppConstants.isProd) {
           await dbFile.delete();
         }
-      }
+      }*/
 
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);
@@ -74,10 +74,11 @@ class SettingsDatabase extends _$SettingsDatabase {
           );
 
     final excludedApps = e.excludedApps.isEmpty
-        ? <String>[]
-        : List<dynamic>.from(
-            jsonDecode(e.excludedApps) as List<dynamic>,
-          ).map((e) => e.toString()).toList();
+        ? <SourceAppModel>[]
+        : (jsonDecode(e.excludedApps) as List<dynamic>)
+              .whereType<Map<String, dynamic>>()
+              .map(SourceAppModel.fromJson)
+              .toList();
 
     return UserSettingsModel(
       userId: e.userId,
@@ -100,6 +101,9 @@ class SettingsDatabase extends _$SettingsDatabase {
   }
 
   UserSettingsEntriesCompanion modelToCompanion(UserSettingsModel m) {
+    final excludedApps = m.excludedApps.isEmpty
+        ? '[]'
+        : jsonEncode(m.excludedApps.map((e) => e.toJson()).toList());
     return UserSettingsEntriesCompanion(
       userId: Value(m.userId),
       theme: Value(m.theme),
@@ -112,7 +116,7 @@ class SettingsDatabase extends _$SettingsDatabase {
       previewImages: Value(m.previewImages),
       previewLinks: Value(m.previewLinks),
       incognitoMode: Value(m.incognitoMode),
-      excludedApps: Value(jsonEncode(m.excludedApps)),
+      excludedApps: Value(excludedApps),
       createdAt: Value(m.createdAt),
       updatedAt: Value(m.updatedAt),
       incognitoSessionDurationMinutes: Value(m.incognitoSessionDurationMinutes),

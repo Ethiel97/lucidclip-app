@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
-import 'package:lucid_clip/core/theme/app_colors.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -62,12 +63,13 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
     return Container(
       width: AppConstants.clipboardItemDetailsViewWidth,
-      decoration: const BoxDecoration(
-        color: AppColors.surface2,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: colorScheme.tertiary,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(AppSpacing.lg),
           bottomLeft: Radius.circular(AppSpacing.lg),
         ),
@@ -84,7 +86,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                   child: Text(
                     l10n.itemDetails.sentenceCase,
                     style: textTheme.headlineSmall?.copyWith(
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -93,10 +95,10 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                   onPressed: () {
                     widget.onClose?.call();
                   },
-                  icon: const HugeIcon(
+                  icon: HugeIcon(
                     icon: HugeIcons.strokeRoundedCancel01,
                     size: 20,
-                    color: AppColors.textSecondary,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -120,6 +122,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                         _PreviewCard(
                           previewWidget: widget.clipboardItem.preview(
                             maxLines: 500,
+                            colorScheme: colorScheme,
                           ),
                           preview: widget.clipboardItem.content,
                         ),
@@ -162,13 +165,17 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Text(
       text.toUpperCase(),
-      style: AppTextStyle.functionalSmall.copyWith(color: AppColors.textMuted),
+      style: AppTextStyle.functionalSmall.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }
 
+// TODO(Ethiel97): Improve preview card to handle different content types better
 class _PreviewCard extends StatelessWidget {
   const _PreviewCard({required this.preview, this.previewWidget});
 
@@ -178,12 +185,13 @@ class _PreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       height: MediaQuery.sizeOf(context).height * 0.5,
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
       ),
       child: RepaintBoundary(
@@ -194,7 +202,7 @@ class _PreviewCard extends StatelessWidget {
               Text(
                 preview,
                 style: textTheme.bodySmall?.copyWith(
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onSurface,
                 ),
               ),
         ),
@@ -211,11 +219,19 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
     final shouldShowSourceApp = context.select<SettingsCubit, bool>(
       (cubit) => cubit.state.showSourceApp,
     );
 
+    final excludedApps = context.select<SettingsCubit, List<SourceApp>>(
+      (cubit) => cubit.state.excludedApps,
+    );
+
     final isSourceAppValid = clipboardItem.sourceApp?.isValid ?? false;
+    final isSourceAppExcluded = clipboardItem.getIsSourceAppExcluded(
+      excludedApps,
+    );
 
     return Column(
       spacing: AppSpacing.sm,
@@ -223,16 +239,26 @@ class _InfoCard extends StatelessWidget {
         if (shouldShowSourceApp && isSourceAppValid)
           _InfoRow(
             label: l10n.source.sentenceCase,
+            actionWidget: ProGateOverlay(
+              child: SourceAppPrivacyControl(clipboardItem: clipboardItem),
+            ),
             valueWidget: Row(
-              spacing: AppSpacing.xs,
+              spacing: AppSpacing.sm,
               children: [
-                clipboardItem.sourceAppIcon,
-                Text(
-                  clipboardItem.sourceApp!.name,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(fontSize: 12),
+                Row(
+                  spacing: AppSpacing.xxs,
+                  children: [
+                    clipboardItem.getSourceAppIcon(colorScheme),
+                    Text(
+                      clipboardItem.sourceApp!.name,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(fontSize: 12),
+                    ),
+                  ],
                 ),
+
+                if (isSourceAppExcluded) const ExcludedSourceAppBadge(),
               ],
             ),
             value: clipboardItem.sourceApp!.name,
@@ -248,11 +274,13 @@ class _InfoCard extends StatelessWidget {
           value: clipboardItem.userFacingSize,
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
         ),
-        _InfoRow(
-          label: l10n.characters.sentenceCase,
-          value: clipboardItem.content.length.toString(),
-          icon: const HugeIcon(icon: HugeIcons.strokeRoundedText),
-        ),
+
+        if (clipboardItem.type.isText || clipboardItem.type.isUrl)
+          _InfoRow(
+            label: l10n.characters.sentenceCase,
+            value: clipboardItem.content.length.toString(),
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedText),
+          ),
       ],
     );
   }
@@ -263,6 +291,7 @@ class _InfoRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
+    this.actionWidget,
     this.valueWidget,
   });
 
@@ -270,6 +299,7 @@ class _InfoRow extends StatelessWidget {
   final String value;
   final Widget icon;
   final Widget? valueWidget;
+  final Widget? actionWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -278,49 +308,57 @@ class _InfoRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: AppSpacing.sm,
         children: [
-          Container(
-            height: 28,
-            width: 28,
-            decoration: BoxDecoration(
-              color: colorScheme.tertiary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: IconTheme(
-              data: IconThemeData(
-                size: AppSpacing.sm,
-                color: colorScheme.onTertiary,
-              ),
-              child: icon,
-            ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurface.withValues(alpha: .7),
-                    fontSize: 11,
-                  ),
+          Row(
+            children: [
+              Container(
+                height: 28,
+                width: 28,
+                decoration: BoxDecoration(
+                  color: colorScheme.tertiary,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: AppSpacing.xxxs),
-                valueWidget ??
+                child: IconTheme(
+                  data: IconThemeData(
+                    size: AppSpacing.sm,
+                    color: colorScheme.onTertiary,
+                  ),
+                  child: icon,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      value,
+                      label,
                       style: textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface,
+                        color: colorScheme.onSurface.withValues(alpha: .7),
+                        fontSize: 11,
                       ),
                     ),
-              ],
-            ),
+                    const SizedBox(height: AppSpacing.xxxs),
+                    valueWidget ??
+                        Text(
+                          value,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
+                  ],
+                ),
+              ),
+            ],
           ),
+
+          ?actionWidget,
         ],
       ),
     );
@@ -337,7 +375,7 @@ class _TagsWrap extends StatelessWidget {
     return Wrap(
       spacing: AppSpacing.xs,
       runSpacing: AppSpacing.xxxs,
-      children: tags.map((t) => ClipboardItemTagChip(label: t)).toList(),
+      children: tags.map((t) => ClipboardBadge(label: t)).toList(),
     );
   }
 }
@@ -383,28 +421,30 @@ class _ActionsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
 
         // Pin
-        OutlinedButton.icon(
-          onPressed: onTogglePin,
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: colorScheme.outline),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xxs,
+        ProGateOverlay(
+          child: OutlinedButton.icon(
+            onPressed: onTogglePin,
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: colorScheme.outline),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xxs,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(999),
+              ),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(999),
+            icon: HugeIcon(
+              icon: isPinned
+                  ? HugeIcons.strokeRoundedPinOff
+                  : HugeIcons.strokeRoundedPin,
+              size: 16,
             ),
-          ),
-          icon: HugeIcon(
-            icon: isPinned
-                ? HugeIcons.strokeRoundedPinOff
-                : HugeIcons.strokeRoundedPin,
-            size: 16,
-          ),
-          label: Text(
-            isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
-            style: textTheme.labelSmall?.copyWith(
-              color: AppColors.textSecondary,
+            label: Text(
+              isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
+              style: textTheme.labelSmall?.copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
           ),
         ),

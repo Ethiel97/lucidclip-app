@@ -26,7 +26,7 @@ class SettingsSectionHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.xs),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.13),
+              color: colorScheme.primaryContainer.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: IconTheme(

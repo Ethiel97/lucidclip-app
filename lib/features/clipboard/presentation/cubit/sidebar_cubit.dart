@@ -20,4 +20,10 @@ class SidebarCubit extends HydratedCubit<bool> {
   Map<String, dynamic>? toJson(bool state) {
     return {'isExpanded': state};
   }
+
+  @disposeMethod
+  @override
+  Future<void> close() {
+    return super.close();
+  }
 }

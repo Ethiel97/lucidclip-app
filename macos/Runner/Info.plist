@@ -32,5 +32,18 @@
 	<string>NSApplication</string>
 	<key>com.apple.security.network.client</key>
     <true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.lucidclip.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>lucidclip</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

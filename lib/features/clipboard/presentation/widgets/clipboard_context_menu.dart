@@ -1,16 +1,15 @@
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
-import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 typedef ClipboardContextMenuItem = ({String label, Object icon});
 
@@ -38,14 +37,25 @@ class ClipboardContextMenu extends StatelessWidget {
             ? HugeIcons.strokeRoundedPinOff
             : HugeIcons.strokeRoundedPin,
       ),
+      if (item.type.isUrl)
+        (
+          label: l10n.openLink.sentenceCase,
+          icon: HugeIcons.strokeRoundedBrowser,
+        ),
+
+      if (item.type.isFile)
+        (
+          label: l10n.copyPath.sentenceCase,
+          icon: HugeIcons.strokeRoundedFolderMoveTo,
+        ),
       (
         label: l10n.appendToClipboard.sentenceCase,
         icon: HugeIcons.strokeRoundedCopy01,
       ),
-      (label: l10n.delete.sentenceCase, icon: HugeIcons.strokeRoundedDelete01),
 
-      if (item.type != ClipboardItemType.image)
+      if (!item.type.isImage || !item.type.isFile)
         (label: l10n.edit.sentenceCase, icon: HugeIcons.strokeRoundedEdit01),
+      (label: l10n.delete.sentenceCase, icon: HugeIcons.strokeRoundedDelete01),
     ];
     return menu
         .map(
@@ -59,7 +69,14 @@ class ClipboardContextMenu extends StatelessWidget {
               child: HugeIcon(icon: item.icon as List<List>),
             ),
             onTap: () {
+              Navigator.pop(context);
               switch (item.label) {
+                case final l when l == l10n.copyPath.sentenceCase:
+                  Clipboard.setData(
+                    ClipboardData(text: clipboardItem.filePath!),
+                  );
+                case final l when l == l10n.openLink.sentenceCase:
+                  launchUrl(Uri.parse(clipboardItem.content));
                 case final l when l == l10n.pin.sentenceCase:
                   context.read<ClipboardDetailCubit>().togglePinClipboardItem(
                     clipboardItem,
@@ -76,12 +93,9 @@ class ClipboardContextMenu extends StatelessWidget {
                   // TODO(Ethiel97): Handle edit action
                   break;
                 case final l when l == l10n.appendToClipboard.sentenceCase:
-                  getIt<BaseClipboardManager>().setClipboardContent(
-                    clipboardItem.toInfrastructure(),
-                  );
+                  context.read<ClipboardCubit>().copyToClipboard(clipboardItem);
                 // Add other cases as needed
               }
-              Navigator.pop(context);
             },
           ),
         )

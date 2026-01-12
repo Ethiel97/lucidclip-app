@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 
 // TODO(Ethiel97): AUTO SYNC SETTING SHOULD BE FOR PREMIUM USERS ONLY
 //  HISTORY LIMIT SHOULD BE FOR PREMIUM USERS ONLY,
@@ -32,8 +33,8 @@ class UserSettings extends Equatable {
   factory UserSettings.empty() {
     return UserSettings(
       userId: '',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: DateTime.now().toUtc(),
+      updatedAt: DateTime.now().toUtc(),
     );
   }
 
@@ -43,7 +44,7 @@ class UserSettings extends Equatable {
 
   final String userId;
   final String theme;
-  final List<String> excludedApps;
+  final List<SourceApp> excludedApps;
   final Map<String, String> shortcuts;
   final bool autoSync;
   final int syncIntervalMinutes;
@@ -62,7 +63,7 @@ class UserSettings extends Equatable {
     String? userId,
     String? theme,
     Map<String, String>? shortcuts,
-    List<String>? excludedApps,
+    List<SourceApp>? excludedApps,
     bool? autoSync,
     int? syncIntervalMinutes,
     int? maxHistoryItems,
@@ -91,9 +92,26 @@ class UserSettings extends Equatable {
       previewLinks: previewLinks ?? this.previewLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes ?? this.incognitoSessionDurationMinutes,
-      incognitoSessionEndTime: incognitoSessionEndTime ?? this.incognitoSessionEndTime,
+      incognitoSessionDurationMinutes:
+          incognitoSessionDurationMinutes ??
+          this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime:
+          incognitoSessionEndTime ?? this.incognitoSessionEndTime,
     );
+  }
+
+  @override
+  String toString() {
+    return 'UserSettings(userId: $userId, theme: $theme, '
+        'excludedApps: $excludedApps, shortcuts: $shortcuts, '
+        'autoSync: $autoSync, syncIntervalMinutes: $syncIntervalMinutes, '
+        'maxHistoryItems: $maxHistoryItems, '
+        'retentionDays: $retentionDays, showSourceApp: $showSourceApp, '
+        'incognitoMode: $incognitoMode, previewImages: $previewImages, '
+        'previewLinks: $previewLinks, createdAt: $createdAt, '
+        'updatedAt: $updatedAt, '
+        'incognitoSessionDurationMinutes: $incognitoSessionDurationMinutes, '
+        'incognitoSessionEndTime: $incognitoSessionEndTime)';
   }
 
   @override

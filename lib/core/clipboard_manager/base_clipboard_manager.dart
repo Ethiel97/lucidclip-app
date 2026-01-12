@@ -5,7 +5,7 @@ import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 abstract class BaseClipboardManager {
-  static const clipboardPollingInterval = Duration(milliseconds: 1200);
+  static const clipboardManagerPollingInterval = Duration(milliseconds: 500);
 
   void initialize();
 
@@ -80,9 +80,9 @@ class ClipboardData extends Equatable {
   ];
 
   SourceApp? get sourceApp {
-    if (metadata?.containsKey('sourceApp') ?? false) {
-      final appData = metadata!['sourceApp'] as Map<String, dynamic>;
-      return SourceApp.fromMap(appData);
+    if (metadata?.containsKey('source_app') ?? false) {
+      final appData = metadata!['source_app'] as Map<String, dynamic>;
+      return SourceAppModel.fromJson(appData).toEntity();
     }
     return null;
   }

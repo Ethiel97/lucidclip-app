@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
+import 'package:lucid_clip/features/clipboard/domain/extensions/clipboard_item_extensions.dart';
 
 @LazySingleton(as: LocalClipboardRepository)
 class LocalClipboardStoreImpl implements LocalClipboardRepository {
@@ -12,8 +13,9 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Future<void> upsert(ClipboardItem item) async {
     try {
-      final existing =
-          await _localDataSource.getByContentHash(item.contentHash);
+      final existing = await _localDataSource.getByContentHash(
+        item.contentHash,
+      );
       if (existing != null && existing.id != item.id) {
         return;
       }
@@ -48,7 +50,8 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   Future<ClipboardItem?> getById(String id) async {
     try {
       final record = await _localDataSource.getById(id);
-      return record?.toEntity();
+      if (record == null) return null;
+      return record.toEntity().withEnrichedSourceApp();
     } catch (e) {
       throw CacheException('Failed to get clipboard item by id: $e');
     }
@@ -58,7 +61,8 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   Future<ClipboardItem?> getByContentHash(String contentHash) async {
     try {
       final record = await _localDataSource.getByContentHash(contentHash);
-      return record?.toEntity();
+      if (record == null) return null;
+      return record.toEntity().withEnrichedSourceApp();
     } catch (e) {
       throw CacheException('Failed to get clipboard item by content hash: $e');
     }
@@ -68,7 +72,8 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   Future<List<ClipboardItem>> getAll() async {
     try {
       final records = await _localDataSource.getAll();
-      return records.map((r) => r.toEntity()).toList();
+      final items = records.map((r) => r.toEntity()).toList();
+      return items.withEnrichedSourceApps();
     } catch (e) {
       throw CacheException('Failed to get all clipboard items: $e');
     }
@@ -78,7 +83,8 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   Future<List<ClipboardItem>> getUnsynced() async {
     try {
       final records = await _localDataSource.getUnsynced();
-      return records.map((r) => r.toEntity()).toList();
+      final items = records.map((r) => r.toEntity()).toList();
+      return items.withEnrichedSourceApps();
     } catch (e) {
       throw CacheException('Failed to get unsynced clipboard items: $e');
     }
@@ -118,9 +124,11 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Stream<List<ClipboardItem>> watchAll() {
     try {
-      return _localDataSource
-          .watchAll()
-          .map((records) => records.map((r) => r.toEntity()).toList());
+      return _localDataSource.watchAll().distinct().asyncMap((records) async {
+        final items = records.map((r) => r.toEntity()).toList();
+
+        return items.withEnrichedSourceApps();
+      });
     } catch (e) {
       throw CacheException('Failed to watch all clipboard items: $e');
     }

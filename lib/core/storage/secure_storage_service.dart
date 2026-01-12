@@ -1,7 +1,9 @@
 /// Abstract interface for secure storage operations
 ///
-/// This abstraction allows for easy testing and swapping of secure storage implementations
-/// Designed for storing sensitive data like tokens, credentials, and user secrets
+/// This abstraction allows for easy testing and swapping
+/// of secure storage implementations
+/// Designed for storing sensitive data like tokens, credentials,
+/// and user secrets
 abstract class SecureStorageService {
   /// Initialize the secure storage service
   Future<void> initialize();

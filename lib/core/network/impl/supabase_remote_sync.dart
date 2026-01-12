@@ -6,9 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 @Singleton(as: RemoteSyncClient)
 class SupabaseRemoteSync implements RemoteSyncClient {
-  SupabaseRemoteSync({
-    required SupabaseClient supabase,
-  }) : _supabase = supabase;
+  SupabaseRemoteSync({required SupabaseClient supabase}) : _supabase = supabase;
 
   final SupabaseClient _supabase;
 
@@ -53,24 +51,29 @@ class SupabaseRemoteSync implements RemoteSyncClient {
   Future<void> upsert({
     required String table,
     required Map<String, dynamic> data,
+    String? onConflict,
   }) async {
-    await _supabase.from(table).upsert(data, onConflict: 'id');
+    await _supabase.from(table).upsert(data, onConflict: onConflict ?? 'id');
   }
 
   @override
   Future<void> upsertBatch({
     required String table,
     required List<Map<String, dynamic>> data,
+    String? onConflict,
   }) async {
-    await _supabase.from(table).upsert(data, onConflict: 'id');
+    await _supabase.from(table).upsert(data, onConflict: onConflict ?? 'id');
   }
 
   @override
   Stream<List<T>> watch<T>({
     required String table,
     Map<String, dynamic>? filters,
+    String? primaryKey,
   }) {
-    final stream = _supabase.from(table).stream(primaryKey: ['id']);
+    final stream = _supabase
+        .from(table)
+        .stream(primaryKey: [primaryKey ?? 'id']);
 
     if (filters != null) {
       filters.forEach((key, value) {
@@ -80,7 +83,7 @@ class SupabaseRemoteSync implements RemoteSyncClient {
 
     return stream.map((event) {
       return List<T>.from(event as List);
-    });
+    }).distinct();
   }
 
   @override

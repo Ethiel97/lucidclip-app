@@ -1,12 +1,18 @@
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/clipboard/domain/extensions/clipboard_item_extensions.dart';
 
 @LazySingleton(as: ClipboardRepository)
 class SupabaseRepositoryImpl implements ClipboardRepository {
-  SupabaseRepositoryImpl({required this.remoteDataSource});
+  SupabaseRepositoryImpl({
+    required this.remoteDataSource,
+    required this.iconService,
+  });
 
   final ClipboardRemoteDataSource remoteDataSource;
+  final SourceAppIconService iconService;
 
   @override
   Future<void> deleteClipboardItem({
@@ -37,9 +43,8 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
         limit: limit,
       );
 
-      return List.from(
-        clipboardItems.map((item) => item.toEntity()),
-      );
+      final items = clipboardItems.map((item) => item.toEntity()).toList();
+      return items.withEnrichedSourceApps();
     } on NetworkException {
       rethrow;
     } catch (e) {
@@ -92,10 +97,9 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
       final clipboardItems =
           remoteDataSource.watchClipboardItems(filters: filters);
 
-      return clipboardItems.map((clipboardItems) {
-        return List.from(
-          clipboardItems.map((item) => item.toEntity()),
-        );
+      return clipboardItems.asyncMap((clipboardItems) async {
+        final items = clipboardItems.map((item) => item.toEntity()).toList();
+        return items.withEnrichedSourceApps();
       });
     } on NetworkException {
       rethrow;

@@ -31,7 +31,7 @@ class SettingsState extends Equatable {
   int get syncIntervalMinutes =>
       settings.value?.syncIntervalMinutes ?? defaultSyncIntervalMinutes;
 
-  List<String> get excludedApps => settings.value?.excludedApps ?? [];
+  List<SourceApp> get excludedApps => settings.value?.excludedApps ?? [];
 
   Map<String, String> get shortcuts => settings.value?.shortcuts ?? {};
 
@@ -55,9 +55,9 @@ class SettingsState extends Equatable {
     if (currentSettings != null &&
         currentSettings.incognitoMode &&
         currentSettings.incognitoSessionEndTime != null) {
-      final remaining = currentSettings.incognitoSessionEndTime!.difference(
-        DateTime.now(),
-      );
+      final remaining = currentSettings.incognitoSessionEndTime!
+          .toUtc()
+          .difference(DateTime.now().toUtc());
       return remaining.isNegative ? Duration.zero : remaining;
     }
     return null;

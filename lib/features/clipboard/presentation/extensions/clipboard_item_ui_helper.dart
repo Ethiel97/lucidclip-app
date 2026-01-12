@@ -4,14 +4,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
 final Map<String, Uint8List> _imagePreviewCache = {};
-final Map<String, Uint8List> _sourceAppIconCache = {};
-const _sourceAppDisplaySize = 24;
 
 // Cached icon widgets to avoid rebuilding
 const _iconText = IconTheme(
@@ -53,12 +52,12 @@ extension ClipboardUiHelper on ClipboardItem {
   bool get isImageFile =>
       (filePath?.isNotEmpty ?? true) && File(filePath!).isImage;
 
-  Widget preview({int? maxLines}) {
+  Widget preview({required ColorScheme colorScheme, int? maxLines}) {
     final textPreview = Text(
       content,
       overflow: TextOverflow.ellipsis,
       maxLines: maxLines,
-      style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+      style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
     );
 
     if (type case ClipboardItemType.text || ClipboardItemType.url) {
@@ -77,26 +76,13 @@ extension ClipboardUiHelper on ClipboardItem {
     }
   }
 
-  Widget get sourceAppIcon {
-    if (sourceApp?.icon != null) {
-      final cachedKey = '${sourceApp?.bundleId}';
-      final cachedBytes = _sourceAppIconCache.putIfAbsent(
-        cachedKey,
-        () => Uint8List.fromList(sourceApp!.icon!),
-      );
-
-      return CachedClipboardImage.memory(
-        bytes: cachedBytes,
-        width: _sourceAppDisplaySize.toDouble(),
-        height: _sourceAppDisplaySize.toDouble(),
-      );
-    } else {
-      return const HugeIcon(
-        icon: HugeIcons.strokeRounded0Square,
-        size: 20,
-        color: AppColors.textMuted,
-      );
-    }
+  Widget getSourceAppIcon(ColorScheme colorScheme) {
+    return sourceApp?.getIconWidget(colorScheme) ??
+        HugeIcon(
+          icon: HugeIcons.strokeRounded0Square,
+          size: 20,
+          color: colorScheme.onSurfaceVariant,
+        );
   }
 }
 

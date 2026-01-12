@@ -15,13 +15,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allTypes => 'All Types';
 
   @override
+  String appExcludedFromTracking(String appName) {
+    return '$appName excluded from tracking';
+  }
+
+  @override
+  String appIncludedInTracking(String appName) {
+    return '$appName included in tracking';
+  }
+
+  @override
   String get appName => 'LucidClip';
+
+  @override
+  String appNoLongerTracked(String appName) {
+    return '$appName no longer tracked';
+  }
+
+  @override
+  String appNoLongerTrackedDescription(String appName) {
+    return 'ClipboardItem from $appName will no longer be saved. You can change this in the Settings.';
+  }
+
+  @override
+  String get appTagLine => 'LucidClip - Your clipboard, finally under control.';
 
   @override
   String get appearance => 'Appearance';
 
   @override
   String get appendToClipboard => 'Append to Clipboard';
+
+  @override
+  String appsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'apps',
+      one: '1 app',
+      zero: 'No apps',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get appsIgnoredDuringClipboardTracking =>
+      'Apps ignored during clipboard tracking';
+
+  @override
+  String get appsNotTrackedDuringClipboardTracking =>
+      'Apps not tracked during clipboard tracking';
+
+  @override
+  String get authenticationError => 'Authentication Error';
 
   @override
   String get autoSync => 'Auto Sync';
@@ -63,6 +109,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clipboard => 'Clipboard';
 
   @override
+  String get clipboardCaptureStarted => 'Clipboard capture started';
+
+  @override
   String get clipboardHistory => 'Clipboard History';
 
   @override
@@ -72,10 +121,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get command => 'Command';
 
   @override
+  String get confirm => 'Confirm';
+
+  @override
   String get copied => 'Copied';
 
   @override
   String get copy => 'Copy';
+
+  @override
+  String get copyLastItem => 'Copy last item';
+
+  @override
+  String get copyPath => 'Copy path';
 
   @override
   String get copyToClipboard => 'Copy to Clipboard';
@@ -99,7 +157,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorOccurred => 'An error occurred. Please try again later.';
 
   @override
+  String get exclude => 'Exclude';
+
+  @override
+  String get excluded => 'Excluded';
+
+  @override
   String get failedToLoadLinkPreview => 'Failed to load link preview';
+
+  @override
+  String get fifteenMinutes => '15 Minutes';
 
   @override
   String get fileOnly => 'File Only';
@@ -108,7 +175,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get format => 'Format';
 
   @override
+  String get free => 'Free';
+
+  @override
   String get general => 'General';
+
+  @override
+  String get github => 'GitHub';
 
   @override
   String get hideWindow => 'Hide Window';
@@ -123,7 +196,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ignorePasswords => 'Ignore Copied Passwords';
 
   @override
+  String get ignoredApps => 'Ignored Apps';
+
+  @override
+  String get ignoredAppsDescription => 'Apps ignored during clipboard tracking';
+
+  @override
   String get imageOnly => 'Image Only';
+
+  @override
+  String get include => 'Include';
+
+  @override
+  String includeApp(String appName) {
+    return 'Include $appName';
+  }
+
+  @override
+  String includeAppConfirmation(String appName) {
+    return 'Include $appName in clipboard tracking?';
+  }
 
   @override
   String get incognitoMode => 'Incognito Mode';
@@ -167,6 +259,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sets the maximum number of items in the clipboard.';
 
   @override
+  String get noAppsAreCurrentlyIgnored => 'No apps are currently ignored.';
+
+  @override
   String get noClipboardHistory => 'No clipboard history';
 
   @override
@@ -181,7 +276,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSettingsAvailable => 'No settings available';
 
   @override
+  String get none => 'None';
+
+  @override
+  String get notification => 'Notification';
+
+  @override
   String get notifications => 'Notifications';
+
+  @override
+  String get oneHour => '1 Hour';
+
+  @override
+  String get openLink => 'Open link';
 
   @override
   String get pauseTracking => 'Pause Tracking';
@@ -210,13 +317,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shows a preview of links in the clipboard.';
 
   @override
+  String get privateSessionDuration => 'Private Session Duration';
+
+  @override
+  String get pro => 'Pro';
+
+  @override
   String get quit => 'Quit';
 
   @override
   String get recent => 'Recent';
 
   @override
+  String get resumeClipboardCapture => 'Resume clipboard capture';
+
+  @override
   String get resumeTracking => 'Resume Tracking';
+
+  @override
+  String resumeTrackingApp(String appName) {
+    return 'Resume tracking $appName';
+  }
+
+  @override
+  String resumeTrackingAppConfirmation(Object appName) {
+    return 'Resume clipboard tracking for $appName?';
+  }
 
   @override
   String get retentionDays => 'Retention Days';
@@ -227,21 +353,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
-
-  @override
-  String get startPrivateSession => 'Start Private Session';
-
-  @override
-  String get privateSessionDuration => 'Private Session Duration';
-
-  @override
-  String get fifteenMinutes => '15 Minutes';
-
-  @override
-  String get oneHour => '1 Hour';
-
-  @override
-  String get untilDisabled => 'Until Disabled';
 
   @override
   String get searchHint => 'Search...';
@@ -269,6 +380,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showWindow => 'Show Window';
 
   @override
+  String get signIn => 'Sign in';
+
+  @override
+  String signInWith(String provider) {
+    return 'Sign in with $provider';
+  }
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get signedInSuccessfully => 'Signed in successfully!';
+
+  @override
+  String get signingIn => 'Signing in...';
+
+  @override
   String get size => 'Size';
 
   @override
@@ -278,7 +406,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get source => 'Source';
 
   @override
+  String get startPrivateSession => 'Start Private Session';
+
+  @override
+  String get stopClipboardCapture => 'Stop clipboard capture';
+
+  @override
+  String stopTrackingApp(String appName) {
+    return 'Stop tracking $appName';
+  }
+
+  @override
+  String stopTrackingAppConfirmation(String appName) {
+    return 'LucidClip will no longer save clipboard items copied from $appName.';
+  }
+
+  @override
   String get storage => 'Storage';
+
+  @override
+  String get successfullySignedIn => 'Successfully signed in!';
+
+  @override
+  String get successfullySignedOut => 'Successfully signed out!';
 
   @override
   String get sync => 'Sync';
@@ -303,7 +453,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme => 'Theme';
 
   @override
+  String get trackingPreferencesUpdated => 'Tracking preferences updated!';
+
+  @override
+  String trackingResumedForApp(String appName) {
+    return 'Tracking resumed for $appName';
+  }
+
+  @override
+  String trackingResumedForAppDescription(String appName) {
+    return 'Clipboard items from $appName will now appear in your history.';
+  }
+
+  @override
   String get unpin => 'Unpin';
+
+  @override
+  String get untilDisabled => 'Until Disabled';
 
   @override
   String get version => 'Version';
@@ -311,13 +477,4 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get yourClipboardItemsWillAppearHere =>
       'Your clipboard items will appear here.';
-
-  @override
-  String get stopClipboardCapture => 'Stop clipboard capture';
-
-  @override
-  String get resumeClipboardCapture => 'Resume clipboard capture';
-
-  @override
-  String get clipboardCaptureStarted => 'Clipboard capture started';
 }

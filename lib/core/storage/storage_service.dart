@@ -1,6 +1,7 @@
 /// Abstract interface for local storage operations
 ///
-/// This abstraction allows for easy testing and swapping of storage implementations
+/// This abstraction allows for easy testing
+/// and swapping of storage implementations
 /// (Hive, SharedPreferences, SQLite, etc.)
 abstract class StorageService {
   /// Initialize the storage service

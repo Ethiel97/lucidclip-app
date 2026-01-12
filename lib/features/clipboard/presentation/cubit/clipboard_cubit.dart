@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:developer' as developer;
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
@@ -15,15 +18,16 @@ part 'clipboard_state.dart';
 @lazySingleton
 class ClipboardCubit extends HydratedCubit<ClipboardState> {
   ClipboardCubit({
+    required this.authRepository,
     required this.clipboardManager,
     required this.clipboardRepository,
     required this.localClipboardRepository,
     required this.localClipboardHistoryRepository,
     required this.localSettingsRepository,
   }) : super(const ClipboardState()) {
+    _initializeAuthListener();
     _loadData();
     _startWatchingClipboard();
-    _watchSettings();
   }
 
   Future<void> _loadData() async {
@@ -40,22 +44,35 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalClipboardRepository localClipboardRepository;
   final LocalClipboardHistoryRepository localClipboardHistoryRepository;
   final LocalSettingsRepository localSettingsRepository;
+  final AuthRepository authRepository;
 
   StreamSubscription<ClipboardData>? _clipboardSubscription;
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
   StreamSubscription<ClipboardHistories>? _localHistorySubscription;
   StreamSubscription<UserSettings?>? _userSettingsSubscription;
+  StreamSubscription<User?>? _authSubscription;
 
   UserSettings? _userSettings;
 
-  // TODO(Ethiel97): Placeholder for userId until auth context is available
-  static const String _pendingUserId = '';
+  String _currentUserId = 'guest';
+
+  void _initializeAuthListener() {
+    _authSubscription = authRepository.authStateChanges.listen((user) {
+      _currentUserId = user?.id ?? 'guest';
+
+      _watchSettings();
+    });
+  }
 
   void _watchSettings() {
     _userSettingsSubscription?.cancel();
     _userSettingsSubscription = localSettingsRepository
-        .watchSettings(_pendingUserId.isEmpty ? 'guest' : _pendingUserId)
+        .watchSettings(_currentUserId)
         .listen((s) {
+          developer.log(
+            'Watching settings: $s from clipboard cubit',
+            name: 'ClipboardCubit',
+          );
           _userSettings = s;
         });
   }
@@ -65,6 +82,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       clipboardData,
     ) async {
       final settings = _userSettings;
+
+      log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
 
       if (settings?.incognitoMode ?? false) {
         // In incognito mode, do not store clipboard data
@@ -76,12 +95,17 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       }
 
       //excluded apps check
-      final excluded = settings?.excludedApps ?? const <String>[];
-      final bundleId = clipboardData.sourceApp?.bundleId;
+      final excluded = settings?.excludedApps ?? const <SourceApp>[];
+      final sourceApp = clipboardData.sourceApp;
 
-      if (bundleId != null &&
-          bundleId.isNotEmpty &&
-          excluded.contains(bundleId)) {
+      if (sourceApp != null &&
+          sourceApp.isValid &&
+          excluded.contains(clipboardData.sourceApp)) {
+        developer.log(
+          'Clipboard data from excluded app (${sourceApp.bundleId}); '
+          'skipping storage.',
+          name: 'ClipboardCubit',
+        );
         return;
       }
 
@@ -93,17 +117,19 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       // TODO(Ethiel97): Check duplicate content update
       if (isDuplicate) {
-        print('Duplicate clipboard item detected; updating timestamp.');
+        developer.log('Duplicate clipboard item detected; updating timestamp.');
         final existingItem = currentItems.firstWhere(
           (item) => item.contentHash == clipboardData.contentHash,
         );
 
-        final updatedItem = existingItem.copyWith(updatedAt: DateTime.now());
+        final updatedItem = existingItem.copyWith(
+          updatedAt: DateTime.now().toUtc(),
+        );
 
         await _upsertClipboardItem(updatedItem);
         await _createClipboardHistory(updatedItem.id);
       } else {
-        final newItem = clipboardData.toDomain(userId: _pendingUserId);
+        final newItem = clipboardData.toDomain(userId: _currentUserId);
 
         await _upsertClipboardItem(newItem);
         await _createClipboardHistory(newItem.id);
@@ -121,7 +147,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         stackTrace: stackTrace,
         name: 'ClipboardCubit',
       );
-      // The item is still added to the in-memory list
     }
   }
 
@@ -131,9 +156,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         id: IdGenerator.generate(),
         clipboardItemId: clipboardItemId,
         action: ClipboardAction.copy,
-        userId: _pendingUserId,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        userId: _currentUserId,
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
       );
 
       // Store history locally
@@ -145,7 +170,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         stackTrace: stackTrace,
         name: 'ClipboardCubit',
       );
-      // Continue working even if history creation fails
     }
   }
 
@@ -208,6 +232,20 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         );
   }
 
+  Future<void> copyToClipboard(ClipboardItem item) async {
+    try {
+      await clipboardManager.setClipboardContent(item.toInfrastructure());
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to copy content to clipboard',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+      // Handle error if necessary
+    }
+  }
+
   Future<void> loadClipboardItems() async {
     try {
       emit(state.copyWith(clipboardItems: state.clipboardItems.toLoading()));
@@ -227,6 +265,75 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
           clipboardItems: state.clipboardItems.toError(
             ErrorDetails(
               message: 'An error occurred while loading clipboard items: $e',
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> toggleAppExclusion(SourceApp? sourceApp) async {
+    try {
+      UserSettings? newSettings;
+
+      if (sourceApp == null) {
+        throw Exception('Source app is null');
+      }
+
+      if (_userSettings != null) {
+        final wasExcluded = _userSettings!.excludedApps.contains(sourceApp);
+
+        if (wasExcluded) {
+          final updatedExcludedApps = List<SourceApp>.from(
+            _userSettings!.excludedApps,
+          )..remove(sourceApp);
+
+          newSettings = _userSettings!.copyWith(
+            excludedApps: updatedExcludedApps,
+          );
+        } else {
+          final updatedExcludedApps = List<SourceApp>.from(
+            _userSettings!.excludedApps,
+          )..add(sourceApp);
+
+          newSettings = _userSettings!.copyWith(
+            excludedApps: updatedExcludedApps,
+          );
+        }
+        await localSettingsRepository.upsertSettings(newSettings);
+
+        if (wasExcluded) {
+          emit(
+            state.copyWith(
+              includeAppResult: state.includeAppResult.toSuccess(sourceApp),
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              excludeAppResult: state.excludeAppResult.toSuccess(sourceApp),
+            ),
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      developer.log(
+        'An error occurred while updating app exclusion: $e',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+
+      emit(
+        state.copyWith(
+          excludeAppResult: state.excludeAppResult.toError(
+            ErrorDetails(
+              message: 'An error occurred while updating app exclusion: $e',
+            ),
+          ),
+          includeAppResult: state.includeAppResult.toError(
+            ErrorDetails(
+              message: 'An error occurred while updating app exclusion: $e',
             ),
           ),
         ),
@@ -348,10 +455,12 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   @disposeMethod
   @override
   Future<void> close() async {
+    await _authSubscription?.cancel();
     await _clipboardSubscription?.cancel();
     await clipboardManager.dispose();
     await _localHistorySubscription?.cancel();
     await _localItemsSubscription?.cancel();
+    await _userSettingsSubscription?.cancel();
     return super.close();
   }
 }

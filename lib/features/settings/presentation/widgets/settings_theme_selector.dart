@@ -3,6 +3,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class SettingsThemeSelector extends StatelessWidget {
   const SettingsThemeSelector({
@@ -26,8 +27,9 @@ class SettingsThemeSelector extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,22 +37,22 @@ class SettingsThemeSelector extends StatelessWidget {
           Text(
             l10n.theme.sentenceCase,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.textPrimary,
+              color: colorScheme.onSurface,
               fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: AppSpacing.xxxs),
           Text(
             l10n.chooseYourAppThemeDescription,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.textMuted),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: colorScheme.onTertiary.toTinyColor().darken().color,
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           SegmentedButton<String>(
             segments: [
               ButtonSegment(
-                value: l10n.light,
+                value: l10n.light.toLowerCase(),
                 label: Text(l10n.light.sentenceCase),
                 icon: const HugeIcon(
                   icon: HugeIcons.strokeRoundedSun01,
@@ -58,7 +60,7 @@ class SettingsThemeSelector extends StatelessWidget {
                 ),
               ),
               ButtonSegment(
-                value: l10n.dark,
+                value: l10n.dark.toLowerCase(),
                 label: Text(l10n.dark.sentenceCase),
                 icon: const HugeIcon(
                   icon: HugeIcons.strokeRoundedMoon01,
@@ -66,7 +68,7 @@ class SettingsThemeSelector extends StatelessWidget {
                 ),
               ),
               ButtonSegment(
-                value: l10n.system,
+                value: l10n.system.toLowerCase(),
                 label: Text(l10n.system.sentenceCase),
                 icon: const HugeIcon(
                   icon: HugeIcons.strokeRoundedSetting06,

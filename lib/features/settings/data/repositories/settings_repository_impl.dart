@@ -37,7 +37,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Stream<UserSettings?> watchSettings(String userId) {
     try {
-      return remoteDataSource.watchSettings(userId).map((model) {
+      return remoteDataSource.watchSettings(userId).distinct().map((model) {
         return model?.toEntity();
       });
     } on NetworkException {

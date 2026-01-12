@@ -2,8 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/features/settings/data/data_sources/data_sources.dart';
-import 'package:lucid_clip/features/settings/data/models/models.dart';
+import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 @LazySingleton(as: LocalSettingsRepository)

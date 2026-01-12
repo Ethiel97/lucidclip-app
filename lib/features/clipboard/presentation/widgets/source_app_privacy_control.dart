@@ -17,11 +17,13 @@ class SourceAppPrivacyControl extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final settings = context.select(
-      (SettingsCubit cubit) => cubit.state.settings.value!,
+    final excludedApps = context.select(
+      (SettingsCubit cubit) => cubit.state.settings.value?.excludedApps ?? [],
     );
 
-    final isExcluded = settings.excludedApps.contains(clipboardItem.sourceApp);
+    final isSourceAppExcluded = clipboardItem.getIsSourceAppExcluded(
+      excludedApps,
+    );
 
     return TextButton(
       style: FilledButton.styleFrom(
@@ -35,7 +37,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
           ..showSnackBar(
             SnackBar(
               content: Text(
-                isExcluded
+                isSourceAppExcluded
                     ? l10n.resumeTrackingAppConfirmation(
                         clipboardItem.sourceApp?.name ?? '',
                       )
@@ -46,7 +48,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
               action: SnackBarAction(
                 label: l10n.confirm.sentenceCase,
                 onPressed: () {
-                  context.read<ClipboardCubit>().toggleAppExclusion(
+                  context.read<SettingsCubit>().toggleAppExclusion(
                     clipboardItem.sourceApp,
                   );
                 },
@@ -55,7 +57,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
           );
       },
       child: Text(
-        isExcluded
+        isSourceAppExcluded
             ? l10n.resumeTrackingApp(clipboardItem.sourceApp?.name ?? '')
             : l10n.stopTrackingApp(clipboardItem.sourceApp?.name ?? ''),
         style: textTheme.bodySmall?.copyWith(

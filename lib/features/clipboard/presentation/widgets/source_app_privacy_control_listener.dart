@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:toastification/toastification.dart';
 
@@ -15,7 +16,7 @@ class SourceAppPrivacyControlListener extends StatelessWidget {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<ClipboardCubit, ClipboardState>(
+        BlocListener<SettingsCubit, SettingsState>(
           listenWhen: (previous, current) =>
               previous.excludeAppResult != current.excludeAppResult,
           listener: (context, state) {
@@ -35,7 +36,7 @@ class SourceAppPrivacyControlListener extends StatelessWidget {
           },
         ),
 
-        BlocListener<ClipboardCubit, ClipboardState>(
+        BlocListener<SettingsCubit, SettingsState>(
           listenWhen: (previous, current) =>
               previous.includeAppResult != current.includeAppResult,
           listener: (context, state) {

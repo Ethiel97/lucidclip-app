@@ -57,7 +57,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(
-      (await getApplicationSupportDirectory()).path,
+      (await getTemporaryDirectory()).path,
     ),
   );
 
@@ -72,6 +72,8 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   );
 
   configureDependencies();
+
+  await getIt<TrayManagerService>().initialize();
 
   const windowOptions = WindowOptions(
     minimumSize: Size(800, 500),
@@ -89,8 +91,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     await windowManager.show();
     await windowManager.focus();
   });
-
-  await getIt<TrayManagerService>().initialize();
 
   // Only clear app data in development when explicitly needed
   // await clearAppData();

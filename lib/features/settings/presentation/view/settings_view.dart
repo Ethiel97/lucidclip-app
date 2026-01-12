@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
@@ -206,31 +207,40 @@ class _SettingsViewState extends State<SettingsView> {
                       context.router.navigate(const IgnoredAppsRoute());
                     },
                   ),
-                  SettingsSwitchItem(
-                    title: l10n.autoSync.sentenceCase,
-                    description: l10n.autoSyncDescription.sentenceCase,
-                    value: settings.autoSync,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateAutoSync(
-                        autoSync: value,
-                      );
-                    },
+                  ProGateOverlay(
+                    // badgeAlignment: Alignment.topRight,
+                    badgeOffset: const Offset(12, -4),
+                    child: SettingsSwitchItem(
+                      title: l10n.autoSync.sentenceCase,
+                      description: l10n.autoSyncDescription.sentenceCase,
+                      value: settings.autoSync,
+                      onChanged: (value) {
+                        context.read<SettingsCubit>().updateAutoSync(
+                          autoSync: value,
+                        );
+                      },
+                    ),
                   ),
 
-                  SettingsDropdownItem<int>(
-                    title: l10n.historyLimit.sentenceCase,
-                    description: l10n.maxHistoryItemsDescription.sentenceCase,
-                    value: settings.maxHistoryItems,
-                    items: const [50, 100, 500, 1000],
-                    itemLabel: (value) => '$value items',
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<SettingsCubit>().updateMaxHistoryItems(
-                          value,
-                        );
-                      }
-                    },
+                  ProGateOverlay(
+                    badgeOffset: const Offset(12, -4),
+                    child: SettingsDropdownItem<int>(
+                      title: l10n.historyLimit.sentenceCase,
+                      description: l10n.maxHistoryItemsDescription.sentenceCase,
+                      value: settings.maxHistoryItems,
+                      items: const [50, 100, 500, 1000],
+                      itemLabel: (value) => '$value items',
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<SettingsCubit>().updateMaxHistoryItems(
+                            value,
+                          );
+                        }
+                      },
+                    ),
                   ),
+
+                  //TODO(Ethiel97): Make this a Pro feature
                   SettingsDropdownItem<int>(
                     title: l10n.retentionDays.sentenceCase,
                     description: l10n.retentionDaysDescription.sentenceCase,

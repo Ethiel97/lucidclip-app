@@ -24,6 +24,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.localClipboardRepository,
     required this.localClipboardHistoryRepository,
     required this.localSettingsRepository,
+    required this.remoteSettingsRepository,
   }) : super(const ClipboardState()) {
     _initializeAuthListener();
     _loadData();
@@ -40,21 +41,24 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   final BaseClipboardManager clipboardManager;
-  final ClipboardRepository clipboardRepository;
-  final LocalClipboardRepository localClipboardRepository;
-  final LocalClipboardHistoryRepository localClipboardHistoryRepository;
-  final LocalSettingsRepository localSettingsRepository;
   final AuthRepository authRepository;
+  final ClipboardRepository clipboardRepository;
+  final LocalClipboardHistoryRepository localClipboardHistoryRepository;
+  final LocalClipboardRepository localClipboardRepository;
+  final LocalSettingsRepository localSettingsRepository;
+  final SettingsRepository remoteSettingsRepository;
 
+  StreamSubscription<User?>? _authSubscription;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
   StreamSubscription<ClipboardHistories>? _localHistorySubscription;
   StreamSubscription<UserSettings?>? _userSettingsSubscription;
-  StreamSubscription<User?>? _authSubscription;
 
   UserSettings? _userSettings;
 
   String _currentUserId = 'guest';
+
+  bool get isAuthenticated => _currentUserId != 'guest';
 
   void _initializeAuthListener() {
     _authSubscription = authRepository.authStateChanges.listen((user) {
@@ -98,11 +102,11 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       final excluded = settings?.excludedApps ?? const <SourceApp>[];
       final sourceApp = clipboardData.sourceApp;
 
-      if (sourceApp != null &&
-          sourceApp.isValid &&
-          excluded.contains(clipboardData.sourceApp)) {
+      log("Excluded apps: $excluded", name: 'ClipboardCubit');
+
+      if (_isSourceAppExcluded(sourceApp)) {
         developer.log(
-          'Clipboard data from excluded app (${sourceApp.bundleId}); '
+          'Clipboard data from excluded app (${sourceApp?.bundleId}); '
           'skipping storage.',
           name: 'ClipboardCubit',
         );
@@ -135,6 +139,16 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         await _createClipboardHistory(newItem.id);
       }
     });
+  }
+
+  bool _isSourceAppExcluded(SourceApp? sourceApp) {
+    if (sourceApp == null || !sourceApp.isValid) {
+      return false;
+    }
+    final excludedApps = _userSettings?.excludedApps ?? <SourceApp>[];
+    return excludedApps.any(
+      (excludedApp) => excludedApp.bundleId == sourceApp.bundleId,
+    );
   }
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
@@ -265,75 +279,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
           clipboardItems: state.clipboardItems.toError(
             ErrorDetails(
               message: 'An error occurred while loading clipboard items: $e',
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
-  Future<void> toggleAppExclusion(SourceApp? sourceApp) async {
-    try {
-      UserSettings? newSettings;
-
-      if (sourceApp == null) {
-        throw Exception('Source app is null');
-      }
-
-      if (_userSettings != null) {
-        final wasExcluded = _userSettings!.excludedApps.contains(sourceApp);
-
-        if (wasExcluded) {
-          final updatedExcludedApps = List<SourceApp>.from(
-            _userSettings!.excludedApps,
-          )..remove(sourceApp);
-
-          newSettings = _userSettings!.copyWith(
-            excludedApps: updatedExcludedApps,
-          );
-        } else {
-          final updatedExcludedApps = List<SourceApp>.from(
-            _userSettings!.excludedApps,
-          )..add(sourceApp);
-
-          newSettings = _userSettings!.copyWith(
-            excludedApps: updatedExcludedApps,
-          );
-        }
-        await localSettingsRepository.upsertSettings(newSettings);
-
-        if (wasExcluded) {
-          emit(
-            state.copyWith(
-              includeAppResult: state.includeAppResult.toSuccess(sourceApp),
-            ),
-          );
-        } else {
-          emit(
-            state.copyWith(
-              excludeAppResult: state.excludeAppResult.toSuccess(sourceApp),
-            ),
-          );
-        }
-      }
-    } catch (e, stackTrace) {
-      developer.log(
-        'An error occurred while updating app exclusion: $e',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
-      );
-
-      emit(
-        state.copyWith(
-          excludeAppResult: state.excludeAppResult.toError(
-            ErrorDetails(
-              message: 'An error occurred while updating app exclusion: $e',
-            ),
-          ),
-          includeAppResult: state.includeAppResult.toError(
-            ErrorDetails(
-              message: 'An error occurred while updating app exclusion: $e',
             ),
           ),
         ),

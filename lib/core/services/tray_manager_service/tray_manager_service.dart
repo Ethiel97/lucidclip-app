@@ -413,10 +413,18 @@ class TrayManagerService with TrayListener {
 
       final context = appRouter.navigatorKey.currentContext;
       if (context != null && context.mounted) {
-        await appRouter.navigate(LucidClipRoute(children: [SettingsRoute()]));
+        developer.log(
+          'Navigating to settings page...',
+          name: 'TrayManagerService',
+        );
+        await appRouter.navigate(
+          LucidClipRoute(
+            children: [
+              SettingsRouterRoute(children: [SettingsRoute()]),
+            ],
+          ),
+        );
       }
-
-      developer.log('Opening settings...', name: 'TrayManagerService');
     } catch (e, stackTrace) {
       developer.log(
         'Error opening settings',

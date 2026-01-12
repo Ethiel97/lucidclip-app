@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
@@ -189,7 +190,6 @@ class _SettingsViewState extends State<SettingsView> {
                     description: l10n.incognitoModeDescription.sentenceCase,
                     value: settings.incognitoMode,
                     onChanged: (value) {
-                      print("Toggling incognito mode to: $value");
                       context.read<SettingsCubit>().updateIncognitoMode(
                         incognitoMode: value,
                       );
@@ -206,44 +206,56 @@ class _SettingsViewState extends State<SettingsView> {
                       context.router.navigate(const IgnoredAppsRoute());
                     },
                   ),
-                  SettingsSwitchItem(
-                    title: l10n.autoSync.sentenceCase,
-                    description: l10n.autoSyncDescription.sentenceCase,
-                    value: settings.autoSync,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateAutoSync(
-                        autoSync: value,
-                      );
-                    },
+                  ProGateOverlay(
+                    // badgeAlignment: Alignment.topRight,
+                    badgeOffset: const Offset(12, -4),
+                    child: SettingsSwitchItem(
+                      title: l10n.autoSync.sentenceCase,
+                      description: l10n.autoSyncDescription.sentenceCase,
+                      value: settings.autoSync,
+                      onChanged: (value) {
+                        context.read<SettingsCubit>().updateAutoSync(
+                          autoSync: value,
+                        );
+                      },
+                    ),
                   ),
 
-                  SettingsDropdownItem<int>(
-                    title: l10n.historyLimit.sentenceCase,
-                    description: l10n.maxHistoryItemsDescription.sentenceCase,
-                    value: settings.maxHistoryItems,
-                    items: const [50, 100, 500, 1000],
-                    itemLabel: (value) => '$value items',
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<SettingsCubit>().updateMaxHistoryItems(
-                          value,
-                        );
-                      }
-                    },
+                  ProGateOverlay(
+                    badgeOffset: const Offset(12, -4),
+                    child: SettingsDropdownItem<int>(
+                      title: l10n.historyLimit.sentenceCase,
+                      description: l10n.maxHistoryItemsDescription.sentenceCase,
+                      value: settings.maxHistoryItems,
+                      items: const [50, 100, 500, 1000],
+                      itemLabel: (value) => '$value items',
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<SettingsCubit>().updateMaxHistoryItems(
+                            value,
+                          );
+                        }
+                      },
+                    ),
                   ),
-                  SettingsDropdownItem<int>(
-                    title: l10n.retentionDays.sentenceCase,
-                    description: l10n.retentionDaysDescription.sentenceCase,
-                    value: settings.retentionDays,
-                    items: const [1, 7, 14, 30, 60, 90, 180, 365],
-                    itemLabel: (value) => '$value days',
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<SettingsCubit>().updateRetentionDays(
-                          value,
-                        );
-                      }
-                    },
+
+                  //TODO(Ethiel97): Make this a Pro feature
+                  ProGateOverlay(
+                    badgeOffset: const Offset(12, -4),
+                    child: SettingsDropdownItem<int>(
+                      title: l10n.retentionDays.sentenceCase,
+                      description: l10n.retentionDaysDescription.sentenceCase,
+                      value: settings.retentionDays,
+                      items: const [1, 7, 14, 30, 60, 90, 180, 365],
+                      itemLabel: (value) => '$value days',
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<SettingsCubit>().updateRetentionDays(
+                            value,
+                          );
+                        }
+                      },
+                    ),
                   ),
 
                   // Sync Section (if auto sync is enabled)

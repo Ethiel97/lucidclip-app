@@ -1,10 +1,25 @@
 part of 'settings_cubit.dart';
 
 class SettingsState extends Equatable {
-  const SettingsState({this.settings = const ValueWrapper()});
+  const SettingsState({
+    this.settings = const ValueWrapper(),
+
+    this.excludeAppResult = const ValueWrapper(),
+    this.includeAppResult = const ValueWrapper(),
+  });
 
   factory SettingsState.fromJson(Map<String, dynamic> json) {
     return SettingsState(
+      excludeAppResult: ValueWrapper(
+        value: SourceAppModel.fromJson(
+          json['excludeAppResult'] as Map<String, dynamic>? ?? {},
+        ).toEntity(),
+      ),
+      includeAppResult: ValueWrapper(
+        value: SourceAppModel.fromJson(
+          json['includeAppResult'] as Map<String, dynamic>? ?? {},
+        ).toEntity(),
+      ),
       settings: ValueWrapper(
         value: json['settings'] != null
             ? UserSettingsModel.fromJson(
@@ -15,10 +30,20 @@ class SettingsState extends Equatable {
     );
   }
 
+  final ValueWrapper<SourceApp> excludeAppResult;
+  final ValueWrapper<SourceApp> includeAppResult;
   final ValueWrapper<UserSettings?> settings;
 
-  SettingsState copyWith({ValueWrapper<UserSettings?>? settings}) {
-    return SettingsState(settings: settings ?? this.settings);
+  SettingsState copyWith({
+    ValueWrapper<SourceApp>? includeAppResult,
+    ValueWrapper<SourceApp>? excludeAppResult,
+    ValueWrapper<UserSettings?>? settings,
+  }) {
+    return SettingsState(
+      excludeAppResult: excludeAppResult ?? this.excludeAppResult,
+      includeAppResult: includeAppResult ?? this.includeAppResult,
+      settings: settings ?? this.settings,
+    );
   }
 
   // add getters for easy access to settings properties
@@ -64,10 +89,16 @@ class SettingsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [settings];
+  List<Object?> get props => [excludeAppResult, includeAppResult, settings];
 
   Map<String, dynamic> toJson() {
     return {
+      'excludeAppResult': excludeAppResult.value != null
+          ? SourceAppModel.fromEntity(excludeAppResult.value!).toJson()
+          : null,
+      'includeAppResult': includeAppResult.value != null
+          ? SourceAppModel.fromEntity(includeAppResult.value!).toJson()
+          : null,
       'settings': settings.value != null
           ? UserSettingsModel.fromEntity(settings.value!).toJson()
           : null,

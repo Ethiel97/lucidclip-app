@@ -127,7 +127,9 @@ class ClipboardItem extends Equatable {
   bool getIsSourceAppExcluded(List<SourceApp> excludedApps) {
     final app = sourceApp;
     if (app != null) {
-      return excludedApps.contains(app);
+      return excludedApps.any(
+        (excludedApp) => excludedApp.bundleId == app.bundleId,
+      );
     }
     return false;
   }

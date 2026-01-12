@@ -104,6 +104,7 @@ class StorageIndicator extends StatelessWidget {
                     ),
                     center: Text(
                       '${(ratio * 100).toStringAsFixed(0)}%',
+                      textAlign: TextAlign.center,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colorScheme.onSurface,
                       ),

@@ -6,6 +6,13 @@ import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
+/// A button that allows the user to stop or resume tracking
+/// clipboard activity from the source app of the given clipboard item.
+/// Used within clipboard item tiles.
+/// When pressed, it shows a SnackBar to confirm the action.
+/// @param [clipboardItem] The clipboard item whose source
+/// app's tracking status is to be toggled.
+///
 class SourceAppPrivacyControl extends StatelessWidget {
   const SourceAppPrivacyControl({required this.clipboardItem, super.key});
 
@@ -17,11 +24,13 @@ class SourceAppPrivacyControl extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final settings = context.select(
-      (SettingsCubit cubit) => cubit.state.settings.value!,
+    final excludedApps = context.select(
+      (SettingsCubit cubit) => cubit.state.settings.value?.excludedApps ?? [],
     );
 
-    final isExcluded = settings.excludedApps.contains(clipboardItem.sourceApp);
+    final isSourceAppExcluded = clipboardItem.getIsSourceAppExcluded(
+      excludedApps,
+    );
 
     return TextButton(
       style: FilledButton.styleFrom(
@@ -35,7 +44,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
           ..showSnackBar(
             SnackBar(
               content: Text(
-                isExcluded
+                isSourceAppExcluded
                     ? l10n.resumeTrackingAppConfirmation(
                         clipboardItem.sourceApp?.name ?? '',
                       )
@@ -46,7 +55,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
               action: SnackBarAction(
                 label: l10n.confirm.sentenceCase,
                 onPressed: () {
-                  context.read<ClipboardCubit>().toggleAppExclusion(
+                  context.read<SettingsCubit>().toggleAppExclusion(
                     clipboardItem.sourceApp,
                   );
                 },
@@ -55,7 +64,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
           );
       },
       child: Text(
-        isExcluded
+        isSourceAppExcluded
             ? l10n.resumeTrackingApp(clipboardItem.sourceApp?.name ?? '')
             : l10n.stopTrackingApp(clipboardItem.sourceApp?.name ?? ''),
         style: textTheme.bodySmall?.copyWith(
@@ -68,6 +77,10 @@ class SourceAppPrivacyControl extends StatelessWidget {
   }
 }
 
+/// Badge indicating that the source app is excluded from tracking
+/// in clipboard history.
+/// Used within clipboard item tiles.
+/// Displays a red "Ignored" badge.
 class ExcludedSourceAppBadge extends StatelessWidget {
   const ExcludedSourceAppBadge({super.key});
 
@@ -76,7 +89,7 @@ class ExcludedSourceAppBadge extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     return ClipboardBadge(
-      label: l10n.excluded.sentenceCase,
+      label: l10n.ignored.sentenceCase,
       color: colorScheme.error.withValues(alpha: .75),
     );
   }

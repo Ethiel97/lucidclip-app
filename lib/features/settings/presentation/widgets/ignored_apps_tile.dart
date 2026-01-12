@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
 class IgnoredAppsTile extends StatelessWidget {
@@ -46,7 +46,7 @@ class IgnoredAppsTile extends StatelessWidget {
               foregroundColor: colorScheme.primary.withValues(alpha: 0.9),
             ),
             onPressed: () {
-              context.read<ClipboardCubit>().toggleAppExclusion(app);
+              context.read<SettingsCubit>().toggleAppExclusion(app);
             },
             child: Text(l10n.resumeTracking),
           ),

@@ -196,6 +196,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ignorePasswords => 'Ignore Copied Passwords';
 
   @override
+  String get ignored => 'Ignored';
+
+  @override
   String get ignoredApps => 'Ignored Apps';
 
   @override

@@ -53,7 +53,6 @@ class ClipboardState extends Equatable {
 
   final ValueWrapper<ClipboardHistories> clipboardHistory;
   final ValueWrapper<ClipboardItems> clipboardItems;
-
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
   final ValueWrapper<SourceApp> excludeAppResult;
   final ValueWrapper<SourceApp> includeAppResult;

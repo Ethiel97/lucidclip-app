@@ -57,7 +57,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(
-      (await getApplicationSupportDirectory()).path,
+      (await getTemporaryDirectory()).path,
     ),
   );
 
@@ -73,9 +73,11 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   configureDependencies();
 
+  await getIt<TrayManagerService>().initialize();
+
   const windowOptions = WindowOptions(
-    minimumSize: Size(900, 600),
-    size: Size(1000, 700),
+    minimumSize: Size(800, 500),
+    size: Size(800, 500),
     center: true,
     title: 'LucidClip',
     // backgroundColor: Colors.transparent,
@@ -89,8 +91,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     await windowManager.show();
     await windowManager.focus();
   });
-
-  await getIt<TrayManagerService>().initialize();
 
   // Only clear app data in development when explicitly needed
   // await clearAppData();

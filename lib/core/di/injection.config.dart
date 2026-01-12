@@ -266,7 +266,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i340.LocalSettingsRepository>(
       () => _i958.LocalSettingsRepositoryImpl(
         iconService: gh<_i212.SourceAppIconService>(),
-        localDataSource: gh<_i173.SettingsLocalDataSource>(),
+        localDataSource: gh<_i739.SettingsLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i966.SettingsCubit>(
@@ -286,6 +286,7 @@ extension GetItInjectableX on _i174.GetIt {
         localClipboardHistoryRepository:
             gh<_i42.LocalClipboardHistoryRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
+        remoteSettingsRepository: gh<_i340.SettingsRepository>(),
       ),
       dispose: (i) => i.close(),
     );

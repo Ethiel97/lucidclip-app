@@ -47,6 +47,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     super.build(context);
     return MouseRegion(
       onEnter: (_) {
@@ -66,7 +67,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
         child: ClipboardContextMenu(
           clipboardItem: widget.item,
           child: Container(
-            height: 60,
+            height: 52,
             margin: const EdgeInsets.only(bottom: AppSpacing.sm),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -106,9 +107,8 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
                   child: Text(
                     widget.item.timeAgo,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),

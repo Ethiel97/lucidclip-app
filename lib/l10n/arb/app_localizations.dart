@@ -424,6 +424,12 @@ abstract class AppLocalizations {
   /// **'Ignore Copied Passwords'**
   String get ignorePasswords;
 
+  /// Label for the Ignored Source app
+  ///
+  /// In en, this message translates to:
+  /// **'Ignored'**
+  String get ignored;
+
   /// Label for the Ignored Apps settings
   ///
   /// In en, this message translates to:

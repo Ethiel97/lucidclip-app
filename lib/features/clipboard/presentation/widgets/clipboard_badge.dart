@@ -25,7 +25,7 @@ class ClipboardBadge extends StatelessWidget {
         label.sentenceCase,
         style: TextStyle(
           color: tagColor,
-          fontSize: 12,
+          fontSize: 10,
           fontWeight: FontWeight.w500,
         ),
       ),

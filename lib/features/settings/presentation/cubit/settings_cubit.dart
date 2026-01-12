@@ -140,6 +140,39 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         });
   }
 
+  Future<void> updatedExcludedApps(List<SourceApp> apps) async {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null) {
+      await updateSettings(currentSettings.copyWith(excludedApps: apps));
+    }
+  }
+
+  Future<void> toggleAppExclusion(SourceApp? app) async {
+    final currentSettings = state.settings.value;
+    if (currentSettings != null && app != null) {
+      final excludedApps = List<SourceApp>.from(currentSettings.excludedApps);
+      if (excludedApps.any((a) => a.bundleId == app.bundleId)) {
+        excludedApps.removeWhere((a) => a.bundleId == app.bundleId);
+
+        emit(
+          state.copyWith(
+            includeAppResult: state.includeAppResult.toSuccess(app),
+          ),
+        );
+      } else {
+        excludedApps.add(app);
+        emit(
+          state.copyWith(
+            excludeAppResult: state.excludeAppResult.toSuccess(app),
+          ),
+        );
+      }
+      await updateSettings(
+        currentSettings.copyWith(excludedApps: excludedApps),
+      );
+    }
+  }
+
   Future<void> updateSettings(UserSettings settings) async {
     try {
       final updatedSettings = settings.copyWith(

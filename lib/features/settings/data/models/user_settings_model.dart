@@ -183,4 +183,18 @@ class UserSettingsModel extends Equatable {
     incognitoSessionDurationMinutes,
     incognitoSessionEndTime,
   ];
+
+  @override
+  String toString() {
+    return 'UserSettingsModel(userId: $userId, theme: $theme, '
+        'shortcuts: $shortcuts, autoSync: $autoSync, '
+        'syncIntervalMinutes: $syncIntervalMinutes, maxHistoryItems: '
+        '$maxHistoryItems, retentionDays: $retentionDays, '
+        'showSourceApp: $showSourceApp, previewImages: $previewImages,'
+        ' previewLinks: $previewLinks, createdAt: $createdAt, '
+        'updatedAt: $updatedAt, incognitoMode: $incognitoMode, '
+        'excludedApps: $excludedApps, '
+        'incognitoSessionDurationMinutes: $incognitoSessionDurationMinutes, '
+        'incognitoSessionEndTime: $incognitoSessionEndTime)';
+  }
 }

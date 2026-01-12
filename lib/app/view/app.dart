@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:lucid_clip/app/routes/routes.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/routes/routes.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
 import 'package:lucid_clip/features/auth/auth.dart';

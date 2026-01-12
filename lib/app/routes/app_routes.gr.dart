@@ -18,7 +18,6 @@ import 'package:lucid_clip/features/clipboard/presentation/view/clipboard_page.d
     as _i1;
 import 'package:lucid_clip/features/clipboard/presentation/view/snippets_page.dart'
     as _i7;
-import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/view/ignored_apps_page.dart'
     as _i2;
 import 'package:lucid_clip/features/settings/presentation/view/settings_page.dart'
@@ -112,9 +111,7 @@ class SettingsRoute extends _i8.PageRouteInfo<SettingsRouteArgs> {
       final queryParams = data.queryParams;
       final args = data.argsAs<SettingsRouteArgs>(
         orElse: () => SettingsRouteArgs(
-          section:
-              queryParams.get('section', SettingsSection.general)
-                  as _i5.SettingsSection,
+          section: queryParams.get('section', SettingsSection.general),
         ),
       );
       return _i5.SettingsPage(key: args.key, section: args.section);

@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/routes/app_routes.gr.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';

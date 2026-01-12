@@ -280,7 +280,7 @@ class _InfoCard extends StatelessWidget {
           _InfoRow(
             label: l10n.characters.sentenceCase,
             value: clipboardItem.content.length.toString(),
-            icon: const HugeIcon(icon: HugeIcons.strokeRoundedText),
+            icon: const HugeIcon(icon: HugeIcons.strokeRoundedTextSquare),
           ),
       ],
     );
@@ -422,11 +422,43 @@ class _ActionsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
 
         // Pin
-        ProGateOverlay(
+        Expanded(
+          child: ProGateOverlay(
+            badgeOffset: const Offset(0, -14),
+            child: OutlinedButton.icon(
+              onPressed: onTogglePin,
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: colorScheme.outline),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xxs,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              icon: HugeIcon(
+                icon: isPinned
+                    ? HugeIcons.strokeRoundedPinOff
+                    : HugeIcons.strokeRoundedPin,
+                size: 16,
+              ),
+              label: Text(
+                isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
+                style: textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.xs),
+        // Favorite
+        Expanded(
           child: OutlinedButton.icon(
-            onPressed: onTogglePin,
+            onPressed: onDelete,
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: colorScheme.outline),
+              side: BorderSide(color: colorScheme.errorContainer, width: .2),
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
                 vertical: AppSpacing.xxs,
@@ -436,41 +468,14 @@ class _ActionsRow extends StatelessWidget {
               ),
             ),
             icon: HugeIcon(
-              icon: isPinned
-                  ? HugeIcons.strokeRoundedPinOff
-                  : HugeIcons.strokeRoundedPin,
+              icon: HugeIcons.strokeRoundedDelete01,
               size: 16,
+              color: colorScheme.error,
             ),
             label: Text(
-              isPinned ? l10n.unpin.sentenceCase : l10n.pin.sentenceCase,
-              style: textTheme.labelSmall?.copyWith(
-                color: colorScheme.onSurface,
-              ),
+              l10n.delete.sentenceCase,
+              style: textTheme.labelSmall?.copyWith(color: colorScheme.error),
             ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.xs),
-        // Favorite
-        OutlinedButton.icon(
-          onPressed: onDelete,
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: colorScheme.errorContainer, width: .2),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xxs,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(999),
-            ),
-          ),
-          icon: HugeIcon(
-            icon: HugeIcons.strokeRoundedDelete01,
-            size: 16,
-            color: colorScheme.error,
-          ),
-          label: Text(
-            l10n.delete.sentenceCase,
-            style: textTheme.labelSmall?.copyWith(color: colorScheme.error),
           ),
         ),
       ],

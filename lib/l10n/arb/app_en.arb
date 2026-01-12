@@ -255,6 +255,10 @@
   "@ignorePasswords": {
     "description": "Label for the Ignore Copied Passwords setting"
   },
+  "ignored": "Ignored",
+  "@ignored": {
+    "description": "Label for the Ignored Source app"
+  },
   "ignoredApps": "Ignored Apps",
   "@ignoredApps": {
     "description": "Label for the Ignored Apps settings"

@@ -248,6 +248,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> copyToClipboard(ClipboardItem item) async {
     try {
+      //TODO(Ethiel97): Investigate why this is not working as expected
       await clipboardManager.setClipboardContent(item.toInfrastructure());
     } catch (e, stackTrace) {
       developer.log(

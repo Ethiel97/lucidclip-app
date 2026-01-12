@@ -6,6 +6,13 @@ import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
+/// A button that allows the user to stop or resume tracking
+/// clipboard activity from the source app of the given clipboard item.
+/// Used within clipboard item tiles.
+/// When pressed, it shows a SnackBar to confirm the action.
+/// @param [clipboardItem] The clipboard item whose source
+/// app's tracking status is to be toggled.
+///
 class SourceAppPrivacyControl extends StatelessWidget {
   const SourceAppPrivacyControl({required this.clipboardItem, super.key});
 
@@ -70,6 +77,10 @@ class SourceAppPrivacyControl extends StatelessWidget {
   }
 }
 
+/// Badge indicating that the source app is excluded from tracking
+/// in clipboard history.
+/// Used within clipboard item tiles.
+/// Displays a red "Ignored" badge.
 class ExcludedSourceAppBadge extends StatelessWidget {
   const ExcludedSourceAppBadge({super.key});
 
@@ -78,7 +89,7 @@ class ExcludedSourceAppBadge extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     return ClipboardBadge(
-      label: l10n.excluded.sentenceCase,
+      label: l10n.ignored.sentenceCase,
       color: colorScheme.error.withValues(alpha: .75),
     );
   }

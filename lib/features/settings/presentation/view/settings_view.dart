@@ -190,7 +190,6 @@ class _SettingsViewState extends State<SettingsView> {
                     description: l10n.incognitoModeDescription.sentenceCase,
                     value: settings.incognitoMode,
                     onChanged: (value) {
-                      print("Toggling incognito mode to: $value");
                       context.read<SettingsCubit>().updateIncognitoMode(
                         incognitoMode: value,
                       );
@@ -241,19 +240,22 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
 
                   //TODO(Ethiel97): Make this a Pro feature
-                  SettingsDropdownItem<int>(
-                    title: l10n.retentionDays.sentenceCase,
-                    description: l10n.retentionDaysDescription.sentenceCase,
-                    value: settings.retentionDays,
-                    items: const [1, 7, 14, 30, 60, 90, 180, 365],
-                    itemLabel: (value) => '$value days',
-                    onChanged: (value) {
-                      if (value != null) {
-                        context.read<SettingsCubit>().updateRetentionDays(
-                          value,
-                        );
-                      }
-                    },
+                  ProGateOverlay(
+                    badgeOffset: const Offset(12, -4),
+                    child: SettingsDropdownItem<int>(
+                      title: l10n.retentionDays.sentenceCase,
+                      description: l10n.retentionDaysDescription.sentenceCase,
+                      value: settings.retentionDays,
+                      items: const [1, 7, 14, 30, 60, 90, 180, 365],
+                      itemLabel: (value) => '$value days',
+                      onChanged: (value) {
+                        if (value != null) {
+                          context.read<SettingsCubit>().updateRetentionDays(
+                            value,
+                          );
+                        }
+                      },
+                    ),
                   ),
 
                   // Sync Section (if auto sync is enabled)

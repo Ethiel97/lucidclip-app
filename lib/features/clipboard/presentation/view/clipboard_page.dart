@@ -218,6 +218,14 @@ class _ClipboardViewState extends State<ClipboardView>
                 onClose: () {
                   context.read<ClipboardDetailCubit>().clearSelection();
                 },
+                onCopyPressed: () {
+                  if (hasClipboardItem) {
+                    final clipboardItem = selectedClipboardItem!.data;
+                    context.read<ClipboardCubit>().copyToClipboard(
+                      clipboardItem,
+                    );
+                  }
+                },
                 onDelete: () {
                   if (hasClipboardItem) {
                     context.read<ClipboardDetailCubit>().clearSelection();

@@ -29,7 +29,7 @@ class StorageIndicator extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.router.navigate(
-          SettingsRoute(section: SettingsSection.clipboard),
+          SettingsRoute(section: SettingsSection.clipboard.name),
         );
       },
       child: Container(

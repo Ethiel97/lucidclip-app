@@ -13,7 +13,7 @@ import 'package:recase/recase.dart';
 class SettingsView extends StatefulWidget {
   const SettingsView({required this.section, super.key});
 
-  final SettingsSection section;
+  final String section;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -22,12 +22,12 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   final ScrollController _scrollController = ScrollController();
 
-  final Map<SettingsSection, GlobalKey> _sectionKeys = {
-    SettingsSection.general: GlobalKey(),
-    SettingsSection.appearance: GlobalKey(),
-    SettingsSection.clipboard: GlobalKey(),
-    SettingsSection.sync: GlobalKey(),
-    SettingsSection.about: GlobalKey(),
+  final Map<String, GlobalKey> _sectionKeys = {
+    SettingsSection.general.name: GlobalKey(),
+    SettingsSection.appearance.name: GlobalKey(),
+    SettingsSection.clipboard.name: GlobalKey(),
+    SettingsSection.sync.name: GlobalKey(),
+    SettingsSection.about.name: GlobalKey(),
   };
 
   @override
@@ -56,7 +56,7 @@ class _SettingsViewState extends State<SettingsView> {
     super.dispose();
   }
 
-  void _scrollToSection(SettingsSection section) {
+  void _scrollToSection(String section) {
     final keyContext = _sectionKeys[section]?.currentContext;
     if (keyContext != null) {
       Scrollable.ensureVisible(
@@ -118,7 +118,7 @@ class _SettingsViewState extends State<SettingsView> {
                 children: [
                   // General Section
                   SettingsSectionHeader(
-                    key: _sectionKeys[SettingsSection.general],
+                    key: _sectionKeys[SettingsSection.general.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings02,
                     ),
@@ -150,7 +150,7 @@ class _SettingsViewState extends State<SettingsView> {
                   // Appearance Section
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
-                    key: _sectionKeys[SettingsSection.appearance],
+                    key: _sectionKeys[SettingsSection.appearance.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedPaintBoard,
                     ),
@@ -167,7 +167,7 @@ class _SettingsViewState extends State<SettingsView> {
                   // Clipboard Section
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
-                    key: _sectionKeys[SettingsSection.clipboard],
+                    key: _sectionKeys[SettingsSection.clipboard.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedClipboard,
                     ),

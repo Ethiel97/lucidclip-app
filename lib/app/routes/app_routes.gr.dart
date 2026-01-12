@@ -94,7 +94,7 @@ class LucidClipRoute extends _i8.PageRouteInfo<void> {
 class SettingsRoute extends _i8.PageRouteInfo<SettingsRouteArgs> {
   SettingsRoute({
     _i9.Key? key,
-    _i5.SettingsSection section = _i5.SettingsSection.general,
+    String section = 'general',
     List<_i8.PageRouteInfo>? children,
   }) : super(
          SettingsRoute.name,
@@ -111,7 +111,7 @@ class SettingsRoute extends _i8.PageRouteInfo<SettingsRouteArgs> {
       final queryParams = data.queryParams;
       final args = data.argsAs<SettingsRouteArgs>(
         orElse: () => SettingsRouteArgs(
-          section: queryParams.get('section', SettingsSection.general),
+          section: queryParams.getString('section', 'general'),
         ),
       );
       return _i5.SettingsPage(key: args.key, section: args.section);
@@ -120,14 +120,11 @@ class SettingsRoute extends _i8.PageRouteInfo<SettingsRouteArgs> {
 }
 
 class SettingsRouteArgs {
-  const SettingsRouteArgs({
-    this.key,
-    this.section = _i5.SettingsSection.general,
-  });
+  const SettingsRouteArgs({this.key, this.section = 'general'});
 
   final _i9.Key? key;
 
-  final _i5.SettingsSection section;
+  final String section;
 
   @override
   String toString() {

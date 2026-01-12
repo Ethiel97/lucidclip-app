@@ -6,12 +6,9 @@ enum SettingsSection { general, appearance, sync, clipboard, about }
 
 @RoutePage()
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({
-    super.key,
-    @queryParam this.section = SettingsSection.general,
-  });
+  const SettingsPage({super.key, @queryParam this.section = 'general'});
 
-  final SettingsSection section;
+  final String section;
 
   @override
   Widget build(BuildContext context) => SettingsView(section: section);

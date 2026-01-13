@@ -32,7 +32,6 @@ void main() {
       final hotkey = HotKey(
         key: PhysicalKeyboardKey.keyV,
         modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
-        scope: HotKeyScope.system,
       );
 
       expect(hotkey.key, PhysicalKeyboardKey.keyV);
@@ -47,7 +46,6 @@ void main() {
       final hotkey = HotKey(
         key: PhysicalKeyboardKey.keyI,
         modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
-        scope: HotKeyScope.system,
       );
 
       final json = hotkey.toJson();

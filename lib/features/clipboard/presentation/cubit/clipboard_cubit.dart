@@ -102,7 +102,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       final excluded = settings?.excludedApps ?? const <SourceApp>[];
       final sourceApp = clipboardData.sourceApp;
 
-      log("Excluded apps: $excluded", name: 'ClipboardCubit');
+      log('Excluded apps: $excluded', name: 'ClipboardCubit');
 
       if (_isSourceAppExcluded(sourceApp)) {
         developer.log(

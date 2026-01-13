@@ -22,5 +22,11 @@ class SourceApp extends Equatable {
   }
 
   @override
+  String toString() {
+    return 'SourceApp(bundleId: $bundleId,'
+        ' name: $name, icon: ${icon != null ? 'Yes' : 'No'})';
+  }
+
+  @override
   List<Object?> get props => [bundleId, name, icon];
 }

@@ -2,7 +2,15 @@ import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 
-enum SettingsSection { usage, appearance, sync, clipboard, shortcuts, about }
+enum SettingsSection {
+  usage,
+  appearance,
+  history,
+  sync,
+  privacy,
+  shortcuts,
+  about,
+}
 
 @RoutePage()
 class SettingsPage extends StatelessWidget {

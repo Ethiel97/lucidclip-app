@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'apps',
+      other: '$count apps',
       one: '1 app',
       zero: 'No apps',
     );
@@ -528,14 +528,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme => 'Theme';
 
   @override
-  String get toggleIncognitoShortcut => 'Toggle Incognito Mode';
+  String get toggleIncognitoShortcut => 'Toggle Incognito Mode (Shortcut)';
 
   @override
   String get toggleIncognitoShortcutDescription =>
       'Enable or disable incognito mode';
 
   @override
-  String get toggleWindowShortcut => 'Toggle window';
+  String get toggleWindowShortcut => 'Toggle window (Shortcut)';
 
   @override
   String get toggleWindowShortcutDescription => 'Show or hide LucidClip';

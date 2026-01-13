@@ -69,7 +69,7 @@
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
   },
-  "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {apps}}",
+  "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}",
   "@appsCount": {
     "description": "Label showing the number of apps with pluralization",
     "placeholders": {
@@ -696,7 +696,7 @@
   "@theme": {
     "description": "Label for the Theme settings"
   },
-  "toggleIncognitoShortcut": "Toggle Incognito Mode",
+  "toggleIncognitoShortcut": "Toggle Incognito Mode (Shortcut)",
   "@toggleIncognitoShortcut": {
     "description": "Label for toggle incognito shortcut"
   },
@@ -704,7 +704,7 @@
   "@toggleIncognitoShortcutDescription": {
     "description": "Description for toggle incognito shortcut"
   },
-  "toggleWindowShortcut": "Toggle window",
+  "toggleWindowShortcut": "Toggle window (Shortcut)",
   "@toggleWindowShortcut": {
     "description": "Label for toggle window shortcut"
   },

@@ -31,7 +31,7 @@ class _SettingsViewState extends State<SettingsView> {
   final Map<String, GlobalKey> _sectionKeys = {
     SettingsSection.usage.name: GlobalKey(),
     SettingsSection.appearance.name: GlobalKey(),
-    SettingsSection.clipboard.name: GlobalKey(),
+    SettingsSection.privacy.name: GlobalKey(),
     SettingsSection.shortcuts.name: GlobalKey(),
     SettingsSection.sync.name: GlobalKey(),
     SettingsSection.about.name: GlobalKey(),
@@ -123,183 +123,187 @@ class _SettingsViewState extends State<SettingsView> {
                   vertical: AppSpacing.md,
                 ),
                 children: [
-                  // General Section
-                  SettingsSectionHeader(
+                  // Usage Section
+                  SettingsSectionGroupAccordion(
                     key: _sectionKeys[SettingsSection.usage.name],
                     icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedSettings02,
+                      icon: HugeIcons.strokeRoundedCursorPointer01,
                     ),
                     title: l10n.usage.sentenceCase,
+                    children: [
+                      _KeyboardShortcutsSection(settings: settings),
+                      SettingsSwitchItem(
+                        title: l10n.showSourceApp.sentenceCase,
+                        description: l10n.showSourceAppDescription.sentenceCase,
+                        value: settings.showSourceApp,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updateShowSourceApp(
+                            showSourceApp: value,
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: AppSpacing.xs),
 
-                  SettingsSwitchItem(
-                    title: l10n.previewLinks.sentenceCase,
-                    description: l10n.previewLinksDescription.sentenceCase,
-                    value: settings.previewLinks,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updatePreviewLinks(
-                        previewLinks: value,
-                      );
-                    },
-                  ),
-                  SettingsSwitchItem(
-                    title: l10n.previewImages.sentenceCase,
-                    description: l10n.previewImagesDescription.sentenceCase,
-                    value: settings.previewImages,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updatePreviewImages(
-                        previewImages: value,
-                      );
-                    },
+                  // Privacy Section
+                  SettingsSectionGroupAccordion(
+                    key: _sectionKeys[SettingsSection.privacy.name],
+                    icon: const HugeIcon(icon: HugeIcons.strokeRoundedShield01),
+                    title: l10n.privacy.sentenceCase,
+                    children: [
+                      SettingsSwitchItem(
+                        title: l10n.incognitoMode.sentenceCase,
+                        description: l10n.incognitoModeDescription.sentenceCase,
+                        value: settings.incognitoMode,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updateIncognitoMode(
+                            incognitoMode: value,
+                          );
+                        },
+                      ),
+                      SettingsNavigationItem(
+                        title: l10n.ignoredApps.sentenceCase,
+                        description: l10n.ignoredAppsDescription,
+                        valueText: settings.excludedApps.isEmpty
+                            ? l10n.none.sentenceCase
+                            : l10n.appsCount(settings.excludedApps.length),
+
+                        onTap: () {
+                          context.router.navigate(const IgnoredAppsRoute());
+                        },
+                      ),
+                    ],
                   ),
 
                   // Appearance Section
-                  const SizedBox(height: AppSpacing.md),
-                  SettingsSectionHeader(
+                  SettingsSectionGroupAccordion(
+                    initiallyExpanded: false,
                     key: _sectionKeys[SettingsSection.appearance.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedPaintBoard,
                     ),
+
                     title: l10n.appearance.sentenceCase,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  SettingsThemeSelector(
-                    currentTheme: settings.theme.toLowerCase(),
-                    onThemeChanged: (theme) {
-                      context.read<SettingsCubit>().updateTheme(theme);
-                    },
-                  ),
-
-                  // Clipboard Section
-                  const SizedBox(height: AppSpacing.md),
-                  SettingsSectionHeader(
-                    key: _sectionKeys[SettingsSection.clipboard.name],
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedClipboard,
-                    ),
-                    title: l10n.clipboard.sentenceCase,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  SettingsSwitchItem(
-                    title: l10n.showSourceApp.sentenceCase,
-                    description: l10n.showSourceAppDescription.sentenceCase,
-                    value: settings.showSourceApp,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateShowSourceApp(
-                        showSourceApp: value,
-                      );
-                    },
-                  ),
-                  SettingsSwitchItem(
-                    title: l10n.incognitoMode.sentenceCase,
-                    description: l10n.incognitoModeDescription.sentenceCase,
-                    value: settings.incognitoMode,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().updateIncognitoMode(
-                        incognitoMode: value,
-                      );
-                    },
-                  ),
-                  SettingsNavigationItem(
-                    title: l10n.ignoredApps.sentenceCase,
-                    description: l10n.ignoredAppsDescription,
-                    valueText: settings.excludedApps.isEmpty
-                        ? l10n.none.sentenceCase
-                        : l10n.appsCount(settings.excludedApps.length),
-
-                    onTap: () {
-                      context.router.navigate(const IgnoredAppsRoute());
-                    },
-                  ),
-                  ProGateOverlay(
-                    // badgeAlignment: Alignment.topRight,
-                    badgeOffset: const Offset(12, -4),
-                    child: SettingsSwitchItem(
-                      title: l10n.autoSync.sentenceCase,
-                      description: l10n.autoSyncDescription.sentenceCase,
-                      value: settings.autoSync,
-                      onChanged: (value) {
-                        context.read<SettingsCubit>().updateAutoSync(
-                          autoSync: value,
-                        );
-                      },
-                    ),
-                  ),
-
-                  ProGateOverlay(
-                    badgeOffset: const Offset(12, -4),
-                    child: SettingsDropdownItem<int>(
-                      title: l10n.historyLimit.sentenceCase,
-                      description: l10n.maxHistoryItemsDescription.sentenceCase,
-                      value: settings.maxHistoryItems,
-                      items: const [50, 100, 500, 1000],
-                      itemLabel: l10n.itemsCount,
-                      onChanged: (value) {
-                        if (value != null) {
-                          context.read<SettingsCubit>().updateMaxHistoryItems(
-                            value,
-                          );
-                        }
-                      },
-                    ),
-                  ),
-
-                  //TODO(Ethiel97): Make this a Pro feature
-                  ProGateOverlay(
-                    badgeOffset: const Offset(12, -4),
-                    child: SettingsDropdownItem<int>(
-                      title: l10n.retentionDays.sentenceCase,
-                      description: l10n.retentionDaysDescription.sentenceCase,
-                      value: settings.retentionDays,
-                      items: const [1, 7, 14, 30, 60, 90, 180, 365],
-                      itemLabel: l10n.daysCount,
-                      onChanged: (value) {
-                        if (value != null) {
-                          context.read<SettingsCubit>().updateRetentionDays(
-                            value,
-                          );
-                        }
-                      },
-                    ),
-                  ),
-
-                  // Keyboard Shortcuts Section
-                  const SizedBox(height: AppSpacing.md),
-                  SettingsSectionHeader(
-                    key: _sectionKeys[SettingsSection.shortcuts.name],
-                    icon: const HugeIcon(icon: HugeIcons.strokeRoundedKeyboard),
-                    title: l10n.shortcuts.sentenceCase,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  _KeyboardShortcutsSection(settings: settings),
-
-                  // Sync Section (if auto sync is enabled)
-                  if (settings.autoSync) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    SettingsSectionHeader(
-                      icon: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedCloudUpload,
+                    children: [
+                      SettingsThemeSelector(
+                        currentTheme: settings.theme.toLowerCase(),
+                        onThemeChanged: (theme) {
+                          context.read<SettingsCubit>().updateTheme(theme);
+                        },
                       ),
-                      title: l10n.sync.sentenceCase,
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    SettingsDropdownItem<int>(
-                      title: l10n.autoSyncInterval.sentenceCase,
-                      description:
-                          l10n.autoSyncIntervalDescription.sentenceCase,
-                      value: settings.syncIntervalMinutes,
-                      items: const [1, 5, 10, 15, 30, 60],
-                      itemLabel: l10n.minutesCount,
-                      onChanged: (value) {
-                        if (value != null) {
-                          context.read<SettingsCubit>().updateSyncInterval(
-                            value,
+                      SettingsSwitchItem(
+                        title: l10n.previewLinks.sentenceCase,
+                        description: l10n.previewLinksDescription.sentenceCase,
+                        value: settings.previewLinks,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updatePreviewLinks(
+                            previewLinks: value,
                           );
-                        }
-                      },
-                    ),
-                  ],
+                        },
+                      ),
+                      SettingsSwitchItem(
+                        title: l10n.previewImages.sentenceCase,
+                        description: l10n.previewImagesDescription.sentenceCase,
+                        value: settings.previewImages,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updatePreviewImages(
+                            previewImages: value,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  // History Section
+                  SettingsSectionGroupAccordion(
+                    initiallyExpanded: false,
+                    key: _sectionKeys[SettingsSection.history.name],
+                    icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
+
+                    title: l10n.history.sentenceCase,
+                    children: [
+                      ProGateOverlay(
+                        badgeOffset: const Offset(12, -4),
+                        child: SettingsDropdownItem<int>(
+                          title: l10n.historyLimit.sentenceCase,
+                          description:
+                              l10n.maxHistoryItemsDescription.sentenceCase,
+                          value: settings.maxHistoryItems,
+                          items: const [50, 100, 500, 1000],
+                          itemLabel: l10n.itemsCount,
+                          onChanged: (value) {
+                            if (value != null) {
+                              context
+                                  .read<SettingsCubit>()
+                                  .updateMaxHistoryItems(value);
+                            }
+                          },
+                        ),
+                      ),
+
+                      //TODO(Ethiel97): Make this a Pro feature
+                      ProGateOverlay(
+                        badgeOffset: const Offset(12, -4),
+                        child: SettingsDropdownItem<int>(
+                          title: l10n.retentionDays.sentenceCase,
+                          description:
+                              l10n.retentionDaysDescription.sentenceCase,
+                          value: settings.retentionDays,
+                          items: const [1, 7, 14, 30, 60, 90, 180, 365],
+                          itemLabel: l10n.daysCount,
+                          onChanged: (value) {
+                            if (value != null) {
+                              context.read<SettingsCubit>().updateRetentionDays(
+                                value,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  //Sync section
+                  SettingsSectionGroupAccordion(
+                    initiallyExpanded: false,
+                    key: _sectionKeys[SettingsSection.sync.name],
+                    icon: const HugeIcon(icon: HugeIcons.strokeRoundedFileSync),
+
+                    title: l10n.sync.sentenceCase,
+                    children: [
+                      ProGateOverlay(
+                        // badgeAlignment: Alignment.topRight,
+                        badgeOffset: const Offset(12, -4),
+                        child: SettingsSwitchItem(
+                          title: l10n.autoSync.sentenceCase,
+                          description: l10n.autoSyncDescription.sentenceCase,
+                          value: settings.autoSync,
+                          onChanged: (value) {
+                            context.read<SettingsCubit>().updateAutoSync(
+                              autoSync: value,
+                            );
+                          },
+                        ),
+                      ),
+
+                      if (settings.autoSync)
+                        SettingsDropdownItem<int>(
+                          title: l10n.autoSyncInterval.sentenceCase,
+                          description:
+                              l10n.autoSyncIntervalDescription.sentenceCase,
+                          value: settings.syncIntervalMinutes,
+                          items: const [1, 5, 10, 15, 30, 60],
+                          itemLabel: l10n.minutesCount,
+                          onChanged: (value) {
+                            if (value != null) {
+                              context.read<SettingsCubit>().updateSyncInterval(
+                                value,
+                              );
+                            }
+                          },
+                        ),
+                    ],
+                  ),
                 ],
               );
             },
@@ -373,7 +377,7 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
       children: [
         SettingsShortcutItem(
           title: l10n.toggleWindowShortcut,
-          description: l10n.toggleWindowShortcutDescription.sentenceCase,
+          description: l10n.toggleWindowShortcutDescription,
           hotkey: HotkeyUtils.parseHotkeyString(
             widget.settings.shortcuts[ShortcutAction.toggleWindow.key],
           ),

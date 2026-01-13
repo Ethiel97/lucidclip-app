@@ -98,7 +98,7 @@ class _SidebarState extends State<Sidebar> {
       width: isExpanded
           ? AppConstants.clipboardSidebarWidth
           : AppConstants.collapsedSidebarWidth,
-      color: colorScheme.surface.toTinyColor().darken(5).color,
+      color: colorScheme.surface.toTinyColor().darken().color,
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
         children: [

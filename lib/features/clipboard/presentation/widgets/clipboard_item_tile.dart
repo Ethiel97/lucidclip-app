@@ -76,9 +76,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
             decoration: BoxDecoration(
               color: getBackgroundColor(context),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: colorScheme.outline.withValues(alpha: .5),
-              ),
+              border: Border.all(color: colorScheme.outline, width: .6),
             ),
             child: Row(
               children: [

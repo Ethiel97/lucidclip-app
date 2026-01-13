@@ -157,7 +157,7 @@ abstract class AppLocalizations {
   /// Label showing the number of apps with pluralization
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0 {No apps} =1 {1 app} other {apps}}'**
+  /// **'{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}'**
   String appsCount(int count);
 
   /// Title for the Apps Ignored During Clipboard Tracking section
@@ -985,7 +985,7 @@ abstract class AppLocalizations {
   /// Label for toggle incognito shortcut
   ///
   /// In en, this message translates to:
-  /// **'Toggle Incognito Mode'**
+  /// **'Toggle Incognito Mode (Shortcut)'**
   String get toggleIncognitoShortcut;
 
   /// Description for toggle incognito shortcut
@@ -997,7 +997,7 @@ abstract class AppLocalizations {
   /// Label for toggle window shortcut
   ///
   /// In en, this message translates to:
-  /// **'Toggle window'**
+  /// **'Toggle window (Shortcut)'**
   String get toggleWindowShortcut;
 
   /// Description for toggle window shortcut

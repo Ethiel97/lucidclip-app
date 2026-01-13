@@ -38,6 +38,9 @@ abstract class HotkeyManagerService {
   /// Register default hotkeys
   Future<void> registerDefaultHotkeys();
 
+  /// Load shortcuts from a map (e.g., from user settings)
+  Future<void> loadShortcutsFromMap(Map<String, String> shortcuts);
+
   /// Dispose resources
   Future<void> dispose();
 }

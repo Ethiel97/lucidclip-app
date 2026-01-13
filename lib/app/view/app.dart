@@ -63,6 +63,7 @@ class _AppView extends StatefulWidget {
 
 class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
+  final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
 
   @override
   void initState() {
@@ -80,22 +81,31 @@ class _AppViewState extends State<_AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
+    return BlocListener<SettingsCubit, SettingsState>(
+      listener: (context, state) {
+        // Load shortcuts when settings are loaded or updated
         final settings = state.settings.value;
-        final themeMode = _getThemeMode(settings?.theme ?? 'dark');
-        return Portal(
-          child: MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            theme: const AppTheme().light,
-            darkTheme: const AppTheme().dark,
-            themeMode: themeMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: appRouter.config(),
-          ),
-        );
+        if (settings != null && settings.shortcuts.isNotEmpty) {
+          _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
+        }
       },
+      child: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, state) {
+          final settings = state.settings.value;
+          final themeMode = _getThemeMode(settings?.theme ?? 'dark');
+          return Portal(
+            child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              theme: const AppTheme().light,
+              darkTheme: const AppTheme().dark,
+              themeMode: themeMode,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: appRouter.config(),
+            ),
+          );
+        },
+      ),
     );
   }
 

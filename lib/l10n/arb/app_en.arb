@@ -652,6 +652,62 @@
   "@version": {
     "description": "Label for the app version"
   },
+  "keyboardShortcuts": "Keyboard Shortcuts",
+  "@keyboardShortcuts": {
+    "description": "Label for keyboard shortcuts settings section"
+  },
+  "keyboardShortcutsDescription": "Configure global keyboard shortcuts for quick actions",
+  "@keyboardShortcutsDescription": {
+    "description": "Description for keyboard shortcuts settings"
+  },
+  "showWindowShortcut": "Show Window",
+  "@showWindowShortcut": {
+    "description": "Label for show window shortcut"
+  },
+  "showWindowShortcutDescription": "Bring the application window to focus",
+  "@showWindowShortcutDescription": {
+    "description": "Description for show window shortcut"
+  },
+  "toggleIncognitoShortcut": "Toggle Incognito Mode",
+  "@toggleIncognitoShortcut": {
+    "description": "Label for toggle incognito shortcut"
+  },
+  "toggleIncognitoShortcutDescription": "Enable or disable incognito mode",
+  "@toggleIncognitoShortcutDescription": {
+    "description": "Description for toggle incognito shortcut"
+  },
+  "clearClipboardShortcut": "Clear Clipboard",
+  "@clearClipboardShortcut": {
+    "description": "Label for clear clipboard shortcut"
+  },
+  "clearClipboardShortcutDescription": "Clear all clipboard history",
+  "@clearClipboardShortcutDescription": {
+    "description": "Description for clear clipboard shortcut"
+  },
+  "searchClipboardShortcut": "Search Clipboard",
+  "@searchClipboardShortcut": {
+    "description": "Label for search clipboard shortcut"
+  },
+  "searchClipboardShortcutDescription": "Open window and focus search",
+  "@searchClipboardShortcutDescription": {
+    "description": "Description for search clipboard shortcut"
+  },
+  "editShortcut": "Edit Shortcut",
+  "@editShortcut": {
+    "description": "Button text to edit a keyboard shortcut"
+  },
+  "pressKeyCombination": "Press key combination...",
+  "@pressKeyCombination": {
+    "description": "Placeholder text when recording a keyboard shortcut"
+  },
+  "shortcutConflict": "Shortcut already in use",
+  "@shortcutConflict": {
+    "description": "Error message when a shortcut conflicts with another"
+  },
+  "resetToDefault": "Reset to Default",
+  "@resetToDefault": {
+    "description": "Button text to reset a setting to its default value"
+  },
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"

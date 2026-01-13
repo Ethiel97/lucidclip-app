@@ -75,6 +75,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await getIt<TrayManagerService>().initialize();
 
+  // Initialize hotkey manager
+  await getIt<HotkeyManagerService>().initialize();
+  await getIt<HotkeyManagerService>().registerDefaultHotkeys();
+
   const windowOptions = WindowOptions(
     minimumSize: Size(800, 500),
     size: Size(800, 500),

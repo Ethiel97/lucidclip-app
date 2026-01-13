@@ -1,11 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
+import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
@@ -27,6 +32,7 @@ class _SettingsViewState extends State<SettingsView> {
     SettingsSection.general.name: GlobalKey(),
     SettingsSection.appearance.name: GlobalKey(),
     SettingsSection.clipboard.name: GlobalKey(),
+    SettingsSection.shortcuts.name: GlobalKey(),
     SettingsSection.sync.name: GlobalKey(),
     SettingsSection.about.name: GlobalKey(),
   };
@@ -258,6 +264,18 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   ),
 
+                  // Keyboard Shortcuts Section
+                  const SizedBox(height: AppSpacing.md),
+                  SettingsSectionHeader(
+                    key: _sectionKeys[SettingsSection.shortcuts.name],
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedKeyboard,
+                    ),
+                    title: l10n.keyboardShortcuts.sentenceCase,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  _KeyboardShortcutsSection(settings: settings),
+
                   // Sync Section (if auto sync is enabled)
                   if (settings.autoSync) ...[
                     const SizedBox(height: AppSpacing.md),
@@ -290,6 +308,187 @@ class _SettingsViewState extends State<SettingsView> {
           );
         },
       ),
+    );
+  }
+}
+
+/// Widget for the keyboard shortcuts section
+class _KeyboardShortcutsSection extends StatefulWidget {
+  const _KeyboardShortcutsSection({required this.settings});
+
+  final UserSettings settings;
+
+  @override
+  State<_KeyboardShortcutsSection> createState() =>
+      _KeyboardShortcutsSectionState();
+}
+
+class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
+  HotKey? _parseHotkey(String? hotkeyString) {
+    if (hotkeyString == null || hotkeyString.isEmpty) return null;
+
+    try {
+      final parts = hotkeyString.split('+').map((e) => e.trim()).toList();
+      if (parts.isEmpty) return null;
+
+      final modifiers = <HotKeyModifier>[];
+      PhysicalKeyboardKey? key;
+
+      for (final part in parts) {
+        switch (part.toLowerCase()) {
+          case 'ctrl':
+          case 'control':
+            modifiers.add(HotKeyModifier.control);
+          case 'shift':
+            modifiers.add(HotKeyModifier.shift);
+          case 'alt':
+            modifiers.add(HotKeyModifier.alt);
+          case 'cmd':
+          case 'meta':
+            modifiers.add(HotKeyModifier.meta);
+          default:
+            // Try to parse the key
+            key = _parseKey(part);
+        }
+      }
+
+      if (key == null) return null;
+
+      return HotKey(
+        key: key,
+        modifiers: modifiers,
+        scope: HotKeyScope.system,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  PhysicalKeyboardKey? _parseKey(String keyString) {
+    // Map common keys
+    final keyMap = {
+      'a': PhysicalKeyboardKey.keyA,
+      'b': PhysicalKeyboardKey.keyB,
+      'c': PhysicalKeyboardKey.keyC,
+      'd': PhysicalKeyboardKey.keyD,
+      'e': PhysicalKeyboardKey.keyE,
+      'f': PhysicalKeyboardKey.keyF,
+      'g': PhysicalKeyboardKey.keyG,
+      'h': PhysicalKeyboardKey.keyH,
+      'i': PhysicalKeyboardKey.keyI,
+      'j': PhysicalKeyboardKey.keyJ,
+      'k': PhysicalKeyboardKey.keyK,
+      'l': PhysicalKeyboardKey.keyL,
+      'm': PhysicalKeyboardKey.keyM,
+      'n': PhysicalKeyboardKey.keyN,
+      'o': PhysicalKeyboardKey.keyO,
+      'p': PhysicalKeyboardKey.keyP,
+      'q': PhysicalKeyboardKey.keyQ,
+      'r': PhysicalKeyboardKey.keyR,
+      's': PhysicalKeyboardKey.keyS,
+      't': PhysicalKeyboardKey.keyT,
+      'u': PhysicalKeyboardKey.keyU,
+      'v': PhysicalKeyboardKey.keyV,
+      'w': PhysicalKeyboardKey.keyW,
+      'x': PhysicalKeyboardKey.keyX,
+      'y': PhysicalKeyboardKey.keyY,
+      'z': PhysicalKeyboardKey.keyZ,
+    };
+
+    return keyMap[keyString.toLowerCase()];
+  }
+
+  String _hotkeyToString(HotKey hotkey) {
+    final modifiers = <String>[];
+    if (hotkey.modifiers?.contains(HotKeyModifier.control) ?? false) {
+      modifiers.add('Ctrl');
+    }
+    if (hotkey.modifiers?.contains(HotKeyModifier.shift) ?? false) {
+      modifiers.add('Shift');
+    }
+    if (hotkey.modifiers?.contains(HotKeyModifier.alt) ?? false) {
+      modifiers.add('Alt');
+    }
+    if (hotkey.modifiers?.contains(HotKeyModifier.meta) ?? false) {
+      modifiers.add('Cmd');
+    }
+
+    final keyLabel = hotkey.key?.debugName?.replaceFirst('Key', '') ?? '';
+    return [...modifiers, keyLabel.toUpperCase()].join('+');
+  }
+
+  Future<void> _updateHotkey(ShortcutAction action, HotKey? hotkey) async {
+    final hotkeyService = getIt<HotkeyManagerService>();
+    final shortcuts = Map<String, String>.from(widget.settings.shortcuts);
+
+    if (hotkey != null) {
+      // Register the new hotkey
+      await hotkeyService.registerHotkey(action, hotkey);
+      shortcuts[action.key] = _hotkeyToString(hotkey);
+    } else {
+      // Unregister the hotkey
+      await hotkeyService.unregisterHotkey(action);
+      shortcuts.remove(action.key);
+    }
+
+    // Update settings
+    if (mounted) {
+      await context.read<SettingsCubit>().updateShortcuts(shortcuts);
+    }
+  }
+
+  Future<void> _resetToDefault(ShortcutAction action) async {
+    HotKey? defaultHotkey;
+
+    switch (action) {
+      case ShortcutAction.showWindow:
+        defaultHotkey = HotKey(
+          key: PhysicalKeyboardKey.keyV,
+          modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
+          scope: HotKeyScope.system,
+        );
+      case ShortcutAction.toggleIncognito:
+        defaultHotkey = HotKey(
+          key: PhysicalKeyboardKey.keyI,
+          modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
+          scope: HotKeyScope.system,
+        );
+      case ShortcutAction.clearClipboard:
+      case ShortcutAction.searchClipboard:
+        // No default for these actions
+        defaultHotkey = null;
+    }
+
+    await _updateHotkey(action, defaultHotkey);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Column(
+      children: [
+        SettingsShortcutItem(
+          title: l10n.showWindowShortcut,
+          description: l10n.showWindowShortcutDescription,
+          hotkey: _parseHotkey(
+            widget.settings.shortcuts[ShortcutAction.showWindow.key],
+          ),
+          onChanged: (hotkey) =>
+              _updateHotkey(ShortcutAction.showWindow, hotkey),
+          onReset: () => _resetToDefault(ShortcutAction.showWindow),
+        ),
+        SettingsShortcutItem(
+          title: l10n.toggleIncognitoShortcut,
+          description: l10n.toggleIncognitoShortcutDescription,
+          hotkey: _parseHotkey(
+            widget.settings.shortcuts[ShortcutAction.toggleIncognito.key],
+          ),
+          onChanged: (hotkey) =>
+              _updateHotkey(ShortcutAction.toggleIncognito, hotkey),
+          onReset: () => _resetToDefault(ShortcutAction.toggleIncognito),
+        ),
+      ],
     );
   }
 }

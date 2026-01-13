@@ -36,6 +36,7 @@ dependencies:
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  hotkey_manager: ^0.2.3
   hugeicons: ^1.1.4
   hydrated_bloc: ^10.1.1
   iconsax: ^0.0.8

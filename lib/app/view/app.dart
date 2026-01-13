@@ -64,6 +64,8 @@ class _AppView extends StatefulWidget {
 class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
   final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
+  
+  Map<String, String>? _lastLoadedShortcuts;
 
   @override
   void initState() {
@@ -86,7 +88,11 @@ class _AppViewState extends State<_AppView> {
         // Load shortcuts when settings are loaded or updated
         final settings = state.settings.value;
         if (settings != null && settings.shortcuts.isNotEmpty) {
-          _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
+          // Only reload if shortcuts have changed
+          if (_lastLoadedShortcuts != settings.shortcuts) {
+            _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
+            _lastLoadedShortcuts = Map.from(settings.shortcuts);
+          }
         }
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(

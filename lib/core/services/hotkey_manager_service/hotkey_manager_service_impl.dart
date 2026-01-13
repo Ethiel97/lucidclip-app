@@ -6,6 +6,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_interface.dart';
+import 'package:lucid_clip/core/utils/hotkey_utils.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:window_manager/window_manager.dart';
@@ -174,14 +175,23 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   Future<void> loadShortcutsFromMap(Map<String, String> shortcuts) async {
     try {
       for (final entry in shortcuts.entries) {
-        // Find the action that matches this key
-        final action = ShortcutAction.values.firstWhere(
-          (a) => a.key == entry.key,
-          orElse: () => throw Exception('Unknown shortcut action: ${entry.key}'),
+        // Find the action that matches this key, skip unknown actions
+        final action = ShortcutAction.values.cast<ShortcutAction?>().firstWhere(
+          (a) => a?.key == entry.key,
+          orElse: () {
+            developer.log(
+              'Skipping unknown shortcut action: ${entry.key}. '
+              'Available actions: ${ShortcutAction.values.map((a) => a.key).join(", ")}',
+              name: 'HotkeyManagerService',
+            );
+            return null;
+          },
         );
 
-        // Parse the hotkey string
-        final hotkey = _parseHotkeyString(entry.value);
+        if (action == null) continue;
+
+        // Parse the hotkey string using shared utility
+        final hotkey = HotkeyUtils.parseHotkeyString(entry.value);
         if (hotkey != null) {
           await registerHotkey(action, hotkey);
         }
@@ -200,79 +210,6 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
       );
       // Don't rethrow - loading shortcuts is optional
     }
-  }
-
-  /// Parse a hotkey string like "Ctrl+Shift+V" into a HotKey object
-  HotKey? _parseHotkeyString(String hotkeyString) {
-    try {
-      final parts = hotkeyString.split('+').map((e) => e.trim()).toList();
-      if (parts.isEmpty) return null;
-
-      final modifiers = <HotKeyModifier>[];
-      PhysicalKeyboardKey? key;
-
-      for (final part in parts) {
-        switch (part.toLowerCase()) {
-          case 'ctrl':
-          case 'control':
-            modifiers.add(HotKeyModifier.control);
-          case 'shift':
-            modifiers.add(HotKeyModifier.shift);
-          case 'alt':
-            modifiers.add(HotKeyModifier.alt);
-          case 'cmd':
-          case 'meta':
-            modifiers.add(HotKeyModifier.meta);
-          default:
-            // Try to parse the key
-            key = _parsePhysicalKey(part);
-        }
-      }
-
-      if (key == null) return null;
-
-      return HotKey(
-        key: key,
-        modifiers: modifiers,
-        scope: HotKeyScope.system,
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// Parse a key string into a PhysicalKeyboardKey
-  PhysicalKeyboardKey? _parsePhysicalKey(String keyString) {
-    final keyMap = {
-      'a': PhysicalKeyboardKey.keyA,
-      'b': PhysicalKeyboardKey.keyB,
-      'c': PhysicalKeyboardKey.keyC,
-      'd': PhysicalKeyboardKey.keyD,
-      'e': PhysicalKeyboardKey.keyE,
-      'f': PhysicalKeyboardKey.keyF,
-      'g': PhysicalKeyboardKey.keyG,
-      'h': PhysicalKeyboardKey.keyH,
-      'i': PhysicalKeyboardKey.keyI,
-      'j': PhysicalKeyboardKey.keyJ,
-      'k': PhysicalKeyboardKey.keyK,
-      'l': PhysicalKeyboardKey.keyL,
-      'm': PhysicalKeyboardKey.keyM,
-      'n': PhysicalKeyboardKey.keyN,
-      'o': PhysicalKeyboardKey.keyO,
-      'p': PhysicalKeyboardKey.keyP,
-      'q': PhysicalKeyboardKey.keyQ,
-      'r': PhysicalKeyboardKey.keyR,
-      's': PhysicalKeyboardKey.keyS,
-      't': PhysicalKeyboardKey.keyT,
-      'u': PhysicalKeyboardKey.keyU,
-      'v': PhysicalKeyboardKey.keyV,
-      'w': PhysicalKeyboardKey.keyW,
-      'x': PhysicalKeyboardKey.keyX,
-      'y': PhysicalKeyboardKey.keyY,
-      'z': PhysicalKeyboardKey.keyZ,
-    };
-
-    return keyMap[keyString.toLowerCase()];
   }
 
   /// Handle hotkey press for different actions

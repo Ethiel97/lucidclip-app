@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/utils/hotkey_utils.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
@@ -100,76 +101,6 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
     }
   }
 
-  String _hotkeyToString(HotKey? hotkey) {
-    if (hotkey == null) return 'Not set';
-    
-    final modifiers = <String>[];
-    if (hotkey.modifiers?.contains(HotKeyModifier.control) ?? false) {
-      modifiers.add('Ctrl');
-    }
-    if (hotkey.modifiers?.contains(HotKeyModifier.shift) ?? false) {
-      modifiers.add('Shift');
-    }
-    if (hotkey.modifiers?.contains(HotKeyModifier.alt) ?? false) {
-      modifiers.add('Alt');
-    }
-    if (hotkey.modifiers?.contains(HotKeyModifier.meta) ?? false) {
-      modifiers.add('Cmd');
-    }
-    
-    final keyLabel = _getKeyLabel(hotkey.key);
-    return [...modifiers, keyLabel].join(' + ');
-  }
-
-  String _getKeyLabel(PhysicalKeyboardKey? key) {
-    if (key == null) return '';
-    
-    // Common keys mapping
-    final keyMap = {
-      PhysicalKeyboardKey.keyA: 'A',
-      PhysicalKeyboardKey.keyB: 'B',
-      PhysicalKeyboardKey.keyC: 'C',
-      PhysicalKeyboardKey.keyD: 'D',
-      PhysicalKeyboardKey.keyE: 'E',
-      PhysicalKeyboardKey.keyF: 'F',
-      PhysicalKeyboardKey.keyG: 'G',
-      PhysicalKeyboardKey.keyH: 'H',
-      PhysicalKeyboardKey.keyI: 'I',
-      PhysicalKeyboardKey.keyJ: 'J',
-      PhysicalKeyboardKey.keyK: 'K',
-      PhysicalKeyboardKey.keyL: 'L',
-      PhysicalKeyboardKey.keyM: 'M',
-      PhysicalKeyboardKey.keyN: 'N',
-      PhysicalKeyboardKey.keyO: 'O',
-      PhysicalKeyboardKey.keyP: 'P',
-      PhysicalKeyboardKey.keyQ: 'Q',
-      PhysicalKeyboardKey.keyR: 'R',
-      PhysicalKeyboardKey.keyS: 'S',
-      PhysicalKeyboardKey.keyT: 'T',
-      PhysicalKeyboardKey.keyU: 'U',
-      PhysicalKeyboardKey.keyV: 'V',
-      PhysicalKeyboardKey.keyW: 'W',
-      PhysicalKeyboardKey.keyX: 'X',
-      PhysicalKeyboardKey.keyY: 'Y',
-      PhysicalKeyboardKey.keyZ: 'Z',
-      PhysicalKeyboardKey.digit0: '0',
-      PhysicalKeyboardKey.digit1: '1',
-      PhysicalKeyboardKey.digit2: '2',
-      PhysicalKeyboardKey.digit3: '3',
-      PhysicalKeyboardKey.digit4: '4',
-      PhysicalKeyboardKey.digit5: '5',
-      PhysicalKeyboardKey.digit6: '6',
-      PhysicalKeyboardKey.digit7: '7',
-      PhysicalKeyboardKey.digit8: '8',
-      PhysicalKeyboardKey.digit9: '9',
-      PhysicalKeyboardKey.space: 'Space',
-      PhysicalKeyboardKey.enter: 'Enter',
-      PhysicalKeyboardKey.escape: 'Esc',
-    };
-    
-    return keyMap[key] ?? key.debugName ?? '';
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -251,9 +182,11 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
                     child: Text(
                       _isRecording
                           ? (_recordedHotkey != null
-                              ? _hotkeyToString(_recordedHotkey)
+                              ? HotkeyUtils.hotkeyToString(_recordedHotkey)
                               : l10n.pressKeyCombination)
-                          : _hotkeyToString(widget.hotkey),
+                          : (widget.hotkey != null
+                              ? HotkeyUtils.hotkeyToString(widget.hotkey)
+                              : l10n.notSet),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: _isRecording
                             ? colorScheme.onPrimaryContainer

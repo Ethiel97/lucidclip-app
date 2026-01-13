@@ -708,6 +708,10 @@
   "@resetToDefault": {
     "description": "Button text to reset a setting to its default value"
   },
+  "notSet": "Not set",
+  "@notSet": {
+    "description": "Text shown when a shortcut or value is not configured"
+  },
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"

@@ -8,6 +8,7 @@ import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/utils/hotkey_utils.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
@@ -324,97 +325,8 @@ class _KeyboardShortcutsSection extends StatefulWidget {
 }
 
 class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
-  HotKey? _parseHotkey(String? hotkeyString) {
-    if (hotkeyString == null || hotkeyString.isEmpty) return null;
-
-    try {
-      final parts = hotkeyString.split('+').map((e) => e.trim()).toList();
-      if (parts.isEmpty) return null;
-
-      final modifiers = <HotKeyModifier>[];
-      PhysicalKeyboardKey? key;
-
-      for (final part in parts) {
-        switch (part.toLowerCase()) {
-          case 'ctrl':
-          case 'control':
-            modifiers.add(HotKeyModifier.control);
-          case 'shift':
-            modifiers.add(HotKeyModifier.shift);
-          case 'alt':
-            modifiers.add(HotKeyModifier.alt);
-          case 'cmd':
-          case 'meta':
-            modifiers.add(HotKeyModifier.meta);
-          default:
-            // Try to parse the key
-            key = _parseKey(part);
-        }
-      }
-
-      if (key == null) return null;
-
-      return HotKey(
-        key: key,
-        modifiers: modifiers,
-        scope: HotKeyScope.system,
-      );
-    } catch (e) {
-      return null;
-    }
-  }
-
-  PhysicalKeyboardKey? _parseKey(String keyString) {
-    // Map common keys
-    final keyMap = {
-      'a': PhysicalKeyboardKey.keyA,
-      'b': PhysicalKeyboardKey.keyB,
-      'c': PhysicalKeyboardKey.keyC,
-      'd': PhysicalKeyboardKey.keyD,
-      'e': PhysicalKeyboardKey.keyE,
-      'f': PhysicalKeyboardKey.keyF,
-      'g': PhysicalKeyboardKey.keyG,
-      'h': PhysicalKeyboardKey.keyH,
-      'i': PhysicalKeyboardKey.keyI,
-      'j': PhysicalKeyboardKey.keyJ,
-      'k': PhysicalKeyboardKey.keyK,
-      'l': PhysicalKeyboardKey.keyL,
-      'm': PhysicalKeyboardKey.keyM,
-      'n': PhysicalKeyboardKey.keyN,
-      'o': PhysicalKeyboardKey.keyO,
-      'p': PhysicalKeyboardKey.keyP,
-      'q': PhysicalKeyboardKey.keyQ,
-      'r': PhysicalKeyboardKey.keyR,
-      's': PhysicalKeyboardKey.keyS,
-      't': PhysicalKeyboardKey.keyT,
-      'u': PhysicalKeyboardKey.keyU,
-      'v': PhysicalKeyboardKey.keyV,
-      'w': PhysicalKeyboardKey.keyW,
-      'x': PhysicalKeyboardKey.keyX,
-      'y': PhysicalKeyboardKey.keyY,
-      'z': PhysicalKeyboardKey.keyZ,
-    };
-
-    return keyMap[keyString.toLowerCase()];
-  }
-
   String _hotkeyToString(HotKey hotkey) {
-    final modifiers = <String>[];
-    if (hotkey.modifiers?.contains(HotKeyModifier.control) ?? false) {
-      modifiers.add('Ctrl');
-    }
-    if (hotkey.modifiers?.contains(HotKeyModifier.shift) ?? false) {
-      modifiers.add('Shift');
-    }
-    if (hotkey.modifiers?.contains(HotKeyModifier.alt) ?? false) {
-      modifiers.add('Alt');
-    }
-    if (hotkey.modifiers?.contains(HotKeyModifier.meta) ?? false) {
-      modifiers.add('Cmd');
-    }
-
-    final keyLabel = hotkey.key?.debugName?.replaceFirst('Key', '') ?? '';
-    return [...modifiers, keyLabel.toUpperCase()].join('+');
+    return HotkeyUtils.hotkeyToString(hotkey);
   }
 
   Future<void> _updateHotkey(ShortcutAction action, HotKey? hotkey) async {
@@ -424,7 +336,7 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
     if (hotkey != null) {
       // Register the new hotkey
       await hotkeyService.registerHotkey(action, hotkey);
-      shortcuts[action.key] = _hotkeyToString(hotkey);
+      shortcuts[action.key] = HotkeyUtils.hotkeyToString(hotkey);
     } else {
       // Unregister the hotkey
       await hotkeyService.unregisterHotkey(action);
@@ -471,7 +383,7 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
         SettingsShortcutItem(
           title: l10n.showWindowShortcut,
           description: l10n.showWindowShortcutDescription,
-          hotkey: _parseHotkey(
+          hotkey: HotkeyUtils.parseHotkeyString(
             widget.settings.shortcuts[ShortcutAction.showWindow.key],
           ),
           onChanged: (hotkey) =>
@@ -481,7 +393,7 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
         SettingsShortcutItem(
           title: l10n.toggleIncognitoShortcut,
           description: l10n.toggleIncognitoShortcutDescription,
-          hotkey: _parseHotkey(
+          hotkey: HotkeyUtils.parseHotkeyString(
             widget.settings.shortcuts[ShortcutAction.toggleIncognito.key],
           ),
           onChanged: (hotkey) =>

@@ -137,6 +137,14 @@
   "@clearClipboardHistory": {
     "description": "Tray menu item to clear all clipboard history"
   },
+  "clearClipboardShortcut": "Clear Clipboard",
+  "@clearClipboardShortcut": {
+    "description": "Label for clear clipboard shortcut"
+  },
+  "clearClipboardShortcutDescription": "Clear all clipboard history",
+  "@clearClipboardShortcutDescription": {
+    "description": "Description for clear clipboard shortcut"
+  },
   "clipboard": "Clipboard",
   "@clipboard": {
     "description": "Label for the Clipboard feature"
@@ -189,6 +197,17 @@
   "@dark": {
     "description": "Name of the dark theme"
   },
+  "daysCount": "{count, plural, =0 {0 day} =1 {1 day} other {{count} days}}",
+  "@daysCount": {
+    "description": "Label showing the number of days with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of days",
+        "example": "1"
+      }
+    }
+  },
   "delete": "Delete",
   "@delete": {
     "description": "Button text to delete content"
@@ -196,6 +215,10 @@
   "edit": "Edit",
   "@edit": {
     "description": "Button text to edit content"
+  },
+  "editShortcut": "Edit Shortcut",
+  "@editShortcut": {
+    "description": "Button text to edit a keyboard shortcut"
   },
   "errorLoadingSettings": "Error loading settings",
   "@errorLoadingSettings": {
@@ -326,6 +349,22 @@
       }
     }
   },
+  "usage": "Usage",
+  "@usage": {
+    "description": "Label for the usage section"
+  },
+  "privacy": "Privacy",
+  "@privacy": {
+    "description": "Label for the Privacy settings"
+  },
+  "shortcuts": "Shortcuts",
+  "@shortcuts": {
+    "description": "Label for keyboard shortcuts settings section"
+  },
+  "shortcutsDescription": "Configure global keyboard shortcuts for quick actions",
+  "@shortcutsDescription": {
+    "description": "Description for keyboard shortcuts settings"
+  },
   "light": "Light",
   "@light": {
     "description": "Name of the light theme"
@@ -345,6 +384,17 @@
   "maxHistoryItemsDescription": "Sets the maximum number of items in the clipboard.",
   "@maxHistoryItemsDescription": {
     "description": "Description for the Max History Items setting"
+  },
+  "minutesCount": "{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}",
+  "@minutesCount": {
+    "description": "Label showing the number of minutes with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of minutes",
+        "example": "1"
+      }
+    }
   },
   "noAppsAreCurrentlyIgnored": "No apps are currently ignored.",
   "@noAppsAreCurrentlyIgnored": {
@@ -376,6 +426,10 @@
   "@none": {
     "description": "None"
   },
+  "notSet": "Not set",
+  "@notSet": {
+    "description": "Text shown when a shortcut or value is not configured"
+  },
   "notification": "Notification",
   "@notification": {
     "description": "Label for a notification"
@@ -403,6 +457,10 @@
   "pinned": "Pinned",
   "@pinned": {
     "description": "Label for the Pinned feature"
+  },
+  "pressKeyCombination": "Press key combination...",
+  "@pressKeyCombination": {
+    "description": "Placeholder text when recording a keyboard shortcut"
   },
   "preview": "Preview",
   "@preview": {
@@ -441,6 +499,10 @@
   "@recent": {
     "description": "Label for the Recent items"
   },
+  "resetToDefault": "Reset to Default",
+  "@resetToDefault": {
+    "description": "Button text to reset a setting to its default value"
+  },
   "resumeClipboardCapture": "Resume clipboard capture",
   "@resumeClipboardCapture": {
     "description": "Button text to resume clipboard capture"
@@ -473,6 +535,14 @@
   "@retry": {
     "description": "Button text to retry an operation"
   },
+  "searchClipboardShortcut": "Search Clipboard",
+  "@searchClipboardShortcut": {
+    "description": "Label for search clipboard shortcut"
+  },
+  "searchClipboardShortcutDescription": "Open window and focus search",
+  "@searchClipboardShortcutDescription": {
+    "description": "Description for search clipboard shortcut"
+  },
   "searchHint": "Search...",
   "@searchHint": {
     "description": "Hint shown in the Search Bar"
@@ -484,6 +554,10 @@
   "share": "Share",
   "@share": {
     "description": "Button text to share content"
+  },
+  "shortcutConflict": "Shortcut already in use",
+  "@shortcutConflict": {
+    "description": "Error message when a shortcut conflicts with another"
   },
   "showHideWindow": "Show/Hide Window",
   "@showHideWindow": {
@@ -504,6 +578,14 @@
   "showWindow": "Show Window",
   "@showWindow": {
     "description": "Tray menu item to show the window"
+  },
+  "showWindowShortcut": "Show Window",
+  "@showWindowShortcut": {
+    "description": "Label for show window shortcut"
+  },
+  "showWindowShortcutDescription": "Bring the application window to focus",
+  "@showWindowShortcutDescription": {
+    "description": "Description for show window shortcut"
   },
   "signIn": "Sign in",
   "@signIn": {
@@ -614,6 +696,22 @@
   "@theme": {
     "description": "Label for the Theme settings"
   },
+  "toggleIncognitoShortcut": "Toggle Incognito Mode",
+  "@toggleIncognitoShortcut": {
+    "description": "Label for toggle incognito shortcut"
+  },
+  "toggleIncognitoShortcutDescription": "Enable or disable incognito mode",
+  "@toggleIncognitoShortcutDescription": {
+    "description": "Description for toggle incognito shortcut"
+  },
+  "toggleWindowShortcut": "Toggle window",
+  "@toggleWindowShortcut": {
+    "description": "Label for toggle window shortcut"
+  },
+  "toggleWindowShortcutDescription": "Show or hide LucidClip",
+  "@toggleWindowShortcutDescription": {
+    "description": "Description for toggle window shortcut"
+  },
   "trackingPreferencesUpdated": "Tracking preferences updated!",
   "@trackingPreferencesUpdated": {
     "description": "Message shown when the user updates their tracking preferences"
@@ -651,66 +749,6 @@
   "version": "Version",
   "@version": {
     "description": "Label for the app version"
-  },
-  "keyboardShortcuts": "Keyboard Shortcuts",
-  "@keyboardShortcuts": {
-    "description": "Label for keyboard shortcuts settings section"
-  },
-  "keyboardShortcutsDescription": "Configure global keyboard shortcuts for quick actions",
-  "@keyboardShortcutsDescription": {
-    "description": "Description for keyboard shortcuts settings"
-  },
-  "showWindowShortcut": "Show Window",
-  "@showWindowShortcut": {
-    "description": "Label for show window shortcut"
-  },
-  "showWindowShortcutDescription": "Bring the application window to focus",
-  "@showWindowShortcutDescription": {
-    "description": "Description for show window shortcut"
-  },
-  "toggleIncognitoShortcut": "Toggle Incognito Mode",
-  "@toggleIncognitoShortcut": {
-    "description": "Label for toggle incognito shortcut"
-  },
-  "toggleIncognitoShortcutDescription": "Enable or disable incognito mode",
-  "@toggleIncognitoShortcutDescription": {
-    "description": "Description for toggle incognito shortcut"
-  },
-  "clearClipboardShortcut": "Clear Clipboard",
-  "@clearClipboardShortcut": {
-    "description": "Label for clear clipboard shortcut"
-  },
-  "clearClipboardShortcutDescription": "Clear all clipboard history",
-  "@clearClipboardShortcutDescription": {
-    "description": "Description for clear clipboard shortcut"
-  },
-  "searchClipboardShortcut": "Search Clipboard",
-  "@searchClipboardShortcut": {
-    "description": "Label for search clipboard shortcut"
-  },
-  "searchClipboardShortcutDescription": "Open window and focus search",
-  "@searchClipboardShortcutDescription": {
-    "description": "Description for search clipboard shortcut"
-  },
-  "editShortcut": "Edit Shortcut",
-  "@editShortcut": {
-    "description": "Button text to edit a keyboard shortcut"
-  },
-  "pressKeyCombination": "Press key combination...",
-  "@pressKeyCombination": {
-    "description": "Placeholder text when recording a keyboard shortcut"
-  },
-  "shortcutConflict": "Shortcut already in use",
-  "@shortcutConflict": {
-    "description": "Error message when a shortcut conflicts with another"
-  },
-  "resetToDefault": "Reset to Default",
-  "@resetToDefault": {
-    "description": "Button text to reset a setting to its default value"
-  },
-  "notSet": "Not set",
-  "@notSet": {
-    "description": "Text shown when a shortcut or value is not configured"
   },
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {

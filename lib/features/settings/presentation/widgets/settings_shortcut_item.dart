@@ -62,7 +62,7 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
     if (event is! KeyDownEvent) return;
 
     final modifiers = <HotKeyModifier>[];
-    
+
     // Detect modifiers
     if (HardwareKeyboard.instance.isControlPressed) {
       modifiers.add(HotKeyModifier.control);
@@ -80,13 +80,9 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
     // Only record if we have at least one modifier and a non-modifier key
     if (modifiers.isNotEmpty && !_isModifierKey(event.physicalKey)) {
       setState(() {
-        _recordedHotkey = HotKey(
-          key: event.physicalKey,
-          modifiers: modifiers,
-          scope: HotKeyScope.system,
-        );
+        _recordedHotkey = HotKey(key: event.physicalKey, modifiers: modifiers);
       });
-      
+
       // Stop recording after a short delay to show the key combination
       Future.delayed(const Duration(milliseconds: 300), _stopRecording);
     }
@@ -94,7 +90,7 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
 
   /// Check if a physical key is a modifier key
   static bool _isModifierKey(PhysicalKeyboardKey key) {
-    const modifierKeys = {
+    final modifierKeys = {
       PhysicalKeyboardKey.controlLeft,
       PhysicalKeyboardKey.controlRight,
       PhysicalKeyboardKey.shiftLeft,
@@ -188,11 +184,11 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
                     child: Text(
                       _isRecording
                           ? (_recordedHotkey != null
-                              ? HotkeyUtils.hotkeyToString(_recordedHotkey)
-                              : l10n.pressKeyCombination)
+                                ? HotkeyUtils.hotkeyToString(_recordedHotkey)
+                                : l10n.pressKeyCombination)
                           : (widget.hotkey != null
-                              ? HotkeyUtils.hotkeyToString(widget.hotkey)
-                              : l10n.notSet),
+                                ? HotkeyUtils.hotkeyToString(widget.hotkey)
+                                : l10n.notSet),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: _isRecording
                             ? colorScheme.onPrimaryContainer

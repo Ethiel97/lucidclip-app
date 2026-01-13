@@ -8,7 +8,6 @@ import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/core/utils/hotkey_utils.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
@@ -30,7 +29,7 @@ class _SettingsViewState extends State<SettingsView> {
   final ScrollController _scrollController = ScrollController();
 
   final Map<String, GlobalKey> _sectionKeys = {
-    SettingsSection.general.name: GlobalKey(),
+    SettingsSection.usage.name: GlobalKey(),
     SettingsSection.appearance.name: GlobalKey(),
     SettingsSection.clipboard.name: GlobalKey(),
     SettingsSection.shortcuts.name: GlobalKey(),
@@ -126,11 +125,11 @@ class _SettingsViewState extends State<SettingsView> {
                 children: [
                   // General Section
                   SettingsSectionHeader(
-                    key: _sectionKeys[SettingsSection.general.name],
+                    key: _sectionKeys[SettingsSection.usage.name],
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings02,
                     ),
-                    title: l10n.general.sentenceCase,
+                    title: l10n.usage.sentenceCase,
                   ),
                   const SizedBox(height: AppSpacing.xs),
 
@@ -235,7 +234,7 @@ class _SettingsViewState extends State<SettingsView> {
                       description: l10n.maxHistoryItemsDescription.sentenceCase,
                       value: settings.maxHistoryItems,
                       items: const [50, 100, 500, 1000],
-                      itemLabel: (value) => '$value items',
+                      itemLabel: l10n.itemsCount,
                       onChanged: (value) {
                         if (value != null) {
                           context.read<SettingsCubit>().updateMaxHistoryItems(
@@ -254,7 +253,7 @@ class _SettingsViewState extends State<SettingsView> {
                       description: l10n.retentionDaysDescription.sentenceCase,
                       value: settings.retentionDays,
                       items: const [1, 7, 14, 30, 60, 90, 180, 365],
-                      itemLabel: (value) => '$value days',
+                      itemLabel: l10n.daysCount,
                       onChanged: (value) {
                         if (value != null) {
                           context.read<SettingsCubit>().updateRetentionDays(
@@ -269,10 +268,8 @@ class _SettingsViewState extends State<SettingsView> {
                   const SizedBox(height: AppSpacing.md),
                   SettingsSectionHeader(
                     key: _sectionKeys[SettingsSection.shortcuts.name],
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedKeyboard,
-                    ),
-                    title: l10n.keyboardShortcuts.sentenceCase,
+                    icon: const HugeIcon(icon: HugeIcons.strokeRoundedKeyboard),
+                    title: l10n.shortcuts.sentenceCase,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   _KeyboardShortcutsSection(settings: settings),
@@ -293,7 +290,7 @@ class _SettingsViewState extends State<SettingsView> {
                           l10n.autoSyncIntervalDescription.sentenceCase,
                       value: settings.syncIntervalMinutes,
                       items: const [1, 5, 10, 15, 30, 60],
-                      itemLabel: (value) => '$value minutes',
+                      itemLabel: l10n.minutesCount,
                       onChanged: (value) {
                         if (value != null) {
                           context.read<SettingsCubit>().updateSyncInterval(
@@ -349,17 +346,15 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
     HotKey? defaultHotkey;
 
     switch (action) {
-      case ShortcutAction.showWindow:
+      case ShortcutAction.toggleWindow:
         defaultHotkey = HotKey(
           key: PhysicalKeyboardKey.keyV,
           modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
-          scope: HotKeyScope.system,
         );
       case ShortcutAction.toggleIncognito:
         defaultHotkey = HotKey(
           key: PhysicalKeyboardKey.keyI,
           modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
-          scope: HotKeyScope.system,
         );
       case ShortcutAction.clearClipboard:
       case ShortcutAction.searchClipboard:
@@ -377,18 +372,18 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
     return Column(
       children: [
         SettingsShortcutItem(
-          title: l10n.showWindowShortcut,
-          description: l10n.showWindowShortcutDescription,
+          title: l10n.toggleWindowShortcut,
+          description: l10n.toggleWindowShortcutDescription.sentenceCase,
           hotkey: HotkeyUtils.parseHotkeyString(
-            widget.settings.shortcuts[ShortcutAction.showWindow.key],
+            widget.settings.shortcuts[ShortcutAction.toggleWindow.key],
           ),
           onChanged: (hotkey) =>
-              _updateHotkey(ShortcutAction.showWindow, hotkey),
-          onReset: () => _resetToDefault(ShortcutAction.showWindow),
+              _updateHotkey(ShortcutAction.toggleWindow, hotkey),
+          onReset: () => _resetToDefault(ShortcutAction.toggleWindow),
         ),
         SettingsShortcutItem(
           title: l10n.toggleIncognitoShortcut,
-          description: l10n.toggleIncognitoShortcutDescription,
+          description: l10n.toggleIncognitoShortcutDescription.sentenceCase,
           hotkey: HotkeyUtils.parseHotkeyString(
             widget.settings.shortcuts[ShortcutAction.toggleIncognito.key],
           ),

@@ -384,11 +384,7 @@ class TrayManagerService with TrayListener {
   /// Clear clipboard history
   Future<void> _clearClipboardHistory() async {
     try {
-      final localClipboardRepository = getIt<LocalClipboardRepository>();
-
-      // Clear all items from the repository
-      await localClipboardRepository.clear();
-
+      await getIt<ClipboardCubit>().clearClipboard();
       // Update the tray menu after clearing
       await updateTrayMenu();
     } catch (e, stackTrace) {

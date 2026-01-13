@@ -2,17 +2,17 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 
 /// Enum for predefined shortcut actions
 enum ShortcutAction {
-  showWindow,
+  toggleWindow,
   toggleIncognito,
   clearClipboard,
   searchClipboard;
 
   String get key => switch (this) {
-        ShortcutAction.showWindow => 'show_window',
-        ShortcutAction.toggleIncognito => 'toggle_incognito',
-        ShortcutAction.clearClipboard => 'clear_clipboard',
-        ShortcutAction.searchClipboard => 'search_clipboard',
-      };
+    ShortcutAction.toggleWindow => 'toggle_window',
+    ShortcutAction.toggleIncognito => 'toggle_incognito',
+    ShortcutAction.clearClipboard => 'clear_clipboard',
+    ShortcutAction.searchClipboard => 'search_clipboard',
+  };
 }
 
 /// Interface for managing application hotkeys

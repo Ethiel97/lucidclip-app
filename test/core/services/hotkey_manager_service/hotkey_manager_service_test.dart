@@ -11,7 +11,7 @@ void main() {
     });
 
     test('should provide correct key for showWindow', () {
-      expect(ShortcutAction.showWindow.key, 'show_window');
+      expect(ShortcutAction.toggleWindow.key, 'show_window');
     });
 
     test('should provide correct key for toggleIncognito', () {

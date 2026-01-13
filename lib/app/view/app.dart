@@ -64,7 +64,7 @@ class _AppView extends StatefulWidget {
 class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
   final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
-  
+
   Map<String, String>? _lastLoadedShortcuts;
 
   @override
@@ -101,11 +101,8 @@ class _AppViewState extends State<_AppView> {
         }
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(
-        buildWhen: (previous, current) {
-          // Only rebuild when theme changes
-          return previous.settings.value?.theme !=
-              current.settings.value?.theme;
-        },
+        buildWhen: (previous, current) =>
+            previous.settings.value?.theme != current.settings.value?.theme,
         builder: (context, state) {
           final settings = state.settings.value;
           final themeMode = _getThemeMode(settings?.theme ?? 'dark');

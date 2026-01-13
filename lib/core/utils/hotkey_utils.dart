@@ -87,7 +87,7 @@ class HotkeyUtils {
       modifiers.add('Cmd');
     }
 
-    final keyLabel = getKeyLabel(hotkey.key);
+    final keyLabel = getKeyLabel(hotkey.physicalKey);
     return [...modifiers, keyLabel].join(' + ');
   }
 
@@ -122,11 +122,7 @@ class HotkeyUtils {
 
       if (key == null) return null;
 
-      return HotKey(
-        key: key,
-        modifiers: modifiers,
-        scope: HotKeyScope.system,
-      );
+      return HotKey(key: key, modifiers: modifiers);
     } catch (e) {
       return null;
     }

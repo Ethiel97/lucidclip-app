@@ -28,10 +28,7 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
       await hotKeyManager.unregisterAll();
       _isInitialized = true;
 
-      developer.log(
-        'Hotkey manager initialized',
-        name: 'HotkeyManagerService',
-      );
+      developer.log('Hotkey manager initialized', name: 'HotkeyManagerService');
     } catch (e, stackTrace) {
       developer.log(
         'Error initializing hotkey manager',
@@ -102,10 +99,7 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
       await hotKeyManager.unregisterAll();
       _registeredHotkeys.clear();
 
-      developer.log(
-        'Unregistered all hotkeys',
-        name: 'HotkeyManagerService',
-      );
+      developer.log('Unregistered all hotkeys', name: 'HotkeyManagerService');
     } catch (e, stackTrace) {
       developer.log(
         'Error unregistering all hotkeys',
@@ -134,25 +128,20 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
       final showWindowHotkey = HotKey(
         key: PhysicalKeyboardKey.keyV,
         modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
-        scope: HotKeyScope.system,
       );
-      await registerHotkey(ShortcutAction.showWindow, showWindowHotkey);
+      await registerHotkey(ShortcutAction.toggleWindow, showWindowHotkey);
 
       // Toggle Incognito: Cmd/Ctrl + Shift + I
       final toggleIncognitoHotkey = HotKey(
         key: PhysicalKeyboardKey.keyI,
         modifiers: [HotKeyModifier.control, HotKeyModifier.shift],
-        scope: HotKeyScope.system,
       );
       await registerHotkey(
         ShortcutAction.toggleIncognito,
         toggleIncognitoHotkey,
       );
 
-      developer.log(
-        'Registered default hotkeys',
-        name: 'HotkeyManagerService',
-      );
+      developer.log('Registered default hotkeys', name: 'HotkeyManagerService');
     } catch (e, stackTrace) {
       developer.log(
         'Error registering default hotkeys',
@@ -187,7 +176,8 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
         if (action == null) {
           developer.log(
             'Skipping unknown shortcut action: ${entry.key}. '
-            'Available actions: ${ShortcutAction.values.map((a) => a.key).join(", ")}',
+            'Available actions:'
+            ' ${ShortcutAction.values.map((a) => a.key).join(", ")}',
             name: 'HotkeyManagerService',
           );
           continue;
@@ -224,8 +214,8 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
       );
 
       switch (action) {
-        case ShortcutAction.showWindow:
-          await _handleShowWindow();
+        case ShortcutAction.toggleWindow:
+          await _handleToggleWindow();
         case ShortcutAction.toggleIncognito:
           await _handleToggleIncognito();
         case ShortcutAction.clearClipboard:
@@ -244,19 +234,19 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   }
 
   /// Show or focus the application window
-  Future<void> _handleShowWindow() async {
+  Future<void> _handleToggleWindow() async {
     try {
       final isVisible = await windowManager.isVisible();
-      if (!isVisible) {
-        await windowManager.show();
-        await windowManager.focus();
+
+      if (isVisible) {
+        await windowManager.hide();
       } else {
-        // If already visible, focus it
+        await windowManager.show();
         await windowManager.focus();
       }
     } catch (e, stackTrace) {
       developer.log(
-        'Error showing window',
+        'Error toggling window',
         error: e,
         stackTrace: stackTrace,
         name: 'HotkeyManagerService',
@@ -288,7 +278,7 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   Future<void> _handleClearClipboard() async {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
-      await clipboardCubit.clearClipboard();
+      await clipboardCubit.clear();
     } catch (e, stackTrace) {
       developer.log(
         'Error clearing clipboard',
@@ -302,8 +292,8 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   /// Focus on search (show window and focus search)
   Future<void> _handleSearchClipboard() async {
     try {
-      await _handleShowWindow();
-      // TODO: Focus search input when this feature is added
+      await _handleToggleWindow();
+      // TODO(Ethiel): Focus search input when this feature is added
     } catch (e, stackTrace) {
       developer.log(
         'Error handling search clipboard',

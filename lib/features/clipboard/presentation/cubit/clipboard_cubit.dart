@@ -261,6 +261,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     }
   }
 
+  Future<void> clearClipboard() {
+    return localClipboardRepository.clear();
+  }
+
   Future<void> loadClipboardItems() async {
     try {
       emit(state.copyWith(clipboardItems: state.clipboardItems.toLoading()));

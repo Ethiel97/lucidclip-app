@@ -78,16 +78,7 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
     }
 
     // Only record if we have at least one modifier and a non-modifier key
-    if (modifiers.isNotEmpty && 
-        event.physicalKey != PhysicalKeyboardKey.controlLeft &&
-        event.physicalKey != PhysicalKeyboardKey.controlRight &&
-        event.physicalKey != PhysicalKeyboardKey.shiftLeft &&
-        event.physicalKey != PhysicalKeyboardKey.shiftRight &&
-        event.physicalKey != PhysicalKeyboardKey.altLeft &&
-        event.physicalKey != PhysicalKeyboardKey.altRight &&
-        event.physicalKey != PhysicalKeyboardKey.metaLeft &&
-        event.physicalKey != PhysicalKeyboardKey.metaRight) {
-      
+    if (modifiers.isNotEmpty && !_isModifierKey(event.physicalKey)) {
       setState(() {
         _recordedHotkey = HotKey(
           key: event.physicalKey,
@@ -99,6 +90,21 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
       // Stop recording after a short delay to show the key combination
       Future.delayed(const Duration(milliseconds: 300), _stopRecording);
     }
+  }
+
+  /// Check if a physical key is a modifier key
+  static bool _isModifierKey(PhysicalKeyboardKey key) {
+    const modifierKeys = {
+      PhysicalKeyboardKey.controlLeft,
+      PhysicalKeyboardKey.controlRight,
+      PhysicalKeyboardKey.shiftLeft,
+      PhysicalKeyboardKey.shiftRight,
+      PhysicalKeyboardKey.altLeft,
+      PhysicalKeyboardKey.altRight,
+      PhysicalKeyboardKey.metaLeft,
+      PhysicalKeyboardKey.metaRight,
+    };
+    return modifierKeys.contains(key);
   }
 
   @override

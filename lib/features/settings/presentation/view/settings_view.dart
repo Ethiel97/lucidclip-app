@@ -325,10 +325,6 @@ class _KeyboardShortcutsSection extends StatefulWidget {
 }
 
 class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
-  String _hotkeyToString(HotKey hotkey) {
-    return HotkeyUtils.hotkeyToString(hotkey);
-  }
-
   Future<void> _updateHotkey(ShortcutAction action, HotKey? hotkey) async {
     final hotkeyService = getIt<HotkeyManagerService>();
     final shortcuts = Map<String, String>.from(widget.settings.shortcuts);

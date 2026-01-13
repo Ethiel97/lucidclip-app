@@ -176,19 +176,22 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
     try {
       for (final entry in shortcuts.entries) {
         // Find the action that matches this key, skip unknown actions
-        final action = ShortcutAction.values.cast<ShortcutAction?>().firstWhere(
-          (a) => a?.key == entry.key,
-          orElse: () {
-            developer.log(
-              'Skipping unknown shortcut action: ${entry.key}. '
-              'Available actions: ${ShortcutAction.values.map((a) => a.key).join(", ")}',
-              name: 'HotkeyManagerService',
-            );
-            return null;
-          },
-        );
+        ShortcutAction? action;
+        for (final a in ShortcutAction.values) {
+          if (a.key == entry.key) {
+            action = a;
+            break;
+          }
+        }
 
-        if (action == null) continue;
+        if (action == null) {
+          developer.log(
+            'Skipping unknown shortcut action: ${entry.key}. '
+            'Available actions: ${ShortcutAction.values.map((a) => a.key).join(", ")}',
+            name: 'HotkeyManagerService',
+          );
+          continue;
+        }
 
         // Parse the hotkey string using shared utility
         final hotkey = HotkeyUtils.parseHotkeyString(entry.value);

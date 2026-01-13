@@ -177,9 +177,9 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
       for (final entry in shortcuts.entries) {
         // Find the action that matches this key, skip unknown actions
         ShortcutAction? action;
-        for (final a in ShortcutAction.values) {
-          if (a.key == entry.key) {
-            action = a;
+        for (final shortcutAction in ShortcutAction.values) {
+          if (shortcutAction.key == entry.key) {
+            action = shortcutAction;
             break;
           }
         }

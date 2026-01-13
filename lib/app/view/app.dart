@@ -84,6 +84,11 @@ class _AppViewState extends State<_AppView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) {
+        // Only listen when shortcuts actually change
+        return previous.settings.value?.shortcuts !=
+            current.settings.value?.shortcuts;
+      },
       listener: (context, state) {
         // Load shortcuts when settings are loaded or updated
         final settings = state.settings.value;
@@ -96,6 +101,11 @@ class _AppViewState extends State<_AppView> {
         }
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(
+        buildWhen: (previous, current) {
+          // Only rebuild when theme changes
+          return previous.settings.value?.theme !=
+              current.settings.value?.theme;
+        },
         builder: (context, state) {
           final settings = state.settings.value;
           final themeMode = _getThemeMode(settings?.theme ?? 'dark');

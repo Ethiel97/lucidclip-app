@@ -349,22 +349,6 @@
       }
     }
   },
-  "usage": "Usage",
-  "@usage": {
-    "description": "Label for the usage section"
-  },
-  "privacy": "Privacy",
-  "@privacy": {
-    "description": "Label for the Privacy settings"
-  },
-  "shortcuts": "Shortcuts",
-  "@shortcuts": {
-    "description": "Label for keyboard shortcuts settings section"
-  },
-  "shortcutsDescription": "Configure global keyboard shortcuts for quick actions",
-  "@shortcutsDescription": {
-    "description": "Description for keyboard shortcuts settings"
-  },
   "light": "Light",
   "@light": {
     "description": "Name of the light theme"
@@ -483,6 +467,10 @@
   "@previewLinksDescription": {
     "description": "Description for the Preview Links setting"
   },
+  "privacy": "Privacy",
+  "@privacy": {
+    "description": "Label for the Privacy settings"
+  },
   "privateSessionDuration": "Private Session Duration",
   "@privateSessionDuration": {
     "description": "Label for private session duration options"
@@ -558,6 +546,14 @@
   "shortcutConflict": "Shortcut already in use",
   "@shortcutConflict": {
     "description": "Error message when a shortcut conflicts with another"
+  },
+  "shortcuts": "Shortcuts",
+  "@shortcuts": {
+    "description": "Label for keyboard shortcuts settings section"
+  },
+  "shortcutsDescription": "Configure global keyboard shortcuts for quick actions",
+  "@shortcutsDescription": {
+    "description": "Description for keyboard shortcuts settings"
   },
   "showHideWindow": "Show/Hide Window",
   "@showHideWindow": {
@@ -660,6 +656,21 @@
   "@storage": {
     "description": "Label for the Storage settings"
   },
+  "storageAlmostFull": "Storage almost full!",
+  "@storageAlmostFull": {
+    "description": "Message shown when the storage is almost full"
+  },
+  "storageAlmostFullDescription": "You're using {count}% of your clipboard history.",
+  "@storageAlmostFullDescription": {
+    "description": "Description shown when the storage is almost full",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The percentage of storage used",
+        "example": "90"
+      }
+    }
+  },
   "successfullySignedIn": "Successfully signed in!",
   "@successfullySignedIn": {
     "description": "Message shown when the user successfully signs in"
@@ -745,6 +756,14 @@
   "untilDisabled": "Until Disabled",
   "@untilDisabled": {
     "description": "Duration option: until manually disabled"
+  },
+  "upgradeToPro": "Upgrade to Pro",
+  "@upgradeToPro": {
+    "description": "Button text to upgrade to the pro plan"
+  },
+  "usage": "Usage",
+  "@usage": {
+    "description": "Label for the usage section"
   },
   "version": "Version",
   "@version": {

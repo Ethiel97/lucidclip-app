@@ -520,30 +520,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0 {No items} =1 {1 item} other {{count} items}}'**
   String itemsCount(int count);
 
-  /// Label for the usage section
-  ///
-  /// In en, this message translates to:
-  /// **'Usage'**
-  String get usage;
-
-  /// Label for the Privacy settings
-  ///
-  /// In en, this message translates to:
-  /// **'Privacy'**
-  String get privacy;
-
-  /// Label for keyboard shortcuts settings section
-  ///
-  /// In en, this message translates to:
-  /// **'Shortcuts'**
-  String get shortcuts;
-
-  /// Description for keyboard shortcuts settings
-  ///
-  /// In en, this message translates to:
-  /// **'Configure global keyboard shortcuts for quick actions'**
-  String get shortcutsDescription;
-
   /// Name of the light theme
   ///
   /// In en, this message translates to:
@@ -700,6 +676,12 @@ abstract class AppLocalizations {
   /// **'Shows a preview of links in the clipboard.'**
   String get previewLinksDescription;
 
+  /// Label for the Privacy settings
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacy;
+
   /// Label for private session duration options
   ///
   /// In en, this message translates to:
@@ -807,6 +789,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shortcut already in use'**
   String get shortcutConflict;
+
+  /// Label for keyboard shortcuts settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get shortcuts;
+
+  /// Description for keyboard shortcuts settings
+  ///
+  /// In en, this message translates to:
+  /// **'Configure global keyboard shortcuts for quick actions'**
+  String get shortcutsDescription;
 
   /// Tray menu item to toggle window visibility
   ///
@@ -928,6 +922,18 @@ abstract class AppLocalizations {
   /// **'Storage'**
   String get storage;
 
+  /// Message shown when the storage is almost full
+  ///
+  /// In en, this message translates to:
+  /// **'Storage almost full!'**
+  String get storageAlmostFull;
+
+  /// Description shown when the storage is almost full
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re using {count}% of your clipboard history.'**
+  String storageAlmostFullDescription(int count);
+
   /// Message shown when the user successfully signs in
   ///
   /// In en, this message translates to:
@@ -1035,6 +1041,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Until Disabled'**
   String get untilDisabled;
+
+  /// Button text to upgrade to the pro plan
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro'**
+  String get upgradeToPro;
+
+  /// Label for the usage section
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get usage;
 
   /// Label for the app version
   ///

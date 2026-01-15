@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:recase/recase.dart';
+
+const double _warningThresholdRatio = 0.9;
+
+class ClipboardStorageWarningListener extends StatelessWidget {
+  const ClipboardStorageWarningListener({
+    required this.child,
+    this.isProUser = false,
+    this.onUpgradeTap,
+    super.key,
+  });
+
+  final bool isProUser;
+  final Widget child;
+  final VoidCallback? onUpgradeTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final textTheme = Theme.of(context).textTheme;
+    final maxHistoryItems = context.select(
+      (SettingsCubit cubit) => cubit.state.maxHistoryItems,
+    );
+
+    return BlocListener<ClipboardCubit, ClipboardState>(
+      listenWhen: (previous, current) {
+        if (isProUser) return false;
+
+        final previousRatio =
+            previous.clipboardItems.value?.length ?? 0 / maxHistoryItems;
+        final currentRatio =
+            current.clipboardItems.value?.length ?? 0 / maxHistoryItems;
+
+        return previousRatio < _warningThresholdRatio &&
+            currentRatio >= _warningThresholdRatio;
+      },
+      listener: (context, state) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.storageAlmostFull.sentenceCase,
+                      style: textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.storageAlmostFullDescription(
+                        (_warningThresholdRatio * 100).toInt(),
+                      ),
+                      style: textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              action: onUpgradeTap != null
+                  ? SnackBarAction(
+                      label: l10n.upgradeToPro,
+                      onPressed: onUpgradeTap!,
+                    )
+                  : null,
+            ),
+          );
+      },
+      child: child,
+    );
+  }
+}

@@ -267,19 +267,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get usage => 'Usage';
-
-  @override
-  String get privacy => 'Privacy';
-
-  @override
-  String get shortcuts => 'Shortcuts';
-
-  @override
-  String get shortcutsDescription =>
-      'Configure global keyboard shortcuts for quick actions';
-
-  @override
   String get light => 'Light';
 
   @override
@@ -372,6 +359,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shows a preview of links in the clipboard.';
 
   @override
+  String get privacy => 'Privacy';
+
+  @override
   String get privateSessionDuration => 'Private Session Duration';
 
   @override
@@ -430,6 +420,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shortcutConflict => 'Shortcut already in use';
+
+  @override
+  String get shortcuts => 'Shortcuts';
+
+  @override
+  String get shortcutsDescription =>
+      'Configure global keyboard shortcuts for quick actions';
 
   @override
   String get showHideWindow => 'Show/Hide Window';
@@ -500,6 +497,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storage => 'Storage';
 
   @override
+  String get storageAlmostFull => 'Storage almost full!';
+
+  @override
+  String storageAlmostFullDescription(int count) {
+    return 'You\'re using $count% of your clipboard history.';
+  }
+
+  @override
   String get successfullySignedIn => 'Successfully signed in!';
 
   @override
@@ -558,6 +563,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get untilDisabled => 'Until Disabled';
+
+  @override
+  String get upgradeToPro => 'Upgrade to Pro';
+
+  @override
+  String get usage => 'Usage';
 
   @override
   String get version => 'Version';

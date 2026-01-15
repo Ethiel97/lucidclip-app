@@ -7,6 +7,11 @@ abstract class LocalClipboardRepository {
 
   Future<void> upsertBatch(List<ClipboardItem> items);
 
+  Future<void> upsertWithLimit({
+    required ClipboardItem item,
+    required int maxItems,
+  });
+
   Future<ClipboardItem?> getById(String id);
 
   Future<ClipboardItem?> getByContentHash(String contentHash);

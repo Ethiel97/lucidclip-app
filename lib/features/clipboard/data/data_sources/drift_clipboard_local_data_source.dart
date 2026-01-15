@@ -11,8 +11,10 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   @override
   Future<void> put(ClipboardItemModel item) async {
     try {
-      final comp = _db.modelToCompanion(item);
-      await _db.upsertItem(comp);
+      await _db.transaction(() async {
+        final comp = _db.modelToCompanion(item);
+        await _db.upsertItem(comp);
+      });
     } catch (e) {
       rethrow;
     }
@@ -22,8 +24,11 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   Future<void> putAll(List<ClipboardItemModel> items) async {
     try {
       if (items.isEmpty) return;
-      final comps = items.map(_db.modelToCompanion).toList();
-      await _db.upsertItemsBatch(comps);
+
+      await _db.transaction(() async {
+        final comps = items.map(_db.modelToCompanion).toList();
+        await _db.upsertItemsBatch(comps);
+      });
     } catch (e) {
       rethrow;
     }
@@ -73,27 +78,33 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   }
 
   @override
-  Future<void> updateSyncStatus(String id, {required bool isSynced}) {
+  Future<void> updateSyncStatus(String id, {required bool isSynced}) async {
     try {
-      return _db.updateSyncStatus(id, isSynced: isSynced);
+      await _db.transaction(() async {
+        await _db.updateSyncStatus(id, isSynced: isSynced);
+      });
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> deleteById(String id) {
+  Future<void> deleteById(String id) async {
     try {
-      return _db.deleteById(id);
+      await _db.transaction(() async {
+        await _db.deleteById(id);
+      });
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> deleteByContentHash(String contentHash) {
+  Future<void> deleteByContentHash(String contentHash) async {
     try {
-      return _db.deleteByContentHash(contentHash);
+      await _db.transaction(() async {
+        await _db.deleteByContentHash(contentHash);
+      });
     } catch (e) {
       rethrow;
     }
@@ -102,9 +113,9 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   @override
   Stream<List<ClipboardItemModel>> watchAll() {
     try {
-      return _db
-          .watchAllEntries()
-          .map((rows) => rows.map(_db.entryToModel).toList());
+      return _db.watchAllEntries().map(
+        (rows) => rows.map(_db.entryToModel).toList(),
+      );
     } catch (e) {
       rethrow;
     }

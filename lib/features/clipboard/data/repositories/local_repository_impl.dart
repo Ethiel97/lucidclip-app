@@ -139,4 +139,32 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   Future<void> clear() async {
     await _localDataSource.clear();
   }
+
+  @override
+  Future<void> upsertWithLimit({
+    required ClipboardItem item,
+    required int maxItems,
+  }) async {
+    if (maxItems <= 0) {
+      return;
+    }
+    final items = await getAll();
+
+    final atCapacity = items.length >= maxItems;
+    if (atCapacity) {
+      final oldestUnpinned = items
+          .where((e) => !e.isPinned)
+          .toList()
+          .lastOrNull;
+
+      // If everything is pinned, fallback to oldest item
+      final toDelete = oldestUnpinned ?? items.lastOrNull;
+
+      if (toDelete != null) {
+        await delete(toDelete.id);
+      }
+    }
+
+    await upsert(item);
+  }
 }

@@ -153,7 +153,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
     try {
-      await localClipboardRepository.upsert(item);
+      await localClipboardRepository.upsertWithLimit(
+        item: item,
+        maxItems: _userSettings?.maxHistoryItems ?? defaultMaxHistoryItems,
+      );
     } catch (e, stackTrace) {
       developer.log(
         'Failed to upsert clipboard item to local repository',

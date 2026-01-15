@@ -118,6 +118,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clipboardCaptureStarted => 'Clipboard capture started';
 
   @override
+  String get clipboardFull => 'Clipboard full!';
+
+  @override
+  String get clipboardFullDescription =>
+      'Your clipboard has reached its storage limit. Older items will be replaced by new copies.';
+
+  @override
   String get clipboardHistory => 'Clipboard History';
 
   @override

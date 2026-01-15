@@ -153,6 +153,14 @@
   "@clipboardCaptureStarted": {
     "description": "Message shown when clipboard capture has started"
   },
+  "clipboardFull": "Clipboard full!",
+  "@clipboardFull": {
+    "description": "Message shown when the clipboard is full"
+  },
+  "clipboardFullDescription": "Your clipboard has reached its storage limit. Older items will be replaced by new copies.",
+  "@clipboardFullDescription": {
+    "description": "Description shown when the clipboard is full"
+  },
   "clipboardHistory": "Clipboard History",
   "@clipboardHistory": {
     "description": "Tray menu item for clipboard history submenu"

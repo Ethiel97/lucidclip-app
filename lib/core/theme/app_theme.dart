@@ -79,20 +79,27 @@ class AppTheme {
     dialogTheme: _lightDialogTheme,
 
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: Colors.grey[850],
-      closeIconColor: Colors.white,
-      contentTextStyle: AppTextStyle.bodyMedium.copyWith(
-        color: Colors.white,
-        fontSize: 13,
-      ),
-      actionTextColor: AppColors.primary,
+      backgroundColor: AppColors.surfaceElevated.withValues(alpha: 0.92),
+      elevation: 6,
       behavior: SnackBarBehavior.floating,
+
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[700]!.withValues(alpha: 0.5)),
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: AppColors.borderSubtle.withValues(alpha: 0.35)),
       ),
-      elevation: 4,
-      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.2),
+
+      contentTextStyle: AppTextStyle.bodySmall.copyWith(
+        color: AppColors.textPrimary,
+        height: 1.25,
+      ),
+
+      actionTextColor: AppColors.primary,
+      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.12),
+
+      closeIconColor: AppColors.textMuted,
+
+      // Spacing feels better on desktop
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
   );
 
@@ -178,7 +185,7 @@ class AppTheme {
       backgroundColor: AppColors.surface2.toTinyColor().lighten().color,
       contentTextStyle: AppTextStyle.bodyMedium.copyWith(
         color: AppColors.textPrimary,
-        fontSize:  13,
+        fontSize: 13,
       ),
 
       actionTextColor: AppColors.primary,

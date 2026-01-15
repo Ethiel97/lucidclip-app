@@ -27,51 +27,97 @@ class ClipboardStorageWarningListener extends StatelessWidget {
       (SettingsCubit cubit) => cubit.state.maxHistoryItems,
     );
 
-    return BlocListener<ClipboardCubit, ClipboardState>(
-      listenWhen: (previous, current) {
-        if (isProUser) return false;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ClipboardCubit, ClipboardState>(
+          listenWhen: (previous, current) {
+            if (isProUser) return false;
 
-        final previousRatio =
-            previous.clipboardItems.value?.length ?? 0 / maxHistoryItems;
-        final currentRatio =
-            current.clipboardItems.value?.length ?? 0 / maxHistoryItems;
+            final previousRatio =
+                previous.clipboardItems.value?.length ?? 0 / maxHistoryItems;
+            final currentRatio =
+                current.clipboardItems.value?.length ?? 0 / maxHistoryItems;
 
-        return previousRatio < _warningThresholdRatio &&
-            currentRatio >= _warningThresholdRatio;
-      },
-      listener: (context, state) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.storageAlmostFull.sentenceCase,
-                      style: textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.storageAlmostFullDescription(
-                        (_warningThresholdRatio * 100).toInt(),
+            return previousRatio < _warningThresholdRatio &&
+                currentRatio >= _warningThresholdRatio;
+          },
+          listener: (context, state) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.storageAlmostFull.sentenceCase,
+                        style: textTheme.titleMedium,
                       ),
-                      style: textTheme.bodySmall,
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.storageAlmostFullDescription(
+                          (_warningThresholdRatio * 100).toInt(),
+                        ),
+                        style: textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                  action: onUpgradeTap != null
+                      ? SnackBarAction(
+                          label: l10n.upgradeToPro,
+                          onPressed: onUpgradeTap!,
+                        )
+                      : null,
                 ),
-              ),
-              action: onUpgradeTap != null
-                  ? SnackBarAction(
-                      label: l10n.upgradeToPro,
-                      onPressed: onUpgradeTap!,
-                    )
-                  : null,
-            ),
-          );
-      },
+              );
+          },
+        ),
+
+        BlocListener<ClipboardCubit, ClipboardState>(
+          listenWhen: (previous, current) {
+            if (isProUser) return false;
+            if (maxHistoryItems <= 0) return false;
+
+            final prevCount = previous.clipboardItems.value?.length ?? 0;
+            final currCount = current.clipboardItems.value?.length ?? 0;
+
+            final wasBelowMax = prevCount < maxHistoryItems;
+            final isNowAtOrAbove = currCount >= maxHistoryItems;
+
+            return wasBelowMax && isNowAtOrAbove;
+          },
+          listener: (context, state) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.clipboardFull.sentenceCase,
+                        style: textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.clipboardFullDescription,
+                        style: textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                  action: onUpgradeTap != null
+                      ? SnackBarAction(
+                          label: l10n.upgradeToPro,
+                          onPressed: onUpgradeTap!,
+                        )
+                      : null,
+                ),
+              );
+          },
+        ),
+      ],
       child: child,
     );
   }

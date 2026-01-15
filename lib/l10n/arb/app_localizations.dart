@@ -268,6 +268,18 @@ abstract class AppLocalizations {
   /// **'Clipboard capture started'**
   String get clipboardCaptureStarted;
 
+  /// Message shown when the clipboard is full
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard full!'**
+  String get clipboardFull;
+
+  /// Description shown when the clipboard is full
+  ///
+  /// In en, this message translates to:
+  /// **'Your clipboard has reached its storage limit. Older items will be replaced by new copies.'**
+  String get clipboardFullDescription;
+
   /// Tray menu item for clipboard history submenu
   ///
   /// In en, this message translates to:

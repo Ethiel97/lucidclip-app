@@ -92,7 +92,7 @@ class _AppViewState extends State<_AppView> {
       listener: (context, state) {
         // Load shortcuts when settings are loaded or updated
         final settings = state.settings.value;
-        if (settings != null && settings.shortcuts.isNotEmpty) {
+        if (settings != null) {
           // Only reload if shortcuts have changed
           if (_lastLoadedShortcuts != settings.shortcuts) {
             _hotkeyService.loadShortcutsFromMap(settings.shortcuts);

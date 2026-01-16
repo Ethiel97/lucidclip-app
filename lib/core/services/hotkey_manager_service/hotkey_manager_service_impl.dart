@@ -163,6 +163,9 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   @override
   Future<void> loadShortcutsFromMap(Map<String, String> shortcuts) async {
     try {
+      // First, identify which actions should be registered based on shortcuts map
+      final actionsToRegister = <ShortcutAction>{};
+      
       for (final entry in shortcuts.entries) {
         // Find the action that matches this key, skip unknown actions
         ShortcutAction? action;
@@ -183,10 +186,24 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
           continue;
         }
 
+        actionsToRegister.add(action);
+
         // Parse the hotkey string using shared utility
         final hotkey = HotkeyUtils.parseHotkeyString(entry.value);
         if (hotkey != null) {
           await registerHotkey(action, hotkey);
+        }
+      }
+
+      // Unregister any shortcuts that are no longer in the settings
+      final currentlyRegistered = _registeredHotkeys.keys.toList();
+      for (final action in currentlyRegistered) {
+        if (!actionsToRegister.contains(action)) {
+          await unregisterHotkey(action);
+          developer.log(
+            'Unregistered deleted shortcut for ${action.key}',
+            name: 'HotkeyManagerService',
+          );
         }
       }
 

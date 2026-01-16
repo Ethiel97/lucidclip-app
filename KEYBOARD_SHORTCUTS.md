@@ -151,6 +151,22 @@ await getIt<HotkeyManagerService>().registerDefaultHotkeys();
 - Shortcut conflicts are handled by the `hotkey_manager` package
 - Failed registrations are logged but don't crash the app
 - Users can always reset to defaults if a shortcut stops working
+- **Deleted shortcuts are properly unregistered**: When shortcuts are removed from settings, they are automatically unregistered to prevent:
+  - Stale shortcuts from remaining active
+  - Conflicts with newly assigned shortcuts
+  - Unwanted actions triggered by deleted shortcuts
+
+## Shortcut Lifecycle Management
+
+The service ensures proper lifecycle management of shortcuts:
+
+1. **Registration**: New shortcuts are registered via `registerHotkey()`
+2. **Update**: When changing a shortcut, the old one is unregistered before registering the new one
+3. **Deletion**: When a user removes a shortcut, it's unregistered immediately
+4. **Sync**: When loading shortcuts from settings via `loadShortcutsFromMap()`:
+   - All shortcuts in the map are registered
+   - Any previously registered shortcuts NOT in the map are unregistered
+   - This ensures deleted shortcuts don't persist across app sessions
 
 ## Future Enhancements
 

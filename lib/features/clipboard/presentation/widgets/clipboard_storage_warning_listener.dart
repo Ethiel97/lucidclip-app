@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -22,7 +23,6 @@ class ClipboardStorageWarningListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final textTheme = Theme.of(context).textTheme;
     final maxHistoryItems = context.select(
       (SettingsCubit cubit) => cubit.state.maxHistoryItems,
     );
@@ -32,11 +32,10 @@ class ClipboardStorageWarningListener extends StatelessWidget {
         BlocListener<ClipboardCubit, ClipboardState>(
           listenWhen: (previous, current) {
             if (isProUser) return false;
-
             final previousRatio =
-                previous.clipboardItems.value?.length ?? 0 / maxHistoryItems;
+                (previous.clipboardItems.value?.length ?? 0) / maxHistoryItems;
             final currentRatio =
-                current.clipboardItems.value?.length ?? 0 / maxHistoryItems;
+                (current.clipboardItems.value?.length ?? 0) / maxHistoryItems;
 
             return previousRatio < _warningThresholdRatio &&
                 currentRatio >= _warningThresholdRatio;
@@ -46,22 +45,13 @@ class ClipboardStorageWarningListener extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.storageAlmostFull.sentenceCase,
-                        style: textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.storageAlmostFullDescription(
-                          (_warningThresholdRatio * 100).toInt(),
-                        ),
-                        style: textTheme.bodySmall,
-                      ),
-                    ],
+                  duration: const Duration(seconds: 8),
+                  persist: false,
+                  content: SnackbarContent(
+                    title: l10n.storageAlmostFull.sentenceCase,
+                    message: l10n.storageAlmostFullDescription(
+                      (_warningThresholdRatio * 100).toInt(),
+                    ),
                   ),
                   action: onUpgradeTap != null
                       ? SnackBarAction(
@@ -92,20 +82,11 @@ class ClipboardStorageWarningListener extends StatelessWidget {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.clipboardFull.sentenceCase,
-                        style: textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.clipboardFullDescription,
-                        style: textTheme.bodySmall,
-                      ),
-                    ],
+                  duration: const Duration(seconds: 8),
+                  persist: false,
+                  content: SnackbarContent(
+                    title: l10n.clipboardFull.sentenceCase,
+                    message: l10n.clipboardFullDescription.sentenceCase,
                   ),
                   action: onUpgradeTap != null
                       ? SnackBarAction(

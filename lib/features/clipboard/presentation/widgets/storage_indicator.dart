@@ -29,7 +29,7 @@ class StorageIndicator extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.router.navigate(
-          SettingsRoute(section: SettingsSection.privacy.name),
+          SettingsRoute(section: SettingsSection.history.name),
         );
       },
       child: Container(
@@ -40,11 +40,15 @@ class StorageIndicator extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.tertiary
               .toTinyColor()
-              .lighten(8)
+              .saturate(5)
+              .lighten(3)
               .color
               .withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: colorScheme.outline),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: .8),
+            width: .5,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

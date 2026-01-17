@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:clipboard/clipboard.dart' hide ClipboardContentType;
@@ -17,6 +18,8 @@ class FlutterClipboardManager implements BaseClipboardManager {
   String? _lastContentHash;
   final _controller = StreamController<ClipboardData>.broadcast();
   final SourceAppProvider sourceAppProvider;
+
+  bool _isChecking = false;
 
   @override
   @postConstruct
@@ -45,13 +48,26 @@ class FlutterClipboardManager implements BaseClipboardManager {
   }
 
   Future<void> _checkClipboardChange() async {
-    final content = await getClipboardContent();
-    if (content != null) {
-      final currentHash = content.contentHash ?? content.computedContentHash;
-      if (currentHash != _lastContentHash) {
-        _lastContentHash = currentHash;
-        _controller.add(content);
+    try {
+      /*if (_isChecking) return;
+      _isChecking = true;*/
+      final content = await getClipboardContent();
+      if (content != null) {
+        final currentHash = content.contentHash ?? content.computedContentHash;
+        if (currentHash != _lastContentHash) {
+          _lastContentHash = currentHash;
+          _controller.add(content);
+        }
       }
+    } catch (e, stack) {
+      log(
+        'Error checking clipboard change',
+        error: e,
+        name: 'FlutterClipboardManager',
+        stackTrace: stack,
+      );
+    } finally {
+      // _isChecking = false;
     }
   }
 

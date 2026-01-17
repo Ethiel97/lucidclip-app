@@ -157,7 +157,7 @@ abstract class AppLocalizations {
   /// Label showing the number of apps with pluralization
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0 {No apps} =1 {1 app} other {apps}}'**
+  /// **'{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}'**
   String appsCount(int count);
 
   /// Title for the Apps Ignored During Clipboard Tracking section
@@ -244,6 +244,18 @@ abstract class AppLocalizations {
   /// **'Clear Clipboard History'**
   String get clearClipboardHistory;
 
+  /// Label for clear clipboard shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Clipboard'**
+  String get clearClipboardShortcut;
+
+  /// Description for clear clipboard shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all clipboard history'**
+  String get clearClipboardShortcutDescription;
+
   /// Label for the Clipboard feature
   ///
   /// In en, this message translates to:
@@ -255,6 +267,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clipboard capture started'**
   String get clipboardCaptureStarted;
+
+  /// Message shown when the clipboard is full
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard full!'**
+  String get clipboardFull;
+
+  /// Description shown when the clipboard is full
+  ///
+  /// In en, this message translates to:
+  /// **'Your clipboard has reached its storage limit. Older items will be replaced by new copies.'**
+  String get clipboardFullDescription;
 
   /// Tray menu item for clipboard history submenu
   ///
@@ -322,6 +346,12 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get dark;
 
+  /// Label showing the number of days with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 day} =1 {1 day} other {{count} days}}'**
+  String daysCount(int count);
+
   /// Button text to delete content
   ///
   /// In en, this message translates to:
@@ -333,6 +363,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
+
+  /// Button text to edit a keyboard shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Shortcut'**
+  String get editShortcut;
 
   /// Error message shown when settings cannot be loaded
   ///
@@ -526,6 +562,12 @@ abstract class AppLocalizations {
   /// **'Sets the maximum number of items in the clipboard.'**
   String get maxHistoryItemsDescription;
 
+  /// Label showing the number of minutes with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}'**
+  String minutesCount(int count);
+
   /// Message shown when there are no apps ignored during clipboard tracking
   ///
   /// In en, this message translates to:
@@ -561,6 +603,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'None'**
   String get none;
+
+  /// Text shown when a shortcut or value is not configured
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
 
   /// Label for a notification
   ///
@@ -604,6 +652,12 @@ abstract class AppLocalizations {
   /// **'Pinned'**
   String get pinned;
 
+  /// Placeholder text when recording a keyboard shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Press key combination...'**
+  String get pressKeyCombination;
+
   /// Label for the preview of the content
   ///
   /// In en, this message translates to:
@@ -634,6 +688,12 @@ abstract class AppLocalizations {
   /// **'Shows a preview of links in the clipboard.'**
   String get previewLinksDescription;
 
+  /// Label for the Privacy settings
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacy;
+
   /// Label for private session duration options
   ///
   /// In en, this message translates to:
@@ -657,6 +717,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recent'**
   String get recent;
+
+  /// Button text to reset a setting to its default value
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to Default'**
+  String get resetToDefault;
 
   /// Button text to resume clipboard capture
   ///
@@ -700,6 +766,18 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
+  /// Label for search clipboard shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Search Clipboard'**
+  String get searchClipboardShortcut;
+
+  /// Description for search clipboard shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Open window and focus search'**
+  String get searchClipboardShortcutDescription;
+
   /// Hint shown in the Search Bar
   ///
   /// In en, this message translates to:
@@ -717,6 +795,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share'**
   String get share;
+
+  /// Error message when a shortcut conflicts with another
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcut already in use'**
+  String get shortcutConflict;
+
+  /// Label for keyboard shortcuts settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Shortcuts'**
+  String get shortcuts;
+
+  /// Description for keyboard shortcuts settings
+  ///
+  /// In en, this message translates to:
+  /// **'Configure global keyboard shortcuts for quick actions'**
+  String get shortcutsDescription;
 
   /// Tray menu item to toggle window visibility
   ///
@@ -747,6 +843,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show Window'**
   String get showWindow;
+
+  /// Label for show window shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Show Window'**
+  String get showWindowShortcut;
+
+  /// Description for show window shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Bring the application window to focus'**
+  String get showWindowShortcutDescription;
 
   /// Button text to sign in
   ///
@@ -826,6 +934,18 @@ abstract class AppLocalizations {
   /// **'Storage'**
   String get storage;
 
+  /// Message shown when the storage is almost full
+  ///
+  /// In en, this message translates to:
+  /// **'Storage almost full!'**
+  String get storageAlmostFull;
+
+  /// Description shown when the storage is almost full
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re using {count}% of your clipboard history.'**
+  String storageAlmostFullDescription(int count);
+
   /// Message shown when the user successfully signs in
   ///
   /// In en, this message translates to:
@@ -880,6 +1000,30 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get theme;
 
+  /// Label for toggle incognito shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle Incognito Mode (Shortcut)'**
+  String get toggleIncognitoShortcut;
+
+  /// Description for toggle incognito shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Enable or disable incognito mode'**
+  String get toggleIncognitoShortcutDescription;
+
+  /// Label for toggle window shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle window (Shortcut)'**
+  String get toggleWindowShortcut;
+
+  /// Description for toggle window shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'Show or hide LucidClip'**
+  String get toggleWindowShortcutDescription;
+
   /// Message shown when the user updates their tracking preferences
   ///
   /// In en, this message translates to:
@@ -909,6 +1053,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Until Disabled'**
   String get untilDisabled;
+
+  /// Button text to upgrade to the pro plan
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro'**
+  String get upgradeToPro;
+
+  /// Label for the usage section
+  ///
+  /// In en, this message translates to:
+  /// **'Usage'**
+  String get usage;
 
   /// Label for the app version
   ///

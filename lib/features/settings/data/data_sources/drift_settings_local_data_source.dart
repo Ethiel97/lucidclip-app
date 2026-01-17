@@ -17,13 +17,25 @@ class DriftSettingsLocalDataSource implements SettingsLocalDataSource {
 
   @override
   Future<void> upsertSettings(UserSettingsModel settings) async {
-    final companion = _db.modelToCompanion(settings);
-    await _db.upsertSettings(companion);
+    try {
+      await _db.transaction(() async {
+        final companion = _db.modelToCompanion(settings);
+        await _db.upsertSettings(companion);
+      });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> deleteSettings(String userId) async {
-    await _db.deleteSettingsByUserId(userId);
+    try {
+      await _db.transaction(() async {
+        await _db.deleteSettingsByUserId(userId);
+      });
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

@@ -5,7 +5,7 @@ import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 abstract class BaseClipboardManager {
-  static const clipboardManagerPollingInterval = Duration(milliseconds: 500);
+  static const clipboardManagerPollingInterval = Duration(milliseconds: 600);
 
   void initialize();
 

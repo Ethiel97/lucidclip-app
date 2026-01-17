@@ -63,6 +63,9 @@ class _AppView extends StatefulWidget {
 
 class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
+  final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
+
+  Map<String, String>? _lastLoadedShortcuts;
 
   @override
   void initState() {
@@ -80,22 +83,42 @@ class _AppViewState extends State<_AppView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        final settings = state.settings.value;
-        final themeMode = _getThemeMode(settings?.theme ?? 'dark');
-        return Portal(
-          child: MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            theme: const AppTheme().light,
-            darkTheme: const AppTheme().dark,
-            themeMode: themeMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: appRouter.config(),
-          ),
-        );
+    return BlocListener<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) {
+        // Only listen when shortcuts actually change
+        return previous.settings.value?.shortcuts !=
+            current.settings.value?.shortcuts;
       },
+      listener: (context, state) {
+        // Load shortcuts when settings are loaded or updated
+        final settings = state.settings.value;
+        if (settings != null) {
+          // Only reload if shortcuts have changed
+          if (_lastLoadedShortcuts != settings.shortcuts) {
+            _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
+            _lastLoadedShortcuts = Map.from(settings.shortcuts);
+          }
+        }
+      },
+      child: BlocBuilder<SettingsCubit, SettingsState>(
+        buildWhen: (previous, current) =>
+            previous.settings.value?.theme != current.settings.value?.theme,
+        builder: (context, state) {
+          final settings = state.settings.value;
+          final themeMode = _getThemeMode(settings?.theme ?? 'dark');
+          return Portal(
+            child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              theme: const AppTheme().light,
+              darkTheme: const AppTheme().dark,
+              themeMode: themeMode,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: appRouter.config(),
+            ),
+          );
+        },
+      ),
     );
   }
 

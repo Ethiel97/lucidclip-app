@@ -1,2 +1,2 @@
-//GENERATED BARREL FILE 
-export 'pro_gate_overlay.dart'; 
+export 'pro_gate_overlay.dart';
+export 'snackbar_content.dart';

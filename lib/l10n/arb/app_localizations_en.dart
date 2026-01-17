@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'apps',
+      other: '$count apps',
       one: '1 app',
       zero: 'No apps',
     );
@@ -106,10 +106,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearClipboardHistory => 'Clear Clipboard History';
 
   @override
+  String get clearClipboardShortcut => 'Clear Clipboard';
+
+  @override
+  String get clearClipboardShortcutDescription => 'Clear all clipboard history';
+
+  @override
   String get clipboard => 'Clipboard';
 
   @override
   String get clipboardCaptureStarted => 'Clipboard capture started';
+
+  @override
+  String get clipboardFull => 'Clipboard full!';
+
+  @override
+  String get clipboardFullDescription =>
+      'Your clipboard has reached its storage limit. Older items will be replaced by new copies.';
 
   @override
   String get clipboardHistory => 'Clipboard History';
@@ -145,10 +158,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dark => 'Dark';
 
   @override
+  String daysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+      zero: '0 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get delete => 'Delete';
 
   @override
   String get edit => 'Edit';
+
+  @override
+  String get editShortcut => 'Edit Shortcut';
 
   @override
   String get errorLoadingSettings => 'Error loading settings';
@@ -262,6 +290,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sets the maximum number of items in the clipboard.';
 
   @override
+  String minutesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes',
+      one: '1 minute',
+      zero: '0 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get noAppsAreCurrentlyIgnored => 'No apps are currently ignored.';
 
   @override
@@ -280,6 +320,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get none => 'None';
+
+  @override
+  String get notSet => 'Not set';
 
   @override
   String get notification => 'Notification';
@@ -303,6 +346,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pinned => 'Pinned';
 
   @override
+  String get pressKeyCombination => 'Press key combination...';
+
+  @override
   String get preview => 'Preview';
 
   @override
@@ -320,6 +366,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Shows a preview of links in the clipboard.';
 
   @override
+  String get privacy => 'Privacy';
+
+  @override
   String get privateSessionDuration => 'Private Session Duration';
 
   @override
@@ -330,6 +379,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recent => 'Recent';
+
+  @override
+  String get resetToDefault => 'Reset to Default';
 
   @override
   String get resumeClipboardCapture => 'Resume clipboard capture';
@@ -358,6 +410,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get searchClipboardShortcut => 'Search Clipboard';
+
+  @override
+  String get searchClipboardShortcutDescription =>
+      'Open window and focus search';
+
+  @override
   String get searchHint => 'Search...';
 
   @override
@@ -365,6 +424,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get share => 'Share';
+
+  @override
+  String get shortcutConflict => 'Shortcut already in use';
+
+  @override
+  String get shortcuts => 'Shortcuts';
+
+  @override
+  String get shortcutsDescription =>
+      'Configure global keyboard shortcuts for quick actions';
 
   @override
   String get showHideWindow => 'Show/Hide Window';
@@ -381,6 +450,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get showWindow => 'Show Window';
+
+  @override
+  String get showWindowShortcut => 'Show Window';
+
+  @override
+  String get showWindowShortcutDescription =>
+      'Bring the application window to focus';
 
   @override
   String get signIn => 'Sign in';
@@ -428,6 +504,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storage => 'Storage';
 
   @override
+  String get storageAlmostFull => 'Storage almost full!';
+
+  @override
+  String storageAlmostFullDescription(int count) {
+    return 'You\'re using $count% of your clipboard history.';
+  }
+
+  @override
   String get successfullySignedIn => 'Successfully signed in!';
 
   @override
@@ -456,6 +540,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get theme => 'Theme';
 
   @override
+  String get toggleIncognitoShortcut => 'Toggle Incognito Mode (Shortcut)';
+
+  @override
+  String get toggleIncognitoShortcutDescription =>
+      'Enable or disable incognito mode';
+
+  @override
+  String get toggleWindowShortcut => 'Toggle window (Shortcut)';
+
+  @override
+  String get toggleWindowShortcutDescription => 'Show or hide LucidClip';
+
+  @override
   String get trackingPreferencesUpdated => 'Tracking preferences updated!';
 
   @override
@@ -473,6 +570,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get untilDisabled => 'Until Disabled';
+
+  @override
+  String get upgradeToPro => 'Upgrade to Pro';
+
+  @override
+  String get usage => 'Usage';
 
   @override
   String get version => 'Version';

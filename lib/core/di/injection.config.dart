@@ -36,6 +36,10 @@ import 'package:lucid_clip/core/services/deep_link_service/deep_link_service.dar
     as _i28;
 import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart'
     as _i995;
+import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
+    as _i854;
+import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_interface.dart'
+    as _i7;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
 import 'package:lucid_clip/core/services/tray_manager_service/tray_manager_service.dart'
@@ -136,6 +140,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i7.HotkeyManagerService>(
+      () => _i854.HotkeyManagerServiceImpl(),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingletonAsync<_i407.StorageService>(() {

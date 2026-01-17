@@ -21,6 +21,7 @@ class SettingsThemeSelector extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final l10n = context.l10n;
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.xxs,

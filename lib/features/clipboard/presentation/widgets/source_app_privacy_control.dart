@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucid_clip/core/widgets/snackbar_content.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
@@ -43,8 +44,8 @@ class SourceAppPrivacyControl extends StatelessWidget {
           ..hideCurrentSnackBar()
           ..showSnackBar(
             SnackBar(
-              content: Text(
-                isSourceAppExcluded
+              content: SnackbarContent(
+                message: isSourceAppExcluded
                     ? l10n.resumeTrackingAppConfirmation(
                         clipboardItem.sourceApp?.name ?? '',
                       )

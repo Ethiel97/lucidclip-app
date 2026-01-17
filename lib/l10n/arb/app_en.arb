@@ -69,7 +69,7 @@
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
   },
-  "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {apps}}",
+  "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}",
   "@appsCount": {
     "description": "Label showing the number of apps with pluralization",
     "placeholders": {
@@ -137,6 +137,14 @@
   "@clearClipboardHistory": {
     "description": "Tray menu item to clear all clipboard history"
   },
+  "clearClipboardShortcut": "Clear Clipboard",
+  "@clearClipboardShortcut": {
+    "description": "Label for clear clipboard shortcut"
+  },
+  "clearClipboardShortcutDescription": "Clear all clipboard history",
+  "@clearClipboardShortcutDescription": {
+    "description": "Description for clear clipboard shortcut"
+  },
   "clipboard": "Clipboard",
   "@clipboard": {
     "description": "Label for the Clipboard feature"
@@ -144,6 +152,14 @@
   "clipboardCaptureStarted": "Clipboard capture started",
   "@clipboardCaptureStarted": {
     "description": "Message shown when clipboard capture has started"
+  },
+  "clipboardFull": "Clipboard full!",
+  "@clipboardFull": {
+    "description": "Message shown when the clipboard is full"
+  },
+  "clipboardFullDescription": "Your clipboard has reached its storage limit. Older items will be replaced by new copies.",
+  "@clipboardFullDescription": {
+    "description": "Description shown when the clipboard is full"
   },
   "clipboardHistory": "Clipboard History",
   "@clipboardHistory": {
@@ -189,6 +205,17 @@
   "@dark": {
     "description": "Name of the dark theme"
   },
+  "daysCount": "{count, plural, =0 {0 day} =1 {1 day} other {{count} days}}",
+  "@daysCount": {
+    "description": "Label showing the number of days with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of days",
+        "example": "1"
+      }
+    }
+  },
   "delete": "Delete",
   "@delete": {
     "description": "Button text to delete content"
@@ -196,6 +223,10 @@
   "edit": "Edit",
   "@edit": {
     "description": "Button text to edit content"
+  },
+  "editShortcut": "Edit Shortcut",
+  "@editShortcut": {
+    "description": "Button text to edit a keyboard shortcut"
   },
   "errorLoadingSettings": "Error loading settings",
   "@errorLoadingSettings": {
@@ -346,6 +377,17 @@
   "@maxHistoryItemsDescription": {
     "description": "Description for the Max History Items setting"
   },
+  "minutesCount": "{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}",
+  "@minutesCount": {
+    "description": "Label showing the number of minutes with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of minutes",
+        "example": "1"
+      }
+    }
+  },
   "noAppsAreCurrentlyIgnored": "No apps are currently ignored.",
   "@noAppsAreCurrentlyIgnored": {
     "description": "Message shown when there are no apps ignored during clipboard tracking"
@@ -376,6 +418,10 @@
   "@none": {
     "description": "None"
   },
+  "notSet": "Not set",
+  "@notSet": {
+    "description": "Text shown when a shortcut or value is not configured"
+  },
   "notification": "Notification",
   "@notification": {
     "description": "Label for a notification"
@@ -404,6 +450,10 @@
   "@pinned": {
     "description": "Label for the Pinned feature"
   },
+  "pressKeyCombination": "Press key combination...",
+  "@pressKeyCombination": {
+    "description": "Placeholder text when recording a keyboard shortcut"
+  },
   "preview": "Preview",
   "@preview": {
     "description": "Label for the preview of the content"
@@ -425,6 +475,10 @@
   "@previewLinksDescription": {
     "description": "Description for the Preview Links setting"
   },
+  "privacy": "Privacy",
+  "@privacy": {
+    "description": "Label for the Privacy settings"
+  },
   "privateSessionDuration": "Private Session Duration",
   "@privateSessionDuration": {
     "description": "Label for private session duration options"
@@ -440,6 +494,10 @@
   "recent": "Recent",
   "@recent": {
     "description": "Label for the Recent items"
+  },
+  "resetToDefault": "Reset to Default",
+  "@resetToDefault": {
+    "description": "Button text to reset a setting to its default value"
   },
   "resumeClipboardCapture": "Resume clipboard capture",
   "@resumeClipboardCapture": {
@@ -473,6 +531,14 @@
   "@retry": {
     "description": "Button text to retry an operation"
   },
+  "searchClipboardShortcut": "Search Clipboard",
+  "@searchClipboardShortcut": {
+    "description": "Label for search clipboard shortcut"
+  },
+  "searchClipboardShortcutDescription": "Open window and focus search",
+  "@searchClipboardShortcutDescription": {
+    "description": "Description for search clipboard shortcut"
+  },
   "searchHint": "Search...",
   "@searchHint": {
     "description": "Hint shown in the Search Bar"
@@ -484,6 +550,18 @@
   "share": "Share",
   "@share": {
     "description": "Button text to share content"
+  },
+  "shortcutConflict": "Shortcut already in use",
+  "@shortcutConflict": {
+    "description": "Error message when a shortcut conflicts with another"
+  },
+  "shortcuts": "Shortcuts",
+  "@shortcuts": {
+    "description": "Label for keyboard shortcuts settings section"
+  },
+  "shortcutsDescription": "Configure global keyboard shortcuts for quick actions",
+  "@shortcutsDescription": {
+    "description": "Description for keyboard shortcuts settings"
   },
   "showHideWindow": "Show/Hide Window",
   "@showHideWindow": {
@@ -504,6 +582,14 @@
   "showWindow": "Show Window",
   "@showWindow": {
     "description": "Tray menu item to show the window"
+  },
+  "showWindowShortcut": "Show Window",
+  "@showWindowShortcut": {
+    "description": "Label for show window shortcut"
+  },
+  "showWindowShortcutDescription": "Bring the application window to focus",
+  "@showWindowShortcutDescription": {
+    "description": "Description for show window shortcut"
   },
   "signIn": "Sign in",
   "@signIn": {
@@ -578,6 +664,21 @@
   "@storage": {
     "description": "Label for the Storage settings"
   },
+  "storageAlmostFull": "Storage almost full!",
+  "@storageAlmostFull": {
+    "description": "Message shown when the storage is almost full"
+  },
+  "storageAlmostFullDescription": "You're using {count}% of your clipboard history.",
+  "@storageAlmostFullDescription": {
+    "description": "Description shown when the storage is almost full",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The percentage of storage used",
+        "example": "90"
+      }
+    }
+  },
   "successfullySignedIn": "Successfully signed in!",
   "@successfullySignedIn": {
     "description": "Message shown when the user successfully signs in"
@@ -614,6 +715,22 @@
   "@theme": {
     "description": "Label for the Theme settings"
   },
+  "toggleIncognitoShortcut": "Toggle Incognito Mode (Shortcut)",
+  "@toggleIncognitoShortcut": {
+    "description": "Label for toggle incognito shortcut"
+  },
+  "toggleIncognitoShortcutDescription": "Enable or disable incognito mode",
+  "@toggleIncognitoShortcutDescription": {
+    "description": "Description for toggle incognito shortcut"
+  },
+  "toggleWindowShortcut": "Toggle window (Shortcut)",
+  "@toggleWindowShortcut": {
+    "description": "Label for toggle window shortcut"
+  },
+  "toggleWindowShortcutDescription": "Show or hide LucidClip",
+  "@toggleWindowShortcutDescription": {
+    "description": "Description for toggle window shortcut"
+  },
   "trackingPreferencesUpdated": "Tracking preferences updated!",
   "@trackingPreferencesUpdated": {
     "description": "Message shown when the user updates their tracking preferences"
@@ -647,6 +764,14 @@
   "untilDisabled": "Until Disabled",
   "@untilDisabled": {
     "description": "Duration option: until manually disabled"
+  },
+  "upgradeToPro": "Upgrade to Pro",
+  "@upgradeToPro": {
+    "description": "Button text to upgrade to the pro plan"
+  },
+  "usage": "Usage",
+  "@usage": {
+    "description": "Label for the usage section"
   },
   "version": "Version",
   "@version": {

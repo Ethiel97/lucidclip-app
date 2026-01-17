@@ -33,8 +33,8 @@ class AppConstants {
       dotenv.env['GITHUB_CLIENT_SECRET'] ??
       const String.fromEnvironment('GITHUB_CLIENT_SECRET');
 
-  static const clipboardItemDetailsViewWidth = 365.0;
-  static const clipboardSidebarWidth = 240.0;
+  static const clipboardItemDetailsViewWidth = 380.0;
+  static const clipboardSidebarWidth = 220.0;
   static const collapsedSidebarWidth = 100.0;
 
   static const isProd = bool.fromEnvironment('dart.vm.product');

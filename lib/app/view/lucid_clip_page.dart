@@ -26,13 +26,18 @@ class LucidClipPage extends StatelessWidget {
             SettingsRoute(),
           ],
           builder: (context, child) {
-            return SourceAppPrivacyControlListener(
-              child: Row(
-                children: [
-                  const Sidebar(),
-                  const VerticalDivider(width: 1, thickness: .15),
-                  Expanded(child: child),
-                ],
+            return ClipboardStorageWarningListener(
+              onUpgradeTap: () {
+                // TODO: Implement upgrade storage plan flow
+              },
+              child: SourceAppPrivacyControlListener(
+                child: Row(
+                  children: [
+                    const Sidebar(),
+                    const VerticalDivider(width: 1, thickness: .15),
+                    Expanded(child: child),
+                  ],
+                ),
               ),
             );
           },

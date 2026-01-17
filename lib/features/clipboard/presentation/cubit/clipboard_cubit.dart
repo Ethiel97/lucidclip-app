@@ -102,7 +102,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       final excluded = settings?.excludedApps ?? const <SourceApp>[];
       final sourceApp = clipboardData.sourceApp;
 
-      log("Excluded apps: $excluded", name: 'ClipboardCubit');
+      log('Excluded apps: $excluded', name: 'ClipboardCubit');
 
       if (_isSourceAppExcluded(sourceApp)) {
         developer.log(
@@ -153,7 +153,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> _upsertClipboardItem(ClipboardItem item) async {
     try {
-      await localClipboardRepository.upsert(item);
+      await localClipboardRepository.upsertWithLimit(
+        item: item,
+        maxItems: _userSettings?.maxHistoryItems ?? defaultMaxHistoryItems,
+      );
     } catch (e, stackTrace) {
       developer.log(
         'Failed to upsert clipboard item to local repository',
@@ -259,6 +262,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       );
       // Handle error if necessary
     }
+  }
+
+  Future<void> clearClipboard() {
+    return localClipboardRepository.clear();
   }
 
   Future<void> loadClipboardItems() async {

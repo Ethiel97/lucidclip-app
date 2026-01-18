@@ -84,7 +84,9 @@ class _SettingsShortcutItemState extends State<SettingsShortcutItem> {
       });
 
       // Stop recording after a short delay to show the key combination
-      Future.delayed(const Duration(milliseconds: 300), _stopRecording);
+      if (mounted) {
+        Future.delayed(const Duration(milliseconds: 300), _stopRecording);
+      }
     }
   }
 

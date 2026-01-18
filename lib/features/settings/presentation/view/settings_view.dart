@@ -345,8 +345,23 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
       if (mounted) {
         await context.read<SettingsCubit>().updateShortcuts(shortcuts);
       }
-    } catch (e) {
-      //revert changes in case of error
+    } catch (e, stackTrace) {
+      // Revert changes and inform the user in case of error
+      debugPrint('Failed to update hotkey for ${action.key}: $e\n$stackTrace');
+      if (mounted) {
+        // Ensure the UI reflects the last known good shortcuts
+        await context
+            .read<SettingsCubit>()
+            .updateShortcuts(widget.settings.shortcuts);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Failed to update keyboard shortcut. Please try again.',
+            ),
+          ),
+        );
+      }
     }
   }
 

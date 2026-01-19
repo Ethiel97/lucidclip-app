@@ -75,6 +75,15 @@ class SupabaseAuthDataSource implements AuthDataSource {
         return null;
       }
 
+      final accessToken = _supabase.auth.currentSession?.accessToken;
+
+      if (accessToken != null) {
+        await _secureStorage.write(
+          key: SecureStorageConstants.authToken,
+          value: accessToken,
+        );
+      }
+
       // Store user information in secure storage
       await _storeUserData(currentUser);
 

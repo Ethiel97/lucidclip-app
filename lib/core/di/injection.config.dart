@@ -12,6 +12,7 @@
 import 'dart:typed_data' as _i100;
 
 import 'package:app_links/app_links.dart' as _i327;
+import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
@@ -25,6 +26,9 @@ import 'package:lucid_clip/core/clipboard_manager/impl/flutter_clipboard_manager
     as _i647;
 import 'package:lucid_clip/core/di/cache_module.dart' as _i529;
 import 'package:lucid_clip/core/di/third_party_module.dart' as _i778;
+import 'package:lucid_clip/core/network/dio_auth_interceptor.dart' as _i826;
+import 'package:lucid_clip/core/network/dio_module.dart' as _i957;
+import 'package:lucid_clip/core/network/impl/dio_http_client.dart' as _i762;
 import 'package:lucid_clip/core/network/impl/supabase_remote_sync.dart'
     as _i1033;
 import 'package:lucid_clip/core/network/network.dart' as _i183;
@@ -112,6 +116,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final thirdPartyModule = _$ThirdPartyModule();
     final cacheModule = _$CacheModule();
+    final dioModule = _$DioModule();
     gh.singleton<_i669.ClipboardDatabase>(
       () => thirdPartyModule.clipboardDatabase,
     );
@@ -152,6 +157,9 @@ extension GetItInjectableX on _i174.GetIt {
       );
       return i.initialize().then((_) => i);
     }, dispose: (i) => i.dispose());
+    gh.factory<_i826.DioAuthInterceptor>(
+      () => _i826.DioAuthInterceptor(gh<_i407.SecureStorageService>()),
+    );
     gh.lazySingleton<_i669.ClipboardLocalDataSource>(
       () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
       dispose: (i) => i.clear(),
@@ -205,6 +213,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i922.AuthRepository>(
       () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
     );
+    gh.lazySingleton<_i361.Dio>(
+      () => dioModule.dio(gh<_i183.DioAuthInterceptor>()),
+    );
     gh.lazySingleton<_i212.CacheSerializer<_i51.SourceAppModel, String>>(
       () => cacheModule.sourceAppJsonSerializer(
         gh<_i212.CacheService<_i100.Uint8List>>(instanceName: 'iconCache'),
@@ -249,6 +260,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i997.SearchCubit(
         localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
       ),
+    );
+    gh.lazySingleton<_i183.HttpClient>(
+      () => _i762.DioNetworkClient(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i408.AuthCubit>(
       () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
@@ -305,3 +319,5 @@ extension GetItInjectableX on _i174.GetIt {
 class _$ThirdPartyModule extends _i778.ThirdPartyModule {}
 
 class _$CacheModule extends _i529.CacheModule {}
+
+class _$DioModule extends _i957.DioModule {}

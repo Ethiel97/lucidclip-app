@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/features/settings/data/data_sources/settings_local_data_source.dart';
 import 'package:lucid_clip/features/settings/data/db/settings_database.dart';
@@ -22,7 +24,13 @@ class DriftSettingsLocalDataSource implements SettingsLocalDataSource {
         final companion = _db.modelToCompanion(settings);
         await _db.upsertSettings(companion);
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
+      log(
+        'Error upserting settings: $e',
+        name: 'DriftSettingsLocalDataSource',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }

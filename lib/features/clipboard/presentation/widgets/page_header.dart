@@ -34,9 +34,30 @@ class PageHeader extends StatelessWidget {
             style: FilledButton.styleFrom(
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
             ),
-            onPressed: () {
+            onPressed: () async {
               if (isAuthenticated) {
                 // TODO(Ethiel97): Sync functionality
+
+                //invoke supabase edge function to sync
+                /*
+                final authUser = context.read<AuthCubit>().state.user.data;
+
+                final accessToken =
+                    getIt<SupabaseClient>().auth.currentSession?.accessToken;
+
+                print("accessToken: $accessToken");
+
+                final res = await getIt<HttpClient>().post(
+                  'https://c76a5e9309ee.ngrok-free.app/api/checkout?&products=089849ee-7f31-47ec-b9d1-78e40488322d',
+                  headers: {'Authorization': 'Bearer ${accessToken ?? ''}'},
+                  data: {
+                    'productId': '089849ee-7f31-47ec-b9d1-78e40488322d',
+                    'customerEmail': authUser?.email,
+                    'metadata': {'supabaseUserId': authUser?.id},
+                  },
+                );
+
+                log('Edge function response data: ${res}');*/
               } else {
                 context.router.root.navigate(const LoginRoute());
               }

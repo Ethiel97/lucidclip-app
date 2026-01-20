@@ -94,10 +94,8 @@ class _AppViewState extends State<_AppView> {
         final settings = state.settings.value;
         if (settings != null) {
           // Only reload if shortcuts have changed
-          if (_lastLoadedShortcuts != settings.shortcuts) {
-            _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
-            _lastLoadedShortcuts = Map.from(settings.shortcuts);
-          }
+          _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
+          _lastLoadedShortcuts = Map.from(settings.shortcuts);
         }
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(

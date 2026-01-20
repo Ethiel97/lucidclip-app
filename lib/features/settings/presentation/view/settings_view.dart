@@ -330,19 +330,38 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
     final hotkeyService = getIt<HotkeyManagerService>();
     final shortcuts = Map<String, String>.from(widget.settings.shortcuts);
 
-    if (hotkey != null) {
-      // Register the new hotkey
-      await hotkeyService.registerHotkey(action, hotkey);
-      shortcuts[action.key] = HotkeyUtils.hotkeyToString(hotkey);
-    } else {
-      // Unregister the hotkey
-      await hotkeyService.unregisterHotkey(action);
-      shortcuts.remove(action.key);
-    }
+    try {
+      if (hotkey != null) {
+        // Register the new hotkey
+        await hotkeyService.registerHotkey(action, hotkey);
+        shortcuts[action.key] = HotkeyUtils.hotkeyToString(hotkey);
+      } else {
+        // Unregister the hotkey
+        await hotkeyService.unregisterHotkey(action);
+        shortcuts.remove(action.key);
+      }
 
-    // Update settings
-    if (mounted) {
-      await context.read<SettingsCubit>().updateShortcuts(shortcuts);
+      // Update settings
+      if (mounted) {
+        await context.read<SettingsCubit>().updateShortcuts(shortcuts);
+      }
+    } catch (e, stackTrace) {
+      // Revert changes and inform the user in case of error
+      debugPrint('Failed to update hotkey for ${action.key}: $e\n$stackTrace');
+      if (mounted) {
+        // Ensure the UI reflects the last known good shortcuts
+        await context
+            .read<SettingsCubit>()
+            .updateShortcuts(widget.settings.shortcuts);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Failed to update keyboard shortcut. Please try again.',
+            ),
+          ),
+        );
+      }
     }
   }
 

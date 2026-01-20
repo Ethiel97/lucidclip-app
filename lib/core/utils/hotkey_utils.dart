@@ -65,8 +65,15 @@ class HotkeyUtils {
       }
     }
 
-    // Fallback to debug name
-    return key.debugName?.replaceFirst('Key', '').toUpperCase() ?? '';
+    final debugName = key.debugName;
+    if (debugName == null || debugName.isEmpty) {
+      return '';
+    }
+    // Strip a leading "Key" prefix if present, then uppercase
+    final cleaned = debugName.startsWith('Key')
+        ? debugName.substring(3)
+        : debugName;
+    return cleaned.toUpperCase();
   }
 
   /// Convert a HotKey to a human-readable string

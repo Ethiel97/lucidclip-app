@@ -118,8 +118,17 @@ Future<void> resetSettingsDatabase() async {
   }
 }
 
+Future<void> resetEntitlementsDatabase() async {
+  final dir = await getLibraryDirectory();
+  final entitlementsDbFile = File(p.join(dir.path, 'entitlements_db.sqlite'));
+  if (entitlementsDbFile.existsSync()) {
+    await entitlementsDbFile.delete();
+  }
+}
+
 Future<void> clearAppData() async {
   await HydratedBloc.storage.clear();
+  await resetEntitlementsDatabase();
   await resetClipboardDatabase();
   await resetSettingsDatabase();
 }

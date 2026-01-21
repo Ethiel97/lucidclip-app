@@ -34,19 +34,22 @@ class _SidebarState extends State<Sidebar> {
   late List<SidebarItemConfig<List<List<dynamic>>>> menuItems =
       <SidebarItemConfig<List<List<dynamic>>>>[];
 
+  TabsRouter? _tabsRouter;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.tabsRouter.addListener(_handleRouteChange);
+      if (!mounted) return;
+      _tabsRouter = context.tabsRouter;
+      _tabsRouter?.addListener(_handleRouteChange);
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     menuItems = [
       SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedClipboard,
@@ -68,7 +71,7 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   void dispose() {
-    context.router.removeListener(_handleRouteChange);
+    _tabsRouter?.removeListener(_handleRouteChange);
     super.dispose();
   }
 

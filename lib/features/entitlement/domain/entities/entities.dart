@@ -1,2 +1,2 @@
-//GENERATED BARREL FILE 
-export 'entitlement.dart'; 
+//GENERATED BARREL FILE
+export 'entitlement.dart';

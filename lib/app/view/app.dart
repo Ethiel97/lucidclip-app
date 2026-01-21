@@ -6,6 +6,8 @@ import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
+import 'package:lucid_clip/features/billing/billing.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -47,6 +49,9 @@ class _AppState extends State<App> with WindowListener {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<AuthCubit>()),
+        BlocProvider(create: (_) => getIt<BillingCubit>()),
+        BlocProvider(create: (_) => getIt<EntitlementCubit>()),
+        BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
         BlocProvider(create: (_) => getIt<SettingsCubit>()),
       ],
       child: const _AppView(),

@@ -33,6 +33,14 @@ class AppConstants {
       dotenv.env['GITHUB_CLIENT_SECRET'] ??
       const String.fromEnvironment('GITHUB_CLIENT_SECRET');
 
+  static final monthlyProductId =
+      dotenv.env['LUCID_MONTHLY_PRODUCT_ID'] ??
+      const String.fromEnvironment('LUCID_MONTHLY_PRODUCT_ID');
+
+  static final yearlyProductId =
+      dotenv.env['LUCID_YEARLY_PRODUCT_ID'] ??
+      const String.fromEnvironment('LUCID_YEARLY_PRODUCT_ID');
+
   static const clipboardItemDetailsViewWidth = 380.0;
   static const clipboardSidebarWidth = 220.0;
   static const collapsedSidebarWidth = 100.0;

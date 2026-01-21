@@ -62,6 +62,14 @@ import 'package:lucid_clip/features/auth/data/repositories/auth_repository_impl.
 import 'package:lucid_clip/features/auth/domain/domain.dart' as _i922;
 import 'package:lucid_clip/features/auth/presentation/cubit/auth_cubit.dart'
     as _i408;
+import 'package:lucid_clip/features/billing/data/data.dart' as _i1039;
+import 'package:lucid_clip/features/billing/data/data_sources/http_billing_remote_data_source.dart'
+    as _i269;
+import 'package:lucid_clip/features/billing/data/repositories/billing_repository_impl.dart'
+    as _i279;
+import 'package:lucid_clip/features/billing/domain/domain.dart' as _i893;
+import 'package:lucid_clip/features/billing/presentation/cubit/billing_cubit.dart'
+    as _i696;
 import 'package:lucid_clip/features/clipboard/clipboard.dart' as _i42;
 import 'package:lucid_clip/features/clipboard/data/data.dart' as _i669;
 import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_history_local_data_source.dart'
@@ -95,6 +103,8 @@ import 'package:lucid_clip/features/entitlement/data/repositories/entitlement_re
 import 'package:lucid_clip/features/entitlement/domain/domain.dart' as _i311;
 import 'package:lucid_clip/features/entitlement/presentation/cubit/entitlement_cubit.dart'
     as _i9;
+import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation/cubit/upgrade_prompt_cubit.dart'
+    as _i324;
 import 'package:lucid_clip/features/settings/data/data.dart' as _i739;
 import 'package:lucid_clip/features/settings/data/data_sources/data_sources.dart'
     as _i173;
@@ -155,6 +165,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i677.SidebarCubit>(
       () => _i677.SidebarCubit(),
       dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i324.UpgradePromptCubit>(
+      () => _i324.UpgradePromptCubit(),
     );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
@@ -325,6 +338,15 @@ extension GetItInjectableX on _i174.GetIt {
         localDataSource: gh<_i739.SettingsLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i1039.BillingRemoteDataSource>(
+      () => _i269.HttpBillingRemoteDataSource(gh<_i183.HttpClient>()),
+    );
+    gh.lazySingleton<_i893.BillingRepository>(
+      () => _i279.BillingRepositoryImpl(
+        authDataSource: gh<_i895.AuthDataSource>(),
+        billingRemoteDataSource: gh<_i1039.BillingRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i966.SettingsCubit>(
       () => _i966.SettingsCubit(
         authRepository: gh<_i922.AuthRepository>(),
@@ -345,6 +367,10 @@ extension GetItInjectableX on _i174.GetIt {
         remoteSettingsRepository: gh<_i340.SettingsRepository>(),
       ),
       dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i696.BillingCubit>(
+      () =>
+          _i696.BillingCubit(billingRepository: gh<_i893.BillingRepository>()),
     );
     return this;
   }

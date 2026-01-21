@@ -487,6 +487,51 @@
   "@pro": {
     "description": "Name of the pro plan"
   },
+  "proFeatureAutoSync": "Auto sync across devices",
+  "@proFeatureAutoSync": {
+    "description": "Label for the Auto-Sync feature"
+  },
+  "proFeatureAutoSyncDescription": "Keeps your clipboard in sync across devices (opt-in).",
+  "@proFeatureAutoSyncDescription": {
+    "description": "Description for the Auto-Sync feature",
+    "placeholders": {}
+  },
+  "proFeatureExtendedRetentionDays": "Extended Retention Days",
+  "@proFeatureExtendedRetentionDays": {
+    "description": "Label for the Extended Retention Days feature"
+  },
+  "proFeatureExtendedRetentionDaysDescription": "Keep your history for up to one year.",
+  "@proFeatureExtendedRetentionDaysDescription": {
+    "description": "Description for the Extended Retention Days feature",
+    "placeholders": {}
+  },
+  "proFeatureIgnoredApps": "Ignore apps for privacy",
+  "@proFeatureIgnoredApps": {
+    "description": "Label for the Ignored Apps feature"
+  },
+  "proFeatureIgnoredAppsDescription": "Exclude apps from clipboard tracking.",
+  "@proFeatureIgnoredAppsDescription": {
+    "description": "Exclude specific apps from tracking to protect sensitive data.",
+    "placeholders": {}
+  },
+  "proFeaturePinItems": "Pin important clips",
+  "@proFeaturePinItems": {
+    "description": "Label for the Pin Items feature"
+  },
+  "proFeaturePinItemsDescription": "Keep important items forever. Pinned clips are never removed",
+  "@proFeaturePinItemsDescription": {
+    "description": "Description for the Pin Items feature",
+    "placeholders": {}
+  },
+  "proFeatureUnlimitedHistory": "Unlimited history",
+  "@proFeatureUnlimitedHistory": {
+    "description": "Label for the Unlimited History feature"
+  },
+  "proFeatureUnlimitedHistoryDescription": "Never lose clips. Your history grows with you.",
+  "@proFeatureUnlimitedHistoryDescription": {
+    "description": "Description for the Unlimited History feature",
+    "placeholders": {}
+  },
   "quit": "Quit",
   "@quit": {
     "description": "Tray menu item to exit the application"
@@ -494,6 +539,10 @@
   "recent": "Recent",
   "@recent": {
     "description": "Label for the Recent items"
+  },
+  "redirectingToSecureCheckout": "Redirecting to secure checkout...",
+  "@redirectingToSecureCheckout": {
+    "description": "Message shown when redirecting to the secure checkout page"
   },
   "resetToDefault": "Reset to Default",
   "@resetToDefault": {
@@ -764,6 +813,10 @@
   "untilDisabled": "Until Disabled",
   "@untilDisabled": {
     "description": "Duration option: until manually disabled"
+  },
+  "upgradePaywallSheetFooterSubtitle": "Local-first by default. No cloud unless you enable it.",
+  "@upgradePaywallSheetFooterSubtitle": {
+    "description": "Footer subtitle for the upgrade paywall sheet"
   },
   "upgradeToPro": "Upgrade to Pro",
   "@upgradeToPro": {

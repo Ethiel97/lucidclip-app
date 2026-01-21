@@ -7,6 +7,7 @@ import 'package:lucid_clip/core/theme/app_spacing.dart';
 import 'package:lucid_clip/core/theme/app_text_styles.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
@@ -239,9 +240,17 @@ class _InfoCard extends StatelessWidget {
         if (shouldShowSourceApp && isSourceAppValid)
           _InfoRow(
             label: l10n.source.sentenceCase,
-            actionWidget: ProGateOverlay(
-              isPro: true,
-              child: SourceAppPrivacyControl(clipboardItem: clipboardItem),
+            actionWidget: FittedBox(
+              child: ProGateOverlay(
+                badgeOffset: const Offset(0, -14),
+                onUpgradeTap: () async {
+                  context.read<UpgradePromptCubit>().request(
+                    ProFeature.ignoredApps,
+                    source: ProFeatureRequestSource.ignoredApps,
+                  );
+                },
+                child: SourceAppPrivacyControl(clipboardItem: clipboardItem),
+              ),
             ),
             valueWidget: Row(
               spacing: AppSpacing.sm,
@@ -314,7 +323,7 @@ class _InfoRow extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.sm,
+        spacing: AppSpacing.md,
         children: [
           Row(
             children: [
@@ -425,8 +434,16 @@ class _ActionsRow extends StatelessWidget {
         Expanded(
           child: ProGateOverlay(
             badgeOffset: const Offset(0, -14),
+            onUpgradeTap: () {
+              context.read<UpgradePromptCubit>().request(
+                ProFeature.pinItems,
+                source: ProFeatureRequestSource.pinButton,
+              );
+            },
             child: OutlinedButton.icon(
-              onPressed: onTogglePin,
+              onPressed: () async {
+                onTogglePin?.call();
+              },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: colorScheme.outline),
                 padding: const EdgeInsets.symmetric(

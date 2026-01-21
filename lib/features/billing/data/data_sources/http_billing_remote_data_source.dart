@@ -18,7 +18,7 @@ class HttpBillingRemoteDataSource implements BillingRemoteDataSource {
     try {
       // TODO(Ethiel): Replace with your actual backend endpoint
       final response = await httpClient.post(
-        'https://68b51c6eca97.ngrok-free.app/api/checkout',
+        '/api/checkout',
         data: {
           'productId': productId,
           'userId': userId,
@@ -36,6 +36,34 @@ class HttpBillingRemoteDataSource implements BillingRemoteDataSource {
       }
 
       return CheckoutSessionModel.fromJson(
+        response['data'] as Map<String, dynamic>,
+      );
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<CustomerPortalModel?> getCustomerPortal({
+    required String email,
+  }) async {
+    try {
+      final response = await httpClient.post(
+        '/api/customer-portal',
+        data: {
+          'customerEmail': email,
+          'metadata': {'source': 'desktop_app'},
+        },
+      );
+
+      if (response['success'] != true) {
+        throw ServerException(
+          'Failed to get customer portal '
+          'link: ${response['error'] ?? 'Unknown error'}',
+        );
+      }
+
+      return CustomerPortalModel.fromJson(
         response['data'] as Map<String, dynamic>,
       );
     } on Exception catch (_) {

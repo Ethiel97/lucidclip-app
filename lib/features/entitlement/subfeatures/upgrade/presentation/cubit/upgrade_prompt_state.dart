@@ -6,6 +6,23 @@ import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/upgrade.dart
 class UpgradePromptState extends Equatable {
   const UpgradePromptState({this.requestedFeature, this.source});
 
+  factory UpgradePromptState.fromJson(Map<String, dynamic> json) {
+    return UpgradePromptState(
+      requestedFeature: json['requestedFeature'] != null
+          ? ProFeature.values.firstWhere(
+              (e) => e.toString() == json['requestedFeature'],
+              orElse: () => ProFeature.pinItems,
+            )
+          : null,
+      source: json['source'] != null
+          ? ProFeatureRequestSource.values.firstWhere(
+              (e) => e.toString() == json['source'],
+              orElse: () => ProFeatureRequestSource.pinButton,
+            )
+          : null,
+    );
+  }
+
   final ProFeature? requestedFeature;
 
   /// Optional: where it came from (e.g. "pin_button", "ignored_apps")
@@ -23,6 +40,13 @@ class UpgradePromptState extends Equatable {
       requestedFeature: requestedFeature ?? this.requestedFeature,
       source: source ?? this.source,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'requestedFeature': requestedFeature?.toString(),
+      'source': source?.toString(),
+    };
   }
 
   @override

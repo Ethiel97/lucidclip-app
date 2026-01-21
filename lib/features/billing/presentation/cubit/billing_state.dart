@@ -1,16 +1,32 @@
 part of 'billing_cubit.dart';
 
 class BillingState extends Equatable {
-  const BillingState({this.checkout = const ValueWrapper<CheckoutSession?>()});
+  const BillingState({
+    this.checkout = const ValueWrapper<CheckoutSession?>(),
+    this.customerPortal = const ValueWrapper<CustomerPortal?>(),
+  });
 
   final ValueWrapper<CheckoutSession?> checkout;
 
-  BillingState copyWith({ValueWrapper<CheckoutSession?>? checkout}) {
-    return BillingState(checkout: checkout ?? this.checkout);
+  final ValueWrapper<CustomerPortal?> customerPortal;
+
+  BillingState copyWith({
+    ValueWrapper<CheckoutSession?>? checkout,
+    ValueWrapper<CustomerPortal?>? customerPortal,
+  }) {
+    return BillingState(
+      checkout: checkout ?? this.checkout,
+      customerPortal: customerPortal ?? this.customerPortal,
+    );
   }
 
   bool get isLoading => checkout.isLoading;
 
+  String get portalUrl =>
+      customerPortal.isSuccess && customerPortal.value != null
+      ? customerPortal.value!.url
+      : '';
+
   @override
-  List<Object?> get props => [checkout];
+  List<Object?> get props => [checkout, customerPortal];
 }

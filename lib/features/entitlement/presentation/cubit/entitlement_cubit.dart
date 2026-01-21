@@ -89,6 +89,7 @@ class EntitlementCubit extends Cubit<EntitlementState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() async {
     await entitlementRepository.stopRealtime();

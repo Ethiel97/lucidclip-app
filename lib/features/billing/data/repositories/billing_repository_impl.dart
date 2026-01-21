@@ -33,4 +33,19 @@ class BillingRepositoryImpl implements BillingRepository {
       throw Exception('Unexpected error starting pro checkout: $e');
     }
   }
+
+  @override
+  Future<CustomerPortal> getCustomerPortalUrl() async {
+    try {
+      final user = (await authDataSource.getCurrentUser())!.toEntity();
+      final customerPortal = await billingRemoteDataSource.getCustomerPortal(
+        email: user.email!,
+      );
+      return customerPortal!.toEntity();
+    } on ServerException catch (e) {
+      throw ServerException('Failed to get customer portal URL: ${e.message}');
+    } catch (e) {
+      throw Exception('Unexpected error getting customer portal URL: $e');
+    }
+  }
 }

@@ -53,7 +53,7 @@ class UpgradePromptListener extends StatelessWidget {
         );
 
         if (context.mounted) {
-          context.read<UpgradePromptCubit>().clear();
+          context.read<UpgradePromptCubit>().clearState();
         }
       },
       child: child,

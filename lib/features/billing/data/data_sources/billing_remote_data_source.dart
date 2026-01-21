@@ -8,4 +8,6 @@ abstract class BillingRemoteDataSource {
     required String userId,
     required String? email,
   });
+
+  Future<CustomerPortalModel?> getCustomerPortal({required String email});
 }

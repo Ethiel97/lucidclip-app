@@ -168,6 +168,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i324.UpgradePromptCubit>(
       () => _i324.UpgradePromptCubit(),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
@@ -319,6 +320,7 @@ extension GetItInjectableX on _i174.GetIt {
         authRepository: gh<_i922.AuthRepository>(),
         entitlementRepository: gh<_i311.EntitlementRepository>(),
       ),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager(
@@ -369,8 +371,11 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i696.BillingCubit>(
-      () =>
-          _i696.BillingCubit(billingRepository: gh<_i893.BillingRepository>()),
+      () => _i696.BillingCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        billingRepository: gh<_i893.BillingRepository>(),
+      ),
+      dispose: (i) => i.close(),
     );
     return this;
   }

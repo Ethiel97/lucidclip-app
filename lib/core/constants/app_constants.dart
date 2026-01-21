@@ -5,6 +5,10 @@ class AppConstants {
 
   static const storageDirectory = 'lucid_clip_storage';
 
+  static final String apiBaseUrl =
+      dotenv.env['API_BASE_URL'] ??
+      const String.fromEnvironment('API_BASE_URL');
+
   static final String supabaseProjectUrl =
       dotenv.env['SUPABASE_PROJECT_URL'] ??
       const String.fromEnvironment('SUPABASE_PROJECT_URL');

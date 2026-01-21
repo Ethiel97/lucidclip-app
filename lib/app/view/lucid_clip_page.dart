@@ -25,7 +25,8 @@ class LucidClipPage extends StatelessWidget {
         body: AutoTabsRouter(
           routes: [
             const ClipboardRoute(),
-            const SnippetsRoute(),
+            //TODO(Ethiel): Enable snippets when feature is ready
+            // const SnippetsRoute(),
             SettingsRoute(),
           ],
           builder: (context, child) {

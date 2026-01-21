@@ -56,11 +56,12 @@ class _SidebarState extends State<Sidebar> {
         label: context.l10n.clipboard.titleCase,
         route: const ClipboardRoute(),
       ),
-      SidebarItemConfig<List<List<dynamic>>>(
+      //TODO(Ethiel): Enable snippets when feature is ready
+      /*SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedNote,
         label: context.l10n.snippets.titleCase,
         route: const SnippetsRoute(),
-      ),
+      ),*/
       SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedSettings03,
         label: context.l10n.settings.titleCase,

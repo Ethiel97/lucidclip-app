@@ -52,7 +52,7 @@ class _SidebarItemState extends State<SidebarItem> {
       child: ClipRect(
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.all(AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.xs),
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(10),
@@ -75,7 +75,8 @@ class _SidebarItemState extends State<SidebarItem> {
                     maxLines: 1,
                     overflow: TextOverflow.fade,
                     softWrap: false,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      // fontSize: 12,
                       color: contentColor,
                       fontWeight: widget.isSelected
                           ? FontWeight.w600

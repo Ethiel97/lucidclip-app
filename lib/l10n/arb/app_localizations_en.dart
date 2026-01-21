@@ -302,10 +302,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get oldItemsWillBeOverwritten =>
-      'Old items will be overwritten.\nGo pro to keep everything.';
-
-  @override
   String get noAppsAreCurrentlyIgnored => 'No apps are currently ignored.';
 
   @override
@@ -333,6 +329,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications => 'Notifications';
+
+  @override
+  String get oldItemsWillBeOverwritten =>
+      'Old items will be overwritten.\nGo pro to keep everything.';
 
   @override
   String get oneHour => '1 Hour';

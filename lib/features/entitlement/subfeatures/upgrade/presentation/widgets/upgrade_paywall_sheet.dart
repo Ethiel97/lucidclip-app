@@ -39,7 +39,7 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
   late final ProPlan _yearly = ProPlan(
     id: 'yearly',
     title: 'Lucid Pro — Yearly',
-    subtitle: 'Save 20%. Most popular choice!',
+    subtitle: 'Save 17%. Most popular choice!',
     priceLabel: r'$60 / year',
     ctaLabel: 'Go Pro yearly',
     productId: widget.yearlyProductId,

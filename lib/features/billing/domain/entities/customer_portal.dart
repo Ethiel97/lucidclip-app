@@ -1,14 +1,20 @@
 import 'package:equatable/equatable.dart';
 
 class CustomerPortal extends Equatable {
-  const CustomerPortal({required this.url});
+  const CustomerPortal({required this.expiresAt, required this.url});
 
+  final DateTime expiresAt;
   final String url;
 
-  CustomerPortal copyWith({String? url}) {
-    return CustomerPortal(url: url ?? this.url);
+  CustomerPortal copyWith({DateTime? expiresAt, String? url}) {
+    return CustomerPortal(
+      expiresAt: expiresAt ?? this.expiresAt,
+      url: url ?? this.url,
+    );
   }
 
   @override
-  List<Object?> get props => [url];
+  List<Object?> get props => [expiresAt, url];
+
+  bool get isExpired => DateTime.now().isAfter(expiresAt);
 }

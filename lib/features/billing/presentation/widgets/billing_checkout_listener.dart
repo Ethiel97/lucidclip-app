@@ -42,6 +42,14 @@ class BillingCheckoutListener extends StatelessWidget {
             }
           },
         ),
+
+        // Renew customer portal if expired
+        BlocListener<BillingCubit, BillingState>(
+          listenWhen: (previous, current) => current.shouldRenewPortal,
+          listener: (context, state) {
+            context.read<BillingCubit>().getCustomerPortal();
+          },
+        ),
       ],
       child: child,
     );

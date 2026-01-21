@@ -27,6 +27,11 @@ class BillingState extends Equatable {
       ? customerPortal.value!.url
       : '';
 
+  bool get shouldRenewPortal =>
+      customerPortal.isSuccess &&
+      customerPortal.value != null &&
+      customerPortal.value!.isExpired;
+
   @override
   List<Object?> get props => [checkout, customerPortal];
 }

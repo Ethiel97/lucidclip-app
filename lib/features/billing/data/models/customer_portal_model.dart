@@ -6,24 +6,28 @@ part 'customer_portal_model.g.dart';
 
 @JsonSerializable()
 class CustomerPortalModel extends Equatable {
-  const CustomerPortalModel({required this.url});
+  const CustomerPortalModel({required this.expiresAt, required this.url});
 
   factory CustomerPortalModel.fromJson(Map<String, dynamic> json) =>
       _$CustomerPortalModelFromJson(json);
 
   factory CustomerPortalModel.fromEntity(CustomerPortal customerPortal) {
-    return CustomerPortalModel(url: customerPortal.url);
+    return CustomerPortalModel(
+      expiresAt: customerPortal.expiresAt,
+      url: customerPortal.url,
+    );
   }
 
-  @JsonKey(name: 'url')
   final String url;
+
+  final DateTime expiresAt;
 
   Map<String, dynamic> toJson() => _$CustomerPortalModelToJson(this);
 
   CustomerPortal toEntity() {
-    return CustomerPortal(url: url);
+    return CustomerPortal(expiresAt: expiresAt, url: url);
   }
 
   @override
-  List<Object?> get props => [url];
+  List<Object?> get props => [expiresAt, url];
 }

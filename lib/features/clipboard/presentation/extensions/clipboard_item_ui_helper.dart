@@ -57,7 +57,7 @@ extension ClipboardUiHelper on ClipboardItem {
       content,
       overflow: TextOverflow.ellipsis,
       maxLines: maxLines,
-      style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
+      style: TextStyle(color: colorScheme.onSurface, fontSize: 12),
     );
 
     if (type case ClipboardItemType.text || ClipboardItemType.url) {

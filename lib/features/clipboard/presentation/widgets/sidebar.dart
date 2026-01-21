@@ -88,7 +88,7 @@ class _SidebarState extends State<Sidebar> {
     final clipboardItemsCount = context.select<ClipboardCubit, int>(
       (cubit) => cubit.state.totalItemsCount,
     );
-    final clipboardHistorySize = context.select(
+    final clipboardHistoryCapacity = context.select(
       (SettingsCubit cubit) => cubit.state.maxHistoryItems,
     );
 
@@ -98,6 +98,7 @@ class _SidebarState extends State<Sidebar> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
+      curve: Curves.fastLinearToSlowEaseIn,
       width: isExpanded
           ? AppConstants.clipboardSidebarWidth
           : AppConstants.collapsedSidebarWidth,
@@ -126,7 +127,7 @@ class _SidebarState extends State<Sidebar> {
               physics: const ClampingScrollPhysics(),
               itemCount: menuItems.length,
               separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: AppSpacing.xs),
               itemBuilder: (context, index) {
                 final item = menuItems[index];
                 final isSelected = tabsRouter.activeIndex == index;
@@ -142,7 +143,7 @@ class _SidebarState extends State<Sidebar> {
           ),
           StorageIndicator(
             used: clipboardItemsCount,
-            total: clipboardHistorySize,
+            total: clipboardHistoryCapacity,
           ),
           const SizedBox(height: AppSpacing.md),
         ],

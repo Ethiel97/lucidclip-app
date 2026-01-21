@@ -568,6 +568,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}'**
   String minutesCount(int count);
 
+  /// Message shown when clipboard items will overwrite old ones
+  ///
+  /// In en, this message translates to:
+  /// **'Old items will be overwritten.\nGo pro to keep everything.'**
+  String get oldItemsWillBeOverwritten;
+
   /// Message shown when there are no apps ignored during clipboard tracking
   ///
   /// In en, this message translates to:
@@ -1143,6 +1149,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// Message shown when the clipboard history is limited
+  ///
+  /// In en, this message translates to:
+  /// **'Your clipboard history is limited.\nGo Pro to keep everything.'**
+  String get yourClipboardHistoryIsLimited;
 
   /// Message shown when the clipboard is empty
   ///

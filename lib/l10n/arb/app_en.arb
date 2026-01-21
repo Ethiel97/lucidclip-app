@@ -430,6 +430,10 @@
   "@notifications": {
     "description": "Label for the Notifications settings"
   },
+  "oldItemsWillBeOverwritten": "Old items will be overwritten.\nGo pro to keep everything.",
+  "@oldItemsWillBeOverwritten": {
+    "description": "Message shown when clipboard items will overwrite old ones"
+  },
   "oneHour": "1 Hour",
   "@oneHour": {
     "description": "Duration option: 1 hour"
@@ -829,6 +833,10 @@
   "version": "Version",
   "@version": {
     "description": "Label for the app version"
+  },
+  "yourClipboardHistoryIsLimited": "Your clipboard history is limited.\nGo Pro to keep everything.",
+  "@yourClipboardHistoryIsLimited": {
+    "description": "Message shown when the clipboard history is limited"
   },
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {

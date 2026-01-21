@@ -237,7 +237,7 @@ class _SettingsViewState extends State<SettingsView> {
                           description:
                               l10n.maxHistoryItemsDescription.sentenceCase,
                           value: settings.maxHistoryItems,
-                          items: const [50, 100, 500, 1000],
+                          items: const [30, 50, 100, 500, 1000, 5000, 10000],
                           itemLabel: l10n.itemsCount,
                           onChanged: (value) {
                             if (value != null) {

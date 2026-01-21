@@ -270,7 +270,7 @@ class _EmptyStateWidget extends StatelessWidget {
           icon: searchMode
               ? HugeIcons.strokeRoundedSearchArea
               : HugeIcons.strokeRoundedClipboard,
-          size: AppSpacing.xxxxlg * 3,
+          size: AppSpacing.xxxxlg * 2.8,
           color: colorScheme.onSurface,
         ),
         Text(

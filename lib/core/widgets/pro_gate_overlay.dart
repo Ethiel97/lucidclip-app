@@ -13,8 +13,8 @@ class ProGateOverlay extends StatelessWidget {
     this.badgeAlignment = Alignment.topRight,
     this.badgePadding = EdgeInsets.zero,
     this.dimWhenLocked = true,
-    this.badgeScale = 0.72,
-    this.badgeOffset = const Offset(16, -16),
+    this.badgeScale = 0.6,
+    this.badgeOffset = const Offset(12, -16),
     super.key,
   });
 

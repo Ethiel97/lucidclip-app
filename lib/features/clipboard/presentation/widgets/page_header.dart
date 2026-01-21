@@ -24,6 +24,7 @@ class PageHeader extends StatelessWidget {
         const ClipboardItemTypeFilter(),
         const IncognitoModeToggleButton(),
         ProGateOverlay(
+          badgeOffset: const Offset(32, -14),
           onUpgradeTap: () {
             context.read<UpgradePromptCubit>().request(ProFeature.autoSync);
           },

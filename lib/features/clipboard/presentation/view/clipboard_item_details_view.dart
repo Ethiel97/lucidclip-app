@@ -433,7 +433,7 @@ class _ActionsRow extends StatelessWidget {
         // Pin
         Expanded(
           child: ProGateOverlay(
-            badgeOffset: const Offset(0, -14),
+            badgeOffset: const Offset(-8, -14),
             onUpgradeTap: () {
               context.read<UpgradePromptCubit>().request(
                 ProFeature.pinItems,

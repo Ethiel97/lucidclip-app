@@ -151,7 +151,10 @@ class _ClipboardViewState extends State<ClipboardView>
                                 'list_${isSearchMode}_$searchFilterType',
                               ),
 
-                              physics: const ClampingScrollPhysics(),
+                              physics: const BouncingScrollPhysics(
+                                parent: ClampingScrollPhysics(),
+                              ),
+
                               itemCount: allItems.length,
                               addAutomaticKeepAlives: false,
                               cacheExtent: 200,
@@ -186,6 +189,8 @@ class _ClipboardViewState extends State<ClipboardView>
                               },
                             ),
                     ),
+
+                    const SizedBox(height: AppSpacing.lg),
                   ],
                 ),
               ),

@@ -39,6 +39,14 @@ const _iconUnknown = IconTheme(
 );
 
 extension ClipboardUiHelper on ClipboardItem {
+  Widget get linkPreviewWidget {
+    if (type case ClipboardItemType.url) {
+      return LinkPreviewWidget(url: content);
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget get icon {
     return switch (type) {
       ClipboardItemType.text => _iconText,
@@ -52,7 +60,11 @@ extension ClipboardUiHelper on ClipboardItem {
   bool get isImageFile =>
       (filePath?.isNotEmpty ?? true) && File(filePath!).isImage;
 
-  Widget preview({required ColorScheme colorScheme, int? maxLines}) {
+  Widget preview({
+    required ColorScheme colorScheme,
+    int? maxLines,
+    bool showLinkPreview = true,
+  }) {
     final textPreview = Text(
       content,
       overflow: TextOverflow.ellipsis,
@@ -60,8 +72,17 @@ extension ClipboardUiHelper on ClipboardItem {
       style: TextStyle(color: colorScheme.onSurface, fontSize: 12),
     );
 
-    if (type case ClipboardItemType.text || ClipboardItemType.url) {
+    if (type case ClipboardItemType.text) {
       return textPreview;
+    }
+
+    if (type case ClipboardItemType.url) {
+      return Column(
+        spacing: AppSpacing.xs,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [textPreview, if (showLinkPreview) linkPreviewWidget],
+      );
     } else if (type case ClipboardItemType.file when isImageFile) {
       return CachedClipboardImage.file(filePath: filePath);
     } else if (type case ClipboardItemType.image when imageBytes != null) {

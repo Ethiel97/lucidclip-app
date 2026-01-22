@@ -1,5 +1,3 @@
-// lib/features/entitlement/presentation/upgrade/upgrade_paywall_sheet.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -70,14 +68,14 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
             width: 520,
             padding: const EdgeInsets.all(AppSpacing.xlg),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(18),
               border: Border.all(
                 color: colorScheme.outline.withValues(alpha: 0.18),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.35),
+                  color: colorScheme.shadow.withValues(alpha: 0.12),
                   blurRadius: 30,
                   offset: const Offset(0, 18),
                 ),
@@ -148,6 +146,7 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
                             isStartingCheckout
                                 ? l10n.redirectingToSecureCheckout
                                 : _selected.ctaLabel,
+                            style: TextStyle(color: colorScheme.onPrimary),
                           ),
                         ],
                       ),
@@ -230,12 +229,14 @@ class _PlanCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: selected ? AppColors.surface2 : AppColors.surface,
+          color: selected
+              ? colorScheme.primary.withValues(alpha: 0.08)
+              : colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: selected
                 ? colorScheme.primary.withValues(alpha: 0.55)
-                : colorScheme.outline.withValues(alpha: 0.18),
+                : colorScheme.outline.withValues(alpha: 0.68),
           ),
         ),
         child: Column(

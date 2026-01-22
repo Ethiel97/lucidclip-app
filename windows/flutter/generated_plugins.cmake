@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   flutter_secure_storage_windows
   hotkey_manager_windows
+  local_notifier
   pasteboard
   permission_handler_windows
   screen_retriever_windows

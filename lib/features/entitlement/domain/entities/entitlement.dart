@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:equatable/equatable.dart';
 
 class Entitlement extends Equatable {
@@ -39,16 +37,12 @@ class Entitlement extends Equatable {
   ];
 
   bool get isProActive {
-    log('isProActive check: pro=$pro, status=$status, validUntil=$validUntil');
     final now = DateTime.now().toUtc();
-    final isStatusActive =
-        status == EntitlementStatus.active ||
-        status == EntitlementStatus.canceled;
+    final isStatusActive = status == EntitlementStatus.active;
     final isNotExpired =
-        validUntil == null || (validUntil?.isAfter(now) ?? false);
-    // return pro && isStatusActive && isNotExpired;
-
-    return false;
+        validUntil?.toUtc() == null ||
+        (validUntil?.toUtc().isAfter(now) ?? false);
+    return pro && isStatusActive && isNotExpired;
   }
 }
 

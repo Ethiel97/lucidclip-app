@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_interface.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/hotkey_utils.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
-import 'package:window_manager/window_manager.dart';
 
 /// Implementation of HotkeyManagerService using hotkey_manager package
 @LazySingleton(as: HotkeyManagerService)
@@ -258,14 +257,7 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   /// Show or focus the application window
   Future<void> _handleToggleWindow() async {
     try {
-      final isVisible = await windowManager.isVisible();
-
-      if (isVisible) {
-        await windowManager.hide();
-      } else {
-        await windowManager.show();
-        await windowManager.focus();
-      }
+      await getIt<WindowController>().toggle();
     } catch (e, stackTrace) {
       developer.log(
         'Error toggling window',

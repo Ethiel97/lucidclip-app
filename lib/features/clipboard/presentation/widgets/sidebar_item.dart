@@ -44,6 +44,7 @@ class _SidebarItemState extends State<SidebarItem> {
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
       splashColor: Colors.transparent,
+      hoverDuration: const Duration(milliseconds: 150),
       onHover: (hovering) {
         if (hovering != _isHovering) {
           setState(() => _isHovering = hovering);
@@ -76,7 +77,7 @@ class _SidebarItemState extends State<SidebarItem> {
                     overflow: TextOverflow.fade,
                     softWrap: false,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      // fontSize: 12,
+                      fontSize: 14,
                       color: contentColor,
                       fontWeight: widget.isSelected
                           ? FontWeight.w600

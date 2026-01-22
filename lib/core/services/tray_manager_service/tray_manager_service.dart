@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
@@ -307,14 +308,7 @@ class TrayManagerService with TrayListener {
   /// Toggle main window visibility
   Future<void> _toggleWindowVisibility() async {
     try {
-      final isVisible = await windowManager.isVisible();
-
-      if (isVisible) {
-        await windowManager.hide();
-      } else {
-        await windowManager.show();
-        await windowManager.focus();
-      }
+      await getIt<WindowController>().toggle();
     } catch (e, stackTrace) {
       developer.log(
         'Error toggling window visibility',

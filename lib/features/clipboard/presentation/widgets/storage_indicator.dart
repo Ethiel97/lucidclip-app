@@ -163,9 +163,9 @@ class StorageIndicator extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(999),
                               ),
                               foregroundColor: colorScheme.primary,
-                              backgroundColor: colorScheme.primary.withValues(
+                              /* backgroundColor: colorScheme.primary.withValues(
                                 alpha: 0.15,
-                              ),
+                              ),*/
                               textStyle: theme.textTheme.labelSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 10,

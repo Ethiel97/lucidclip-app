@@ -51,6 +51,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       userId: _currentUserId,
       createdAt: DateTime.now().toUtc(),
       updatedAt: DateTime.now().toUtc(),
+      shortcuts: const {'toggle_window': 'Cmd + Shift + L'},
     );
   }
 

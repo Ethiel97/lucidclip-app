@@ -6,6 +6,7 @@ import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/entitlement/data/data.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:window_manager/window_manager.dart';
 
 @module
 abstract class ThirdPartyModule {
@@ -33,4 +34,7 @@ abstract class ThirdPartyModule {
 
   @singleton
   SettingsDatabase get settingsDatabase => SettingsDatabase();
+
+  @lazySingleton
+  WindowManager get windowManager => WindowManager.instance;
 }

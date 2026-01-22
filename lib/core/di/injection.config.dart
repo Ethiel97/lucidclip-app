@@ -42,12 +42,14 @@ import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_int
     as _i995;
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
     as _i854;
-import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_interface.dart'
-    as _i7;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
 import 'package:lucid_clip/core/services/tray_manager_service/tray_manager_service.dart'
     as _i818;
+import 'package:lucid_clip/core/services/window_controller/method_channel_macos_overlay.dart'
+    as _i998;
+import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
+    as _i1036;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
@@ -126,6 +128,7 @@ import 'package:lucid_clip/features/settings/domain/domain.dart' as _i340;
 import 'package:lucid_clip/features/settings/presentation/cubit/settings_cubit.dart'
     as _i966;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
+import 'package:window_manager/window_manager.dart' as _i740;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -158,6 +161,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => thirdPartyModule.flutterSecureStorage,
     );
     gh.lazySingleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
+    gh.lazySingleton<_i740.WindowManager>(() => thirdPartyModule.windowManager);
     gh.lazySingleton<_i818.TrayManagerService>(
       () => _i818.TrayManagerService(),
       dispose: (i) => i.dispose(),
@@ -170,6 +174,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i324.UpgradePromptCubit(),
       dispose: (i) => i.close(),
     );
+    gh.lazySingleton<_i212.HotkeyManagerService>(
+      () => _i854.HotkeyManagerServiceImpl(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i212.MacosOverlay>(
+      () => _i998.MethodChannelMacosOverlay(),
+    );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
@@ -178,16 +189,19 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
     );
-    gh.lazySingleton<_i7.HotkeyManagerService>(
-      () => _i854.HotkeyManagerServiceImpl(),
-      dispose: (i) => i.dispose(),
-    );
     gh.lazySingletonAsync<_i407.StorageService>(() {
       final i = _i443.HiveStorageService(
         gh<List<_i986.TypeAdapter<dynamic>>>(instanceName: 'hiveAdapters'),
       );
       return i.initialize().then((_) => i);
     }, dispose: (i) => i.dispose());
+    gh.lazySingleton<_i212.WindowController>(
+      () => _i1036.WindowControllerImpl(
+        windowManager: gh<_i740.WindowManager>(),
+        macosOverlay: gh<_i212.MacosOverlay>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
     gh.factory<_i826.DioAuthInterceptor>(
       () => _i826.DioAuthInterceptor(gh<_i407.SecureStorageService>()),
     );

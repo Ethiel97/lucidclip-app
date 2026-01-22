@@ -6,14 +6,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:lucid_clip/core/constants/app_constants.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/firebase_options.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:window_manager/window_manager.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -61,10 +60,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     ),
   );
 
-  //configure dependencies here
-  // Must add this line.
-  await windowManager.ensureInitialized();
-
   await Supabase.initialize(
     url: AppConstants.supabaseProjectUrl,
     debug: true,
@@ -73,28 +68,14 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   configureDependencies();
 
+  await getIt<WindowController>().initialize();
   await getIt<TrayManagerService>().initialize();
 
   // Initialize hotkey manager
   await getIt<HotkeyManagerService>().initialize();
   await getIt<HotkeyManagerService>().registerDefaultHotkeys();
 
-  const windowOptions = WindowOptions(
-    minimumSize: Size(800, 500),
-    size: Size(800, 500),
-    center: true,
-    title: 'LucidClip',
-    // backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
-    // maximumSize: Size(1200, 900),
-  );
-
-  await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.setPreventClose(true);
-    await windowManager.show();
-    await windowManager.focus();
-  });
+  await getIt<WindowController>().bootstrapWindow();
 
   // Only clear app data in development when explicitly needed
   // await clearAppData();

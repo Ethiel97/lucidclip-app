@@ -39,9 +39,25 @@ class _AppState extends State<App> with WindowListener {
   }
 
   @override
+  Future<void> onWindowBlur() async {
+    super.onWindowBlur();
+    final shortcuts = getIt<SettingsCubit>().state.shortcuts;
+
+    //if the user has set shortcuts for displaying the app we can hide on blur
+    // otherwise we keep it open since there is no way to bring it back
+
+    for (final shortcut in shortcuts.entries) {
+      if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
+        await getIt<WindowController>().hide();
+        break;
+      }
+    }
+  }
+
+  @override
   Future<void> onWindowClose() async {
     // Hide window instead of closing when close button is clicked
-    await windowManager.hide();
+    await getIt<WindowController>().hide();
   }
 
   @override
@@ -70,7 +86,7 @@ class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
   final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
 
-  Map<String, String>? _lastLoadedShortcuts;
+  // Map<String, String>? _lastLoadedShortcuts;
 
   @override
   void initState() {
@@ -100,7 +116,7 @@ class _AppViewState extends State<_AppView> {
         if (settings != null) {
           // Only reload if shortcuts have changed
           _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
-          _lastLoadedShortcuts = Map.from(settings.shortcuts);
+          // _lastLoadedShortcuts = Map.from(settings.shortcuts);
         }
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(

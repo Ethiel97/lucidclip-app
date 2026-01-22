@@ -195,13 +195,6 @@ extension GetItInjectableX on _i174.GetIt {
       );
       return i.initialize().then((_) => i);
     }, dispose: (i) => i.dispose());
-    gh.lazySingleton<_i212.WindowController>(
-      () => _i1036.WindowControllerImpl(
-        windowManager: gh<_i740.WindowManager>(),
-        macosOverlay: gh<_i212.MacosOverlay>(),
-      ),
-      dispose: (i) => i.dispose(),
-    );
     gh.factory<_i826.DioAuthInterceptor>(
       () => _i826.DioAuthInterceptor(gh<_i407.SecureStorageService>()),
     );
@@ -234,6 +227,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i212.CacheSerializer<_i100.Uint8List, List<int>>>(),
       ),
       instanceName: 'iconCache',
+    );
+    gh.lazySingleton<_i212.WindowController>(
+      () => _i1036.WindowControllerImpl(
+        windowManager: gh<_i740.WindowManager>(),
+        macosOverlay: gh<_i212.MacosOverlay>(),
+      ),
+      dispose: (i) => i.dispose(),
     );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),

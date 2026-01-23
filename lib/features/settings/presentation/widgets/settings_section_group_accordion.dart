@@ -70,8 +70,9 @@ class _SettingsSectionGroupAccordionState
             ),
           ),
         ),
-        AnimatedSize(
+        AnimatedContainer(
           duration: const Duration(milliseconds: 200),
+          transformAlignment: Alignment.center,
           curve: Curves.easeInOut,
           child: _isExpanded
               ? Column(

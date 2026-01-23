@@ -25,10 +25,12 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.localClipboardHistoryRepository,
     required this.localSettingsRepository,
     required this.remoteSettingsRepository,
+    required this.retentionCleanupService,
   }) : super(const ClipboardState()) {
     _initializeAuthListener();
     _loadData();
     _startWatchingClipboard();
+    _performInitialCleanup();
   }
 
   Future<void> _loadData() async {
@@ -40,6 +42,33 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     ]);
   }
 
+  /// Performs initial cleanup of expired items on app startup
+  Future<void> _performInitialCleanup() async {
+    try {
+      await retentionCleanupService.cleanupExpiredItems();
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to perform initial cleanup',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    }
+  }
+
+  /// Performs cleanup of expired items (non-blocking)
+  void _performCleanup() {
+    // Run cleanup without blocking the UI
+    retentionCleanupService.cleanupExpiredItems().catchError((e, stackTrace) {
+      developer.log(
+        'Failed to perform cleanup on refresh',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    });
+  }
+
   final BaseClipboardManager clipboardManager;
   final AuthRepository authRepository;
   final ClipboardRepository clipboardRepository;
@@ -47,6 +76,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalClipboardRepository localClipboardRepository;
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository remoteSettingsRepository;
+  final RetentionCleanupService retentionCleanupService;
 
   StreamSubscription<User?>? _authSubscription;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
@@ -214,6 +244,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     _localItemsSubscription = localClipboardRepository.watchAll().listen(
       (items) {
         emit(state.copyWith(clipboardItems: items.toSuccess()));
+        // Cleanup expired items when clipboard items are refreshed
+        _performCleanup();
       },
       onError: (Object error, StackTrace stackTrace) {
         emit(

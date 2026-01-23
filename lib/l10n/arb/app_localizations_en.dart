@@ -335,7 +335,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get oldItemsWillBeOverwritten =>
-      'Old items will be overwritten.\nGo pro to keep everything.';
+      'Old items will be overwritten. Go pro to keep everything.';
 
   @override
   String get oneHour => '1 Hour';
@@ -638,8 +638,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get version => 'Version';
 
   @override
+  String get youCanIncreaseYouStorageLimitWithYourProPlan =>
+      'You can increase your storage limit with your Pro plan.';
+
+  @override
   String get yourClipboardHistoryIsLimited =>
-      'Your clipboard history is limited.\nGo Pro to keep everything.';
+      'Your clipboard history is limited. Go Pro to keep everything.';
 
   @override
   String get yourClipboardItemsWillAppearHere =>

@@ -434,7 +434,7 @@
   "@notifications": {
     "description": "Label for the Notifications settings"
   },
-  "oldItemsWillBeOverwritten": "Old items will be overwritten.\nGo pro to keep everything.",
+  "oldItemsWillBeOverwritten": "Old items will be overwritten. Go pro to keep everything.",
   "@oldItemsWillBeOverwritten": {
     "description": "Message shown when clipboard items will overwrite old ones"
   },
@@ -858,7 +858,11 @@
   "@version": {
     "description": "Label for the app version"
   },
-  "yourClipboardHistoryIsLimited": "Your clipboard history is limited.\nGo Pro to keep everything.",
+  "youCanIncreaseYouStorageLimitWithYourProPlan": "You can increase your storage limit with your Pro plan.",
+  "@youCanIncreaseYouStorageLimitWithYourProPlan": {
+    "description": "Message shown to inform the user about increasing storage limit with Pro plan"
+  },
+  "yourClipboardHistoryIsLimited": "Your clipboard history is limited. Go Pro to keep everything.",
   "@yourClipboardHistoryIsLimited": {
     "description": "Message shown when the clipboard history is limited"
   },

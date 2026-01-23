@@ -631,7 +631,7 @@ abstract class AppLocalizations {
   /// Message shown when clipboard items will overwrite old ones
   ///
   /// In en, this message translates to:
-  /// **'Old items will be overwritten.\nGo pro to keep everything.'**
+  /// **'Old items will be overwritten. Go pro to keep everything.'**
   String get oldItemsWillBeOverwritten;
 
   /// Duration option: 1 hour
@@ -1168,10 +1168,16 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get version;
 
+  /// Message shown to inform the user about increasing storage limit with Pro plan
+  ///
+  /// In en, this message translates to:
+  /// **'You can increase your storage limit with your Pro plan.'**
+  String get youCanIncreaseYouStorageLimitWithYourProPlan;
+
   /// Message shown when the clipboard history is limited
   ///
   /// In en, this message translates to:
-  /// **'Your clipboard history is limited.\nGo Pro to keep everything.'**
+  /// **'Your clipboard history is limited. Go Pro to keep everything.'**
   String get yourClipboardHistoryIsLimited;
 
   /// Message shown when the clipboard is empty

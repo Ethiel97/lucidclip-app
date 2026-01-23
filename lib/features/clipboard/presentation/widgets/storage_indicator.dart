@@ -41,6 +41,12 @@ class StorageIndicator extends StatelessWidget {
       (EntitlementCubit cubit) => cubit.state.isProActive,
     );
 
+    final progressColors = switch (ratio) {
+      < 0.7 => [colorScheme.primary, colorScheme.primary],
+      < 0.9 => [colorScheme.primary, colorScheme.secondary],
+      _ => [AppColors.dangerSoft, AppColors.danger],
+    };
+
     return GestureDetector(
       onTap: () {
         context.router.navigate(
@@ -68,13 +74,35 @@ class StorageIndicator extends StatelessWidget {
               spacing: AppSpacing.xxs,
               children: [
                 const HugeIcon(icon: HugeIcons.strokeRoundedDatabase),
-                if (isExpanded)
-                  Text(
-                    l10n.storage.sentenceCase,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onTertiary,
+                if (isExpanded) ...[
+                  Expanded(
+                    child: Text(
+                      l10n.storage.sentenceCase,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onTertiary,
+                      ),
                     ),
                   ),
+                  Transform.scale(
+                    scale: .9,
+                    child: CircularPercentIndicator(
+                      radius: 24,
+                      lineWidth: 4,
+                      percent: ratio,
+                      backgroundColor: colorScheme.onSurface.withValues(
+                        alpha: 0.08,
+                      ),
+                      center: Text(
+                        '${(ratio * 100).toStringAsFixed(0)}%',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      linearGradient: LinearGradient(colors: progressColors),
+                    ),
+                  ),
+                ],
               ],
             ),
 
@@ -91,45 +119,35 @@ class StorageIndicator extends StatelessWidget {
                   ),
 
                 Builder(
-                  builder: (context) {
-                    final progressColors = switch (ratio) {
-                      < 0.7 => [colorScheme.primary, colorScheme.primary],
-                      < 0.9 => [colorScheme.primary, colorScheme.secondary],
-                      _ => [AppColors.dangerSoft, AppColors.danger],
-                    };
-
-                    return switch (isExpanded) {
-                      true => Transform.translate(
-                        offset: const Offset(-12, 0),
-                        child: LinearPercentIndicator(
-                          lineHeight: 6,
-                          barRadius: const Radius.circular(12),
-                          percent: ratio,
-                          backgroundColor: colorScheme.onSurface.withValues(
-                            alpha: 0.08,
-                          ),
-                          linearGradient: LinearGradient(
-                            colors: progressColors,
-                          ),
-                        ),
-                      ),
-                      false => CircularPercentIndicator(
-                        radius: 24,
-                        lineWidth: 4,
+                  builder: (context) => switch (isExpanded) {
+                    true => Transform.translate(
+                      offset: const Offset(-10, 0),
+                      child: LinearPercentIndicator(
+                        lineHeight: 6,
+                        barRadius: const Radius.circular(12),
                         percent: ratio,
                         backgroundColor: colorScheme.onSurface.withValues(
                           alpha: 0.08,
                         ),
-                        center: Text(
-                          '${(ratio * 100).toStringAsFixed(0)}%',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
                         linearGradient: LinearGradient(colors: progressColors),
                       ),
-                    };
+                    ),
+                    false => CircularPercentIndicator(
+                      radius: 24,
+                      lineWidth: 4,
+                      percent: ratio,
+                      backgroundColor: colorScheme.onSurface.withValues(
+                        alpha: 0.08,
+                      ),
+                      center: Text(
+                        '${(ratio * 100).toStringAsFixed(0)}%',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      linearGradient: LinearGradient(colors: progressColors),
+                    ),
                   },
                 ),
 
@@ -138,8 +156,10 @@ class StorageIndicator extends StatelessWidget {
                   Builder(
                     builder: (context) {
                       final text = switch (ratio) {
-                        < 0.65 => l10n.yourClipboardHistoryIsLimited,
-                        _ => l10n.oldItemsWillBeOverwritten,
+                        < 0.65 when !isPro =>
+                          l10n.yourClipboardHistoryIsLimited,
+                        >= 0.65 when !isPro => l10n.oldItemsWillBeOverwritten,
+                        _ => l10n.youCanIncreaseYouStorageLimitWithYourProPlan,
                       };
 
                       return Column(
@@ -148,6 +168,7 @@ class StorageIndicator extends StatelessWidget {
                         children: [
                           Text(
                             text,
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontSize: 10,

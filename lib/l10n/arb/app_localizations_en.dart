@@ -286,6 +286,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingLinkPreview => 'Loading link preview...';
 
   @override
+  String get manageRetention => 'Manage Retention';
+
+  @override
   String get maxHistoryItemsDescription =>
       'Sets the maximum number of items in the clipboard.';
 
@@ -329,6 +332,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications => 'Notifications';
+
+  @override
+  String get oldItemsWillBeOverwritten =>
+      'Old items will be overwritten.\nGo pro to keep everything.';
 
   @override
   String get oneHour => '1 Hour';
@@ -375,10 +382,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pro => 'Pro';
 
   @override
+  String get proFeatureAutoSync => 'Auto sync across devices';
+
+  @override
+  String get proFeatureAutoSyncDescription =>
+      'Keeps your clipboard in sync across devices (opt-in).';
+
+  @override
+  String get proFeatureExtendedRetentionDays => 'Extended Retention Days';
+
+  @override
+  String get proFeatureExtendedRetentionDaysDescription =>
+      'Keep your history for up to one year.';
+
+  @override
+  String get proFeatureIgnoredApps => 'Ignore apps for privacy';
+
+  @override
+  String get proFeatureIgnoredAppsDescription =>
+      'Exclude apps from clipboard tracking.';
+
+  @override
+  String get proFeaturePinItems => 'Pin important clips';
+
+  @override
+  String get proFeaturePinItemsDescription =>
+      'Keep important items forever. Pinned clips are never removed';
+
+  @override
+  String get proFeatureUnlimitedHistory => 'Unlimited history';
+
+  @override
+  String get proFeatureUnlimitedHistoryDescription =>
+      'Never lose clips. Your history grows with you.';
+
+  @override
   String get quit => 'Quit';
 
   @override
   String get recent => 'Recent';
+
+  @override
+  String get redirectingToSecureCheckout => 'Redirecting to secure checkout...';
 
   @override
   String get resetToDefault => 'Reset to Default';
@@ -405,6 +450,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get retentionDaysDescription =>
       'Sets how long items are kept in the clipboard.';
+
+  @override
+  String get retentionExpired => 'Expired';
+
+  @override
+  String retentionExpiresIn(int value, String unit) {
+    return 'Auto-Removed in $value $unit';
+  }
 
   @override
   String get retry => 'Retry';
@@ -572,6 +625,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get untilDisabled => 'Until Disabled';
 
   @override
+  String get upgradePaywallSheetFooterSubtitle =>
+      'Local-first by default. No cloud unless you enable it.';
+
+  @override
   String get upgradeToPro => 'Upgrade to Pro';
 
   @override
@@ -579,6 +636,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get yourClipboardHistoryIsLimited =>
+      'Your clipboard history is limited.\nGo Pro to keep everything.';
 
   @override
   String get yourClipboardItemsWillAppearHere =>

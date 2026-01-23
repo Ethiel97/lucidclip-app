@@ -13,6 +13,23 @@ enum ShortcutAction {
     ShortcutAction.clearClipboard => 'clear_clipboard',
     ShortcutAction.searchClipboard => 'search_clipboard',
   };
+
+  bool get isToggleWindow => this == ShortcutAction.toggleWindow;
+
+  bool get isToggleIncognito => this == ShortcutAction.toggleIncognito;
+
+  bool get isClearClipboard => this == ShortcutAction.clearClipboard;
+
+  bool get isSearchClipboard => this == ShortcutAction.searchClipboard;
+
+  static ShortcutAction? fromKey(String key) {
+    for (final action in ShortcutAction.values) {
+      if (action.key == key) {
+        return action;
+      }
+    }
+    return null;
+  }
 }
 
 /// Interface for managing application hotkeys

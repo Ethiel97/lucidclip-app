@@ -39,6 +39,14 @@ const _iconUnknown = IconTheme(
 );
 
 extension ClipboardUiHelper on ClipboardItem {
+  Widget get linkPreviewWidget {
+    if (type case ClipboardItemType.url) {
+      return LinkPreviewWidget(url: content);
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
   Widget get icon {
     return switch (type) {
       ClipboardItemType.text => _iconText,
@@ -52,16 +60,29 @@ extension ClipboardUiHelper on ClipboardItem {
   bool get isImageFile =>
       (filePath?.isNotEmpty ?? true) && File(filePath!).isImage;
 
-  Widget preview({required ColorScheme colorScheme, int? maxLines}) {
+  Widget preview({
+    required ColorScheme colorScheme,
+    int? maxLines,
+    bool showLinkPreview = true,
+  }) {
     final textPreview = Text(
       content,
       overflow: TextOverflow.ellipsis,
       maxLines: maxLines,
-      style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
+      style: TextStyle(color: colorScheme.onSurface, fontSize: 12),
     );
 
-    if (type case ClipboardItemType.text || ClipboardItemType.url) {
+    if (type case ClipboardItemType.text) {
       return textPreview;
+    }
+
+    if (type case ClipboardItemType.url) {
+      return Column(
+        spacing: AppSpacing.xs,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [textPreview, if (showLinkPreview) linkPreviewWidget],
+      );
     } else if (type case ClipboardItemType.file when isImageFile) {
       return CachedClipboardImage.file(filePath: filePath);
     } else if (type case ClipboardItemType.image when imageBytes != null) {
@@ -76,7 +97,7 @@ extension ClipboardUiHelper on ClipboardItem {
     }
   }
 
-  Widget getSourceAppIcon(ColorScheme colorScheme) {
+  Widget resolveSourceAppIcon(ColorScheme colorScheme) {
     return sourceApp?.getIconWidget(colorScheme) ??
         HugeIcon(
           icon: HugeIcons.strokeRounded0Square,
@@ -87,11 +108,42 @@ extension ClipboardUiHelper on ClipboardItem {
 }
 
 extension ClipboardItemTypeUiHelper on ClipboardItemType {
-  String filterTypeLabel(AppLocalizations l10n) => switch (this) {
+  String resolveFilterTypeLabel(AppLocalizations l10n) => switch (this) {
     FilterType.image => l10n.imageOnly,
     FilterType.file => l10n.fileOnly,
     FilterType.url => l10n.linkOnly,
     FilterType.unknown => l10n.allTypes,
     _ => l10n.textOnly,
   };
+}
+
+extension I18nTextResolver on I18nText {
+  String resolve(AppLocalizations l10n) => switch (key) {
+    'retentionExpiresIn' => l10n.retentionExpiresIn(
+      args['value']! as int,
+      args['unit']! as String,
+    ),
+    'retentionExpired' => l10n.retentionExpired,
+    _ => key,
+  };
+}
+
+extension RetentionWarningUi on RetentionWarning {
+  String? resolveLabel(AppLocalizations l10n) => text?.resolve(l10n);
+
+  Widget resolveBadge({
+    required AppLocalizations l10n,
+    required ColorScheme colorScheme,
+  }) {
+    final label = resolveLabel(l10n);
+    if (label == null || level.isNone) return const SizedBox.shrink();
+
+    final color = switch (level) {
+      RetentionWarningLevel.warning => colorScheme.errorContainer,
+      RetentionWarningLevel.danger => colorScheme.error,
+      _ => colorScheme.onError,
+    };
+
+    return ClipboardBadge(label: label, color: color);
+  }
 }

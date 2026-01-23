@@ -71,7 +71,7 @@ class SourceAppPrivacyControl extends StatelessWidget {
         style: textTheme.bodySmall?.copyWith(
           fontWeight: FontWeight.w500,
           fontSize: 11,
-          color: colorScheme.onSurface.withValues(alpha: 0.95),
+          color: colorScheme.onErrorContainer.withValues(alpha: 0.95),
         ),
       ),
     );

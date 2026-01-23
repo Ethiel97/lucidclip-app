@@ -3,10 +3,10 @@ import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 
 // TODO(Ethiel97): AUTO SYNC SETTING SHOULD BE FOR PREMIUM USERS ONLY
 //  HISTORY LIMIT SHOULD BE FOR PREMIUM USERS ONLY,
-//  FREE USERS GET 50 ITEMS LIMIT
+//  FREE USERS GET 30 ITEMS LIMIT
 //
 
-const defaultMaxHistoryItems = 50;
+const defaultMaxHistoryItems = 30;
 const defaultRetentionDays = 1;
 const defaultSyncIntervalMinutes = 30;
 

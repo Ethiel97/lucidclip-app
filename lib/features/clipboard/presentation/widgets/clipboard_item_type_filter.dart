@@ -40,7 +40,7 @@ class ClipboardItemTypeFilter extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          filterType.filterTypeLabel(l10n).titleCase,
+                          filterType.resolveFilterTypeLabel(l10n).titleCase,
                           style: textStyle?.copyWith(
                             color: colorScheme.onPrimary,
                           ),

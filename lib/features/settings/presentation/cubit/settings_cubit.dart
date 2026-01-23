@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -12,6 +13,8 @@ import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'settings_state.dart';
 
+// TODO(Ethiel): Refactor to handle local and remote settings
+//  in the repository layer
 @lazySingleton
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({
@@ -51,6 +54,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       userId: _currentUserId,
       createdAt: DateTime.now().toUtc(),
       updatedAt: DateTime.now().toUtc(),
+      shortcuts: {
+        'toggle_window': Platform.isMacOS
+            ? 'Cmd + Shift + L'
+            : 'Ctrl + Shift + L',
+      },
     );
   }
 

@@ -1,63 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
 class ProGateOverlay extends StatelessWidget {
   const ProGateOverlay({
     required this.child,
-    this.isPro = false,
     this.onUpgradeTap,
     this.badgeAlignment = Alignment.topRight,
     this.badgePadding = EdgeInsets.zero,
     this.dimWhenLocked = true,
-    this.blockInteractions = true,
-    this.badgeScale = 0.72,
-    this.badgeOffset = const Offset(16, -16),
+    this.badgeScale = 0.6,
+    this.badgeOffset = const Offset(12, -16),
     super.key,
   });
 
   final Widget child;
-  final bool isPro;
+
+  /// Triggered when user attempts to access a Pro feature.
   final VoidCallback? onUpgradeTap;
+
+  /// Badge placement.
   final Alignment badgeAlignment;
   final EdgeInsets badgePadding;
-  final bool dimWhenLocked;
-  final bool blockInteractions;
 
-  /// Controls badge size without magic numbers.
+  /// Visual feedback when locked.
+  final bool dimWhenLocked;
+
+  /// Controls badge size.
   final double badgeScale;
 
-  /// Controls badge position relative to the aligned corner.
+  /// Controls badge position relative to alignment.
   final Offset badgeOffset;
 
   @override
   Widget build(BuildContext context) {
+    final isPro = context.select(
+      (EntitlementCubit cubit) => cubit.state.isProActive,
+    );
+
     if (isPro) return child;
 
     final lockedChild = dimWhenLocked
         ? Opacity(opacity: 0.55, child: child)
         : child;
-    final gatedChild = blockInteractions
-        ? AbsorbPointer(child: lockedChild)
-        : lockedChild;
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        gatedChild,
+        lockedChild,
+
+        // ✅ Entire surface intercepts interaction
         Positioned.fill(
-          child: Align(
-            alignment: badgeAlignment,
-            child: Transform.translate(
-              offset: badgeOffset,
-              child: Transform.scale(
-                scale: badgeScale,
-                child: Padding(
-                  padding: badgePadding,
-                  child: _ProBadgePill(onTap: onUpgradeTap),
-                ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onUpgradeTap,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+
+        // ✅ Pro badge (always visible & clickable)
+        Align(
+          alignment: badgeAlignment,
+          child: Transform.translate(
+            offset: badgeOffset,
+            child: Transform.scale(
+              scale: badgeScale,
+              child: Padding(
+                padding: badgePadding,
+                child: _ProBadgePill(onTap: onUpgradeTap),
               ),
             ),
           ),

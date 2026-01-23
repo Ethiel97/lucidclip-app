@@ -150,7 +150,6 @@ class _ClipboardViewState extends State<ClipboardView>
                               key: ValueKey(
                                 'list_${isSearchMode}_$searchFilterType',
                               ),
-
                               physics: const ClampingScrollPhysics(),
                               itemCount: allItems.length,
                               addAutomaticKeepAlives: false,
@@ -186,6 +185,8 @@ class _ClipboardViewState extends State<ClipboardView>
                               },
                             ),
                     ),
+
+                    const SizedBox(height: AppSpacing.lg),
                   ],
                 ),
               ),
@@ -270,7 +271,7 @@ class _EmptyStateWidget extends StatelessWidget {
           icon: searchMode
               ? HugeIcons.strokeRoundedSearchArea
               : HugeIcons.strokeRoundedClipboard,
-          size: AppSpacing.xxxxlg * 3,
+          size: AppSpacing.xxxxlg * 2.8,
           color: colorScheme.onSurface,
         ),
         Text(

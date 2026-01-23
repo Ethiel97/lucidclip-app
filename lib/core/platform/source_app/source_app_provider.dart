@@ -18,7 +18,7 @@ extension SourceAppHelper on SourceApp {
       );
 
       return Transform.scale(
-        scale: 1.25,
+        scale: 1.26,
         child: CachedClipboardImage.memory(
           bytes: cachedBytes,
           width: _sourceAppDisplaySize.toDouble(),

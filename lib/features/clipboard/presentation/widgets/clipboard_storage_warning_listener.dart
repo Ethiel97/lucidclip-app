@@ -66,11 +66,12 @@ class ClipboardStorageWarningListener extends StatelessWidget {
 
         BlocListener<ClipboardCubit, ClipboardState>(
           listenWhen: (previous, current) {
-            if (isProUser) return false;
-            if (maxHistoryItems <= 0) return false;
+            if (isProUser || maxHistoryItems <= 0) return false;
 
             final prevCount = previous.clipboardItems.value?.length ?? 0;
             final currCount = current.clipboardItems.value?.length ?? 0;
+
+            if (currCount <= prevCount) return false;
 
             final wasBelowMax = prevCount < maxHistoryItems;
             final isNowAtOrAbove = currCount >= maxHistoryItems;

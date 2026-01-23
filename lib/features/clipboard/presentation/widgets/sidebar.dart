@@ -34,30 +34,34 @@ class _SidebarState extends State<Sidebar> {
   late List<SidebarItemConfig<List<List<dynamic>>>> menuItems =
       <SidebarItemConfig<List<List<dynamic>>>>[];
 
+  TabsRouter? _tabsRouter;
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.tabsRouter.addListener(_handleRouteChange);
+      if (!mounted) return;
+      _tabsRouter = context.tabsRouter;
+      _tabsRouter?.addListener(_handleRouteChange);
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     menuItems = [
       SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedClipboard,
         label: context.l10n.clipboard.titleCase,
         route: const ClipboardRoute(),
       ),
-      SidebarItemConfig<List<List<dynamic>>>(
+      //TODO(Ethiel): Enable snippets when feature is ready
+      /*SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedNote,
         label: context.l10n.snippets.titleCase,
         route: const SnippetsRoute(),
-      ),
+      ),*/
       SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedSettings03,
         label: context.l10n.settings.titleCase,
@@ -68,7 +72,7 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   void dispose() {
-    context.router.removeListener(_handleRouteChange);
+    _tabsRouter?.removeListener(_handleRouteChange);
     super.dispose();
   }
 
@@ -85,7 +89,7 @@ class _SidebarState extends State<Sidebar> {
     final clipboardItemsCount = context.select<ClipboardCubit, int>(
       (cubit) => cubit.state.totalItemsCount,
     );
-    final clipboardHistorySize = context.select(
+    final clipboardHistoryCapacity = context.select(
       (SettingsCubit cubit) => cubit.state.maxHistoryItems,
     );
 
@@ -95,6 +99,7 @@ class _SidebarState extends State<Sidebar> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
+      curve: Curves.fastLinearToSlowEaseIn,
       width: isExpanded
           ? AppConstants.clipboardSidebarWidth
           : AppConstants.collapsedSidebarWidth,
@@ -139,7 +144,7 @@ class _SidebarState extends State<Sidebar> {
           ),
           StorageIndicator(
             used: clipboardItemsCount,
-            total: clipboardHistorySize,
+            total: clipboardHistoryCapacity,
           ),
           const SizedBox(height: AppSpacing.md),
         ],

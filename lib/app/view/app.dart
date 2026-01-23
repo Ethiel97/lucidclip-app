@@ -6,6 +6,9 @@ import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
+import 'package:lucid_clip/features/billing/billing.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -37,9 +40,28 @@ class _AppState extends State<App> with WindowListener {
   }
 
   @override
+  Future<void> onWindowBlur() async {
+    super.onWindowBlur();
+
+    getIt<ClipboardDetailCubit>().clearSelection();
+
+    final shortcuts = getIt<SettingsCubit>().state.shortcuts;
+
+    //if the user has set shortcuts for displaying the app we can hide on blur
+    // otherwise we keep it open since there is no way to bring it back
+
+    for (final shortcut in shortcuts.entries) {
+      if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
+        await getIt<WindowController>().hide();
+        break;
+      }
+    }
+  }
+
+  @override
   Future<void> onWindowClose() async {
     // Hide window instead of closing when close button is clicked
-    await windowManager.hide();
+    await getIt<WindowController>().hide();
   }
 
   @override
@@ -47,6 +69,9 @@ class _AppState extends State<App> with WindowListener {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<AuthCubit>()),
+        BlocProvider(create: (_) => getIt<BillingCubit>()),
+        BlocProvider(create: (_) => getIt<EntitlementCubit>()),
+        BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
         BlocProvider(create: (_) => getIt<SettingsCubit>()),
       ],
       child: const _AppView(),
@@ -65,7 +90,7 @@ class _AppViewState extends State<_AppView> {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
   final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
 
-  Map<String, String>? _lastLoadedShortcuts;
+  // Map<String, String>? _lastLoadedShortcuts;
 
   @override
   void initState() {
@@ -95,7 +120,7 @@ class _AppViewState extends State<_AppView> {
         if (settings != null) {
           // Only reload if shortcuts have changed
           _hotkeyService.loadShortcutsFromMap(settings.shortcuts);
-          _lastLoadedShortcuts = Map.from(settings.shortcuts);
+          // _lastLoadedShortcuts = Map.from(settings.shortcuts);
         }
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(

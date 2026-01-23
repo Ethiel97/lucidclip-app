@@ -10,6 +10,7 @@ import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -30,6 +31,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   final Map<String, GlobalKey> _sectionKeys = {
     SettingsSection.usage.name: GlobalKey(),
+    SettingsSection.history.name: GlobalKey(),
     SettingsSection.appearance.name: GlobalKey(),
     SettingsSection.privacy.name: GlobalKey(),
     SettingsSection.shortcuts.name: GlobalKey(),
@@ -66,11 +68,14 @@ class _SettingsViewState extends State<SettingsView> {
   void _scrollToSection(String section) {
     final keyContext = _sectionKeys[section]?.currentContext;
     if (keyContext != null) {
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      if (!keyContext.mounted) return;
       Scrollable.ensureVisible(
         keyContext,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+      // });
     }
   }
 
@@ -161,6 +166,8 @@ class _SettingsViewState extends State<SettingsView> {
                           );
                         },
                       ),
+
+                      // TODO(Ethiel): Make this a Pro feature
                       SettingsNavigationItem(
                         title: l10n.ignoredApps.sentenceCase,
                         description: l10n.ignoredAppsDescription,
@@ -223,13 +230,18 @@ class _SettingsViewState extends State<SettingsView> {
                     title: l10n.history.sentenceCase,
                     children: [
                       ProGateOverlay(
+                        onUpgradeTap: () {
+                          context.read<UpgradePromptCubit>().request(
+                            ProFeature.unlimitedHistory,
+                          );
+                        },
                         badgeOffset: const Offset(12, -4),
                         child: SettingsDropdownItem<int>(
                           title: l10n.historyLimit.sentenceCase,
                           description:
                               l10n.maxHistoryItemsDescription.sentenceCase,
                           value: settings.maxHistoryItems,
-                          items: const [50, 100, 500, 1000],
+                          items: const [30, 50, 100, 500, 1000, 5000, 10000],
                           itemLabel: l10n.itemsCount,
                           onChanged: (value) {
                             if (value != null) {
@@ -243,6 +255,11 @@ class _SettingsViewState extends State<SettingsView> {
 
                       //TODO(Ethiel97): Make this a Pro feature
                       ProGateOverlay(
+                        onUpgradeTap: () {
+                          context.read<UpgradePromptCubit>().request(
+                            ProFeature.extendedRetentionDays,
+                          );
+                        },
                         badgeOffset: const Offset(12, -4),
                         child: SettingsDropdownItem<int>(
                           title: l10n.retentionDays.sentenceCase,
@@ -273,6 +290,11 @@ class _SettingsViewState extends State<SettingsView> {
                     children: [
                       ProGateOverlay(
                         // badgeAlignment: Alignment.topRight,
+                        onUpgradeTap: () {
+                          context.read<UpgradePromptCubit>().request(
+                            ProFeature.autoSync,
+                          );
+                        },
                         badgeOffset: const Offset(12, -4),
                         child: SettingsSwitchItem(
                           title: l10n.autoSync.sentenceCase,
@@ -350,16 +372,8 @@ class _KeyboardShortcutsSectionState extends State<_KeyboardShortcutsSection> {
       debugPrint('Failed to update hotkey for ${action.key}: $e\n$stackTrace');
       if (mounted) {
         // Ensure the UI reflects the last known good shortcuts
-        await context
-            .read<SettingsCubit>()
-            .updateShortcuts(widget.settings.shortcuts);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Failed to update keyboard shortcut. Please try again.',
-            ),
-          ),
+        await context.read<SettingsCubit>().updateShortcuts(
+          widget.settings.shortcuts,
         );
       }
     }

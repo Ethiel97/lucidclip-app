@@ -19,7 +19,7 @@ class FlutterClipboardManager implements BaseClipboardManager {
   final _controller = StreamController<ClipboardData>.broadcast();
   final SourceAppProvider sourceAppProvider;
 
-  bool _isChecking = false;
+  final bool _isChecking = false;
 
   @override
   @postConstruct

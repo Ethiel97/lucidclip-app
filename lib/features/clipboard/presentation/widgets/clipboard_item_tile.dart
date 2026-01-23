@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_portal/flutter_portal.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
@@ -48,6 +47,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+
     super.build(context);
     return MouseRegion(
       onEnter: (_) {
@@ -67,7 +67,7 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
         child: ClipboardContextMenu(
           clipboardItem: widget.item,
           child: Container(
-            height: 52,
+            // height: 52,
             margin: const EdgeInsets.only(bottom: AppSpacing.sm),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -83,20 +83,19 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
                 widget.item.icon,
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
-                  child: shouldShowLinkPreview && widget.item.type.isUrl
-                      ? _LinkPreviewWidget(
-                          item: widget.item,
-                          controller: _linkPreviewController ??=
-                              LinkPreviewController(),
-                        )
-                      : Align(
-                          alignment: Alignment.centerLeft,
-                          child: widget.item.preview(
-                            maxLines: 1,
-                            colorScheme: colorScheme,
-                          ),
-                        ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: widget.item.preview(
+                      maxLines: 1,
+                      colorScheme: colorScheme,
+                      showLinkPreview: false,
+                    ),
+                  ),
                 ),
+                const SizedBox(width: AppSpacing.sm),
+
+                if (isHovering) RetentionWarningBadge(item: widget.item),
+
                 const SizedBox(width: AppSpacing.sm),
                 ClipboardBadge(label: widget.item.type.label),
                 const SizedBox(width: AppSpacing.sm),
@@ -119,11 +118,10 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
   }
 }
 
-class _LinkPreviewWidget extends StatelessWidget {
-  const _LinkPreviewWidget({required this.item, required this.controller});
+class LinkPreviewWidget extends StatelessWidget {
+  const LinkPreviewWidget({required this.url, super.key});
 
-  final ClipboardItem item;
-  final LinkPreviewController controller;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
@@ -134,17 +132,12 @@ class _LinkPreviewWidget extends StatelessWidget {
       (SettingsCubit cubit) => cubit.state.previewLinks,
     );
 
-    return PortalTarget(
-      anchor: const Aligned(
-        follower: Alignment.topLeft,
-        target: Alignment.bottomLeft,
-      ),
-      visible: isLinkPreviewEnabled,
-      portalFollower: SizedBox(
+    return switch (isLinkPreviewEnabled) {
+      false => const SizedBox.shrink(),
+      true => SizedBox(
         width: MediaQuery.sizeOf(context).width * 0.4,
-        child: LinkPreview.compact(
-          controller: controller,
-          url: item.content,
+        child: LinkPreview.card(
+          url: url,
           errorBuilder: (context, error) => Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             color: colorScheme.surface,
@@ -174,7 +167,6 @@ class _LinkPreviewWidget extends StatelessWidget {
           ),
         ),
       ),
-      child: item.preview(maxLines: 1, colorScheme: colorScheme),
-    );
+    };
   }
 }

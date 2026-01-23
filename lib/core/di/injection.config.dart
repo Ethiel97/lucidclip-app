@@ -42,12 +42,14 @@ import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_int
     as _i995;
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
     as _i854;
-import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_interface.dart'
-    as _i7;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
 import 'package:lucid_clip/core/services/tray_manager_service/tray_manager_service.dart'
     as _i818;
+import 'package:lucid_clip/core/services/window_controller/method_channel_macos_overlay.dart'
+    as _i998;
+import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
+    as _i1036;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
@@ -62,6 +64,14 @@ import 'package:lucid_clip/features/auth/data/repositories/auth_repository_impl.
 import 'package:lucid_clip/features/auth/domain/domain.dart' as _i922;
 import 'package:lucid_clip/features/auth/presentation/cubit/auth_cubit.dart'
     as _i408;
+import 'package:lucid_clip/features/billing/data/data.dart' as _i1039;
+import 'package:lucid_clip/features/billing/data/data_sources/http_billing_remote_data_source.dart'
+    as _i269;
+import 'package:lucid_clip/features/billing/data/repositories/billing_repository_impl.dart'
+    as _i279;
+import 'package:lucid_clip/features/billing/domain/domain.dart' as _i893;
+import 'package:lucid_clip/features/billing/presentation/cubit/billing_cubit.dart'
+    as _i696;
 import 'package:lucid_clip/features/clipboard/clipboard.dart' as _i42;
 import 'package:lucid_clip/features/clipboard/data/data.dart' as _i669;
 import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_history_local_data_source.dart'
@@ -85,6 +95,18 @@ import 'package:lucid_clip/features/clipboard/presentation/cubit/search_cubit.da
     as _i997;
 import 'package:lucid_clip/features/clipboard/presentation/cubit/sidebar_cubit.dart'
     as _i677;
+import 'package:lucid_clip/features/entitlement/data/data.dart' as _i387;
+import 'package:lucid_clip/features/entitlement/data/data_sources/drift_entitlement_local_data_source.dart'
+    as _i39;
+import 'package:lucid_clip/features/entitlement/data/data_sources/supabase_entitlement_remote_data_source.dart'
+    as _i670;
+import 'package:lucid_clip/features/entitlement/data/repositories/entitlement_repository_impl.dart'
+    as _i669;
+import 'package:lucid_clip/features/entitlement/domain/domain.dart' as _i311;
+import 'package:lucid_clip/features/entitlement/presentation/cubit/entitlement_cubit.dart'
+    as _i9;
+import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation/cubit/upgrade_prompt_cubit.dart'
+    as _i324;
 import 'package:lucid_clip/features/settings/data/data.dart' as _i739;
 import 'package:lucid_clip/features/settings/data/data_sources/data_sources.dart'
     as _i173;
@@ -106,6 +128,7 @@ import 'package:lucid_clip/features/settings/domain/domain.dart' as _i340;
 import 'package:lucid_clip/features/settings/presentation/cubit/settings_cubit.dart'
     as _i966;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
+import 'package:window_manager/window_manager.dart' as _i740;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -117,6 +140,9 @@ extension GetItInjectableX on _i174.GetIt {
     final thirdPartyModule = _$ThirdPartyModule();
     final cacheModule = _$CacheModule();
     final dioModule = _$DioModule();
+    gh.singleton<_i387.EntitlementDatabase>(
+      () => thirdPartyModule.entitlementDatabase,
+    );
     gh.singleton<_i669.ClipboardDatabase>(
       () => thirdPartyModule.clipboardDatabase,
     );
@@ -135,6 +161,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => thirdPartyModule.flutterSecureStorage,
     );
     gh.lazySingleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
+    gh.lazySingleton<_i740.WindowManager>(() => thirdPartyModule.windowManager);
     gh.lazySingleton<_i818.TrayManagerService>(
       () => _i818.TrayManagerService(),
       dispose: (i) => i.dispose(),
@@ -143,13 +170,24 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i677.SidebarCubit(),
       dispose: (i) => i.close(),
     );
+    gh.lazySingleton<_i324.UpgradePromptCubit>(
+      () => _i324.UpgradePromptCubit(),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i212.HotkeyManagerService>(
+      () => _i854.HotkeyManagerServiceImpl(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i212.MacosOverlay>(
+      () => _i998.MethodChannelMacosOverlay(),
+    );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i7.HotkeyManagerService>(
-      () => _i854.HotkeyManagerServiceImpl(),
-      dispose: (i) => i.dispose(),
+    gh.lazySingleton<_i387.EntitlementLocalDataSource>(
+      () =>
+          _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
     );
     gh.lazySingletonAsync<_i407.StorageService>(() {
       final i = _i443.HiveStorageService(
@@ -190,6 +228,13 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'iconCache',
     );
+    gh.lazySingleton<_i212.WindowController>(
+      () => _i1036.WindowControllerImpl(
+        windowManager: gh<_i740.WindowManager>(),
+        macosOverlay: gh<_i212.MacosOverlay>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
     );
@@ -198,6 +243,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i669.ClipboardHistoryLocalDataSource>(),
       ),
       dispose: (i) => i.clear(),
+    );
+    gh.lazySingleton<_i387.EntitlementRemoteDataSource>(
+      () => _i670.SupabaseEntitlementRemoteDataSource(
+        gh<_i183.RemoteSyncClient>(),
+      ),
     );
     gh.lazySingleton<_i782.LocalClipboardRepository>(
       () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
@@ -268,10 +318,23 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
       dispose: (i) => i.close(),
     );
+    gh.lazySingleton<_i311.EntitlementRepository>(
+      () => _i669.EntitlementRepositoryImpl(
+        local: gh<_i387.EntitlementLocalDataSource>(),
+        remote: gh<_i387.EntitlementRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i340.SettingsRepository>(
       () => _i758.SettingsRepositoryImpl(
         remoteDataSource: gh<_i173.SettingsRemoteDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i9.EntitlementCubit>(
+      () => _i9.EntitlementCubit(
+        authRepository: gh<_i922.AuthRepository>(),
+        entitlementRepository: gh<_i311.EntitlementRepository>(),
+      ),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager(
@@ -289,6 +352,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i958.LocalSettingsRepositoryImpl(
         iconService: gh<_i212.SourceAppIconService>(),
         localDataSource: gh<_i739.SettingsLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i1039.BillingRemoteDataSource>(
+      () => _i269.HttpBillingRemoteDataSource(gh<_i183.HttpClient>()),
+    );
+    gh.lazySingleton<_i893.BillingRepository>(
+      () => _i279.BillingRepositoryImpl(
+        authDataSource: gh<_i895.AuthDataSource>(),
+        billingRemoteDataSource: gh<_i1039.BillingRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i966.SettingsCubit>(
@@ -309,6 +381,13 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i42.LocalClipboardHistoryRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
         remoteSettingsRepository: gh<_i340.SettingsRepository>(),
+      ),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i696.BillingCubit>(
+      () => _i696.BillingCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        billingRepository: gh<_i893.BillingRepository>(),
       ),
       dispose: (i) => i.close(),
     );

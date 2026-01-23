@@ -556,6 +556,12 @@ abstract class AppLocalizations {
   /// **'Loading link preview...'**
   String get loadingLinkPreview;
 
+  /// Button text to manage retention settings
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Retention'**
+  String get manageRetention;
+
   /// Description for the Max History Items setting
   ///
   /// In en, this message translates to:
@@ -621,6 +627,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
+
+  /// Message shown when clipboard items will overwrite old ones
+  ///
+  /// In en, this message translates to:
+  /// **'Old items will be overwritten.\nGo pro to keep everything.'**
+  String get oldItemsWillBeOverwritten;
 
   /// Duration option: 1 hour
   ///
@@ -706,6 +718,66 @@ abstract class AppLocalizations {
   /// **'Pro'**
   String get pro;
 
+  /// Label for the Auto-Sync feature
+  ///
+  /// In en, this message translates to:
+  /// **'Auto sync across devices'**
+  String get proFeatureAutoSync;
+
+  /// Description for the Auto-Sync feature
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps your clipboard in sync across devices (opt-in).'**
+  String get proFeatureAutoSyncDescription;
+
+  /// Label for the Extended Retention Days feature
+  ///
+  /// In en, this message translates to:
+  /// **'Extended Retention Days'**
+  String get proFeatureExtendedRetentionDays;
+
+  /// Description for the Extended Retention Days feature
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your history for up to one year.'**
+  String get proFeatureExtendedRetentionDaysDescription;
+
+  /// Label for the Ignored Apps feature
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore apps for privacy'**
+  String get proFeatureIgnoredApps;
+
+  /// Exclude specific apps from tracking to protect sensitive data.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude apps from clipboard tracking.'**
+  String get proFeatureIgnoredAppsDescription;
+
+  /// Label for the Pin Items feature
+  ///
+  /// In en, this message translates to:
+  /// **'Pin important clips'**
+  String get proFeaturePinItems;
+
+  /// Description for the Pin Items feature
+  ///
+  /// In en, this message translates to:
+  /// **'Keep important items forever. Pinned clips are never removed'**
+  String get proFeaturePinItemsDescription;
+
+  /// Label for the Unlimited History feature
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited history'**
+  String get proFeatureUnlimitedHistory;
+
+  /// Description for the Unlimited History feature
+  ///
+  /// In en, this message translates to:
+  /// **'Never lose clips. Your history grows with you.'**
+  String get proFeatureUnlimitedHistoryDescription;
+
   /// Tray menu item to exit the application
   ///
   /// In en, this message translates to:
@@ -717,6 +789,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recent'**
   String get recent;
+
+  /// Message shown when redirecting to the secure checkout page
+  ///
+  /// In en, this message translates to:
+  /// **'Redirecting to secure checkout...'**
+  String get redirectingToSecureCheckout;
 
   /// Button text to reset a setting to its default value
   ///
@@ -759,6 +837,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sets how long items are kept in the clipboard.'**
   String get retentionDaysDescription;
+
+  /// Label indicating that the retention period has expired
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get retentionExpired;
+
+  /// Label showing when the retention expires
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-Removed in {value} {unit}'**
+  String retentionExpiresIn(int value, String unit);
 
   /// Button text to retry an operation
   ///
@@ -1054,6 +1144,12 @@ abstract class AppLocalizations {
   /// **'Until Disabled'**
   String get untilDisabled;
 
+  /// Footer subtitle for the upgrade paywall sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Local-first by default. No cloud unless you enable it.'**
+  String get upgradePaywallSheetFooterSubtitle;
+
   /// Button text to upgrade to the pro plan
   ///
   /// In en, this message translates to:
@@ -1071,6 +1167,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// Message shown when the clipboard history is limited
+  ///
+  /// In en, this message translates to:
+  /// **'Your clipboard history is limited.\nGo Pro to keep everything.'**
+  String get yourClipboardHistoryIsLimited;
 
   /// Message shown when the clipboard is empty
   ///

@@ -5,26 +5,41 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:percent_indicator/flutter_percent_indicator.dart';
 import 'package:recase/recase.dart';
-import 'package:tinycolor2/tinycolor2.dart';
 
+// TODO(refactor): Centralize storage policy logic
 class StorageIndicator extends StatelessWidget {
   const StorageIndicator({required this.total, required this.used, super.key});
 
+  /// Total storage capacity.
   final int total;
+
+  /// Used storage amount.
   final int used;
 
   @override
   Widget build(BuildContext context) {
-    final ratio = used / total;
+    final guardedTotal = total <= 0 ? 1 : total;
+
+    final ratio = (used / guardedTotal).clamp(0.0, 1.0);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = context.l10n;
 
+    final fill = colorScheme.surfaceContainerHighest;
+
+    final borderColor = ratio >= 0.7
+        ? colorScheme.primary.withValues(alpha: 0.35)
+        : colorScheme.outline.withValues(alpha: 0.75);
+
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+    final isPro = context.select(
+      (EntitlementCubit cubit) => cubit.state.isProActive,
+    );
 
     return GestureDetector(
       onTap: () {
@@ -38,17 +53,9 @@ class StorageIndicator extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: colorScheme.tertiary
-              .toTinyColor()
-              .saturate(5)
-              .lighten(3)
-              .color
-              .withValues(alpha: 0.5),
+          color: fill.withValues(alpha: .8),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: colorScheme.outline.withValues(alpha: .8),
-            width: .5,
-          ),
+          border: Border.all(color: borderColor, width: .6),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,41 +90,109 @@ class StorageIndicator extends StatelessWidget {
                     ),
                   ),
 
-                switch (isExpanded) {
-                  true => Transform.translate(
-                    offset: const Offset(-12, 0),
-                    child: LinearPercentIndicator(
-                      lineHeight: 6,
-                      barRadius: const Radius.circular(12),
-                      percent: ratio.clamp(0.0, 1.0),
-                      backgroundColor: colorScheme.onPrimary.withValues(
-                        alpha: 0.04,
-                      ),
+                Builder(
+                  builder: (context) {
+                    final progressColors = switch (ratio) {
+                      < 0.7 => [colorScheme.primary, colorScheme.primary],
+                      < 0.9 => [colorScheme.primary, colorScheme.secondary],
+                      _ => [AppColors.dangerSoft, AppColors.danger],
+                    };
 
-                      linearGradient: LinearGradient(
-                        colors: [colorScheme.primary, colorScheme.secondary],
+                    return switch (isExpanded) {
+                      true => Transform.translate(
+                        offset: const Offset(-12, 0),
+                        child: LinearPercentIndicator(
+                          lineHeight: 6,
+                          barRadius: const Radius.circular(12),
+                          percent: ratio,
+                          backgroundColor: colorScheme.onSurface.withValues(
+                            alpha: 0.08,
+                          ),
+                          linearGradient: LinearGradient(
+                            colors: progressColors,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  false => CircularPercentIndicator(
-                    radius: 24,
-                    lineWidth: 4,
-                    percent: ratio.clamp(0.0, 1.0),
-                    backgroundColor: colorScheme.onSurface.withValues(
-                      alpha: 0.04,
-                    ),
-                    center: Text(
-                      '${(ratio * 100).toStringAsFixed(0)}%',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface,
+                      false => CircularPercentIndicator(
+                        radius: 24,
+                        lineWidth: 4,
+                        percent: ratio,
+                        backgroundColor: colorScheme.onSurface.withValues(
+                          alpha: 0.08,
+                        ),
+                        center: Text(
+                          '${(ratio * 100).toStringAsFixed(0)}%',
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface,
+                          ),
+                        ),
+                        linearGradient: LinearGradient(colors: progressColors),
                       ),
-                    ),
-                    linearGradient: LinearGradient(
-                      colors: [colorScheme.primary, colorScheme.secondary],
-                    ),
+                    };
+                  },
+                ),
+
+                const SizedBox(height: 4),
+                if (isExpanded)
+                  Builder(
+                    builder: (context) {
+                      final text = switch (ratio) {
+                        < 0.65 => l10n.yourClipboardHistoryIsLimited,
+                        _ => l10n.oldItemsWillBeOverwritten,
+                      };
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: AppSpacing.xs,
+                        children: [
+                          Text(
+                            text,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 10,
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          if (!isPro)
+                            TextButton.icon(
+                              icon: const HugeIcon(
+                                icon: HugeIcons.strokeRoundedCrown,
+                                size: AppSpacing.md,
+                              ),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: AppSpacing.xxxs,
+                                  horizontal: AppSpacing.xs,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                foregroundColor: colorScheme.primary,
+                                textStyle: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 10,
+                                  letterSpacing: 0.2,
+                                ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              onPressed: () {
+                                context.read<UpgradePromptCubit>().request(
+                                  ProFeature.unlimitedHistory,
+                                  source: ProFeatureRequestSource
+                                      .historyLimitReached,
+                                );
+                              },
+                              label: Text(
+                                textAlign: TextAlign.start,
+                                l10n.upgradeToPro,
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
-                },
               ],
             ),
           ],

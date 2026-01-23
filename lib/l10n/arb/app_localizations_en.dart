@@ -286,6 +286,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingLinkPreview => 'Loading link preview...';
 
   @override
+  String get manageRetention => 'Manage Retention';
+
+  @override
   String get maxHistoryItemsDescription =>
       'Sets the maximum number of items in the clipboard.';
 
@@ -447,6 +450,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get retentionDaysDescription =>
       'Sets how long items are kept in the clipboard.';
+
+  @override
+  String get retentionExpired => 'Expired';
+
+  @override
+  String retentionExpiresIn(int value, String unit) {
+    return 'Auto-Removed in $value $unit';
+  }
 
   @override
   String get retry => 'Retry';

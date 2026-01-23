@@ -556,6 +556,12 @@ abstract class AppLocalizations {
   /// **'Loading link preview...'**
   String get loadingLinkPreview;
 
+  /// Button text to manage retention settings
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Retention'**
+  String get manageRetention;
+
   /// Description for the Max History Items setting
   ///
   /// In en, this message translates to:
@@ -831,6 +837,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sets how long items are kept in the clipboard.'**
   String get retentionDaysDescription;
+
+  /// Label indicating that the retention period has expired
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get retentionExpired;
+
+  /// Label showing when the retention expires
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-Removed in {value} {unit}'**
+  String retentionExpiresIn(int value, String unit);
 
   /// Button text to retry an operation
   ///

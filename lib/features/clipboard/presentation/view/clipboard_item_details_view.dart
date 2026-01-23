@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
@@ -8,7 +10,7 @@ import 'package:lucid_clip/core/theme/app_text_styles.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
-import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
+import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -258,7 +260,7 @@ class _InfoCard extends StatelessWidget {
                 Row(
                   spacing: AppSpacing.xxs,
                   children: [
-                    clipboardItem.getSourceAppIcon(colorScheme),
+                    clipboardItem.resolveSourceAppIcon(colorScheme),
                     Text(
                       clipboardItem.sourceApp!.name,
                       style: Theme.of(
@@ -274,6 +276,37 @@ class _InfoCard extends StatelessWidget {
             value: clipboardItem.sourceApp!.name,
             icon: const HugeIcon(icon: HugeIcons.strokeRoundedComputer),
           ),
+
+        _InfoRow(
+          label: l10n.retentionDays,
+          value: '',
+          valueWidget: RetentionWarningBadge(
+            item: clipboardItem,
+            mode: RetentionDisplayMode.details,
+          ),
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedDatabase01),
+          actionWidget: TextButton.icon(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            onPressed: () {
+              context.router.navigate(
+                SettingsRoute(section: SettingsSection.history.name),
+              );
+            },
+            icon: const HugeIcon(
+              icon: HugeIcons.strokeRoundedDataRecovery,
+              size: 14,
+            ),
+            label: Text(
+              l10n.manageRetention.sentenceCase,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
         _InfoRow(
           label: l10n.copied.sentenceCase,
           value: clipboardItem.timeAgo,
@@ -323,7 +356,7 @@ class _InfoRow extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.md,
+        spacing: AppSpacing.xs,
         children: [
           Row(
             children: [
@@ -336,7 +369,7 @@ class _InfoRow extends StatelessWidget {
                 ),
                 child: IconTheme(
                   data: IconThemeData(
-                    size: AppSpacing.sm,
+                    size: AppSpacing.xs,
                     color: colorScheme.onTertiary,
                   ),
                   child: icon,
@@ -354,7 +387,7 @@ class _InfoRow extends StatelessWidget {
                         fontSize: 11,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xxxs),
+                    const SizedBox(height: AppSpacing.xxs),
                     valueWidget ??
                         Text(
                           value,

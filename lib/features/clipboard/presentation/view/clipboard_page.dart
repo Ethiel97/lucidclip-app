@@ -150,11 +150,7 @@ class _ClipboardViewState extends State<ClipboardView>
                               key: ValueKey(
                                 'list_${isSearchMode}_$searchFilterType',
                               ),
-
-                              physics: const BouncingScrollPhysics(
-                                parent: ClampingScrollPhysics(),
-                              ),
-
+                              physics: const ClampingScrollPhysics(),
                               itemCount: allItems.length,
                               addAutomaticKeepAlives: false,
                               cacheExtent: 200,

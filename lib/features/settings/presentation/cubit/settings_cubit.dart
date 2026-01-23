@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -51,7 +52,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       userId: _currentUserId,
       createdAt: DateTime.now().toUtc(),
       updatedAt: DateTime.now().toUtc(),
-      shortcuts: const {'toggle_window': 'Cmd + Shift + L'},
+      shortcuts: {
+        'toggle_window': Platform.isMacOS
+            ? 'Cmd + Shift + L'
+            : 'Ctrl + Shift + L',
+      },
     );
   }
 

@@ -31,6 +31,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   final Map<String, GlobalKey> _sectionKeys = {
     SettingsSection.usage.name: GlobalKey(),
+    SettingsSection.history.name: GlobalKey(),
     SettingsSection.appearance.name: GlobalKey(),
     SettingsSection.privacy.name: GlobalKey(),
     SettingsSection.shortcuts.name: GlobalKey(),
@@ -67,11 +68,14 @@ class _SettingsViewState extends State<SettingsView> {
   void _scrollToSection(String section) {
     final keyContext = _sectionKeys[section]?.currentContext;
     if (keyContext != null) {
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      if (!keyContext.mounted) return;
       Scrollable.ensureVisible(
         keyContext,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+      // });
     }
   }
 

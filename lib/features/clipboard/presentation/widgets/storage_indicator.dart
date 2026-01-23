@@ -11,6 +11,7 @@ import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:percent_indicator/flutter_percent_indicator.dart';
 import 'package:recase/recase.dart';
 
+// TODO(refactor): Centralize storage policy logic
 class StorageIndicator extends StatelessWidget {
   const StorageIndicator({required this.total, required this.used, super.key});
 
@@ -34,6 +35,9 @@ class StorageIndicator extends StatelessWidget {
         : colorScheme.outline.withValues(alpha: 0.75);
 
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+    final isPro = context.select(
+      (EntitlementCubit cubit) => cubit.state.isProActive,
+    );
 
     return GestureDetector(
       onTap: () {
@@ -148,44 +152,41 @@ class StorageIndicator extends StatelessWidget {
                               color: colorScheme.onSurfaceVariant,
                             ),
                           ),
-
-                          TextButton.icon(
-                            icon: const HugeIcon(
-                              icon: HugeIcons.strokeRoundedCrown,
-                              size: AppSpacing.md,
-                            ),
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: AppSpacing.xxxs,
-                                horizontal: AppSpacing.xs,
+                          if (!isPro)
+                            TextButton.icon(
+                              icon: const HugeIcon(
+                                icon: HugeIcons.strokeRoundedCrown,
+                                size: AppSpacing.md,
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(999),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: AppSpacing.xxxs,
+                                  horizontal: AppSpacing.xs,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                foregroundColor: colorScheme.primary,
+                                textStyle: theme.textTheme.labelSmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 10,
+                                  letterSpacing: 0.2,
+                                ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                visualDensity: VisualDensity.compact,
                               ),
-                              foregroundColor: colorScheme.primary,
-                              /* backgroundColor: colorScheme.primary.withValues(
-                                alpha: 0.15,
-                              ),*/
-                              textStyle: theme.textTheme.labelSmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10,
-                                letterSpacing: 0.2,
+                              onPressed: () {
+                                context.read<UpgradePromptCubit>().request(
+                                  ProFeature.unlimitedHistory,
+                                  source: ProFeatureRequestSource
+                                      .historyLimitReached,
+                                );
+                              },
+                              label: Text(
+                                textAlign: TextAlign.start,
+                                l10n.upgradeToPro,
                               ),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              visualDensity: VisualDensity.compact,
                             ),
-                            onPressed: () {
-                              context.read<UpgradePromptCubit>().request(
-                                ProFeature.unlimitedHistory,
-                                source:
-                                    ProFeatureRequestSource.historyLimitReached,
-                              );
-                            },
-                            label: Text(
-                              textAlign: TextAlign.start,
-                              l10n.upgradeToPro,
-                            ),
-                          ),
                         ],
                       );
                     },

@@ -203,10 +203,19 @@ extension ClipboardItemHelper on ClipboardItem {
   String get timeAgo =>
       Jiffy.parseFromDateTime(createdAt).toUtc().fromNow().sentenceCase;
 
+  Duration get durationUntilExpiration {
+    final expirationTime = createdAt.add(const Duration(days: 1));
+    final remaining = expirationTime.difference(DateTime.now().toUtc());
+    return remaining.isNegative ? Duration.zero : remaining;
+  }
+
   /// return expiration (remove after 24 hours) in hours as string
   String get hoursUntilExpiration {
-    final expirationTime = createdAt.add(const Duration(days: 1));
-    final remaining = expirationTime.difference(DateTime.now().toUtc()).inHours;
+    final remaining = durationUntilExpiration.inHours;
     return remaining.clamp(0, 24).toString();
+  }
+
+  bool get shouldShowExpirationBadge {
+    return durationUntilExpiration.inHours <= 6;
   }
 }

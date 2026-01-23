@@ -128,7 +128,7 @@ class _SidebarState extends State<Sidebar> {
               physics: const ClampingScrollPhysics(),
               itemCount: menuItems.length,
               separatorBuilder: (_, __) =>
-                  const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final item = menuItems[index];
                 final isSelected = tabsRouter.activeIndex == index;

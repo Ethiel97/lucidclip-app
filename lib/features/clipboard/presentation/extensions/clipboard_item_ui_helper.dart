@@ -97,7 +97,7 @@ extension ClipboardUiHelper on ClipboardItem {
     }
   }
 
-  Widget getSourceAppIcon(ColorScheme colorScheme) {
+  Widget resolveSourceAppIcon(ColorScheme colorScheme) {
     return sourceApp?.getIconWidget(colorScheme) ??
         HugeIcon(
           icon: HugeIcons.strokeRounded0Square,
@@ -108,11 +108,42 @@ extension ClipboardUiHelper on ClipboardItem {
 }
 
 extension ClipboardItemTypeUiHelper on ClipboardItemType {
-  String filterTypeLabel(AppLocalizations l10n) => switch (this) {
+  String resolveFilterTypeLabel(AppLocalizations l10n) => switch (this) {
     FilterType.image => l10n.imageOnly,
     FilterType.file => l10n.fileOnly,
     FilterType.url => l10n.linkOnly,
     FilterType.unknown => l10n.allTypes,
     _ => l10n.textOnly,
   };
+}
+
+extension I18nTextResolver on I18nText {
+  String resolve(AppLocalizations l10n) => switch (key) {
+    'retentionExpiresIn' => l10n.retentionExpiresIn(
+      args['value']! as int,
+      args['unit']! as String,
+    ),
+    'retentionExpired' => l10n.retentionExpired,
+    _ => key,
+  };
+}
+
+extension RetentionWarningUi on RetentionWarning {
+  String? resolveLabel(AppLocalizations l10n) => text?.resolve(l10n);
+
+  Widget resolveBadge({
+    required AppLocalizations l10n,
+    required ColorScheme colorScheme,
+  }) {
+    final label = resolveLabel(l10n);
+    if (label == null || level.isNone) return const SizedBox.shrink();
+
+    final color = switch (level) {
+      RetentionWarningLevel.warning => colorScheme.errorContainer,
+      RetentionWarningLevel.danger => colorScheme.error,
+      _ => colorScheme.onError,
+    };
+
+    return ClipboardBadge(label: label, color: color);
+  }
 }

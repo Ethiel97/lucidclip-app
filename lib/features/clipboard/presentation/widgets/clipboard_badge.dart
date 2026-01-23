@@ -3,19 +3,27 @@ import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:recase/recase.dart';
 
 class ClipboardBadge extends StatelessWidget {
-  const ClipboardBadge({required this.label, this.color, super.key});
+  const ClipboardBadge({
+    required this.label,
+    this.color,
+    this.padding,
+    super.key,
+  });
 
-  final String label;
   final Color? color;
+  final String label;
+  final EdgeInsets? padding;
+
+  EdgeInsets get defaultPadding => const EdgeInsets.symmetric(
+    horizontal: AppSpacing.sm,
+    vertical: AppSpacing.xxxs,
+  );
 
   @override
   Widget build(BuildContext context) {
     final tagColor = color ?? Theme.of(context).colorScheme.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxxs,
-      ),
+      padding: padding ?? defaultPadding,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
         color: tagColor.withValues(alpha: 0.13),

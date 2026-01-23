@@ -30,6 +30,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     _loadData();
     _startWatchingClipboard();
     _performInitialCleanup();
+    _startPeriodicCleanup();
   }
 
   Future<void> _loadData() async {
@@ -68,6 +69,21 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     });
   }
 
+  /// Starts periodic cleanup of expired items
+  /// Runs every hour to ensure the database doesn't get full
+  void _startPeriodicCleanup() {
+    // Run cleanup every hour
+    const cleanupInterval = Duration(hours: 1);
+    
+    _periodicCleanupTimer = Timer.periodic(cleanupInterval, (_) {
+      developer.log(
+        'Running periodic cleanup',
+        name: 'ClipboardCubit',
+      );
+      _performCleanup();
+    });
+  }
+
   final BaseClipboardManager clipboardManager;
   final AuthRepository authRepository;
   final ClipboardRepository clipboardRepository;
@@ -82,6 +98,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
   StreamSubscription<ClipboardHistories>? _localHistorySubscription;
   StreamSubscription<UserSettings?>? _userSettingsSubscription;
+  Timer? _periodicCleanupTimer;
 
   UserSettings? _userSettings;
 
@@ -459,6 +476,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   @disposeMethod
   @override
   Future<void> close() async {
+    _periodicCleanupTimer?.cancel();
     await _authSubscription?.cancel();
     await _clipboardSubscription?.cancel();
     await clipboardManager.dispose();

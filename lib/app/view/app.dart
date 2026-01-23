@@ -7,6 +7,7 @@ import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
@@ -41,6 +42,9 @@ class _AppState extends State<App> with WindowListener {
   @override
   Future<void> onWindowBlur() async {
     super.onWindowBlur();
+
+    getIt<ClipboardDetailCubit>().clearSelection();
+
     final shortcuts = getIt<SettingsCubit>().state.shortcuts;
 
     //if the user has set shortcuts for displaying the app we can hide on blur

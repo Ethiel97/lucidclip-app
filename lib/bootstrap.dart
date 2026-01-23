@@ -101,7 +101,7 @@ Future<void> resetSettingsDatabase() async {
 
 Future<void> resetEntitlementsDatabase() async {
   final dir = await getLibraryDirectory();
-  final entitlementsDbFile = File(p.join(dir.path, 'entitlements_db.sqlite'));
+  final entitlementsDbFile = File(p.join(dir.path, 'entitlement_db.sqlite'));
   if (entitlementsDbFile.existsSync()) {
     await entitlementsDbFile.delete();
   }

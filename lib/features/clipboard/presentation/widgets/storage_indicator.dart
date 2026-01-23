@@ -23,7 +23,9 @@ class StorageIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ratio = (used / total).clamp(0.0, 1.0);
+    final guardedTotal = total <= 0 ? 1 : total;
+
+    final ratio = (used / guardedTotal).clamp(0.0, 1.0);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = context.l10n;

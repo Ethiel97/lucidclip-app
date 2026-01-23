@@ -10,13 +10,12 @@ class OverlayPositioner {
 
   Future<Offset> computeTopCenterPosition({
     required Size windowSize,
-    double topMargin = 96, // Raycast-like: un peu sous la barre
+    double topMargin = 96,
   }) async {
     try {
       final displays = await screenRetriever.getAllDisplays();
       final cursor = await screenRetriever.getCursorScreenPoint();
 
-      // Trouver l’écran qui contient le curseur
       final active = displays.firstWhere(
         (d) => _contains(d.visiblePosition!, d.visibleSize!, cursor),
         orElse: () => displays.first,

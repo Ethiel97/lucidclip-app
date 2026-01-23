@@ -60,8 +60,6 @@ class _SupabaseEntitlementRemoteSubscription
       _sub = _rawStream.listen((rows) {
         if (rows.isEmpty) return;
 
-        // Tu peux trier par updated_at si tu veux être strict.
-        // Ici, on prend la dernière row du snapshot.
         final latest = rows.last;
         _controller.add(EntitlementModel.fromJson(latest));
       }, onError: _controller.addError);

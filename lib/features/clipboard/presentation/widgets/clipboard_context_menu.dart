@@ -56,6 +56,10 @@ class ClipboardContextMenu extends StatelessWidget {
       if (!item.type.isImage || !item.type.isFile)
         (label: l10n.edit.sentenceCase, icon: HugeIcons.strokeRoundedEdit01),
       (label: l10n.delete.sentenceCase, icon: HugeIcons.strokeRoundedDelete01),
+      (
+        label: l10n.clearClipboardHistory.sentenceCase,
+        icon: HugeIcons.strokeRoundedDelete03,
+      ),
     ];
     return menu
         .map(
@@ -90,11 +94,12 @@ class ClipboardContextMenu extends StatelessWidget {
                     clipboardItem,
                   );
                 case final l when l == l10n.edit.sentenceCase:
-                  // TODO(Ethiel97): Handle edit action
-                  break;
+                // TODO(Ethiel97): Handle edit action
                 case final l when l == l10n.appendToClipboard.sentenceCase:
                   context.read<ClipboardCubit>().copyToClipboard(clipboardItem);
-                // Add other cases as needed
+
+                case final l when l == l10n.clearClipboardHistory.sentenceCase:
+                  context.read<ClipboardCubit>().clearClipboard();
               }
             },
           ),

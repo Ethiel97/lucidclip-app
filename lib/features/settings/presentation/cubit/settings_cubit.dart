@@ -13,6 +13,8 @@ import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'settings_state.dart';
 
+// TODO(Ethiel): Refactor to handle local and remote settings
+//  in the repository layer
 @lazySingleton
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({

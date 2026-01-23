@@ -116,7 +116,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     ) async {
       final settings = _userSettings;
 
-      log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
+      developer.log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
 
       if (settings?.incognitoMode ?? false) {
         developer.log(
@@ -130,7 +130,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       final excluded = settings?.excludedApps ?? const <SourceApp>[];
       final sourceApp = clipboardData.sourceApp;
 
-      log('Excluded apps: $excluded', name: 'ClipboardCubit');
+      developer.log('Excluded apps: $excluded', name: 'ClipboardCubit');
 
       if (_isSourceAppExcluded(sourceApp)) {
         developer.log(

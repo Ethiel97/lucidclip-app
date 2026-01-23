@@ -162,10 +162,9 @@ void main() {
 
         await service.cleanupExpiredItems();
 
-        // Verify only the expired item was deleted (item 2)
+        // Verify only the expired item was deleted (exactly 1 call to delete)
         verify(() => mockLocalClipboardRepository.delete('2')).called(1);
-        // Verify item 1 was NOT deleted - check total delete calls
-        verify(() => mockLocalClipboardRepository.delete(any())).called(1);
+        verifyNever(() => mockLocalClipboardRepository.delete('1'));
       });
 
       test('falls back to default retention if settings not available', () async {

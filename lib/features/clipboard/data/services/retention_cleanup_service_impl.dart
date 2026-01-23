@@ -47,8 +47,8 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
       // Get all clipboard items
       final items = await localClipboardRepository.getAll();
 
-      // Create retention policy
-      final policy = RetentionWarningPolicy(
+      // Create retention expiration policy
+      final policy = RetentionExpirationPolicy(
         now: () => DateTime.now(),
         proRetention: retentionDuration,
         freeRetention: const Duration(days: defaultRetentionDays),
@@ -62,14 +62,14 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
           continue;
         }
 
-        // Evaluate retention
-        final warning = policy.evaluate(
+        // Evaluate retention expiration
+        final expiration = policy.evaluate(
           item: item,
           isPro: isPro,
         );
 
-        // If item has expired (remaining time is zero or negative), delete it
-        if (warning.remaining <= Duration.zero) {
+        // If item has expired, delete it
+        if (expiration.isExpired) {
           await localClipboardRepository.delete(item.id);
           deletedCount++;
           developer.log(

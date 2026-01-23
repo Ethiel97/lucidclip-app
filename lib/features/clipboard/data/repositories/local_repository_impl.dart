@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
@@ -20,7 +22,12 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
         return;
       }
       await _localDataSource.put(ClipboardItemModel.fromEntity(item));
-    } catch (e) {
+    } catch (e, stack) {
+      log(
+        'Error in upsert: $e',
+        stackTrace: stack,
+        name: 'LocalClipboardStoreImpl',
+      );
       throw CacheException('Failed to upsert clipboard item: $e');
     }
   }
@@ -74,7 +81,12 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
       final records = await _localDataSource.getAll();
       final items = records.map((r) => r.toEntity()).toList();
       return items.withEnrichedSourceApps();
-    } catch (e) {
+    } catch (e, stack) {
+      log(
+        'Error in getAll: $e',
+        stackTrace: stack,
+        name: 'LocalClipboardStoreImpl',
+      );
       throw CacheException('Failed to get all clipboard items: $e');
     }
   }
@@ -85,7 +97,12 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
       final records = await _localDataSource.getUnsynced();
       final items = records.map((r) => r.toEntity()).toList();
       return items.withEnrichedSourceApps();
-    } catch (e) {
+    } catch (e, stack) {
+      log(
+        'Error in getUnsynced: $e',
+        stackTrace: stack,
+        name: 'LocalClipboardStoreImpl',
+      );
       throw CacheException('Failed to get unsynced clipboard items: $e');
     }
   }

@@ -3,16 +3,13 @@ import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 /// Result of evaluating retention expiration for a clipboard item.
 class RetentionExpiration {
-  const RetentionExpiration({
-    required this.isExpired,
-    required this.expiresAt,
-  });
+  const RetentionExpiration({required this.isExpired, this.expiresAt});
 
   /// Whether the item has expired and should be deleted.
   final bool isExpired;
 
   /// The exact DateTime when the item will expire (or did expire).
-  final DateTime expiresAt;
+  final DateTime? expiresAt;
 }
 
 /// Policy for evaluating whether clipboard items have expired
@@ -38,23 +35,17 @@ class RetentionExpirationPolicy {
     required bool isPro,
   }) {
     final retention = isPro ? proRetention : freeRetention;
-    
+
     // Items with zero retention never expire
     if (retention == Duration.zero) {
-      return RetentionExpiration(
-        isExpired: false,
-        expiresAt: DateTime.fromMillisecondsSinceEpoch(0).toUtc(),
-      );
+      return const RetentionExpiration(isExpired: false);
     }
 
     final created = item.createdAt.toUtc();
     final expiresAt = created.add(retention);
     final currentTime = now().toUtc();
-    final isExpired = currentTime.isAfter(expiresAt);
+    final isExpired = !currentTime.isBefore(expiresAt);
 
-    return RetentionExpiration(
-      isExpired: isExpired,
-      expiresAt: expiresAt,
-    );
+    return RetentionExpiration(isExpired: isExpired, expiresAt: expiresAt);
   }
 }

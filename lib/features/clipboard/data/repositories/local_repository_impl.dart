@@ -76,10 +76,17 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   }
 
   @override
-  Future<List<ClipboardItem>> getAll() async {
+  Future<List<ClipboardItem>> getAll({
+    FetchMode fetchMode = FetchMode.withIcons,
+  }) async {
     try {
       final records = await _localDataSource.getAll();
       final items = records.map((r) => r.toEntity()).toList();
+
+      if (fetchMode.excludesIcons) {
+        return items;
+      }
+
       return items.withEnrichedSourceApps();
     } catch (e, stack) {
       log(
@@ -92,10 +99,17 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   }
 
   @override
-  Future<List<ClipboardItem>> getUnsynced() async {
+  Future<List<ClipboardItem>> getUnsynced({
+    FetchMode fetchMode = FetchMode.withIcons,
+  }) async {
     try {
       final records = await _localDataSource.getUnsynced();
       final items = records.map((r) => r.toEntity()).toList();
+
+      if (fetchMode.excludesIcons) {
+        return items;
+      }
+
       return items.withEnrichedSourceApps();
     } catch (e, stack) {
       log(

@@ -2,6 +2,18 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 /// Contrat pour le stockage local des items clipboard.
 /// Implémenté par la couche data (Hive, Isar, SQLite, etc.)
+///
+///
+
+enum FetchMode {
+  withIcons,
+  withoutIcons;
+
+  bool get includesIcons => this == FetchMode.withIcons;
+
+  bool get excludesIcons => this == FetchMode.withoutIcons;
+}
+
 abstract class LocalClipboardRepository {
   Future<void> upsert(ClipboardItem item);
 
@@ -16,9 +28,13 @@ abstract class LocalClipboardRepository {
 
   Future<ClipboardItem?> getByContentHash(String contentHash);
 
-  Future<List<ClipboardItem>> getAll();
+  Future<List<ClipboardItem>> getAll({
+    FetchMode fetchMode = FetchMode.withIcons,
+  });
 
-  Future<List<ClipboardItem>> getUnsynced();
+  Future<List<ClipboardItem>> getUnsynced({
+    FetchMode fetchMode = FetchMode.withIcons,
+  });
 
   Future<void> markAsSynced(List<String> ids);
 

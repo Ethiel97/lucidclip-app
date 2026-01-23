@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/features/clipboard/domain/services/retention_cleanup_service.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
@@ -45,13 +44,14 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
       }
 
       // Get all clipboard items
-      final items = await localClipboardRepository.getAll();
+      final items = await localClipboardRepository.getAll(
+        fetchMode: FetchMode.withoutIcons,
+      );
 
       // Create retention expiration policy
       final policy = RetentionExpirationPolicy(
-        now: () => DateTime.now(),
+        now: DateTime.now,
         proRetention: retentionDuration,
-        freeRetention: const Duration(days: defaultRetentionDays),
       );
 
       // Evaluate and delete expired items
@@ -63,19 +63,26 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
         }
 
         // Evaluate retention expiration
-        final expiration = policy.evaluate(
-          item: item,
-          isPro: isPro,
-        );
+        try {
+          final expiration = policy.evaluate(item: item, isPro: isPro);
 
-        // If item has expired, delete it
-        if (expiration.isExpired) {
-          await localClipboardRepository.delete(item.id);
-          deletedCount++;
+          // If item has expired, delete it
+          if (expiration.isExpired) {
+            await localClipboardRepository.delete(item.id);
+            deletedCount++;
+            developer.log(
+              'Deleted expired clipboard item: ${item.id}',
+              name: 'RetentionCleanupService',
+            );
+          }
+        } catch (e, stack) {
           developer.log(
-            'Deleted expired clipboard item: ${item.id}',
+            'Failed to evaluate retention for item ${item.id}: $e',
             name: 'RetentionCleanupService',
+            stackTrace: stack,
           );
+          // Continue with next item
+          continue;
         }
       }
 

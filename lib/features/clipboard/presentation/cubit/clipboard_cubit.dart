@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -25,10 +24,13 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.localClipboardHistoryRepository,
     required this.localSettingsRepository,
     required this.remoteSettingsRepository,
+    required this.retentionCleanupService,
   }) : super(const ClipboardState()) {
     _initializeAuthListener();
     _loadData();
     _startWatchingClipboard();
+    _performInitialCleanup();
+    _startPeriodicCleanup();
   }
 
   Future<void> _loadData() async {
@@ -40,6 +42,48 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     ]);
   }
 
+  /// Performs initial cleanup of expired items on app startup
+  Future<void> _performInitialCleanup() async {
+    try {
+      await retentionCleanupService.cleanupExpiredItems();
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to perform initial cleanup',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    }
+  }
+
+  /// Performs cleanup of expired items (non-blocking)
+  void _performCleanup() {
+    // Run cleanup without blocking the UI
+    retentionCleanupService.cleanupExpiredItems().catchError((e, stackTrace) {
+      developer.log(
+        'Failed to perform cleanup on refresh',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    });
+  }
+
+  /// Starts periodic cleanup of expired items
+  /// Runs every hour to ensure the database doesn't get full
+  void _startPeriodicCleanup() {
+    // Run cleanup every hour
+    const cleanupInterval = Duration(hours: 1);
+    
+    _periodicCleanupTimer = Timer.periodic(cleanupInterval, (_) {
+      developer.log(
+        'Running periodic cleanup',
+        name: 'ClipboardCubit',
+      );
+      _performCleanup();
+    });
+  }
+
   final BaseClipboardManager clipboardManager;
   final AuthRepository authRepository;
   final ClipboardRepository clipboardRepository;
@@ -47,12 +91,14 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalClipboardRepository localClipboardRepository;
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository remoteSettingsRepository;
+  final RetentionCleanupService retentionCleanupService;
 
   StreamSubscription<User?>? _authSubscription;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
   StreamSubscription<ClipboardHistories>? _localHistorySubscription;
   StreamSubscription<UserSettings?>? _userSettingsSubscription;
+  Timer? _periodicCleanupTimer;
 
   UserSettings? _userSettings;
 
@@ -87,7 +133,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     ) async {
       final settings = _userSettings;
 
-      log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
+      developer.log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
 
       if (settings?.incognitoMode ?? false) {
         developer.log(
@@ -101,7 +147,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       final excluded = settings?.excludedApps ?? const <SourceApp>[];
       final sourceApp = clipboardData.sourceApp;
 
-      log('Excluded apps: $excluded', name: 'ClipboardCubit');
+      developer.log('Excluded apps: $excluded', name: 'ClipboardCubit');
 
       if (_isSourceAppExcluded(sourceApp)) {
         developer.log(
@@ -214,6 +260,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     _localItemsSubscription = localClipboardRepository.watchAll().listen(
       (items) {
         emit(state.copyWith(clipboardItems: items.toSuccess()));
+        // Cleanup expired items when clipboard items are refreshed
+        _performCleanup();
       },
       onError: (Object error, StackTrace stackTrace) {
         emit(
@@ -428,6 +476,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   @disposeMethod
   @override
   Future<void> close() async {
+    _periodicCleanupTimer?.cancel();
     await _authSubscription?.cancel();
     await _clipboardSubscription?.cancel();
     await clipboardManager.dispose();

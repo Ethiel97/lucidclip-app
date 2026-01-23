@@ -86,6 +86,8 @@ import 'package:lucid_clip/features/clipboard/data/repositories/local_repository
     as _i752;
 import 'package:lucid_clip/features/clipboard/data/repositories/supabase_repository_impl.dart'
     as _i244;
+import 'package:lucid_clip/features/clipboard/data/services/retention_cleanup_service_impl.dart'
+    as _i899;
 import 'package:lucid_clip/features/clipboard/domain/domain.dart' as _i782;
 import 'package:lucid_clip/features/clipboard/presentation/cubit/clipboard_cubit.dart'
     as _i958;
@@ -253,6 +255,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
       dispose: (i) => i.clear(),
     );
+    gh.lazySingleton<_i782.RetentionCleanupService>(
+      () => _i899.RetentionCleanupServiceImpl(
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
+        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
+        entitlementRepository: gh<_i311.EntitlementRepository>(),
+        authRepository: gh<_i895.AuthRepository>(),
+      ),
+    );
     gh.lazySingleton<_i68.ClipboardDetailCubit>(
       () => _i68.ClipboardDetailCubit(
         localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
@@ -381,6 +391,7 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i42.LocalClipboardHistoryRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
         remoteSettingsRepository: gh<_i340.SettingsRepository>(),
+        retentionCleanupService: gh<_i782.RetentionCleanupService>(),
       ),
       dispose: (i) => i.close(),
     );

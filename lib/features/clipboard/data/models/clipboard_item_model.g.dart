@@ -21,15 +21,19 @@ ClipboardItemModel _$ClipboardItemModelFromJson(Map<String, dynamic> json) =>
           ClipboardItemTypeModel.unknown,
       updatedAt: DateTime.parse(json['updated_at'] as String),
       userId: json['user_id'] as String,
-      imageBytes: (json['image_bytes'] as List<dynamic>?)
-          ?.map((e) => (e as num).toInt())
-          .toList(),
-      filePath: json['file_path'] as String?,
       isPinned: json['is_pinned'] as bool? ?? false,
       isSnippet: json['is_snippet'] as bool? ?? false,
       isSynced: json['is_synced'] as bool? ?? false,
       metadata: json['metadata'] as Map<String, dynamic>? ?? const {},
+      usageCount: (json['usage_count'] as num?)?.toInt() ?? 0,
+      filePath: json['file_path'] as String?,
       htmlContent: json['html_content'] as String?,
+      imageBytes: (json['image_bytes'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
+      lastUsedAt: json['last_used_at'] == null
+          ? null
+          : DateTime.parse(json['last_used_at'] as String),
     );
 
 Map<String, dynamic> _$ClipboardItemModelToJson(ClipboardItemModel instance) =>
@@ -44,9 +48,11 @@ Map<String, dynamic> _$ClipboardItemModelToJson(ClipboardItemModel instance) =>
       'is_pinned': instance.isPinned,
       'is_snippet': instance.isSnippet,
       'is_synced': instance.isSynced,
+      'last_used_at': instance.lastUsedAt?.toIso8601String(),
       'metadata': instance.metadata,
       'type': _$ClipboardItemTypeModelEnumMap[instance.type]!,
       'updated_at': instance.updatedAt.toIso8601String(),
+      'usage_count': instance.usageCount,
       'user_id': instance.userId,
     };
 

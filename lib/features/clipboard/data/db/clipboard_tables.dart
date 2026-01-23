@@ -10,11 +10,17 @@ class ClipboardItemEntries extends Table {
 
   TextColumn get userId => text().named('user_id')();
 
+  IntColumn get usageCount =>
+      integer().named('usage_count').withDefault(const Constant(0))();
+
   TextColumn get type => text()();
 
   DateTimeColumn get createdAt => dateTime().named('created_at')();
 
   DateTimeColumn get updatedAt => dateTime().named('updated_at')();
+
+  DateTimeColumn get lastUsedAt =>
+      dateTime().named('last_used_at').nullable()();
 
   TextColumn get htmlContent => text().named('html_content').nullable()();
 

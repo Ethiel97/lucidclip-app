@@ -133,9 +133,11 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       isPinned: e.isPinned,
       isSnippet: e.isSnippet,
       isSynced: e.isSynced,
+      lastUsedAt: e.lastUsedAt,
       metadata: metadata,
       type: type,
       updatedAt: e.updatedAt,
+      usageCount: e.usageCount,
       userId: e.userId,
     );
   }
@@ -145,23 +147,25 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       id: Value(m.id),
       content: Value(m.content),
       contentHash: Value(m.contentHash),
-      userId: Value(m.userId),
-      type: Value(m.type.name),
       createdAt: Value(m.createdAt),
-      updatedAt: Value(m.updatedAt),
+      filePath: Value(m.filePath),
+      isPinned: Value(m.isPinned),
+      isSnippet: Value(m.isSnippet),
+      isSynced: Value(m.isSynced),
       htmlContent: Value(m.htmlContent),
       imageBytes: Value(
         (m.imageBytes?.isNotEmpty ?? false)
             ? base64Encode(m.imageBytes!)
             : null,
       ),
-      filePath: Value(m.filePath),
-      isPinned: Value(m.isPinned),
-      isSnippet: Value(m.isSnippet),
-      isSynced: Value(m.isSynced),
+      lastUsedAt: Value(m.lastUsedAt),
       metadataJson: Value(
         m.metadata.isNotEmpty ? jsonEncode(m.metadata) : null,
       ),
+      type: Value(m.type.name),
+      updatedAt: Value(m.updatedAt),
+      usageCount: Value(m.usageCount),
+      userId: Value(m.userId),
     );
   }
 

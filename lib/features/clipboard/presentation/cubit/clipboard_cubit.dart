@@ -90,7 +90,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       log('incognito mode: ${settings?.incognitoMode}', name: 'ClipboardCubit');
 
       if (settings?.incognitoMode ?? false) {
-        // In incognito mode, do not store clipboard data
         developer.log(
           'Incognito mode is enabled; skipping clipboard storage.',
           name: 'ClipboardCubit',
@@ -119,21 +118,42 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         (item) => item.contentHash == clipboardData.contentHash,
       );
 
+      final now = DateTime.now().toUtc();
+
       // TODO(Ethiel97): Check duplicate content update
+
       if (isDuplicate) {
-        developer.log('Duplicate clipboard item detected; updating timestamp.');
-        final existingItem = currentItems.firstWhere(
-          (item) => item.contentHash == clipboardData.contentHash,
+        developer.log('Duplicate detected; bumping lastUsedAt.');
+
+        final candidates = currentItems.where(
+          (i) => i.contentHash == clipboardData.contentHash,
         );
+        final existingItem = candidates.reduce((a, b) {
+          final aToSort = a.lastUsedAt ?? a.createdAt;
+          final bToSort = b.lastUsedAt ?? b.createdAt;
+          return aToSort.isAfter(bToSort) ? a : b;
+        });
+
+        final last = existingItem.lastUsedAt ?? existingItem.createdAt;
+        const cooldown = Duration(seconds: 3);
+        final shouldLogHistory = now.difference(last) > cooldown;
 
         final updatedItem = existingItem.copyWith(
-          updatedAt: DateTime.now().toUtc(),
+          lastUsedAt: now,
+          usageCount: (existingItem.usageCount) + 1,
         );
 
         await _upsertClipboardItem(updatedItem);
-        await _createClipboardHistory(updatedItem.id);
+
+        if (shouldLogHistory) {
+          await _createClipboardHistory(updatedItem.id);
+        }
       } else {
-        final newItem = clipboardData.toDomain(userId: _currentUserId);
+        final newItem = clipboardData
+            .toDomain(userId: _currentUserId)
+            .copyWith(
+              lastUsedAt: now, // optionnel mais cohérent
+            );
 
         await _upsertClipboardItem(newItem);
         await _createClipboardHistory(newItem.id);

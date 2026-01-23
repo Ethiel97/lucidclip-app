@@ -49,6 +49,18 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _usageCountMeta = const VerificationMeta(
+    'usageCount',
+  );
+  @override
+  late final GeneratedColumn<int> usageCount = GeneratedColumn<int>(
+    'usage_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
@@ -79,6 +91,17 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUsedAtMeta = const VerificationMeta(
+    'lastUsedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUsedAt = GeneratedColumn<DateTime>(
+    'last_used_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _htmlContentMeta = const VerificationMeta(
     'htmlContent',
@@ -175,9 +198,11 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     content,
     contentHash,
     userId,
+    usageCount,
     type,
     createdAt,
     updatedAt,
+    lastUsedAt,
     htmlContent,
     imageBytes,
     filePath,
@@ -230,6 +255,12 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
+    if (data.containsKey('usage_count')) {
+      context.handle(
+        _usageCountMeta,
+        usageCount.isAcceptableOrUnknown(data['usage_count']!, _usageCountMeta),
+      );
+    }
     if (data.containsKey('type')) {
       context.handle(
         _typeMeta,
@@ -253,6 +284,15 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
       );
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('last_used_at')) {
+      context.handle(
+        _lastUsedAtMeta,
+        lastUsedAt.isAcceptableOrUnknown(
+          data['last_used_at']!,
+          _lastUsedAtMeta,
+        ),
+      );
     }
     if (data.containsKey('html_content')) {
       context.handle(
@@ -327,6 +367,10 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
         DriftSqlType.string,
         data['${effectivePrefix}user_id'],
       )!,
+      usageCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}usage_count'],
+      )!,
       type: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}type'],
@@ -339,6 +383,10 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      lastUsedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_used_at'],
+      ),
       htmlContent: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}html_content'],
@@ -382,9 +430,11 @@ class ClipboardItemEntry extends DataClass
   final String content;
   final String contentHash;
   final String userId;
+  final int usageCount;
   final String type;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? lastUsedAt;
   final String? htmlContent;
   final String? imageBytes;
   final String? filePath;
@@ -397,9 +447,11 @@ class ClipboardItemEntry extends DataClass
     required this.content,
     required this.contentHash,
     required this.userId,
+    required this.usageCount,
     required this.type,
     required this.createdAt,
     required this.updatedAt,
+    this.lastUsedAt,
     this.htmlContent,
     this.imageBytes,
     this.filePath,
@@ -415,9 +467,13 @@ class ClipboardItemEntry extends DataClass
     map['content'] = Variable<String>(content);
     map['content_hash'] = Variable<String>(contentHash);
     map['user_id'] = Variable<String>(userId);
+    map['usage_count'] = Variable<int>(usageCount);
     map['type'] = Variable<String>(type);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || lastUsedAt != null) {
+      map['last_used_at'] = Variable<DateTime>(lastUsedAt);
+    }
     if (!nullToAbsent || htmlContent != null) {
       map['html_content'] = Variable<String>(htmlContent);
     }
@@ -442,9 +498,13 @@ class ClipboardItemEntry extends DataClass
       content: Value(content),
       contentHash: Value(contentHash),
       userId: Value(userId),
+      usageCount: Value(usageCount),
       type: Value(type),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      lastUsedAt: lastUsedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUsedAt),
       htmlContent: htmlContent == null && nullToAbsent
           ? const Value.absent()
           : Value(htmlContent),
@@ -473,9 +533,11 @@ class ClipboardItemEntry extends DataClass
       content: serializer.fromJson<String>(json['content']),
       contentHash: serializer.fromJson<String>(json['contentHash']),
       userId: serializer.fromJson<String>(json['userId']),
+      usageCount: serializer.fromJson<int>(json['usageCount']),
       type: serializer.fromJson<String>(json['type']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      lastUsedAt: serializer.fromJson<DateTime?>(json['lastUsedAt']),
       htmlContent: serializer.fromJson<String?>(json['htmlContent']),
       imageBytes: serializer.fromJson<String?>(json['imageBytes']),
       filePath: serializer.fromJson<String?>(json['filePath']),
@@ -493,9 +555,11 @@ class ClipboardItemEntry extends DataClass
       'content': serializer.toJson<String>(content),
       'contentHash': serializer.toJson<String>(contentHash),
       'userId': serializer.toJson<String>(userId),
+      'usageCount': serializer.toJson<int>(usageCount),
       'type': serializer.toJson<String>(type),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'lastUsedAt': serializer.toJson<DateTime?>(lastUsedAt),
       'htmlContent': serializer.toJson<String?>(htmlContent),
       'imageBytes': serializer.toJson<String?>(imageBytes),
       'filePath': serializer.toJson<String?>(filePath),
@@ -511,9 +575,11 @@ class ClipboardItemEntry extends DataClass
     String? content,
     String? contentHash,
     String? userId,
+    int? usageCount,
     String? type,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<DateTime?> lastUsedAt = const Value.absent(),
     Value<String?> htmlContent = const Value.absent(),
     Value<String?> imageBytes = const Value.absent(),
     Value<String?> filePath = const Value.absent(),
@@ -526,9 +592,11 @@ class ClipboardItemEntry extends DataClass
     content: content ?? this.content,
     contentHash: contentHash ?? this.contentHash,
     userId: userId ?? this.userId,
+    usageCount: usageCount ?? this.usageCount,
     type: type ?? this.type,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    lastUsedAt: lastUsedAt.present ? lastUsedAt.value : this.lastUsedAt,
     htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
     imageBytes: imageBytes.present ? imageBytes.value : this.imageBytes,
     filePath: filePath.present ? filePath.value : this.filePath,
@@ -545,9 +613,15 @@ class ClipboardItemEntry extends DataClass
           ? data.contentHash.value
           : this.contentHash,
       userId: data.userId.present ? data.userId.value : this.userId,
+      usageCount: data.usageCount.present
+          ? data.usageCount.value
+          : this.usageCount,
       type: data.type.present ? data.type.value : this.type,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      lastUsedAt: data.lastUsedAt.present
+          ? data.lastUsedAt.value
+          : this.lastUsedAt,
       htmlContent: data.htmlContent.present
           ? data.htmlContent.value
           : this.htmlContent,
@@ -571,9 +645,11 @@ class ClipboardItemEntry extends DataClass
           ..write('content: $content, ')
           ..write('contentHash: $contentHash, ')
           ..write('userId: $userId, ')
+          ..write('usageCount: $usageCount, ')
           ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('lastUsedAt: $lastUsedAt, ')
           ..write('htmlContent: $htmlContent, ')
           ..write('imageBytes: $imageBytes, ')
           ..write('filePath: $filePath, ')
@@ -591,9 +667,11 @@ class ClipboardItemEntry extends DataClass
     content,
     contentHash,
     userId,
+    usageCount,
     type,
     createdAt,
     updatedAt,
+    lastUsedAt,
     htmlContent,
     imageBytes,
     filePath,
@@ -610,9 +688,11 @@ class ClipboardItemEntry extends DataClass
           other.content == this.content &&
           other.contentHash == this.contentHash &&
           other.userId == this.userId &&
+          other.usageCount == this.usageCount &&
           other.type == this.type &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
+          other.lastUsedAt == this.lastUsedAt &&
           other.htmlContent == this.htmlContent &&
           other.imageBytes == this.imageBytes &&
           other.filePath == this.filePath &&
@@ -628,9 +708,11 @@ class ClipboardItemEntriesCompanion
   final Value<String> content;
   final Value<String> contentHash;
   final Value<String> userId;
+  final Value<int> usageCount;
   final Value<String> type;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<DateTime?> lastUsedAt;
   final Value<String?> htmlContent;
   final Value<String?> imageBytes;
   final Value<String?> filePath;
@@ -644,9 +726,11 @@ class ClipboardItemEntriesCompanion
     this.content = const Value.absent(),
     this.contentHash = const Value.absent(),
     this.userId = const Value.absent(),
+    this.usageCount = const Value.absent(),
     this.type = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.lastUsedAt = const Value.absent(),
     this.htmlContent = const Value.absent(),
     this.imageBytes = const Value.absent(),
     this.filePath = const Value.absent(),
@@ -661,9 +745,11 @@ class ClipboardItemEntriesCompanion
     required String content,
     required String contentHash,
     required String userId,
+    this.usageCount = const Value.absent(),
     required String type,
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.lastUsedAt = const Value.absent(),
     this.htmlContent = const Value.absent(),
     this.imageBytes = const Value.absent(),
     this.filePath = const Value.absent(),
@@ -684,9 +770,11 @@ class ClipboardItemEntriesCompanion
     Expression<String>? content,
     Expression<String>? contentHash,
     Expression<String>? userId,
+    Expression<int>? usageCount,
     Expression<String>? type,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<DateTime>? lastUsedAt,
     Expression<String>? htmlContent,
     Expression<String>? imageBytes,
     Expression<String>? filePath,
@@ -701,9 +789,11 @@ class ClipboardItemEntriesCompanion
       if (content != null) 'content': content,
       if (contentHash != null) 'content_hash': contentHash,
       if (userId != null) 'user_id': userId,
+      if (usageCount != null) 'usage_count': usageCount,
       if (type != null) 'type': type,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (lastUsedAt != null) 'last_used_at': lastUsedAt,
       if (htmlContent != null) 'html_content': htmlContent,
       if (imageBytes != null) 'image_bytes': imageBytes,
       if (filePath != null) 'file_path': filePath,
@@ -720,9 +810,11 @@ class ClipboardItemEntriesCompanion
     Value<String>? content,
     Value<String>? contentHash,
     Value<String>? userId,
+    Value<int>? usageCount,
     Value<String>? type,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<DateTime?>? lastUsedAt,
     Value<String?>? htmlContent,
     Value<String?>? imageBytes,
     Value<String?>? filePath,
@@ -737,9 +829,11 @@ class ClipboardItemEntriesCompanion
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       userId: userId ?? this.userId,
+      usageCount: usageCount ?? this.usageCount,
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       htmlContent: htmlContent ?? this.htmlContent,
       imageBytes: imageBytes ?? this.imageBytes,
       filePath: filePath ?? this.filePath,
@@ -766,6 +860,9 @@ class ClipboardItemEntriesCompanion
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
+    if (usageCount.present) {
+      map['usage_count'] = Variable<int>(usageCount.value);
+    }
     if (type.present) {
       map['type'] = Variable<String>(type.value);
     }
@@ -774,6 +871,9 @@ class ClipboardItemEntriesCompanion
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (lastUsedAt.present) {
+      map['last_used_at'] = Variable<DateTime>(lastUsedAt.value);
     }
     if (htmlContent.present) {
       map['html_content'] = Variable<String>(htmlContent.value);
@@ -809,9 +909,11 @@ class ClipboardItemEntriesCompanion
           ..write('content: $content, ')
           ..write('contentHash: $contentHash, ')
           ..write('userId: $userId, ')
+          ..write('usageCount: $usageCount, ')
           ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('lastUsedAt: $lastUsedAt, ')
           ..write('htmlContent: $htmlContent, ')
           ..write('imageBytes: $imageBytes, ')
           ..write('filePath: $filePath, ')
@@ -1263,9 +1365,11 @@ typedef $$ClipboardItemEntriesTableCreateCompanionBuilder =
       required String content,
       required String contentHash,
       required String userId,
+      Value<int> usageCount,
       required String type,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<DateTime?> lastUsedAt,
       Value<String?> htmlContent,
       Value<String?> imageBytes,
       Value<String?> filePath,
@@ -1281,9 +1385,11 @@ typedef $$ClipboardItemEntriesTableUpdateCompanionBuilder =
       Value<String> content,
       Value<String> contentHash,
       Value<String> userId,
+      Value<int> usageCount,
       Value<String> type,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<DateTime?> lastUsedAt,
       Value<String?> htmlContent,
       Value<String?> imageBytes,
       Value<String?> filePath,
@@ -1323,6 +1429,11 @@ class $$ClipboardItemEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get usageCount => $composableBuilder(
+    column: $table.usageCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get type => $composableBuilder(
     column: $table.type,
     builder: (column) => ColumnFilters(column),
@@ -1335,6 +1446,11 @@ class $$ClipboardItemEntriesTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1403,6 +1519,11 @@ class $$ClipboardItemEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get usageCount => $composableBuilder(
+    column: $table.usageCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get type => $composableBuilder(
     column: $table.type,
     builder: (column) => ColumnOrderings(column),
@@ -1415,6 +1536,11 @@ class $$ClipboardItemEntriesTableOrderingComposer
 
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1477,6 +1603,11 @@ class $$ClipboardItemEntriesTableAnnotationComposer
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
 
+  GeneratedColumn<int> get usageCount => $composableBuilder(
+    column: $table.usageCount,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
@@ -1485,6 +1616,11 @@ class $$ClipboardItemEntriesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get htmlContent => $composableBuilder(
     column: $table.htmlContent,
@@ -1561,9 +1697,11 @@ class $$ClipboardItemEntriesTableTableManager
                 Value<String> content = const Value.absent(),
                 Value<String> contentHash = const Value.absent(),
                 Value<String> userId = const Value.absent(),
+                Value<int> usageCount = const Value.absent(),
                 Value<String> type = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> lastUsedAt = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
                 Value<String?> imageBytes = const Value.absent(),
                 Value<String?> filePath = const Value.absent(),
@@ -1577,9 +1715,11 @@ class $$ClipboardItemEntriesTableTableManager
                 content: content,
                 contentHash: contentHash,
                 userId: userId,
+                usageCount: usageCount,
                 type: type,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                lastUsedAt: lastUsedAt,
                 htmlContent: htmlContent,
                 imageBytes: imageBytes,
                 filePath: filePath,
@@ -1595,9 +1735,11 @@ class $$ClipboardItemEntriesTableTableManager
                 required String content,
                 required String contentHash,
                 required String userId,
+                Value<int> usageCount = const Value.absent(),
                 required String type,
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<DateTime?> lastUsedAt = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
                 Value<String?> imageBytes = const Value.absent(),
                 Value<String?> filePath = const Value.absent(),
@@ -1611,9 +1753,11 @@ class $$ClipboardItemEntriesTableTableManager
                 content: content,
                 contentHash: contentHash,
                 userId: userId,
+                usageCount: usageCount,
                 type: type,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                lastUsedAt: lastUsedAt,
                 htmlContent: htmlContent,
                 imageBytes: imageBytes,
                 filePath: filePath,

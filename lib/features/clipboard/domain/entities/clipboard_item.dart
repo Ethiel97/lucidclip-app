@@ -18,13 +18,15 @@ class ClipboardItem extends Equatable {
     required this.type,
     required this.updatedAt,
     required this.userId,
-    this.imageBytes,
-    this.filePath,
     this.isPinned = false,
     this.isSnippet = false,
     this.isSynced = false,
     this.metadata = const {},
+    this.usageCount = 0,
+    this.filePath,
     this.htmlContent,
+    this.imageBytes,
+    this.lastUsedAt,
   });
 
   factory ClipboardItem.empty() {
@@ -57,11 +59,14 @@ class ClipboardItem extends Equatable {
 
   final bool isSnippet;
   final bool isSynced;
+
+  final DateTime? lastUsedAt;
   final Map<String, dynamic> metadata;
 
   final ClipboardItemType type;
 
   final DateTime updatedAt;
+  final int usageCount;
 
   final String userId;
 
@@ -77,9 +82,11 @@ class ClipboardItem extends Equatable {
     bool? isPinned,
     bool? isSnippet,
     bool? isSynced,
+    DateTime? lastUsedAt,
     Map<String, dynamic>? metadata,
     ClipboardItemType? type,
     DateTime? updatedAt,
+    int? usageCount,
     String? userId,
   }) {
     return ClipboardItem(
@@ -93,9 +100,11 @@ class ClipboardItem extends Equatable {
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
       isSynced: isSynced ?? this.isSynced,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       metadata: metadata ?? this.metadata,
       type: type ?? this.type,
       updatedAt: updatedAt ?? this.updatedAt,
+      usageCount: usageCount ?? this.usageCount,
       userId: userId ?? this.userId,
     );
   }
@@ -146,9 +155,11 @@ class ClipboardItem extends Equatable {
     isPinned,
     isSnippet,
     isSynced,
+    lastUsedAt,
     metadata,
     type,
     updatedAt,
+    usageCount,
     userId,
   ];
 }

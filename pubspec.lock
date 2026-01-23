@@ -353,6 +353,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  convert_object:
+    dependency: transitive
+    description:
+      name: convert_object
+      sha256: a88cf2501cbe150c4c1e3f58787ba8fdf912c04cc470ba6d2aceeb9836dd36dd
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   coverage:
     dependency: transitive
     description:
@@ -1161,18 +1169,18 @@ packages:
     dependency: transitive
     description:
       name: metalink
-      sha256: dc72d3da6ebd05792dba2f52569141ab51bbb0cf7780a709e6522bff2074184a
+      sha256: "69ea159354438707598f9b3d85e33bf62a7ca1d9449610d64a8272ccfc0c010b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "2.0.0"
   metalink_flutter:
     dependency: "direct main"
     description:
       name: metalink_flutter
-      sha256: cc5371f189138153af2c4bb604dc82beafe3488746cba04dc0e273f9ab5cbbe3
+      sha256: "1d89e86a0c0851958a646f7aba66a14b40c8eac068af708bfda38d82107e8cf7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.1"
   mime:
     dependency: transitive
     description:

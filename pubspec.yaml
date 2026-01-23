@@ -46,7 +46,7 @@ dependencies:
   json_annotation: ^4.9.0
   local_notifier: ^0.1.6
   melos: ^7.3.0
-  metalink_flutter: ^1.0.2
+  metalink_flutter: ^2.0.1
   package_info_plus: ^9.0.0
   pasteboard: ^0.4.0
   path: ^1.9.1

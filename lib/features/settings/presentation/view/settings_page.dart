@@ -9,6 +9,7 @@ enum SettingsSection {
   sync,
   privacy,
   shortcuts,
+  account,
   about,
 }
 

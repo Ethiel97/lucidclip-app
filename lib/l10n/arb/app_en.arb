@@ -224,6 +224,10 @@
   "@edit": {
     "description": "Button text to edit content"
   },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email address"
+  },
   "editShortcut": "Edit Shortcut",
   "@editShortcut": {
     "description": "Button text to edit a keyboard shortcut"
@@ -421,6 +425,10 @@
   "none": "None",
   "@none": {
     "description": "None"
+  },
+  "notAvailable": "Not available",
+  "@notAvailable": {
+    "description": "Text shown when a value is not available"
   },
   "notSet": "Not set",
   "@notSet": {
@@ -869,5 +877,49 @@
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"
+  },
+  "supportEmail": "Support Email",
+  "@supportEmail": {
+    "description": "Label for the support email"
+  },
+  "account": "Account",
+  "@account": {
+    "description": "Label for the Account section"
+  },
+  "accountInformation": "Account Information",
+  "@accountInformation": {
+    "description": "Label for account information"
+  },
+  "subscription": "Subscription",
+  "@subscription": {
+    "description": "Label for subscription"
+  },
+  "subscriptionStatus": "Subscription Status",
+  "@subscriptionStatus": {
+    "description": "Label for subscription status"
+  },
+  "subscriptionType": "Subscription Type",
+  "@subscriptionType": {
+    "description": "Label for subscription type"
+  },
+  "proSubscription": "Pro",
+  "@proSubscription": {
+    "description": "Label for Pro subscription"
+  },
+  "freeSubscription": "Free",
+  "@freeSubscription": {
+    "description": "Label for Free subscription"
+  },
+  "validUntil": "Valid Until",
+  "@validUntil": {
+    "description": "Label for subscription validity date"
+  },
+  "notAuthenticated": "Not Authenticated",
+  "@notAuthenticated": {
+    "description": "Message shown when user is not authenticated"
+  },
+  "signInToViewAccount": "Sign in to view account information",
+  "@signInToViewAccount": {
+    "description": "Message shown to prompt user to sign in"
   }
 }

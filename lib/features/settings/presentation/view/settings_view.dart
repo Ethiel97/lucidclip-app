@@ -10,10 +10,12 @@ import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
+import 'package:lucid_clip/features/auth/presentation/presentation.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:recase/recase.dart';
 
 //TODO(Ethiel97): Add excluded apps management
@@ -36,6 +38,7 @@ class _SettingsViewState extends State<SettingsView> {
     SettingsSection.privacy.name: GlobalKey(),
     SettingsSection.shortcuts.name: GlobalKey(),
     SettingsSection.sync.name: GlobalKey(),
+    SettingsSection.account.name: GlobalKey(),
     SettingsSection.about.name: GlobalKey(),
   };
 
@@ -324,6 +327,126 @@ class _SettingsViewState extends State<SettingsView> {
                             }
                           },
                         ),
+                    ],
+                  ),
+
+                  // Account Section
+                  SettingsSectionGroupAccordion(
+                    initiallyExpanded: false,
+                    key: _sectionKeys[SettingsSection.account.name],
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedUserAccount,
+                    ),
+                    title: l10n.account.sentenceCase,
+                    children: [
+                      BlocBuilder<AuthCubit, AuthState>(
+                        builder: (context, authState) {
+                          return authState.user.when(
+                            success: (user) {
+                              if (user == null) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(AppSpacing.md),
+                                  child: Text(
+                                    l10n.signInToViewAccount,
+                                    style: TextStyle(
+                                      color: colorScheme.onSurface
+                                          .withOpacity(0.6),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Column(
+                                children: [
+                                  SettingsInfoItem(
+                                    title: l10n.email,
+                                    value: user.email ?? l10n.notAvailable,
+                                  ),
+                                  BlocBuilder<EntitlementCubit, EntitlementState>(
+                                    builder: (context, entitlementState) {
+                                      return entitlementState.entitlement.when(
+                                        success: (entitlement) {
+                                          final isPro = entitlement?.isProActive ?? false;
+                                          final validUntil = entitlement?.validUntil;
+                                          
+                                          return Column(
+                                            children: [
+                                              SettingsInfoItem(
+                                                title: l10n.subscriptionType,
+                                                value: isPro
+                                                    ? l10n.proSubscription
+                                                    : l10n.freeSubscription,
+                                              ),
+                                              if (isPro && validUntil != null)
+                                                SettingsInfoItem(
+                                                  title: l10n.validUntil,
+                                                  value: '${validUntil.day}/${validUntil.month}/${validUntil.year}',
+                                                ),
+                                            ],
+                                          );
+                                        },
+                                        orElse: () => SettingsInfoItem(
+                                          title: l10n.subscriptionType,
+                                          value: l10n.freeSubscription,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                            orElse: () => Padding(
+                              padding: const EdgeInsets.all(AppSpacing.md),
+                              child: Text(
+                                l10n.signInToViewAccount,
+                                style: TextStyle(
+                                  color: colorScheme.onSurface.withOpacity(0.6),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+
+                  // About Section
+                  SettingsSectionGroupAccordion(
+                    initiallyExpanded: false,
+                    key: _sectionKeys[SettingsSection.about.name],
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedInformationCircle,
+                    ),
+                    title: l10n.about.sentenceCase,
+                    children: [
+                      FutureBuilder<PackageInfo>(
+                        future: PackageInfo.fromPlatform(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final packageInfo = snapshot.data!;
+                            return Column(
+                              children: [
+                                SettingsInfoItem(
+                                  title: l10n.version,
+                                  value: packageInfo.version,
+                                ),
+                                SettingsInfoItem(
+                                  title: l10n.build,
+                                  value: packageInfo.buildNumber,
+                                ),
+                                SettingsInfoItem(
+                                  title: l10n.supportEmail,
+                                  value: 'support@lucidclip.com',
+                                ),
+                              ],
+                            );
+                          }
+                          return const Padding(
+                            padding: EdgeInsets.all(AppSpacing.md),
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ],

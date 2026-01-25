@@ -239,9 +239,16 @@ class _ManageSubscriptionButton extends StatelessWidget {
         return billingState.customerPortal.maybeWhen(
           success: (portal) {
             if (portal == null || portal.isExpired) {
-              // Refresh portal if expired
-              context.read<BillingCubit>().getCustomerPortal();
-              return const SizedBox.shrink();
+              // Refresh portal if expired - show loading while refreshing
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                context.read<BillingCubit>().getCustomerPortal();
+              });
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(AppSpacing.md),
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }
 
             return OutlinedButton.icon(

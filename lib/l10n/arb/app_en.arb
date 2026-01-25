@@ -917,5 +917,16 @@
   "failedToOpenUrl": "Failed to open URL",
   "@failedToOpenUrl": {
     "description": "Error message when URL cannot be opened"
+  },
+  "copiedToClipboard": "{item} copied to clipboard",
+  "@copiedToClipboard": {
+    "description": "Message shown when an item is copied to clipboard",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "description": "The item that was copied",
+        "example": "Email"
+      }
+    }
   }
 }

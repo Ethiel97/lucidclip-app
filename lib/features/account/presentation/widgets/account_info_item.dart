@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 class AccountInfoItem extends StatelessWidget {
@@ -59,7 +60,7 @@ class AccountInfoItem extends StatelessWidget {
                 Clipboard.setData(ClipboardData(text: value));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('$title copied to clipboard'),
+                    content: Text(context.l10n.copiedToClipboard(title)),
                     duration: const Duration(seconds: 2),
                   ),
                 );

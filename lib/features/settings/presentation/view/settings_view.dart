@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:intl/intl.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -350,7 +351,7 @@ class _SettingsViewState extends State<SettingsView> {
                                     l10n.signInToViewAccount,
                                     style: TextStyle(
                                       color: colorScheme.onSurface
-                                          .withOpacity(0.6),
+                                          .withValues(alpha: 0.6),
                                     ),
                                   ),
                                 );
@@ -380,7 +381,7 @@ class _SettingsViewState extends State<SettingsView> {
                                               if (isPro && validUntil != null)
                                                 SettingsInfoItem(
                                                   title: l10n.validUntil,
-                                                  value: '${validUntil.day}/${validUntil.month}/${validUntil.year}',
+                                                  value: DateFormat.yMMMd().format(validUntil),
                                                 ),
                                             ],
                                           );
@@ -400,7 +401,7 @@ class _SettingsViewState extends State<SettingsView> {
                               child: Text(
                                 l10n.signInToViewAccount,
                                 style: TextStyle(
-                                  color: colorScheme.onSurface.withOpacity(0.6),
+                                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                                 ),
                               ),
                             ),

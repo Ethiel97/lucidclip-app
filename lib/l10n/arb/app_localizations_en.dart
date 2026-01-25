@@ -290,7 +290,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get maxHistoryItemsDescription =>
-      'Sets the maximum number of items in the clipboard.';
+      'Sets how much history LucidClip can safely retain.';
+
+  @override
+  String get maxHistorySize => 'Maximum history size';
 
   @override
   String minutesCount(int count) {
@@ -300,6 +303,18 @@ class AppLocalizationsEn extends AppLocalizations {
       other: '$count minutes',
       one: '1 minute',
       zero: '0 minute',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String monthsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months',
+      one: '1 month',
+      zero: '0 month',
     );
     return '$_temp0';
   }
@@ -619,6 +634,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get unlimited => 'Unlimited';
+
+  @override
   String get unpin => 'Unpin';
 
   @override
@@ -636,6 +654,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String weeksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks',
+      one: '1 week',
+      zero: '0 week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String yearsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count years',
+      one: '1 year',
+      zero: '0 year',
+    );
+    return '$_temp0';
+  }
 
   @override
   String get youCanIncreaseYouStorageLimitWithYourProPlan =>

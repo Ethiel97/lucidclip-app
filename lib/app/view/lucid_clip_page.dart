@@ -29,8 +29,8 @@ class LucidClipPage extends StatelessWidget {
             // const SnippetsRoute(),
             SettingsRoute(),
           ],
-          builder: (context, child) {
-            return UpgradePromptListener(
+          builder: (context, child) => EntitlementListener(
+            child: UpgradePromptListener(
               yearlyProductId: AppConstants.yearlyProductId,
               monthlyProductId: AppConstants.monthlyProductId,
               child: BillingCheckoutListener(
@@ -55,8 +55,8 @@ class LucidClipPage extends StatelessWidget {
                   ),
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

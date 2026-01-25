@@ -377,9 +377,13 @@
   "@manageRetention": {
     "description": "Button text to manage retention settings"
   },
-  "maxHistoryItemsDescription": "Sets the maximum number of items in the clipboard.",
+  "maxHistoryItemsDescription": "Sets how much history LucidClip can safely retain.",
   "@maxHistoryItemsDescription": {
     "description": "Description for the Max History Items setting"
+  },
+  "maxHistorySize": "Maximum history size",
+  "@maxHistorySize": {
+    "description": "Label for the maximum history size setting"
   },
   "minutesCount": "{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}",
   "@minutesCount": {
@@ -388,6 +392,17 @@
       "count": {
         "type": "int",
         "description": "The number of minutes",
+        "example": "1"
+      }
+    }
+  },
+  "monthsCount": "{count, plural, =0 {0 month} =1 {1 month} other {{count} months}}",
+  "@monthsCount": {
+    "description": "Label showing the number of months with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of months",
         "example": "1"
       }
     }
@@ -834,6 +849,10 @@
       }
     }
   },
+  "unlimited": "Unlimited",
+  "@unlimited": {
+    "description": "Label for unlimited option"
+  },
   "unpin": "Unpin",
   "@unpin": {
     "description": "Button text to unpin an item"
@@ -857,6 +876,28 @@
   "version": "Version",
   "@version": {
     "description": "Label for the app version"
+  },
+  "weeksCount": "{count, plural, =0 {0 week} =1 {1 week} other {{count} weeks}}",
+  "@weeksCount": {
+    "description": "Label showing the number of weeks with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of weeks",
+        "example": "1"
+      }
+    }
+  },
+  "yearsCount": "{count, plural, =0 {0 year} =1 {1 year} other {{count} years}}",
+  "@yearsCount": {
+    "description": "Label showing the number of years with pluralization",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of years",
+        "example": "1"
+      }
+    }
   },
   "youCanIncreaseYouStorageLimitWithYourProPlan": "You can increase your storage limit with your Pro plan.",
   "@youCanIncreaseYouStorageLimitWithYourProPlan": {

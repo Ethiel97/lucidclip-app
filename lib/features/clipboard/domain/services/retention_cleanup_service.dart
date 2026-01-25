@@ -4,6 +4,7 @@
 /// This service evaluates all clipboard items against the configured retention
 /// duration and removes items that have exceeded their retention period.
 /// It respects pinned and snippet items which are never auto-deleted.
+/// ignore: one_member_abstracts
 abstract class RetentionCleanupService {
   /// Performs cleanup of expired clipboard items.
   ///

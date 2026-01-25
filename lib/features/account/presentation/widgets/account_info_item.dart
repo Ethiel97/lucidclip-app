@@ -4,8 +4,8 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
-class SettingsInfoItem extends StatelessWidget {
-  const SettingsInfoItem({
+class AccountInfoItem extends StatelessWidget {
+  const AccountInfoItem({
     required this.title,
     required this.value,
     super.key,

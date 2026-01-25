@@ -63,6 +63,11 @@ class _SidebarState extends State<Sidebar> {
         route: const SnippetsRoute(),
       ),*/
       SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedUserAccount,
+        label: context.l10n.account.titleCase,
+        route: const AccountRoute(),
+      ),
+      SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedSettings03,
         label: context.l10n.settings.titleCase,
         route: SettingsRoute(),

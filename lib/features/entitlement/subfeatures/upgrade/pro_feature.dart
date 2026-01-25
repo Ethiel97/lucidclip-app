@@ -20,6 +20,7 @@ enum ProFeatureRequestSource {
   autoSync,
   historyLimitReached,
   extendedRetentionSettings,
+  accountPage,
 }
 
 extension ProFeatureCopy on ProFeature {

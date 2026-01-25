@@ -2,7 +2,6 @@
 export 'ignored_apps_tile.dart';
 export 'incognito_mode_toggle_button.dart';
 export 'settings_dropdown_item.dart';
-export 'settings_info_item.dart';
 export 'settings_navigation_item.dart';
 export 'settings_section_group_accordion.dart';
 export 'settings_section_header.dart';

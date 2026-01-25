@@ -27,6 +27,7 @@ class LucidClipPage extends StatelessWidget {
             const ClipboardRoute(),
             //TODO(Ethiel): Enable snippets when feature is ready
             // const SnippetsRoute(),
+            const AccountRoute(),
             SettingsRoute(),
           ],
           builder: (context, child) {

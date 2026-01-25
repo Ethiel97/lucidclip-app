@@ -341,7 +341,7 @@ class _SettingsViewState extends State<SettingsView> {
                     children: [
                       BlocBuilder<AuthCubit, AuthState>(
                         builder: (context, authState) {
-                          return authState.user.when(
+                          return authState.user.maybeWhen(
                             success: (user) {
                               if (user == null) {
                                 return Padding(
@@ -364,7 +364,7 @@ class _SettingsViewState extends State<SettingsView> {
                                   ),
                                   BlocBuilder<EntitlementCubit, EntitlementState>(
                                     builder: (context, entitlementState) {
-                                      return entitlementState.entitlement.when(
+                                      return entitlementState.entitlement.maybeWhen(
                                         success: (entitlement) {
                                           final isPro = entitlement?.isProActive ?? false;
                                           final validUntil = entitlement?.validUntil;

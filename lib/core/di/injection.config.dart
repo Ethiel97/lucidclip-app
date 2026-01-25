@@ -105,7 +105,6 @@ import 'package:lucid_clip/features/entitlement/data/data_sources/supabase_entit
 import 'package:lucid_clip/features/entitlement/data/repositories/entitlement_repository_impl.dart'
     as _i669;
 import 'package:lucid_clip/features/entitlement/domain/domain.dart' as _i311;
-import 'package:lucid_clip/features/entitlement/entitlement.dart' as _i850;
 import 'package:lucid_clip/features/entitlement/presentation/cubit/entitlement_cubit.dart'
     as _i9;
 import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation/cubit/upgrade_prompt_cubit.dart'
@@ -360,14 +359,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1039.BillingRemoteDataSource>(
       () => _i269.HttpBillingRemoteDataSource(gh<_i183.HttpClient>()),
     );
-    gh.lazySingleton<_i42.RetentionCleanupService>(
-      () => _i6.RetentionCleanupServiceImpl(
-        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
-        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-        entitlementRepository: gh<_i850.EntitlementRepository>(),
-        authRepository: gh<_i895.AuthRepository>(),
-      ),
-    );
     gh.lazySingleton<_i893.BillingRepository>(
       () => _i279.BillingRepositoryImpl(
         authDataSource: gh<_i895.AuthDataSource>(),
@@ -388,6 +379,13 @@ extension GetItInjectableX on _i174.GetIt {
         billingRepository: gh<_i893.BillingRepository>(),
       ),
       dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i42.RetentionCleanupService>(
+      () => _i6.RetentionCleanupServiceImpl(
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
+        authRepository: gh<_i895.AuthRepository>(),
+      ),
     );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(

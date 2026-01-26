@@ -648,4 +648,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get yourClipboardItemsWillAppearHere =>
       'Your clipboard items will appear here.';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get accountInformation => 'Account Information';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get subscription => 'Subscription';
+
+  @override
+  String get subscriptionType => 'Subscription Type';
+
+  @override
+  String get proSubscription => 'Pro';
+
+  @override
+  String get freeSubscription => 'Free';
+
+  @override
+  String get validUntil => 'Valid Until';
+
+  @override
+  String get notAvailable => 'Not available';
+
+  @override
+  String get signInToViewAccount => 'Sign in to view account information';
+
+  @override
+  String get manageSubscription => 'Manage Subscription';
+
+  @override
+  String get failedToOpenUrl => 'Failed to open URL';
+
+  @override
+  String copiedToClipboard(String item) {
+    return '$item copied to clipboard';
+  }
 }

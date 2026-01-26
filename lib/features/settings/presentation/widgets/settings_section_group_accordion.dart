@@ -47,6 +47,8 @@ class _SettingsSectionGroupAccordionState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
           onTap: () => setState(() => _isExpanded = !_isExpanded),
           borderRadius: BorderRadius.circular(AppSpacing.xs),
           child: Padding(
@@ -61,7 +63,7 @@ class _SettingsSectionGroupAccordionState
                 ),
                 AnimatedRotation(
                   turns: _isExpanded ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
+                  duration: const Duration(milliseconds: 150),
                   child: const HugeIcon(
                     icon: HugeIcons.strokeRoundedArrowDown01,
                   ),
@@ -70,19 +72,23 @@ class _SettingsSectionGroupAccordionState
             ),
           ),
         ),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          transformAlignment: Alignment.center,
-          curve: Curves.easeInOut,
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 150),
+          reverseDuration: const Duration(milliseconds: 100),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          transitionBuilder: (child, animation) =>
+              SizeTransition(sizeFactor: animation, child: child),
           child: _isExpanded
               ? Column(
+                  key: const ValueKey('expanded'),
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: AppSpacing.xs),
                     ...widget.children,
                   ],
                 )
-              : const SizedBox.shrink(),
+              : const SizedBox.shrink(key: ValueKey('collapsed')),
         ),
       ],
     );

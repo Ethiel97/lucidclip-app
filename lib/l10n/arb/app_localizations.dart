@@ -1185,6 +1185,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your clipboard items will appear here.'**
   String get yourClipboardItemsWillAppearHere;
+
+  /// Label for the Account section
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// Label for account information
+  ///
+  /// In en, this message translates to:
+  /// **'Account Information'**
+  String get accountInformation;
+
+  /// Label for email address
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// Label for subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get subscription;
+
+  /// Label for subscription type
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Type'**
+  String get subscriptionType;
+
+  /// Label for Pro subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get proSubscription;
+
+  /// Label for Free subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get freeSubscription;
+
+  /// Label for subscription validity date
+  ///
+  /// In en, this message translates to:
+  /// **'Valid Until'**
+  String get validUntil;
+
+  /// Text shown when a value is not available
+  ///
+  /// In en, this message translates to:
+  /// **'Not available'**
+  String get notAvailable;
+
+  /// Message shown to prompt user to sign in
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to view account information'**
+  String get signInToViewAccount;
+
+  /// Button text to manage subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Subscription'**
+  String get manageSubscription;
+
+  /// Error message when URL cannot be opened
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to open URL'**
+  String get failedToOpenUrl;
+
+  /// Message shown when an item is copied to clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'{item} copied to clipboard'**
+  String copiedToClipboard(String item);
 }
 
 class _AppLocalizationsDelegate

@@ -8,7 +8,7 @@ import 'package:lucid_clip/features/account/account.dart';
 import 'package:lucid_clip/features/auth/presentation/presentation.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
-import 'package:lucid_clip/features/settings/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +19,6 @@ class AccountView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,153 +30,114 @@ class AccountView extends StatelessWidget {
       ),
       body: BlocBuilder<AuthCubit, AuthState>(
         buildWhen: (previous, current) => previous.user != current.user,
-        builder: (context, authState) {
-          return authState.user.maybeWhen(
-            success: (user) {
-              if (user == null) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const HugeIcon(
-                        icon: HugeIcons.strokeRoundedUserAccount,
-                        size: 128,
-                      ),
-                      const SizedBox(height: AppSpacing.lg),
-                      Text(
-                        l10n.signInToViewAccount,
-                        style: textTheme.headlineMedium,
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              return ListView(
-                physics: const ClampingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.md,
-                ),
+        builder: (context, authState) => authState.user.maybeWhen(
+          success: (user) => ListView(
+            physics: const ClampingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.lg,
+              vertical: AppSpacing.md,
+            ),
+            children: [
+              // Account Information Section
+              SettingsSectionGroupAccordion(
+                icon: const HugeIcon(icon: HugeIcons.strokeRoundedUserAccount),
+                title: l10n.accountInformation,
                 children: [
-                  // Account Information Section
-                  SettingsSectionGroupAccordion(
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedUserAccount,
+                  AccountInfoItem(
+                    copyable: true,
+                    title: l10n.email,
+                    value: user?.email ?? l10n.notAvailable,
+                    leading: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedMail01,
+                      size: 20,
                     ),
-                    title: l10n.accountInformation,
-                    children: [
-                      AccountInfoItem(
-                        title: l10n.email,
-                        value: user.email ?? l10n.notAvailable,
-                        leading: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedMail01,
-                          size: 20,
-                        ),
-                      ),
-                    ],
                   ),
+                ],
+              ),
 
-                  SettingsSectionGroupAccordion(
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedPayment01,
-                    ),
-                    title: l10n.subscription,
-                    children: [
-                      BlocBuilder<EntitlementCubit, EntitlementState>(
-                        buildWhen: (previous, current) =>
-                            previous.entitlement != current.entitlement,
-                        builder: (context, entitlementState) {
-                          return entitlementState.entitlement.maybeWhen(
-                            success: (entitlement) {
-                              final isPro = entitlement?.isProActive ?? false;
-                              final validUntil = entitlement?.validUntil;
+              SettingsSectionGroupAccordion(
+                icon: const HugeIcon(icon: HugeIcons.strokeRoundedPayment01),
+                title: l10n.subscription,
+                children: [
+                  BlocBuilder<EntitlementCubit, EntitlementState>(
+                    buildWhen: (previous, current) =>
+                        previous.entitlement != current.entitlement,
+                    builder: (context, entitlementState) =>
+                        entitlementState.entitlement.maybeWhen(
+                          success: (entitlement) {
+                            final isPro = entitlement?.isProActive ?? false;
+                            final validUntil = entitlement?.validUntil;
 
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  AccountInfoItem(
-                                    title: l10n.subscriptionType,
-                                    value: isPro
-                                        ? l10n.proSubscription
-                                        : l10n.freeSubscription,
-                                    leading: HugeIcon(
-                                      icon: isPro
-                                          ? HugeIcons.strokeRoundedMedal01
-                                          : HugeIcons.strokeRoundedUserAccount,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  if (isPro && validUntil != null) ...[
-                                    const SizedBox(height: AppSpacing.sm),
-                                    AccountInfoItem(
-                                      title: l10n.validUntil,
-                                      value: DateFormat.yMMMd().format(
-                                        validUntil,
-                                      ),
-                                      leading: const HugeIcon(
-                                        icon: HugeIcons.strokeRoundedCalendar03,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ],
-                                  const SizedBox(height: AppSpacing.lg),
-
-                                  // Actions
-                                  if (!isPro)
-                                    _UpgradeButton()
-                                  else
-                                    _ManageSubscriptionButton(),
-                                ],
-                              );
-                            },
-                            orElse: () => Column(
+                            return Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 AccountInfoItem(
                                   title: l10n.subscriptionType,
-                                  value: l10n.freeSubscription,
-                                  leading: const HugeIcon(
-                                    icon: HugeIcons.strokeRoundedUserAccount,
+                                  value: isPro
+                                      ? l10n.proSubscription
+                                      : l10n.freeSubscription,
+                                  leading: HugeIcon(
+                                    icon: isPro
+                                        ? HugeIcons.strokeRoundedMedal01
+                                        : HugeIcons.strokeRoundedUserAccount,
                                     size: 20,
                                   ),
                                 ),
+                                if (isPro && validUntil != null) ...[
+                                  const SizedBox(height: AppSpacing.sm),
+                                  AccountInfoItem(
+                                    copyable: true,
+                                    title: l10n.validUntil,
+                                    value: DateFormat.yMMMd().format(
+                                      validUntil,
+                                    ),
+                                    leading: const HugeIcon(
+                                      icon: HugeIcons.strokeRoundedCalendar03,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ],
                                 const SizedBox(height: AppSpacing.lg),
-                                _UpgradeButton(),
+
+                                // Actions
+                                if (!isPro)
+                                  const _UpgradeButton()
+                                else
+                                  const _ManageSubscriptionButton(),
                               ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-            orElse: () => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const HugeIcon(
-                    icon: HugeIcons.strokeRoundedUserAccount,
-                    size: 128,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    l10n.signInToViewAccount,
-                    style: textTheme.headlineMedium,
+                            );
+                          },
+                          orElse: () => Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              AccountInfoItem(
+                                title: l10n.subscriptionType,
+                                value: l10n.freeSubscription,
+                                leading: const HugeIcon(
+                                  icon: HugeIcons.strokeRoundedUserAccount,
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.lg),
+                              const _UpgradeButton(),
+                            ],
+                          ),
+                        ),
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            ],
+          ),
+          orElse: SizedBox.shrink,
+        ),
       ),
     );
   }
 }
 
 class _UpgradeButton extends StatelessWidget {
+  const _UpgradeButton();
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -206,6 +166,8 @@ class _UpgradeButton extends StatelessWidget {
 }
 
 class _ManageSubscriptionButton extends StatelessWidget {
+  const _ManageSubscriptionButton();
+
   Future<void> _openCustomerPortal(BuildContext context, String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -230,51 +192,37 @@ class _ManageSubscriptionButton extends StatelessWidget {
     return BlocBuilder<BillingCubit, BillingState>(
       buildWhen: (previous, current) =>
           previous.customerPortal != current.customerPortal,
-      builder: (context, billingState) {
-        return billingState.customerPortal.maybeWhen(
-          success: (portal) {
-            if (portal == null || portal.isExpired) {
-              // Refresh portal if expired - show loading while refreshing
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.read<BillingCubit>().getCustomerPortal();
-              });
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(AppSpacing.md),
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: OutlinedButton.icon(
-                onPressed: () => _openCustomerPortal(context, portal.url),
-                icon: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedManager,
-                  size: 20,
-                ),
-                label: Text(l10n.manageSubscription.sentenceCase),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                  side: BorderSide(color: colorScheme.outline),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+      builder: (context, billingState) => billingState.customerPortal.maybeWhen(
+        success: (portal) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: OutlinedButton.icon(
+            onPressed: () => _openCustomerPortal(context, portal!.url),
+            icon: const HugeIcon(
+              icon: HugeIcons.strokeRoundedManager,
+              size: 20,
+            ),
+            label: Text(l10n.manageSubscription.sentenceCase),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
               ),
-            );
-          },
-          loading: (_) => const Center(
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
-              child: CircularProgressIndicator(),
+              side: BorderSide(color: colorScheme.outline),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
-          error: (error, _) => OutlinedButton.icon(
+        ),
+        loading: (_) => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        orElse: () {
+          // Initial state - try to load
+          return OutlinedButton.icon(
             onPressed: () {
               context.read<BillingCubit>().getCustomerPortal();
             },
@@ -293,14 +241,9 @@ class _ManageSubscriptionButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-          ),
-          orElse: () {
-            // Initial state - try to load
-            context.read<BillingCubit>().getCustomerPortal();
-            return const SizedBox.shrink();
-          },
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

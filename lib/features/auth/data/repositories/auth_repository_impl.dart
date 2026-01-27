@@ -29,14 +29,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Stream<User?> get authStateChanges {
-    return _dataSource.authStateChanges.distinct().map((userModel) {
+    return _dataSource.authStateChanges.map((userModel) {
       return userModel?.toEntity();
     });
   }
 
   @override
   Future<String?> get currentUserId => _dataSource.authStateChanges
-      .distinct()
       .firstWhere((user) => user != null)
       .then((user) => user?.id);
 }

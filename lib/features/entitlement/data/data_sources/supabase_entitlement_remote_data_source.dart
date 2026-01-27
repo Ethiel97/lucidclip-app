@@ -64,9 +64,7 @@ class _SupabaseEntitlementRemoteSubscription
         _controller.add(EntitlementModel.fromJson(latest));
       }, onError: _controller.addError);
     }
-    return _controller.stream.distinct(
-      (a, b) => a.toJson().toString() == b.toJson().toString(),
-    );
+    return _controller.stream;
   }
 
   @override

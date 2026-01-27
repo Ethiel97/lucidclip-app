@@ -18,7 +18,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.get<Response<dynamic>>(
+      final response = await _dio.get<Response<Map<String, dynamic>>>(
         path,
         queryParameters: queryParameters,
         options: headers != null ? Options(headers: headers) : null,
@@ -37,7 +37,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.post<Response<dynamic>>(
+      final response = await _dio.post<Response<Map<String, dynamic>>>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -61,7 +61,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.put<Response<dynamic>>(
+      final response = await _dio.put<Response<Map<String, dynamic>>>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -80,7 +80,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.delete<Response<dynamic>>(
+      final response = await _dio.delete<Response<Map<String, dynamic>>>(
         path,
         queryParameters: queryParameters,
         options: headers != null ? Options(headers: headers) : null,

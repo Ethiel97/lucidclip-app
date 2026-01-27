@@ -153,13 +153,18 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   @override
   Stream<UserModel?> get authStateChanges {
-    return _supabase.auth.onAuthStateChange.distinct().map((event) {
-      final user = event.session?.user;
-      if (user == null) {
-        return null;
-      }
-      return UserModel.fromSupabaseUser(user);
-    });
+    return _supabase.auth.onAuthStateChange
+        .distinct(
+          (previous, next) =>
+              previous.session?.user.id == next.session?.user.id,
+        )
+        .map((event) {
+          final user = event.session?.user;
+          if (user == null) {
+            return null;
+          }
+          return UserModel.fromSupabaseUser(user);
+        });
   }
 
   /// Store user data in secure storage

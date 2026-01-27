@@ -11,7 +11,7 @@ abstract class DioModule {
       ..options = BaseOptions(
         baseUrl: AppConstants.apiBaseUrl,
         validateStatus: (status) {
-          return status != null && (status >= 200 && status <= 401);
+          return status != null && (status >= 200 && status <= 429);
         },
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),

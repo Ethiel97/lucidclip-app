@@ -155,7 +155,7 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Stream<List<ClipboardItem>> watchAll() {
     try {
-      return _localDataSource.watchAll().distinct().asyncMap((records) async {
+      return _localDataSource.watchAll().asyncMap((records) async {
         final items = records.map((r) => r.toEntity()).toList();
 
         return items.withEnrichedSourceApps();

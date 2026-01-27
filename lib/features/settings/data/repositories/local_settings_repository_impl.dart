@@ -47,9 +47,7 @@ class LocalSettingsRepositoryImpl implements LocalSettingsRepository {
   @override
   Stream<UserSettings?> watchSettings(String userId) {
     try {
-      return localDataSource.watchSettings(userId).distinct().asyncMap((
-        model,
-      ) async {
+      return localDataSource.watchSettings(userId).asyncMap((model) async {
         if (model == null) return null;
 
         final entity = model.toEntity();

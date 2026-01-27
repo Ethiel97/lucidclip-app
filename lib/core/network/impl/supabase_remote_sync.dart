@@ -81,9 +81,11 @@ class SupabaseRemoteSync implements RemoteSyncClient {
       });
     }
 
-    return stream.map((event) {
-      return List<T>.from(event as List);
-    }).distinct();
+    return stream
+        .map((event) {
+          return List<T>.from(event as List);
+        })
+        .distinct((previous, next) => previous.toString() == next.toString());
   }
 
   @override

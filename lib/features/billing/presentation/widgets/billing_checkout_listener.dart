@@ -49,7 +49,9 @@ class BillingCheckoutListener extends StatelessWidget {
 
         // Renew customer portal if expired
         SafeBlocListener<BillingCubit, BillingState>(
-          listenWhen: (previous, current) => current.needsPortalRenew,
+          listenWhen: (previous, current) =>
+              previous.customerPortal != current.customerPortal &&
+              current.needsPortalRenew,
           listener: (context, state) {
             //check if user is authenticated
             final isAuthenticated = context

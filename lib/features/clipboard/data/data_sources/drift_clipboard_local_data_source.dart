@@ -113,7 +113,7 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   @override
   Stream<List<ClipboardItemModel>> watchAll() {
     try {
-      return _db.watchAllEntries().map(
+      return _db.watchAllEntries().distinct().map(
         (rows) => rows.map(_db.entryToModel).toList(),
       );
     } catch (e) {

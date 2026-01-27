@@ -27,7 +27,6 @@ class SupabaseAuthDataSource implements AuthDataSource {
   @override
   Future<UserModel?> signInWithGitHub() async {
     try {
-      // Use the platform-specific deep link scheme
       final redirectTo = _getRedirectUrl();
 
       log('Starting GitHub OAuth with redirect: $redirectTo');
@@ -48,7 +47,6 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
       log('OAuth flow initiated, waiting for deep link callback...');
 
-      // Wait for the deep link callback with the auth code
       final deepLinkUri = await _deepLinkService.waitForDeepLink(
         timeout: const Duration(minutes: 5),
         filter: (uri) {
@@ -122,20 +120,19 @@ class SupabaseAuthDataSource implements AuthDataSource {
   Future<void> signOut() async {
     try {
       await _supabase.auth.signOut();
-
-      // Clear stored user data
-      await _secureStorage.delete(key: SecureStorageConstants.userId);
-      await _secureStorage.delete(key: SecureStorageConstants.userEmail);
-      await _secureStorage.delete(key: SecureStorageConstants.user);
-
-      log('User signed out successfully');
-    } on AuthException catch (e) {
-      log('Auth error during sign out: ${e.message}');
-      throw AuthenticationException('Failed to sign out: ${e.message}');
+      await _clearLocalData();
     } catch (e) {
-      log('Unexpected error during sign out: $e');
-      throw AuthenticationException('An unexpected error occurred: $e');
+      log('Error during sign out: $e');
+      throw AuthenticationException('An error occurred during sign out: $e');
     }
+  }
+
+  Future<void> _clearLocalData() async {
+    await _secureStorage.delete(key: SecureStorageConstants.authToken);
+    await _secureStorage.delete(key: SecureStorageConstants.userId);
+    await _secureStorage.delete(key: SecureStorageConstants.userEmail);
+    await _secureStorage.delete(key: SecureStorageConstants.user);
+    log('Local user data cleared.');
   }
 
   @override

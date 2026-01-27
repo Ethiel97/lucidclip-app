@@ -183,45 +183,6 @@ class _SettingsViewState extends State<SettingsView> {
                     ],
                   ),
 
-                  // Appearance Section
-                  SettingsSectionGroupAccordion(
-                    initiallyExpanded: false,
-                    key: _sectionKeys[SettingsSection.appearance.name],
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedPaintBoard,
-                    ),
-
-                    title: l10n.appearance.sentenceCase,
-                    children: [
-                      SettingsThemeSelector(
-                        currentTheme: settings.theme.toLowerCase(),
-                        onThemeChanged: (theme) {
-                          context.read<SettingsCubit>().updateTheme(theme);
-                        },
-                      ),
-                      SettingsSwitchItem(
-                        title: l10n.previewLinks.sentenceCase,
-                        description: l10n.previewLinksDescription.sentenceCase,
-                        value: settings.previewLinks,
-                        onChanged: (value) {
-                          context.read<SettingsCubit>().updatePreviewLinks(
-                            previewLinks: value,
-                          );
-                        },
-                      ),
-                      SettingsSwitchItem(
-                        title: l10n.previewImages.sentenceCase,
-                        description: l10n.previewImagesDescription.sentenceCase,
-                        value: settings.previewImages,
-                        onChanged: (value) {
-                          context.read<SettingsCubit>().updatePreviewImages(
-                            previewImages: value,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-
                   // History Section
                   SettingsSectionGroupAccordion(
                     initiallyExpanded: false,
@@ -279,6 +240,45 @@ class _SettingsViewState extends State<SettingsView> {
                             }
                           },
                         ),
+                      ),
+                    ],
+                  ),
+
+                  // Appearance Section
+                  SettingsSectionGroupAccordion(
+                    initiallyExpanded: false,
+                    key: _sectionKeys[SettingsSection.appearance.name],
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedPaintBoard,
+                    ),
+
+                    title: l10n.appearance.sentenceCase,
+                    children: [
+                      SettingsThemeSelector(
+                        currentTheme: settings.theme.toLowerCase(),
+                        onThemeChanged: (theme) {
+                          context.read<SettingsCubit>().updateTheme(theme);
+                        },
+                      ),
+                      SettingsSwitchItem(
+                        title: l10n.previewLinks.sentenceCase,
+                        description: l10n.previewLinksDescription.sentenceCase,
+                        value: settings.previewLinks,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updatePreviewLinks(
+                            previewLinks: value,
+                          );
+                        },
+                      ),
+                      SettingsSwitchItem(
+                        title: l10n.previewImages.sentenceCase,
+                        description: l10n.previewImagesDescription.sentenceCase,
+                        value: settings.previewImages,
+                        onChanged: (value) {
+                          context.read<SettingsCubit>().updatePreviewImages(
+                            previewImages: value,
+                          );
+                        },
                       ),
                     ],
                   ),

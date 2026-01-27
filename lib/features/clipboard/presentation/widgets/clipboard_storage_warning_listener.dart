@@ -29,7 +29,7 @@ class ClipboardStorageWarningListener extends StatelessWidget {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<ClipboardCubit, ClipboardState>(
+        SafeBlocListener<ClipboardCubit, ClipboardState>(
           listenWhen: (previous, current) {
             if (isProUser) return false;
             final previousRatio =
@@ -64,7 +64,7 @@ class ClipboardStorageWarningListener extends StatelessWidget {
           },
         ),
 
-        BlocListener<ClipboardCubit, ClipboardState>(
+        SafeBlocListener<ClipboardCubit, ClipboardState>(
           listenWhen: (previous, current) {
             if (isProUser || maxHistoryItems <= 0) return false;
 

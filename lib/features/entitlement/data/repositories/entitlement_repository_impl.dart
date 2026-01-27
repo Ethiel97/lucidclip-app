@@ -70,9 +70,16 @@ class EntitlementRepositoryImpl implements EntitlementRepository {
     _remoteStreamSub = _remoteSub!.stream.listen(
       (model) async {
         // Realtime → local cache (single source for UI)
+        log(
+          'EntitlementRepositoryImpl.startRealtime: received remote update:'
+          ' $model',
+        );
         await _local.upsertEntitlement(model);
       },
       onError: (_) {
+        log(
+          'EntitlementRepositoryImpl.startRealtime: remote subscription error',
+        );
         // Important: do NOT crash. You already have refresh() fallback.
       },
     );

@@ -291,6 +291,7 @@ class _InfoCard extends StatelessWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             onPressed: () {
+              context.read<ClipboardDetailCubit>().clearSelection();
               context.router.navigate(
                 SettingsRoute(section: SettingsSection.history.name),
               );

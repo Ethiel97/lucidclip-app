@@ -17,10 +17,12 @@ void main() {
     authStateController = StreamController<User?>.broadcast();
 
     // Setup default mock behaviors
-    when(() => mockAuthRepository.authStateChanges)
-        .thenAnswer((_) => authStateController.stream);
-    when(() => mockAuthRepository.getCurrentUser())
-        .thenAnswer((_) async => null);
+    when(
+      () => mockAuthRepository.authStateChanges,
+    ).thenAnswer((_) => authStateController.stream);
+    when(
+      () => mockAuthRepository.getCurrentUser(),
+    ).thenAnswer((_) async => null);
   });
 
   tearDown(() {
@@ -38,67 +40,48 @@ void main() {
     blocTest<AuthCubit, AuthState>(
       'emits authenticated state when getCurrentUser returns a user',
       setUp: () {
-        const user = User(
-          id: 'test-id',
-          email: 'test@example.com',
-        );
-        when(() => mockAuthRepository.getCurrentUser())
-            .thenAnswer((_) async => user);
+        const user = User(id: 'test-id', email: 'test@example.com');
+        when(
+          () => mockAuthRepository.getCurrentUser(),
+        ).thenAnswer((_) async => user);
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.checkAuthStatus(),
       expect: () => [
         isA<AuthState>()
-            .having(
-              (s) => s.user.value?.id,
-              'user id',
-              'test-id',
-            )
-            .having(
-              (s) => s.isAuthenticated,
-              'isAuthenticated',
-              isTrue,
-            ),
+            .having((s) => s.user.value?.id, 'user id', 'test-id')
+            .having((s) => s.isAuthenticated, 'isAuthenticated', isTrue),
       ],
     );
 
     blocTest<AuthCubit, AuthState>(
       'emits unauthenticated state when getCurrentUser returns null',
       setUp: () {
-        when(() => mockAuthRepository.getCurrentUser())
-            .thenAnswer((_) async => null);
+        when(
+          () => mockAuthRepository.getCurrentUser(),
+        ).thenAnswer((_) async => null);
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.checkAuthStatus(),
       expect: () => [
         isA<AuthState>()
-            .having(
-              (s) => s.user.value,
-              'user',
-              isNull,
-            )
-            .having(
-              (s) => s.isAuthenticated,
-              'isAuthenticated',
-              isFalse,
-            ),
+            .having((s) => s.user.value, 'user', isNull)
+            .having((s) => s.isAuthenticated, 'isAuthenticated', isFalse),
       ],
     );
 
     blocTest<AuthCubit, AuthState>(
       'emits loading then authenticated when signInWithGitHub succeeds',
       setUp: () {
-        const user = User(
-          id: 'github-id',
-          email: 'github@example.com',
-        );
-        when(() => mockAuthRepository.signInWithGitHub())
-            .thenAnswer((_) async => user);
+        const user = User(id: 'github-id', email: 'github@example.com');
+        when(
+          () => mockAuthRepository.signInWithGitHub(),
+        ).thenAnswer((_) async => user);
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.signInWithGitHub(),
       expect: () => [
-        isA<AuthState>().having((s) => s.isLoading, 'isLoading', isTrue),
+        isA<AuthState>().having((s) => s.isAuthenticating, 'isLoading', isTrue),
         isA<AuthState>()
             .having((s) => s.user.value?.id, 'user id', 'github-id')
             .having((s) => s.isAuthenticated, 'isAuthenticated', isTrue),
@@ -108,13 +91,14 @@ void main() {
     blocTest<AuthCubit, AuthState>(
       'emits loading then error when signInWithGitHub fails',
       setUp: () {
-        when(() => mockAuthRepository.signInWithGitHub())
-            .thenThrow(Exception('OAuth failed'));
+        when(
+          () => mockAuthRepository.signInWithGitHub(),
+        ).thenThrow(Exception('OAuth failed'));
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) => cubit.signInWithGitHub(),
       expect: () => [
-        isA<AuthState>().having((s) => s.isLoading, 'isLoading', isTrue),
+        isA<AuthState>().having((s) => s.isAuthenticating, 'isLoading', isTrue),
         isA<AuthState>()
             .having((s) => s.hasError, 'hasError', isTrue)
             .having(
@@ -148,8 +132,9 @@ void main() {
     blocTest<AuthCubit, AuthState>(
       'emits authenticated when auth state stream emits a user',
       setUp: () {
-        when(() => mockAuthRepository.getCurrentUser())
-            .thenAnswer((_) async => null);
+        when(
+          () => mockAuthRepository.getCurrentUser(),
+        ).thenAnswer((_) async => null);
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) {
@@ -157,7 +142,8 @@ void main() {
           const User(id: 'stream-id', email: 'stream@example.com'),
         );
       },
-      skip: 1, // Skip initial state
+      skip: 1,
+      // Skip initial state
       expect: () => [
         isA<AuthState>()
             .having((s) => s.user.value?.id, 'user id', 'stream-id')
@@ -168,18 +154,17 @@ void main() {
     blocTest<AuthCubit, AuthState>(
       'emits unauthenticated when auth state stream emits null',
       setUp: () {
-        const user = User(
-          id: 'test-id',
-          email: 'test@example.com',
-        );
-        when(() => mockAuthRepository.getCurrentUser())
-            .thenAnswer((_) async => user);
+        const user = User(id: 'test-id', email: 'test@example.com');
+        when(
+          () => mockAuthRepository.getCurrentUser(),
+        ).thenAnswer((_) async => user);
       },
       build: () => AuthCubit(authRepository: mockAuthRepository),
       act: (cubit) {
         authStateController.add(null);
       },
-      skip: 1, // Skip initial authenticated state
+      skip: 1,
+      // Skip initial authenticated state
       expect: () => [
         isA<AuthState>()
             .having((s) => s.user.value, 'user', isNull)

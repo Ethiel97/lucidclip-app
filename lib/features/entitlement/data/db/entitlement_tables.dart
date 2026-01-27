@@ -16,5 +16,5 @@ class EntitlementEntries extends Table {
   DateTimeColumn get validUntil => dateTime().nullable().named('valid_until')();
 
   @override
-  Set<Column> get primaryKey => {userId, id};
+  Set<Column> get primaryKey => {userId};
 }

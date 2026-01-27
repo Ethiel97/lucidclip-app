@@ -43,48 +43,55 @@ class _SettingsSectionGroupAccordionState
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InkWell(
-          onTap: () => setState(() => _isExpanded = !_isExpanded),
-          borderRadius: BorderRadius.circular(AppSpacing.xs),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SettingsSectionHeader(
-                    icon: widget.icon,
-                    title: widget.title,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          InkWell(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            borderRadius: BorderRadius.circular(AppSpacing.xs),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SettingsSectionHeader(
+                      icon: widget.icon,
+                      title: widget.title,
+                    ),
                   ),
-                ),
-                AnimatedRotation(
-                  turns: _isExpanded ? 0.5 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedArrowDown01,
+                  AnimatedRotation(
+                    turns: _isExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 150),
+                    child: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedArrowDown01,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          transformAlignment: Alignment.center,
-          curve: Curves.easeInOut,
-          child: _isExpanded
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: AppSpacing.xs),
-                    ...widget.children,
-                  ],
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 150),
+            reverseDuration: const Duration(milliseconds: 100),
+            switchInCurve: Curves.easeInOut,
+            switchOutCurve: Curves.easeInOut,
+            transitionBuilder: (child, animation) =>
+                SizeTransition(sizeFactor: animation, child: child),
+            child: _isExpanded
+                ? Column(
+                    key: const ValueKey('expanded'),
+                    spacing: AppSpacing.sm,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [...widget.children],
+                  )
+                : const SizedBox.shrink(key: ValueKey('collapsed')),
+          ),
+        ],
+      ),
     );
   }
 }

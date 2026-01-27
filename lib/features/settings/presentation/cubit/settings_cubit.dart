@@ -41,6 +41,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   bool get isAuthenticated => _currentUser != null && _currentUserId != 'guest';
 
   void _initializeAuthListener() {
+    _authSubscription?.cancel();
     _authSubscription = authRepository.authStateChanges.listen((user) {
       _currentUser = user;
       _currentUserId = user?.id ?? 'guest';
@@ -66,7 +67,6 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     emit(state.copyWith(settings: state.settings.toLoading()));
 
     try {
-      // First load from local
       final localSettings = await localSettingsRepository.getSettings(
         _currentUserId,
       );
@@ -90,17 +90,13 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
                 settings: state.settings.toSuccess(remoteSettings),
               ),
             );
-            // Check if we need to restore or expire an active session
             await _checkAndRestorePrivateSession(remoteSettings);
           } else if (localSettings == null) {
-            // Create default settings
             final defaultSettings = _createDefaultSettings();
             await updateSettings(defaultSettings);
           }
         } catch (e) {
-          // If remote fails but we have local, that's okay
           if (localSettings == null) {
-            // Create default settings locally
             final defaultSettings = _createDefaultSettings();
             await localSettingsRepository.upsertSettings(defaultSettings);
             emit(
@@ -111,7 +107,6 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
           }
         }
       } else if (localSettings == null) {
-        // Create default settings for guest
         final defaultSettings = _createDefaultSettings();
         await localSettingsRepository.upsertSettings(defaultSettings);
         emit(

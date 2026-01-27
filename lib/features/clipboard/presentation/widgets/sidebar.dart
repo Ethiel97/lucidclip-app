@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -16,10 +17,12 @@ class SidebarItemConfig<T> {
     required this.icon,
     required this.label,
     required this.route,
+    this.requiresAuth = false,
   });
 
   final T icon;
   final String label;
+  final bool requiresAuth;
   final PageRouteInfo route;
 }
 
@@ -63,6 +66,12 @@ class _SidebarState extends State<Sidebar> {
         route: const SnippetsRoute(),
       ),*/
       SidebarItemConfig<List<List<dynamic>>>(
+        icon: HugeIcons.strokeRoundedUserAccount,
+        label: context.l10n.account.titleCase,
+        requiresAuth: true,
+        route: const AccountRoute(),
+      ),
+      SidebarItemConfig<List<List<dynamic>>>(
         icon: HugeIcons.strokeRoundedSettings03,
         label: context.l10n.settings.titleCase,
         route: SettingsRoute(),
@@ -94,6 +103,10 @@ class _SidebarState extends State<Sidebar> {
     );
 
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+
+    final isAuthenticated = context.select(
+      (AuthCubit cubit) => cubit.state.isAuthenticated,
+    );
 
     final tabsRouter = context.tabsRouter;
 
@@ -137,7 +150,14 @@ class _SidebarState extends State<Sidebar> {
                   icon: HugeIcon(icon: item.icon),
                   label: item.label,
                   isSelected: isSelected,
-                  onTap: () => tabsRouter.setActiveIndex(index),
+                  onTap: () {
+                    if (item.requiresAuth && !isAuthenticated) {
+                      context.router.push(const LoginRoute());
+                      return;
+                    }
+
+                    tabsRouter.setActiveIndex(index);
+                  },
                 );
               },
             ),

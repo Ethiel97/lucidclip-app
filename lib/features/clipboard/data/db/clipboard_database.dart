@@ -16,7 +16,7 @@ class ClipboardDatabase extends _$ClipboardDatabase {
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dir = await getLibraryDirectory();
+      final dir = await getApplicationSupportDirectory();
       final dbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
 
       /*if (dbFile.existsSync()) {

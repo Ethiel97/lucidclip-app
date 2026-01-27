@@ -201,12 +201,12 @@ class _GitHubSignInButton extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return BlocBuilder<AuthCubit, AuthState>(
-      buildWhen: (p, c) => p.isLoading != c.isLoading,
+      buildWhen: (p, c) => p.isAuthenticating != c.isAuthenticating,
       builder: (context, state) => SizedBox(
         width: double.infinity,
         height: 52,
         child: ElevatedButton(
-          onPressed: state.isLoading
+          onPressed: state.isAuthenticating
               ? null
               : () => context.read<AuthCubit>().signInWithGitHub(),
           style: ElevatedButton.styleFrom(
@@ -224,7 +224,7 @@ class _GitHubSignInButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (state.isLoading)
+              if (state.isAuthenticating)
                 const SizedBox(
                   width: 18,
                   height: 18,
@@ -237,7 +237,7 @@ class _GitHubSignInButton extends StatelessWidget {
                 const HugeIcon(icon: HugeIcons.strokeRoundedGithub),
               const SizedBox(width: 10),
               Text(
-                state.isLoading
+                state.isAuthenticating
                     ? l10n.signingIn.sentenceCase
                     : l10n.signInWith(l10n.github),
                 style: textTheme.labelLarge?.copyWith(

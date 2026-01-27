@@ -21,8 +21,6 @@ class DioAuthInterceptor extends Interceptor {
 
       // Add Authorization header if token exists
       if (token != null && token.isNotEmpty) {
-        //add token if url contains koyeb
-
         options.headers['Authorization'] = 'Bearer $token';
       }
 

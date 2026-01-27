@@ -10,7 +10,8 @@ abstract class RetentionCleanupService {
   ///
   /// This method:
   /// - Retrieves the current user's entitlement status (Pro/Free)
-  /// - Fetches retention settings (from user settings for Pro, defaults for Free)
+  /// - Fetches retention settings
+  /// (from user settings for Pro, defaults for Free)
   /// - Evaluates all clipboard items against retention policy
   /// - Removes expired items (excluding pinned and snippet items)
   ///

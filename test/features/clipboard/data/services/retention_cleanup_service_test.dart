@@ -37,25 +37,28 @@ void main() {
     service = RetentionCleanupServiceImpl(
       localClipboardRepository: mockLocalClipboardRepository,
       localSettingsRepository: mockLocalSettingsRepository,
-      entitlementRepository: mockEntitlementRepository,
       authRepository: mockAuthRepository,
     );
 
     // Setup default mocks
-    when(() => mockAuthRepository.getCurrentUser())
-        .thenAnswer((_) async => const User(id: 'test-user', email: 'test@example.com'));
-    when(() => mockLocalClipboardRepository.getAll())
-        .thenAnswer((_) async => []);
+    when(() => mockAuthRepository.getCurrentUser()).thenAnswer(
+      (_) async => const User(id: 'test-user', email: 'test@example.com'),
+    );
+    when(
+      () => mockLocalClipboardRepository.getAll(),
+    ).thenAnswer((_) async => []);
     // Allow delete to be called without throwing
-    when(() => mockLocalClipboardRepository.delete(any()))
-        .thenAnswer((_) async {});
+    when(
+      () => mockLocalClipboardRepository.delete(any()),
+    ).thenAnswer((_) async {});
   });
 
   group('RetentionCleanupService', () {
     group('Free User', () {
       setUp(() {
-        when(() => mockEntitlementRepository.load(any()))
-            .thenAnswer((_) async => null);
+        when(
+          () => mockEntitlementRepository.load(any()),
+        ).thenAnswer((_) async => null);
       });
 
       test('uses default retention duration for free users', () async {
@@ -66,12 +69,14 @@ void main() {
           contentHash: 'hash1',
           type: ClipboardItemType.text,
           userId: 'test-user',
-          createdAt: now.subtract(const Duration(days: 2)), // 2 days ago
+          createdAt: now.subtract(const Duration(days: 2)),
+          // 2 days ago
           updatedAt: now.subtract(const Duration(days: 2)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [expiredItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [expiredItem]);
 
         await service.cleanupExpiredItems();
 
@@ -87,19 +92,22 @@ void main() {
           contentHash: 'hash1',
           type: ClipboardItemType.text,
           userId: 'test-user',
-          createdAt: now.subtract(const Duration(hours: 12)), // 12 hours ago
+          createdAt: now.subtract(const Duration(hours: 12)),
+          // 12 hours ago
           updatedAt: now.subtract(const Duration(hours: 12)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [validItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [validItem]);
 
         await service.cleanupExpiredItems();
 
         // Verify getAll was called
         verify(() => mockLocalClipboardRepository.getAll()).called(1);
-        
-        // Note: Due to mocktail complexity with verifyNever after when(delete(any())),
+
+        // Note: Due to mocktail complexity with verifyNever
+        // after when(delete(any())),
         // this verification is skipped. The other tests adequately demonstrate
         // that items within retention are not deleted.
         // verifyNever(() => mockLocalClipboardRepository.delete(any()));
@@ -117,13 +125,14 @@ void main() {
           updatedAt: DateTime.now().toUtc(),
           validUntil: null,
         );
-        when(() => mockEntitlementRepository.load(any()))
-            .thenAnswer((_) async => entitlement);
+        when(
+          () => mockEntitlementRepository.load(any()),
+        ).thenAnswer((_) async => entitlement);
       });
 
       test('uses retention from user settings for pro users', () async {
         final now = DateTime.now().toUtc();
-        
+
         // Pro user with 7 days retention
         final settings = UserSettings(
           userId: 'test-user',
@@ -132,10 +141,12 @@ void main() {
           updatedAt: now,
         );
 
-        when(() => mockLocalSettingsRepository.getSettings('test-user'))
-            .thenAnswer((_) async => settings);
+        when(
+          () => mockLocalSettingsRepository.getSettings('test-user'),
+        ).thenAnswer((_) async => settings);
 
-        // Item that is 5 days old - should NOT be deleted (within 7 day retention)
+        // Item that is 5 days old - should NOT be deleted
+        // (within 7 day retention)
         final validItem = ClipboardItem(
           id: '1',
           content: 'valid',
@@ -157,8 +168,9 @@ void main() {
           updatedAt: now.subtract(const Duration(days: 8)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [validItem, expiredItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [validItem, expiredItem]);
 
         await service.cleanupExpiredItems();
 
@@ -167,36 +179,42 @@ void main() {
         verifyNever(() => mockLocalClipboardRepository.delete('1'));
       });
 
-      test('falls back to default retention if settings not available', () async {
-        final now = DateTime.now().toUtc();
-        
-        when(() => mockLocalSettingsRepository.getSettings('test-user'))
-            .thenAnswer((_) async => null);
+      test(
+        'falls back to default retention if settings not available',
+        () async {
+          final now = DateTime.now().toUtc();
 
-        // Item that is 2 days old - should be deleted (exceeds default 1 day)
-        final expiredItem = ClipboardItem(
-          id: '1',
-          content: 'expired',
-          contentHash: 'hash1',
-          type: ClipboardItemType.text,
-          userId: 'test-user',
-          createdAt: now.subtract(const Duration(days: 2)),
-          updatedAt: now.subtract(const Duration(days: 2)),
-        );
+          when(
+            () => mockLocalSettingsRepository.getSettings('test-user'),
+          ).thenAnswer((_) async => null);
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [expiredItem]);
+          // Item that is 2 days old - should be deleted (exceeds default 1 day)
+          final expiredItem = ClipboardItem(
+            id: '1',
+            content: 'expired',
+            contentHash: 'hash1',
+            type: ClipboardItemType.text,
+            userId: 'test-user',
+            createdAt: now.subtract(const Duration(days: 2)),
+            updatedAt: now.subtract(const Duration(days: 2)),
+          );
 
-        await service.cleanupExpiredItems();
+          when(
+            () => mockLocalClipboardRepository.getAll(),
+          ).thenAnswer((_) async => [expiredItem]);
 
-        verify(() => mockLocalClipboardRepository.delete('1')).called(1);
-      });
+          await service.cleanupExpiredItems();
+
+          verify(() => mockLocalClipboardRepository.delete('1')).called(1);
+        },
+      );
     });
 
     group('Pinned and Snippet Items', () {
       setUp(() {
-        when(() => mockEntitlementRepository.load(any()))
-            .thenAnswer((_) async => null);
+        when(
+          () => mockEntitlementRepository.load(any()),
+        ).thenAnswer((_) async => null);
       });
 
       test('never deletes pinned items even if expired', () async {
@@ -208,12 +226,14 @@ void main() {
           type: ClipboardItemType.text,
           userId: 'test-user',
           isPinned: true,
-          createdAt: now.subtract(const Duration(days: 30)), // Very old
+          createdAt: now.subtract(const Duration(days: 30)),
+          // Very old
           updatedAt: now.subtract(const Duration(days: 30)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [pinnedItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [pinnedItem]);
 
         await service.cleanupExpiredItems();
 
@@ -230,12 +250,14 @@ void main() {
           type: ClipboardItemType.text,
           userId: 'test-user',
           isSnippet: true,
-          createdAt: now.subtract(const Duration(days: 30)), // Very old
+          createdAt: now.subtract(const Duration(days: 30)),
+          // Very old
           updatedAt: now.subtract(const Duration(days: 30)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [snippetItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [snippetItem]);
 
         await service.cleanupExpiredItems();
 
@@ -243,61 +265,66 @@ void main() {
         verifyNever(() => mockLocalClipboardRepository.delete('1'));
       });
 
-      test('deletes expired items but keeps pinned and snippet items', () async {
-        final now = DateTime.now().toUtc();
-        
-        final expiredNormalItem = ClipboardItem(
-          id: '1',
-          content: 'normal',
-          contentHash: 'hash1',
-          type: ClipboardItemType.text,
-          userId: 'test-user',
-          createdAt: now.subtract(const Duration(days: 2)),
-          updatedAt: now.subtract(const Duration(days: 2)),
-        );
+      test(
+        'deletes expired items but keeps pinned and snippet items',
+        () async {
+          final now = DateTime.now().toUtc();
 
-        final expiredPinnedItem = ClipboardItem(
-          id: '2',
-          content: 'pinned',
-          contentHash: 'hash2',
-          type: ClipboardItemType.text,
-          userId: 'test-user',
-          isPinned: true,
-          createdAt: now.subtract(const Duration(days: 2)),
-          updatedAt: now.subtract(const Duration(days: 2)),
-        );
+          final expiredNormalItem = ClipboardItem(
+            id: '1',
+            content: 'normal',
+            contentHash: 'hash1',
+            type: ClipboardItemType.text,
+            userId: 'test-user',
+            createdAt: now.subtract(const Duration(days: 2)),
+            updatedAt: now.subtract(const Duration(days: 2)),
+          );
 
-        final expiredSnippetItem = ClipboardItem(
-          id: '3',
-          content: 'snippet',
-          contentHash: 'hash3',
-          type: ClipboardItemType.text,
-          userId: 'test-user',
-          isSnippet: true,
-          createdAt: now.subtract(const Duration(days: 2)),
-          updatedAt: now.subtract(const Duration(days: 2)),
-        );
+          final expiredPinnedItem = ClipboardItem(
+            id: '2',
+            content: 'pinned',
+            contentHash: 'hash2',
+            type: ClipboardItemType.text,
+            userId: 'test-user',
+            isPinned: true,
+            createdAt: now.subtract(const Duration(days: 2)),
+            updatedAt: now.subtract(const Duration(days: 2)),
+          );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [
+          final expiredSnippetItem = ClipboardItem(
+            id: '3',
+            content: 'snippet',
+            contentHash: 'hash3',
+            type: ClipboardItemType.text,
+            userId: 'test-user',
+            isSnippet: true,
+            createdAt: now.subtract(const Duration(days: 2)),
+            updatedAt: now.subtract(const Duration(days: 2)),
+          );
+
+          when(() => mockLocalClipboardRepository.getAll()).thenAnswer(
+            (_) async => [
               expiredNormalItem,
               expiredPinnedItem,
               expiredSnippetItem,
-            ]);
+            ],
+          );
 
-        await service.cleanupExpiredItems();
+          await service.cleanupExpiredItems();
 
-        // Verify only normal item was deleted
-        verify(() => mockLocalClipboardRepository.delete('1')).called(1);
-        verifyNever(() => mockLocalClipboardRepository.delete('2'));
-        verifyNever(() => mockLocalClipboardRepository.delete('3'));
-      });
+          // Verify only normal item was deleted
+          verify(() => mockLocalClipboardRepository.delete('1')).called(1);
+          verifyNever(() => mockLocalClipboardRepository.delete('2'));
+          verifyNever(() => mockLocalClipboardRepository.delete('3'));
+        },
+      );
     });
 
     group('Idempotency', () {
       setUp(() {
-        when(() => mockEntitlementRepository.load(any()))
-            .thenAnswer((_) async => null);
+        when(
+          () => mockEntitlementRepository.load(any()),
+        ).thenAnswer((_) async => null);
       });
 
       test('can be called multiple times safely', () async {
@@ -312,8 +339,9 @@ void main() {
           updatedAt: now.subtract(const Duration(days: 2)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [expiredItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [expiredItem]);
 
         // Call cleanup multiple times
         await service.cleanupExpiredItems();
@@ -327,14 +355,12 @@ void main() {
 
     group('Error Handling', () {
       test('handles repository errors gracefully', () async {
-        when(() => mockEntitlementRepository.load(any()))
-            .thenThrow(Exception('Repository error'));
+        when(
+          () => mockEntitlementRepository.load(any()),
+        ).thenThrow(Exception('Repository error'));
 
         // Should not throw
-        await expectLater(
-          service.cleanupExpiredItems(),
-          completes,
-        );
+        await expectLater(service.cleanupExpiredItems(), completes);
       });
 
       test('handles deletion errors gracefully', () async {
@@ -349,29 +375,31 @@ void main() {
           updatedAt: now.subtract(const Duration(days: 2)),
         );
 
-        when(() => mockEntitlementRepository.load(any()))
-            .thenAnswer((_) async => null);
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [expiredItem]);
-        when(() => mockLocalClipboardRepository.delete('1'))
-            .thenThrow(Exception('Delete failed'));
+        when(
+          () => mockEntitlementRepository.load(any()),
+        ).thenAnswer((_) async => null);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [expiredItem]);
+        when(
+          () => mockLocalClipboardRepository.delete('1'),
+        ).thenThrow(Exception('Delete failed'));
 
         // Should not throw
-        await expectLater(
-          service.cleanupExpiredItems(),
-          completes,
-        );
+        await expectLater(service.cleanupExpiredItems(), completes);
       });
     });
 
     group('Guest User', () {
       test('works for guest users', () async {
         final now = DateTime.now().toUtc();
-        
-        when(() => mockAuthRepository.getCurrentUser())
-            .thenAnswer((_) async => null);
-        when(() => mockEntitlementRepository.load('guest'))
-            .thenAnswer((_) async => null);
+
+        when(
+          () => mockAuthRepository.getCurrentUser(),
+        ).thenAnswer((_) async => null);
+        when(
+          () => mockEntitlementRepository.load('guest'),
+        ).thenAnswer((_) async => null);
 
         final expiredItem = ClipboardItem(
           id: '1',
@@ -383,8 +411,9 @@ void main() {
           updatedAt: now.subtract(const Duration(days: 2)),
         );
 
-        when(() => mockLocalClipboardRepository.getAll())
-            .thenAnswer((_) async => [expiredItem]);
+        when(
+          () => mockLocalClipboardRepository.getAll(),
+        ).thenAnswer((_) async => [expiredItem]);
 
         await service.cleanupExpiredItems();
 

@@ -46,10 +46,17 @@ class _AppState extends State<App> with WindowListener {
     getIt<ClipboardDetailCubit>().clearSelection();
 
     final shortcuts = getIt<SettingsCubit>().state.shortcuts;
+    final isAuthenticating = getIt<AuthCubit>().state.isAuthenticating;
+
+    if (isAuthenticating) {
+      await getIt<WindowController>().setAlwaysOnTop(alwaysOnTop: false);
+      return;
+    } else {
+      await getIt<WindowController>().setAlwaysOnTop();
+    }
 
     //if the user has set shortcuts for displaying the app we can hide on blur
     // otherwise we keep it open since there is no way to bring it back
-
     for (final shortcut in shortcuts.entries) {
       if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
         await getIt<WindowController>().hide();

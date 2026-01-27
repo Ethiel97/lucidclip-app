@@ -619,14 +619,26 @@ abstract class AppLocalizations {
   /// Description for the Max History Items setting
   ///
   /// In en, this message translates to:
-  /// **'Sets the maximum number of items in the clipboard.'**
+  /// **'Sets how much history LucidClip can safely retain.'**
   String get maxHistoryItemsDescription;
+
+  /// Label for the maximum history size setting
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum history size'**
+  String get maxHistorySize;
 
   /// Label showing the number of minutes with pluralization
   ///
   /// In en, this message translates to:
   /// **'{count, plural, =0 {0 minute} =1 {1 minute} other {{count} minutes}}'**
   String minutesCount(int count);
+
+  /// Label showing the number of months with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 month} =1 {1 month} other {{count} months}}'**
+  String monthsCount(int count);
 
   /// Message shown when there are no apps ignored during clipboard tracking
   ///
@@ -1222,6 +1234,12 @@ abstract class AppLocalizations {
   /// **'Clipboard items from {appName} will now appear in your history.'**
   String trackingResumedForAppDescription(String appName);
 
+  /// Label for unlimited option
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get unlimited;
+
   /// Button text to unpin an item
   ///
   /// In en, this message translates to:
@@ -1264,11 +1282,35 @@ abstract class AppLocalizations {
   /// **'Version'**
   String get version;
 
+  /// Label showing the number of weeks with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 week} =1 {1 week} other {{count} weeks}}'**
+  String weeksCount(int count);
+
+  /// Welcome message shown when the user upgrades to Pro
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Pro 🎉!'**
+  String get welcomeToPro;
+
+  /// Label showing the number of years with pluralization
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0 {0 year} =1 {1 year} other {{count} years}}'**
+  String yearsCount(int count);
+
   /// Message shown to inform the user about increasing storage limit with Pro plan
   ///
   /// In en, this message translates to:
   /// **'You can increase your storage limit with your Pro plan.'**
   String get youCanIncreaseYouStorageLimitWithYourProPlan;
+
+  /// Message shown when the user upgrades to Pro
+  ///
+  /// In en, this message translates to:
+  /// **'You now have access to all Pro features.'**
+  String get youNowHavePro;
 
   /// Message shown when the clipboard history is limited
   ///

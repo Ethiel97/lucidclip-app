@@ -1,6 +1,5 @@
 import 'package:jiffy/jiffy.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 const warningShowThresholdInHours = 6;
 
@@ -52,26 +51,24 @@ class RetentionWarning {
 class RetentionWarningPolicy {
   const RetentionWarningPolicy({
     required this.now,
-    required this.proRetention,
-    this.freeRetention = const Duration(days: defaultRetentionDays),
+    required this.retentionDuration,
     this.showThreshold = const Duration(hours: warningShowThresholdInHours),
   });
 
   final DateTime Function() now;
-  final Duration freeRetention;
-  final Duration proRetention;
+  final RetentionDuration retentionDuration;
   final Duration showThreshold;
 
   RetentionWarning evaluate({
     required ClipboardItem item,
-    required bool isPro,
     RetentionDisplayMode mode = RetentionDisplayMode.badgeOnly,
   }) {
-    final retention = isPro ? proRetention : freeRetention;
-    if (retention == Duration.zero) return RetentionWarning.none;
+    if (retentionDuration.isUnlimited) {
+      return RetentionWarning.none;
+    }
 
     final created = item.createdAt.toUtc();
-    final expiresAt = created.add(retention);
+    final expiresAt = created.add(retentionDuration.duration);
     final remaining = expiresAt.difference(now().toUtc());
 
     if (remaining <= Duration.zero) {

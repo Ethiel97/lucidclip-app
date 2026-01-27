@@ -14,6 +14,8 @@ import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'clipboard_state.dart';
 
+const expiredItemsCleanUpInterval = Duration(hours: 6);
+
 @lazySingleton
 class ClipboardCubit extends HydratedCubit<ClipboardState> {
   ClipboardCubit({
@@ -55,10 +57,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   /// Starts periodic cleanup of expired items
-  /// Runs every hour to ensure the database doesn't get full
+  /// Runs every 6 hours to ensure the database doesn't get full
   void _startPeriodicCleanup() {
-    // Run cleanup every hour
-    const cleanupInterval = Duration(hours: 2);
+    const cleanupInterval = expiredItemsCleanUpInterval;
 
     _periodicCleanupTimer?.cancel();
 

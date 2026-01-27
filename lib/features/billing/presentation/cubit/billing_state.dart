@@ -41,8 +41,7 @@ class BillingState extends Equatable {
       ? customerPortal.value!.url
       : '';
 
-  bool get needsPortalRenew =>
-      customerPortal.value != null && (customerPortal.value!.isExpired);
+  bool get needsPortalRenew => customerPortal.value?.isExpired ?? true;
 
   Map<String, dynamic> toJson() {
     return {

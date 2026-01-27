@@ -32,28 +32,30 @@ class LucidClipPage extends StatelessWidget {
             SettingsRoute(),
           ],
           builder: (context, child) {
-            return LogoutConfirmationListener(
-              child: UpgradePromptListener(
-                yearlyProductId: AppConstants.yearlyProductId,
-                monthlyProductId: AppConstants.monthlyProductId,
-                child: BillingCheckoutListener(
-                  child: ClipboardStorageWarningListener(
-                    isProUser: context.select(
-                      (EntitlementCubit cubit) => cubit.state.isProActive,
-                    ),
-                    onUpgradeTap: () {
-                      context.read<UpgradePromptCubit>().request(
-                        ProFeature.unlimitedHistory,
-                        source: ProFeatureRequestSource.historyLimitReached,
-                      );
-                    },
-                    child: SourceAppPrivacyControlListener(
-                      child: Row(
-                        children: [
-                          const Sidebar(),
-                          const VerticalDivider(width: 1, thickness: .15),
-                          Expanded(child: child),
-                        ],
+            return EntitlementListener(
+              child: LogoutConfirmationListener(
+                child: UpgradePromptListener(
+                  yearlyProductId: AppConstants.yearlyProductId,
+                  monthlyProductId: AppConstants.monthlyProductId,
+                  child: BillingCheckoutListener(
+                    child: ClipboardStorageWarningListener(
+                      isProUser: context.select(
+                        (EntitlementCubit cubit) => cubit.state.isProActive,
+                      ),
+                      onUpgradeTap: () {
+                        context.read<UpgradePromptCubit>().request(
+                          ProFeature.unlimitedHistory,
+                          source: ProFeatureRequestSource.historyLimitReached,
+                        );
+                      },
+                      child: SourceAppPrivacyControlListener(
+                        child: Row(
+                          children: [
+                            const Sidebar(),
+                            const VerticalDivider(width: 1, thickness: .15),
+                            Expanded(child: child),
+                          ],
+                        ),
                       ),
                     ),
                   ),

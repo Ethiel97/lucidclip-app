@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/presentation/cubit/cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -50,6 +51,12 @@ class BillingCheckoutListener extends StatelessWidget {
         SafeBlocListener<BillingCubit, BillingState>(
           listenWhen: (previous, current) => current.needsPortalRenew,
           listener: (context, state) {
+            //check if user is authenticated
+            final isAuthenticated = context
+                .read<AuthCubit>()
+                .state
+                .isAuthenticated;
+            if (!isAuthenticated) return;
             context.read<BillingCubit>().getCustomerPortal();
           },
         ),

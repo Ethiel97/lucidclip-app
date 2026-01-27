@@ -10,6 +10,7 @@ import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
+import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
@@ -197,24 +198,24 @@ class _SettingsViewState extends State<SettingsView> {
                           );
                         },
                         badgeOffset: const Offset(12, -4),
-                        child: SettingsDropdownItem<int>(
-                          title: l10n.historyLimit.sentenceCase,
-                          description:
-                              l10n.maxHistoryItemsDescription.sentenceCase,
-                          value: settings.maxHistoryItems,
-                          items: const [30, 50, 100, 500, 1000, 5000, 10000],
-                          itemLabel: l10n.itemsCount,
-                          onChanged: (value) {
-                            if (value != null) {
+                        child: SettingsDropdownItem<MaxHistorySize>(
+                          title: l10n.maxHistorySize.sentenceCase,
+                          description: l10n.maxHistoryItemsDescription,
+                          value: MaxHistorySize.fromValue(
+                            settings.maxHistoryItems,
+                          ),
+                          items: MaxHistorySize.values,
+                          itemLabel: (value) => value.resolveLabel(l10n),
+                          onChanged: (size) {
+                            if (size != null) {
                               context
                                   .read<SettingsCubit>()
-                                  .updateMaxHistoryItems(value);
+                                  .updateMaxHistoryItems(size.value);
                             }
                           },
                         ),
                       ),
 
-                      //TODO(Ethiel97): Make this a Pro feature
                       ProGateOverlay(
                         onUpgradeTap: () {
                           context.read<UpgradePromptCubit>().request(
@@ -222,17 +223,19 @@ class _SettingsViewState extends State<SettingsView> {
                           );
                         },
                         badgeOffset: const Offset(12, -4),
-                        child: SettingsDropdownItem<int>(
+                        child: SettingsDropdownItem<RetentionDuration>(
                           title: l10n.retentionDays.sentenceCase,
                           description:
                               l10n.retentionDaysDescription.sentenceCase,
-                          value: settings.retentionDays,
-                          items: const [1, 7, 14, 30, 60, 90, 180, 365],
-                          itemLabel: l10n.daysCount,
+                          value: RetentionDuration.fromDays(
+                            settings.retentionDays,
+                          ),
+                          items: RetentionDuration.values,
+                          itemLabel: (value) => value.resolveLabel(l10n),
                           onChanged: (value) {
                             if (value != null) {
                               context.read<SettingsCubit>().updateRetentionDays(
-                                value,
+                                value.duration.inDays,
                               );
                             }
                           },

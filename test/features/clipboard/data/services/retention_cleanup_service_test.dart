@@ -37,7 +37,6 @@ void main() {
     service = RetentionCleanupServiceImpl(
       localClipboardRepository: mockLocalClipboardRepository,
       localSettingsRepository: mockLocalSettingsRepository,
-      entitlementRepository: mockEntitlementRepository,
       authRepository: mockAuthRepository,
     );
 
@@ -107,7 +106,8 @@ void main() {
         // Verify getAll was called
         verify(() => mockLocalClipboardRepository.getAll()).called(1);
 
-        // Note: Due to mocktail complexity with verifyNever after when(delete(any())),
+        // Note: Due to mocktail complexity with verifyNever
+        // after when(delete(any())),
         // this verification is skipped. The other tests adequately demonstrate
         // that items within retention are not deleted.
         // verifyNever(() => mockLocalClipboardRepository.delete(any()));
@@ -145,7 +145,8 @@ void main() {
           () => mockLocalSettingsRepository.getSettings('test-user'),
         ).thenAnswer((_) async => settings);
 
-        // Item that is 5 days old - should NOT be deleted (within 7 day retention)
+        // Item that is 5 days old - should NOT be deleted
+        // (within 7 day retention)
         final validItem = ClipboardItem(
           id: '1',
           content: 'valid',

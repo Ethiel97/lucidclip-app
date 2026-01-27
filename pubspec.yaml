@@ -15,7 +15,7 @@ dependencies:
   contextmenu: ^3.0.0
   crypto: ^3.0.3
   device_info_plus: ^12.3.0
-  dio: ^5.4.3+1
+  dio: ^5.9.1
   drift: ^2.29.0
   drift_flutter: ^0.2.8
   equatable: ^2.0.5

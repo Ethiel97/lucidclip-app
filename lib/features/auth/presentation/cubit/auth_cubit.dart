@@ -26,6 +26,8 @@ class AuthCubit extends HydratedCubit<AuthState> {
   /// and listening to auth state changes
   void _initializeAuthState() {
     // Listen to auth state changes
+
+    _authStateSubscription?.cancel();
     _authStateSubscription = _authRepository.authStateChanges.listen(
       _onAuthStateChanged,
       onError: (Object error) {
@@ -51,7 +53,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       log('User authenticated: ${user.email}');
     } else {
       emit(state.copyWith(user: const ValueWrapper<User?>()));
-      log('User unauthenticated');
+      log('User unauthenticated', name: 'AuthCubit');
     }
   }
 
@@ -115,19 +117,33 @@ class AuthCubit extends HydratedCubit<AuthState> {
   /// Sign out the current user
   Future<void> signOut() async {
     try {
+      emit(state.copyWith(logoutResult: state.logoutResult.toLoading()));
+
       await _authRepository.signOut();
-      emit(const AuthState());
+      emit(state.copyWith(logoutResult: state.logoutResult.toSuccess(null)));
       log('Successfully signed out');
     } catch (e) {
       log('Error during sign out: $e');
       emit(
         state.copyWith(
-          user: state.user.toError(
+          logoutResult: state.logoutResult.toError(
             ErrorDetails(message: 'Failed to sign out: $e'),
           ),
         ),
       );
     }
+  }
+
+  void clearState() {
+    emit(const AuthState());
+  }
+
+  Future<void> requestLogout() async {
+    emit(state.copyWith(logoutRequest: true));
+  }
+
+  Future<void> cancelLogout() async {
+    emit(state.copyWith(logoutRequest: false));
   }
 
   @disposeMethod

@@ -34,7 +34,7 @@ class SupabaseEntitlementRemoteDataSource
     //We keep the latest entitlement only
     final rawStream = remoteSync.watch<Map<String, dynamic>>(
       table: entitlementTable,
-      primaryKey: 'id',
+      primaryKey: 'user_id',
       filters: {'user_id': userId},
     );
 

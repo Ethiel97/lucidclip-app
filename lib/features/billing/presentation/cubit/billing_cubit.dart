@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
-import 'package:lucid_clip/features/billing/domain/domain.dart';
+import 'package:lucid_clip/features/billing/billing.dart';
 
 part 'billing_state.dart';
 
 @lazySingleton
-class BillingCubit extends Cubit<BillingState> {
+class BillingCubit extends HydratedCubit<BillingState> {
   BillingCubit({required this.authRepository, required this.billingRepository})
     : super(const BillingState()) {
     _boot();
@@ -42,6 +43,7 @@ class BillingCubit extends Cubit<BillingState> {
   }
 
   Future<void> getCustomerPortal() async {
+    if (!state.needsPortalRenew) return;
     if (state.customerPortal.isLoading) return;
 
     emit(state.copyWith(customerPortal: state.customerPortal.toLoading()));
@@ -92,5 +94,26 @@ class BillingCubit extends Cubit<BillingState> {
   Future<void> close() {
     _userSubscription?.cancel();
     return super.close();
+  }
+
+  @override
+  BillingState? fromJson(Map<String, dynamic> json) {
+    try {
+      log('Deserializing BillingState from JSON: $json');
+      return BillingState.fromJson(json);
+    } catch (_) {
+      log('Failed to deserialize BillingState from JSON: $json');
+      return null;
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(BillingState state) {
+    try {
+      return state.toJson();
+    } catch (_) {
+      log('Failed to serialize BillingState to JSON: $state');
+      return null;
+    }
   }
 }

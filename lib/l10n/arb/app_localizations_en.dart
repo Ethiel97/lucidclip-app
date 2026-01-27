@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
+  String get account => 'Account';
+
+  @override
+  String get accountInformation => 'Account Information';
+
+  @override
   String get allTypes => 'All Types';
 
   @override
@@ -137,7 +143,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirm => 'Confirm';
 
   @override
+  String get confirmLogout => 'Confirm Logout';
+
+  @override
   String get copied => 'Copied';
+
+  @override
+  String copiedToClipboard(String item) {
+    return '$item copied to clipboard';
+  }
 
   @override
   String get copy => 'Copy';
@@ -179,6 +193,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editShortcut => 'Edit Shortcut';
 
   @override
+  String get email => 'Email';
+
+  @override
   String get errorLoadingSettings => 'Error loading settings';
 
   @override
@@ -194,6 +211,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToLoadLinkPreview => 'Failed to load link preview';
 
   @override
+  String get failedToOpenUrl => 'Failed to open URL';
+
+  @override
   String get fifteenMinutes => '15 Minutes';
 
   @override
@@ -204,6 +224,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get free => 'Free';
+
+  @override
+  String get freeSubscription => 'Free';
 
   @override
   String get general => 'General';
@@ -283,10 +306,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkOnly => 'Link Only';
 
   @override
+  String get loadSubscriptionPortal => 'Load subscription portal';
+
+  @override
   String get loadingLinkPreview => 'Loading link preview...';
 
   @override
   String get manageRetention => 'Manage Retention';
+
+  @override
+  String get manageSubscription => 'Manage Subscription';
 
   @override
   String get maxHistoryItemsDescription =>
@@ -323,6 +352,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get none => 'None';
+
+  @override
+  String get notAvailable => 'Not available';
 
   @override
   String get notSet => 'Not set';
@@ -415,6 +447,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get proFeatureUnlimitedHistoryDescription =>
       'Never lose clips. Your history grows with you.';
+
+  @override
+  String get proSubscription => 'Pro';
 
   @override
   String get quit => 'Quit';
@@ -515,12 +550,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signIn => 'Sign in';
 
   @override
+  String get signInToViewAccount => 'Sign in to view account information';
+
+  @override
   String signInWith(String provider) {
     return 'Sign in with $provider';
   }
 
   @override
   String get signOut => 'Sign out';
+
+  @override
+  String get signOutConfirmation => 'Are you sure you want to sign out?';
 
   @override
   String get signedInSuccessfully => 'Signed in successfully!';
@@ -563,6 +604,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String storageAlmostFullDescription(int count) {
     return 'You\'re using $count% of your clipboard history.';
   }
+
+  @override
+  String get subscription => 'Subscription';
+
+  @override
+  String get subscriptionType => 'Subscription Type';
 
   @override
   String get successfullySignedIn => 'Successfully signed in!';
@@ -635,6 +682,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usage => 'Usage';
 
   @override
+  String get validUntil => 'Valid Until';
+
+  @override
   String get version => 'Version';
 
   @override
@@ -648,45 +698,4 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get yourClipboardItemsWillAppearHere =>
       'Your clipboard items will appear here.';
-
-  @override
-  String get account => 'Account';
-
-  @override
-  String get accountInformation => 'Account Information';
-
-  @override
-  String get email => 'Email';
-
-  @override
-  String get subscription => 'Subscription';
-
-  @override
-  String get subscriptionType => 'Subscription Type';
-
-  @override
-  String get proSubscription => 'Pro';
-
-  @override
-  String get freeSubscription => 'Free';
-
-  @override
-  String get validUntil => 'Valid Until';
-
-  @override
-  String get notAvailable => 'Not available';
-
-  @override
-  String get signInToViewAccount => 'Sign in to view account information';
-
-  @override
-  String get manageSubscription => 'Manage Subscription';
-
-  @override
-  String get failedToOpenUrl => 'Failed to open URL';
-
-  @override
-  String copiedToClipboard(String item) {
-    return '$item copied to clipboard';
-  }
 }

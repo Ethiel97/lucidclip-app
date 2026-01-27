@@ -18,7 +18,7 @@ class SettingsDatabase extends _$SettingsDatabase {
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dir = await getLibraryDirectory();
+      final dir = await getApplicationSupportDirectory();
       final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
 
       /* if (dbFile.existsSync()) {

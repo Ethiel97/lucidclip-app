@@ -100,6 +100,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about;
 
+  /// Label for the Account section
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// Label for account information
+  ///
+  /// In en, this message translates to:
+  /// **'Account Information'**
+  String get accountInformation;
+
   /// Label for the All Types filter
   ///
   /// In en, this message translates to:
@@ -304,11 +316,23 @@ abstract class AppLocalizations {
   /// **'Confirm'**
   String get confirm;
 
+  /// Title for the logout confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Logout'**
+  String get confirmLogout;
+
   /// Message shown when content is copied to the clipboard
   ///
   /// In en, this message translates to:
   /// **'Copied'**
   String get copied;
+
+  /// Message shown when an item is copied to clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'{item} copied to clipboard'**
+  String copiedToClipboard(String item);
 
   /// Button text to copy content
   ///
@@ -370,6 +394,12 @@ abstract class AppLocalizations {
   /// **'Edit Shortcut'**
   String get editShortcut;
 
+  /// Label for email address
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
   /// Error message shown when settings cannot be loaded
   ///
   /// In en, this message translates to:
@@ -400,6 +430,12 @@ abstract class AppLocalizations {
   /// **'Failed to load link preview'**
   String get failedToLoadLinkPreview;
 
+  /// Error message when URL cannot be opened
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to open URL'**
+  String get failedToOpenUrl;
+
   /// Duration option: 15 minutes
   ///
   /// In en, this message translates to:
@@ -423,6 +459,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Free'**
   String get free;
+
+  /// Label for Free subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get freeSubscription;
 
   /// Label for the General settings
   ///
@@ -550,6 +592,12 @@ abstract class AppLocalizations {
   /// **'Link Only'**
   String get linkOnly;
 
+  /// Button text to load the subscription management portal
+  ///
+  /// In en, this message translates to:
+  /// **'Load subscription portal'**
+  String get loadSubscriptionPortal;
+
   /// Message shown when the preview is loading
   ///
   /// In en, this message translates to:
@@ -561,6 +609,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage Retention'**
   String get manageRetention;
+
+  /// Button text to manage subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Subscription'**
+  String get manageSubscription;
 
   /// Description for the Max History Items setting
   ///
@@ -609,6 +663,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'None'**
   String get none;
+
+  /// Text shown when a value is not available
+  ///
+  /// In en, this message translates to:
+  /// **'Not available'**
+  String get notAvailable;
 
   /// Text shown when a shortcut or value is not configured
   ///
@@ -777,6 +837,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Never lose clips. Your history grows with you.'**
   String get proFeatureUnlimitedHistoryDescription;
+
+  /// Label for Pro subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get proSubscription;
 
   /// Tray menu item to exit the application
   ///
@@ -952,6 +1018,12 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get signIn;
 
+  /// Message shown to prompt user to sign in
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to view account information'**
+  String get signInToViewAccount;
+
   /// Button text to sign in with a specific provider
   ///
   /// In en, this message translates to:
@@ -963,6 +1035,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out'**
   String get signOut;
+
+  /// Confirmation dialog shown when signing out
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get signOutConfirmation;
 
   /// Message shown when the user signs in successfully
   ///
@@ -1035,6 +1113,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re using {count}% of your clipboard history.'**
   String storageAlmostFullDescription(int count);
+
+  /// Label for subscription
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get subscription;
+
+  /// Label for subscription type
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Type'**
+  String get subscriptionType;
 
   /// Message shown when the user successfully signs in
   ///
@@ -1162,6 +1252,12 @@ abstract class AppLocalizations {
   /// **'Usage'**
   String get usage;
 
+  /// Label for subscription validity date
+  ///
+  /// In en, this message translates to:
+  /// **'Valid Until'**
+  String get validUntil;
+
   /// Label for the app version
   ///
   /// In en, this message translates to:
@@ -1185,84 +1281,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your clipboard items will appear here.'**
   String get yourClipboardItemsWillAppearHere;
-
-  /// Label for the Account section
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get account;
-
-  /// Label for account information
-  ///
-  /// In en, this message translates to:
-  /// **'Account Information'**
-  String get accountInformation;
-
-  /// Label for email address
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get email;
-
-  /// Label for subscription
-  ///
-  /// In en, this message translates to:
-  /// **'Subscription'**
-  String get subscription;
-
-  /// Label for subscription type
-  ///
-  /// In en, this message translates to:
-  /// **'Subscription Type'**
-  String get subscriptionType;
-
-  /// Label for Pro subscription
-  ///
-  /// In en, this message translates to:
-  /// **'Pro'**
-  String get proSubscription;
-
-  /// Label for Free subscription
-  ///
-  /// In en, this message translates to:
-  /// **'Free'**
-  String get freeSubscription;
-
-  /// Label for subscription validity date
-  ///
-  /// In en, this message translates to:
-  /// **'Valid Until'**
-  String get validUntil;
-
-  /// Text shown when a value is not available
-  ///
-  /// In en, this message translates to:
-  /// **'Not available'**
-  String get notAvailable;
-
-  /// Message shown to prompt user to sign in
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in to view account information'**
-  String get signInToViewAccount;
-
-  /// Button text to manage subscription
-  ///
-  /// In en, this message translates to:
-  /// **'Manage Subscription'**
-  String get manageSubscription;
-
-  /// Error message when URL cannot be opened
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to open URL'**
-  String get failedToOpenUrl;
-
-  /// Message shown when an item is copied to clipboard
-  ///
-  /// In en, this message translates to:
-  /// **'{item} copied to clipboard'**
-  String copiedToClipboard(String item);
 }
 
 class _AppLocalizationsDelegate

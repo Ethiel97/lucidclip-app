@@ -4,6 +4,14 @@
   "@about": {
     "description": "Label for the About section"
   },
+  "account": "Account",
+  "@account": {
+    "description": "Label for the Account section"
+  },
+  "accountInformation": "Account Information",
+  "@accountInformation": {
+    "description": "Label for account information"
+  },
   "allTypes": "All Types",
   "@allTypes": {
     "description": "Label for the All Types filter"
@@ -177,9 +185,24 @@
   "@confirm": {
     "description": "Button text to confirm an action"
   },
+  "confirmLogout": "Confirm Logout",
+  "@confirmLogout": {
+    "description": "Title for the logout confirmation dialog"
+  },
   "copied": "Copied",
   "@copied": {
     "description": "Message shown when content is copied to the clipboard"
+  },
+  "copiedToClipboard": "{item} copied to clipboard",
+  "@copiedToClipboard": {
+    "description": "Message shown when an item is copied to clipboard",
+    "placeholders": {
+      "item": {
+        "type": "String",
+        "description": "The item that was copied",
+        "example": "Email"
+      }
+    }
   },
   "copy": "Copy",
   "@copy": {
@@ -228,6 +251,10 @@
   "@editShortcut": {
     "description": "Button text to edit a keyboard shortcut"
   },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email address"
+  },
   "errorLoadingSettings": "Error loading settings",
   "@errorLoadingSettings": {
     "description": "Error message shown when settings cannot be loaded"
@@ -249,6 +276,10 @@
   "@failedToLoadLinkPreview": {
     "description": "Message shown when the preview failed to load"
   },
+  "failedToOpenUrl": "Failed to open URL",
+  "@failedToOpenUrl": {
+    "description": "Error message when URL cannot be opened"
+  },
   "fifteenMinutes": "15 Minutes",
   "@fifteenMinutes": {
     "description": "Duration option: 15 minutes"
@@ -264,6 +295,10 @@
   "free": "Free",
   "@free": {
     "description": "Name of the free plan"
+  },
+  "freeSubscription": "Free",
+  "@freeSubscription": {
+    "description": "Label for Free subscription"
   },
   "general": "General",
   "@general": {
@@ -369,6 +404,10 @@
   "@linkOnly": {
     "description": "Label for the Link Only filter"
   },
+  "loadSubscriptionPortal": "Load subscription portal",
+  "@loadSubscriptionPortal": {
+    "description": "Button text to load the subscription management portal"
+  },
   "loadingLinkPreview": "Loading link preview...",
   "@loadingLinkPreview": {
     "description": "Message shown when the preview is loading"
@@ -376,6 +415,10 @@
   "manageRetention": "Manage Retention",
   "@manageRetention": {
     "description": "Button text to manage retention settings"
+  },
+  "manageSubscription": "Manage Subscription",
+  "@manageSubscription": {
+    "description": "Button text to manage subscription"
   },
   "maxHistoryItemsDescription": "Sets the maximum number of items in the clipboard.",
   "@maxHistoryItemsDescription": {
@@ -421,6 +464,10 @@
   "none": "None",
   "@none": {
     "description": "None"
+  },
+  "notAvailable": "Not available",
+  "@notAvailable": {
+    "description": "Text shown when a value is not available"
   },
   "notSet": "Not set",
   "@notSet": {
@@ -539,6 +586,10 @@
   "@proFeatureUnlimitedHistoryDescription": {
     "description": "Description for the Unlimited History feature",
     "placeholders": {}
+  },
+  "proSubscription": "Pro",
+  "@proSubscription": {
+    "description": "Label for Pro subscription"
   },
   "quit": "Quit",
   "@quit": {
@@ -672,6 +723,10 @@
   "@signIn": {
     "description": "Button text to sign in"
   },
+  "signInToViewAccount": "Sign in to view account information",
+  "@signInToViewAccount": {
+    "description": "Message shown to prompt user to sign in"
+  },
   "signInWith": "Sign in with {provider}",
   "@signInWith": {
     "description": "Button text to sign in with a specific provider",
@@ -686,6 +741,10 @@
   "signOut": "Sign out",
   "@signOut": {
     "description": "Button text to sign out"
+  },
+  "signOutConfirmation": "Are you sure you want to sign out?",
+  "@signOutConfirmation": {
+    "description": "Confirmation dialog shown when signing out"
   },
   "signedInSuccessfully": "Signed in successfully!",
   "@signedInSuccessfully": {
@@ -755,6 +814,14 @@
         "example": "90"
       }
     }
+  },
+  "subscription": "Subscription",
+  "@subscription": {
+    "description": "Label for subscription"
+  },
+  "subscriptionType": "Subscription Type",
+  "@subscriptionType": {
+    "description": "Label for subscription type"
   },
   "successfullySignedIn": "Successfully signed in!",
   "@successfullySignedIn": {
@@ -854,6 +921,10 @@
   "@usage": {
     "description": "Label for the usage section"
   },
+  "validUntil": "Valid Until",
+  "@validUntil": {
+    "description": "Label for subscription validity date"
+  },
   "version": "Version",
   "@version": {
     "description": "Label for the app version"
@@ -869,64 +940,5 @@
   "yourClipboardItemsWillAppearHere": "Your clipboard items will appear here.",
   "@yourClipboardItemsWillAppearHere": {
     "description": "Message shown when the clipboard is empty"
-  },
-  "account": "Account",
-  "@account": {
-    "description": "Label for the Account section"
-  },
-  "accountInformation": "Account Information",
-  "@accountInformation": {
-    "description": "Label for account information"
-  },
-  "email": "Email",
-  "@email": {
-    "description": "Label for email address"
-  },
-  "subscription": "Subscription",
-  "@subscription": {
-    "description": "Label for subscription"
-  },
-  "subscriptionType": "Subscription Type",
-  "@subscriptionType": {
-    "description": "Label for subscription type"
-  },
-  "proSubscription": "Pro",
-  "@proSubscription": {
-    "description": "Label for Pro subscription"
-  },
-  "freeSubscription": "Free",
-  "@freeSubscription": {
-    "description": "Label for Free subscription"
-  },
-  "validUntil": "Valid Until",
-  "@validUntil": {
-    "description": "Label for subscription validity date"
-  },
-  "notAvailable": "Not available",
-  "@notAvailable": {
-    "description": "Text shown when a value is not available"
-  },
-  "signInToViewAccount": "Sign in to view account information",
-  "@signInToViewAccount": {
-    "description": "Message shown to prompt user to sign in"
-  },
-  "manageSubscription": "Manage Subscription",
-  "@manageSubscription": {
-    "description": "Button text to manage subscription"
-  },
-  "failedToOpenUrl": "Failed to open URL",
-  "@failedToOpenUrl": {
-    "description": "Error message when URL cannot be opened"
-  },
-  "copiedToClipboard": "{item} copied to clipboard",
-  "@copiedToClipboard": {
-    "description": "Message shown when an item is copied to clipboard",
-    "placeholders": {
-      "item": {
-        "type": "String",
-        "description": "The item that was copied",
-        "example": "Email"
-      }
-    }
   }
 }

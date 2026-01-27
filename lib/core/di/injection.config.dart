@@ -16,7 +16,6 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
-import 'package:hive_flutter/hive_flutter.dart' as _i986;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:lucid_clip/core/clipboard_manager/base_clipboard_manager.dart'
     as _i1016;
@@ -52,8 +51,6 @@ import 'package:lucid_clip/core/services/window_controller/window_controller_imp
     as _i1036;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
-import 'package:lucid_clip/core/storage/impl/hive_storage_service.dart'
-    as _i443;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
 import 'package:lucid_clip/features/auth/auth.dart' as _i895;
 import 'package:lucid_clip/features/auth/data/data.dart' as _i13;
@@ -64,6 +61,7 @@ import 'package:lucid_clip/features/auth/data/repositories/auth_repository_impl.
 import 'package:lucid_clip/features/auth/domain/domain.dart' as _i922;
 import 'package:lucid_clip/features/auth/presentation/cubit/auth_cubit.dart'
     as _i408;
+import 'package:lucid_clip/features/billing/billing.dart' as _i1022;
 import 'package:lucid_clip/features/billing/data/data.dart' as _i1039;
 import 'package:lucid_clip/features/billing/data/data_sources/http_billing_remote_data_source.dart'
     as _i269;
@@ -192,12 +190,6 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
     );
-    gh.lazySingletonAsync<_i407.StorageService>(() {
-      final i = _i443.HiveStorageService(
-        gh<List<_i986.TypeAdapter<dynamic>>>(instanceName: 'hiveAdapters'),
-      );
-      return i.initialize().then((_) => i);
-    }, dispose: (i) => i.dispose());
     gh.factory<_i826.DioAuthInterceptor>(
       () => _i826.DioAuthInterceptor(gh<_i407.SecureStorageService>()),
     );
@@ -385,7 +377,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i696.BillingCubit>(
       () => _i696.BillingCubit(
         authRepository: gh<_i895.AuthRepository>(),
-        billingRepository: gh<_i893.BillingRepository>(),
+        billingRepository: gh<_i1022.BillingRepository>(),
       ),
       dispose: (i) => i.close(),
     );

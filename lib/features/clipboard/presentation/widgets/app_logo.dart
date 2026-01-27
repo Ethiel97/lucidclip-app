@@ -14,6 +14,7 @@ class AppLogo extends StatelessWidget {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      spacing: AppSpacing.sm,
       children: [
         Container(
           height: AppSpacing.xlg,
@@ -26,7 +27,6 @@ class AppLogo extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        const SizedBox(width: AppSpacing.xs),
         Flexible(
           child: Text(
             l10n.appName,

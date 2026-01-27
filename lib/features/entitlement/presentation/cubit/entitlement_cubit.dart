@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,6 +62,7 @@ class EntitlementCubit extends Cubit<EntitlementState> {
       // Start local stream first (fast UI updates)
       await _localSubscription?.cancel();
       _localSubscription = entitlementRepository.watchLocal(userId).listen((e) {
+        log('EntitlementCubit: local entitlement updated: $e');
         emit(state.copyWith(entitlement: state.entitlement.toSuccess(e)));
       });
 

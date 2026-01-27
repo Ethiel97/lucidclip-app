@@ -91,6 +91,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   bool get isAuthenticated => _currentUserId != 'guest';
 
   void _initializeAuthListener() {
+    _authSubscription?.cancel();
     _authSubscription = authRepository.authStateChanges.listen((user) {
       _currentUserId = user?.id ?? 'guest';
 
@@ -112,6 +113,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   void _startWatchingClipboard() {
+    _clipboardSubscription?.cancel();
     _clipboardSubscription = clipboardManager.watchClipboard().listen((
       clipboardData,
     ) async {
@@ -244,6 +246,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   }
 
   Future<void> _loadLocalClipboardItems() async {
+    await _localItemsSubscription?.cancel();
     _localItemsSubscription = localClipboardRepository.watchAll().listen(
       (items) {
         emit(state.copyWith(clipboardItems: items.toSuccess()));
@@ -268,6 +271,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     );
 
     // Watch local clipboard history stream
+
+    await _localHistorySubscription?.cancel();
     _localHistorySubscription = localClipboardHistoryRepository
         .watchAll()
         .listen(

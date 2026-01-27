@@ -43,9 +43,14 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   // Add cross-flavor configuration here
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Future.wait<void>([
+      Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+      Supabase.initialize(
+        url: AppConstants.supabaseProjectUrl,
+        debug: true,
+        anonKey: AppConstants.supabasePublishableKey,
+      ),
+    ]);
   } catch (e) {
     if (e.toString().contains('duplicate-app')) {
       log('Firebase already initialized, skipping...');
@@ -60,22 +65,19 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     ),
   );
 
-  await Supabase.initialize(
-    url: AppConstants.supabaseProjectUrl,
-    debug: true,
-    anonKey: AppConstants.supabasePublishableKey,
-  );
-
   configureDependencies();
 
-  await getIt<WindowController>().initialize();
-  await getIt<TrayManagerService>().initialize();
+  await Future.wait<void>([
+    getIt<WindowController>().initialize(),
+    getIt<TrayManagerService>().initialize(),
+    // Initialize hotkey manager
+    getIt<HotkeyManagerService>().initialize(),
+  ]);
 
-  // Initialize hotkey manager
-  await getIt<HotkeyManagerService>().initialize();
-  await getIt<HotkeyManagerService>().registerDefaultHotkeys();
-
-  await getIt<WindowController>().bootstrapWindow();
+  await Future.wait<void>([
+    getIt<HotkeyManagerService>().registerDefaultHotkeys(),
+    getIt<WindowController>().bootstrapWindow(),
+  ]);
 
   // Only clear app data in development when explicitly needed
   // await clearAppData();
@@ -84,7 +86,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 }
 
 Future<void> resetClipboardDatabase() async {
-  final dir = await getLibraryDirectory();
+  final dir = await getApplicationSupportDirectory();
   final clipboardDbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
   if (clipboardDbFile.existsSync()) {
     await clipboardDbFile.delete();
@@ -92,7 +94,7 @@ Future<void> resetClipboardDatabase() async {
 }
 
 Future<void> resetSettingsDatabase() async {
-  final dir = await getLibraryDirectory();
+  final dir = await getApplicationSupportDirectory();
   final settingsDbFile = File(p.join(dir.path, 'settings_db.sqlite'));
   if (settingsDbFile.existsSync()) {
     await settingsDbFile.delete();
@@ -100,7 +102,7 @@ Future<void> resetSettingsDatabase() async {
 }
 
 Future<void> resetEntitlementsDatabase() async {
-  final dir = await getLibraryDirectory();
+  final dir = await getApplicationSupportDirectory();
   final entitlementsDbFile = File(p.join(dir.path, 'entitlement_db.sqlite'));
   if (entitlementsDbFile.existsSync()) {
     await entitlementsDbFile.delete();
@@ -108,8 +110,10 @@ Future<void> resetEntitlementsDatabase() async {
 }
 
 Future<void> clearAppData() async {
-  await HydratedBloc.storage.clear();
-  await resetEntitlementsDatabase();
-  await resetClipboardDatabase();
-  await resetSettingsDatabase();
+  await Future.wait<void>([
+    HydratedBloc.storage.clear(),
+    resetEntitlementsDatabase(),
+    resetClipboardDatabase(),
+    resetSettingsDatabase(),
+  ]);
 }

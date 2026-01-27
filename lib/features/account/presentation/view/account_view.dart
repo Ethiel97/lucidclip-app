@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -46,10 +48,35 @@ class AccountView extends StatelessWidget {
                   AccountInfoItem(
                     copyable: true,
                     title: l10n.email,
-                    value: user?.email ?? l10n.notAvailable,
+                    value: authState.userEmail ?? l10n.notAvailable,
                     leading: const HugeIcon(
                       icon: HugeIcons.strokeRoundedMail01,
                       size: 20,
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        context.read<AuthCubit>().requestLogout();
+                      },
+                      icon: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedLogout01,
+                        size: 20,
+                      ),
+                      label: Text(l10n.signOut),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.lg,
+                          vertical: AppSpacing.md,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -128,7 +155,17 @@ class AccountView extends StatelessWidget {
               ),
             ],
           ),
-          orElse: SizedBox.shrink,
+          orElse: () {
+            log('AccountView: Loading user data: ${authState.user}');
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -143,23 +180,28 @@ class _UpgradeButton extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ElevatedButton.icon(
-      onPressed: () {
-        context.read<UpgradePromptCubit>().request(
-          ProFeature.unlimitedHistory,
-          source: ProFeatureRequestSource.accountPage,
-        );
-      },
-      icon: const HugeIcon(icon: HugeIcons.strokeRoundedMedal01, size: 20),
-      label: Text(l10n.upgradeToPro),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.md,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: ElevatedButton.icon(
+        onPressed: () {
+          context.read<UpgradePromptCubit>().request(
+            ProFeature.unlimitedHistory,
+            source: ProFeatureRequestSource.accountPage,
+          );
+        },
+        icon: const HugeIcon(icon: HugeIcons.strokeRoundedMedal01, size: 20),
+        label: Text(l10n.upgradeToPro),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -189,60 +231,61 @@ class _ManageSubscriptionButton extends StatelessWidget {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return BlocBuilder<BillingCubit, BillingState>(
-      buildWhen: (previous, current) =>
-          previous.customerPortal != current.customerPortal,
-      builder: (context, billingState) => billingState.customerPortal.maybeWhen(
-        success: (portal) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: OutlinedButton.icon(
-            onPressed: () => _openCustomerPortal(context, portal!.url),
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedManager,
-              size: 20,
-            ),
-            label: Text(l10n.manageSubscription.sentenceCase),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: BlocBuilder<BillingCubit, BillingState>(
+        buildWhen: (previous, current) =>
+            previous.customerPortal != current.customerPortal,
+        builder: (context, billingState) =>
+            billingState.customerPortal.maybeWhen(
+              success: (portal) => OutlinedButton.icon(
+                onPressed: () => _openCustomerPortal(context, portal!.url),
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedManager,
+                  size: 20,
+                ),
+                label: Text(l10n.manageSubscription.sentenceCase),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  side: BorderSide(color: colorScheme.outline),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
-              side: BorderSide(color: colorScheme.outline),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+              loading: (_) => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(AppSpacing.md),
+                  child: CircularProgressIndicator(),
+                ),
               ),
+              orElse: () {
+                // Initial state - try to load
+                return OutlinedButton.icon(
+                  onPressed: () {
+                    context.read<BillingCubit>().getCustomerPortal();
+                  },
+                  icon: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedRefresh,
+                    size: 20,
+                  ),
+                  label: Text(l10n.loadSubscriptionPortal.sentenceCase),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                      vertical: AppSpacing.md,
+                    ),
+                    side: BorderSide(color: colorScheme.error),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-        ),
-        loading: (_) => const Center(
-          child: Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
-            child: CircularProgressIndicator(),
-          ),
-        ),
-        orElse: () {
-          // Initial state - try to load
-          return OutlinedButton.icon(
-            onPressed: () {
-              context.read<BillingCubit>().getCustomerPortal();
-            },
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedRefresh,
-              size: 20,
-            ),
-            label: Text(l10n.retry.sentenceCase),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-              side: BorderSide(color: colorScheme.error),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          );
-        },
       ),
     );
   }

@@ -156,7 +156,7 @@ class $EntitlementEntriesTable extends EntitlementEntries
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {userId, id};
+  Set<GeneratedColumn> get $primaryKey => {userId};
   @override
   EntitlementEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';

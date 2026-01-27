@@ -18,7 +18,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.get(
+      final response = await _dio.get<Response<dynamic>>(
         path,
         queryParameters: queryParameters,
         options: headers != null ? Options(headers: headers) : null,
@@ -37,7 +37,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.post(
+      final response = await _dio.post<Response<dynamic>>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -61,7 +61,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.put(
+      final response = await _dio.put<Response<dynamic>>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -80,7 +80,7 @@ class DioNetworkClient implements HttpClient {
     Map<String, String>? headers,
   }) async {
     try {
-      final response = await _dio.delete(
+      final response = await _dio.delete<Response<dynamic>>(
         path,
         queryParameters: queryParameters,
         options: headers != null ? Options(headers: headers) : null,
@@ -91,7 +91,7 @@ class DioNetworkClient implements HttpClient {
     }
   }
 
-  Map<String, dynamic> _handleResponse(Response response) {
+  Map<String, dynamic> _handleResponse(Response<dynamic> response) {
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! <= 401) {

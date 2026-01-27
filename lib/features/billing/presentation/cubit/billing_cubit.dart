@@ -99,7 +99,6 @@ class BillingCubit extends HydratedCubit<BillingState> {
   @override
   BillingState? fromJson(Map<String, dynamic> json) {
     try {
-      log('Deserializing BillingState from JSON: $json');
       return BillingState.fromJson(json);
     } catch (_) {
       log('Failed to deserialize BillingState from JSON: $json');

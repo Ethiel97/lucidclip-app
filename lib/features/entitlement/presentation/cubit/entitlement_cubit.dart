@@ -2,16 +2,17 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
+import 'package:lucid_clip/features/entitlement/data/data.dart';
 import 'package:lucid_clip/features/entitlement/domain/domain.dart';
 
 part 'entitlement_state.dart';
 
 @lazySingleton
-class EntitlementCubit extends Cubit<EntitlementState> {
+class EntitlementCubit extends HydratedCubit<EntitlementState> {
   EntitlementCubit({
     required this.authRepository,
     required this.entitlementRepository,
@@ -98,5 +99,25 @@ class EntitlementCubit extends Cubit<EntitlementState> {
     await _authSubscription?.cancel();
     await _localSubscription?.cancel();
     return super.close();
+  }
+
+  @override
+  EntitlementState? fromJson(Map<String, dynamic> json) {
+    try {
+      return EntitlementState.fromJson(json);
+    } catch (e) {
+      log('EntitlementCubit: fromJson error: $e');
+      return null;
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(EntitlementState state) {
+    try {
+      return state.toJson();
+    } catch (e) {
+      log('EntitlementCubit: toJson error: $e');
+      return null;
+    }
   }
 }

@@ -106,8 +106,8 @@ void main() {
         // Verify getAll was called
         verify(() => mockLocalClipboardRepository.getAll()).called(1);
 
-        // Note: Due to mocktail complexity with verifyNever
-        // after when(delete(any())),
+        // Note: Due to mocktail complexity
+        // with verifyNever after when(delete(any())),
         // this verification is skipped. The other tests adequately demonstrate
         // that items within retention are not deleted.
         // verifyNever(() => mockLocalClipboardRepository.delete(any()));

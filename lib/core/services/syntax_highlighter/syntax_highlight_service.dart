@@ -9,6 +9,8 @@ class SyntaxHighlightService implements SyntaxHighlighter {
   SyntaxHighlightService();
 
   Highlighter? _highlighter;
+  HighlighterTheme? _lightTheme;
+  HighlighterTheme? _darkTheme;
   bool _isInitialized = false;
   bool _isInitializing = false;
 
@@ -18,10 +20,14 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     _isInitializing = true;
     try {
       await Highlighter.initialize(['dart', 'java', 'javascript', 'json', 'python', 'yaml', 'xml', 'html', 'css', 'sql', 'swift', 'kotlin', 'typescript', 'go', 'rust', 'cpp', 'c', 'csharp', 'php', 'ruby', 'bash', 'shell']);
+      
+      // Load both themes
+      _lightTheme = await HighlighterTheme.loadLightTheme();
+      _darkTheme = await HighlighterTheme.loadDarkTheme();
+      
       _highlighter = Highlighter(
         language: 'dart',
-        // Default to dark theme - will be updated based on actual theme
-        theme: HighlighterTheme.darkTheme,
+        theme: _darkTheme!,
       );
       _isInitialized = true;
     } catch (e) {
@@ -38,7 +44,12 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     String? language,
     Brightness? theme,
   }) {
-    if (!_isInitialized || _highlighter == null) {
+    // Trigger initialization if not already done
+    if (!_isInitialized && !_isInitializing) {
+      _ensureInitialized();
+    }
+    
+    if (!_isInitialized || _lightTheme == null || _darkTheme == null) {
       // Fallback to plain text with monospace font
       return SelectableText(
         code,
@@ -52,8 +63,8 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     try {
       final detectedLang = language ?? detectLanguage(code) ?? 'dart';
       final highlighterTheme = theme == Brightness.dark
-          ? HighlighterTheme.darkTheme
-          : HighlighterTheme.lightTheme;
+          ? _darkTheme!
+          : _lightTheme!;
 
       final highlighter = Highlighter(
         language: detectedLang,

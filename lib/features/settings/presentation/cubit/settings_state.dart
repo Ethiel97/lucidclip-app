@@ -69,7 +69,7 @@ class SettingsState extends Equatable {
   bool get previewLinks => settings.value?.previewLinks ?? true;
 
   int get maxHistoryItems =>
-      settings.value?.maxHistoryItems ?? defaultMaxHistoryItems;
+      settings.value?.maxHistoryItems ?? MaxHistorySize.size30.value;
 
   int get retentionDays =>
       settings.value?.retentionDays ?? defaultRetentionDays;

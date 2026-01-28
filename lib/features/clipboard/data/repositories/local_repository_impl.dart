@@ -77,7 +77,7 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
 
   @override
   Future<List<ClipboardItem>> getAll({
-    FetchMode fetchMode = FetchMode.withIcons,
+    FetchMode fetchMode = FetchMode.withoutIcons,
   }) async {
     try {
       final records = await _localDataSource.getAll();
@@ -153,12 +153,13 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   }
 
   @override
-  Stream<List<ClipboardItem>> watchAll() {
+  Stream<List<ClipboardItem>> watchAll({required int limit}) {
     try {
-      return _localDataSource.watchAll().asyncMap((records) async {
+      return _localDataSource.watchAll(limit: limit).asyncMap((records) async {
         final items = records.map((r) => r.toEntity()).toList();
 
-        return items.withEnrichedSourceApps();
+        return items;
+        // return items.withEnrichedSourceApps();
       });
     } catch (e) {
       throw CacheException('Failed to watch all clipboard items: $e');

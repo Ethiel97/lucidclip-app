@@ -98,7 +98,7 @@ class RetentionWarningPolicy {
   }
 
   int _compactValue(Duration duration) {
-    final ref = Jiffy.now().add(days: duration.inDays);
+    final ref = Jiffy.now().add(minutes: duration.inMinutes);
 
     if (duration.inDays >= 365) {
       return ref.diff(Jiffy.now(), unit: Unit.year).toInt();

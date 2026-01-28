@@ -146,7 +146,9 @@ class ClipboardContextMenu extends StatelessWidget {
       ),
       onTap: () {
         Navigator.pop(context);
-        _handleAction(context: context, l10n: l10n, action: menuItem.action);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _handleAction(context: context, l10n: l10n, action: menuItem.action);
+        });
       },
     );
   }

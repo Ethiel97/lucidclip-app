@@ -42,7 +42,7 @@ abstract class LocalClipboardRepository {
 
   Future<void> deleteByContentHash(String contentHash);
 
-  Stream<List<ClipboardItem>> watchAll();
+  Stream<List<ClipboardItem>> watchAll({required int limit});
 
   Future<void> clear();
 }

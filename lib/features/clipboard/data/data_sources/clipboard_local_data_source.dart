@@ -1,6 +1,4 @@
-
 import 'package:lucid_clip/features/clipboard/data/data.dart';
-
 
 abstract class ClipboardLocalDataSource {
   Future<void> put(ClipboardItemModel item);
@@ -23,7 +21,7 @@ abstract class ClipboardLocalDataSource {
 
   Future<void> deleteByContentHash(String contentHash);
 
-  Stream<List<ClipboardItemModel>> watchAll();
+  Stream<List<ClipboardItemModel>> watchAll({required int limit});
 
   Future<void> clear();
 }

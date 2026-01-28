@@ -70,11 +70,15 @@ class ClipboardDatabase extends _$ClipboardDatabase {
           ]))
           .get();
 
-  Stream<List<ClipboardItemEntry>> watchAllEntries() =>
-      (select(clipboardItemEntries)..orderBy([
-            (t) =>
-                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
-          ]))
+  Stream<List<ClipboardItemEntry>> watchAllEntries({required int limit}) =>
+      (select(clipboardItemEntries)
+            ..limit(limit)
+            ..orderBy([
+              (t) => OrderingTerm(
+                expression: t.createdAt,
+                mode: OrderingMode.desc,
+              ),
+            ]))
           .watch();
 
   Future<List<ClipboardItemEntry>> getUnsyncedEntries() => (select(

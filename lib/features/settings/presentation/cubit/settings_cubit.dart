@@ -8,6 +8,7 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/data/models/models.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 

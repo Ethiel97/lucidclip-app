@@ -211,7 +211,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     try {
       await localClipboardRepository.upsertWithLimit(
         item: item,
-        maxItems: _userSettings?.maxHistoryItems ?? defaultMaxHistoryItems,
+        maxItems: _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value,
       );
     } catch (e, stackTrace) {
       developer.log(
@@ -248,28 +248,32 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> _loadLocalClipboardItems() async {
     await _localItemsSubscription?.cancel();
-    _localItemsSubscription = localClipboardRepository.watchAll().listen(
-      (items) {
-        emit(state.copyWith(clipboardItems: items.toSuccess()));
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        emit(
-          state.copyWith(
-            clipboardItems: state.clipboardItems.toError(
-              ErrorDetails(
-                message: 'Error watching local clipboard items: $error',
+    _localItemsSubscription = localClipboardRepository
+        .watchAll(
+          limit: _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value,
+        )
+        .listen(
+          (items) {
+            emit(state.copyWith(clipboardItems: items.toSuccess()));
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            emit(
+              state.copyWith(
+                clipboardItems: state.clipboardItems.toError(
+                  ErrorDetails(
+                    message: 'Error watching local clipboard items: $error',
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+            developer.log(
+              'Error watching local clipboard items',
+              error: error,
+              stackTrace: stackTrace,
+              name: 'ClipboardCubit',
+            );
+          },
         );
-        developer.log(
-          'Error watching local clipboard items',
-          error: error,
-          stackTrace: stackTrace,
-          name: 'ClipboardCubit',
-        );
-      },
-    );
 
     // Watch local clipboard history stream
 

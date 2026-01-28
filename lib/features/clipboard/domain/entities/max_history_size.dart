@@ -6,12 +6,14 @@ import 'package:recase/recase.dart';
 /// that can be stored in the clipboard history.
 enum MaxHistorySize {
   /// Maximum history size of 30 items.
+  /// Typically the default for free users.
   size30(30),
 
   /// Maximum history size of 2000 items.
   size2000(2000),
 
   /// Maximum history size of 5000 items.
+  /// Typically the default for Pro users.
   size5000(5000),
 
   /// Maximum history size of 10000 items.

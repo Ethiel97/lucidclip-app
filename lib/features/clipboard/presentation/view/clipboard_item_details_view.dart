@@ -152,7 +152,11 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
               isPinned: widget.clipboardItem.isPinned,
               onCopyPressed: widget.onCopyPressed,
               onTogglePin: widget.onTogglePin,
-              onDelete: widget.onDelete,
+              onDelete: () {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  widget.onDelete?.call();
+                });
+              },
             ),
           ],
         ),
@@ -476,7 +480,9 @@ class _ActionsRow extends StatelessWidget {
             },
             child: OutlinedButton.icon(
               onPressed: () async {
-                onTogglePin?.call();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  onTogglePin?.call();
+                });
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: colorScheme.outline),

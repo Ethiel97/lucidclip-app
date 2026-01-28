@@ -5,51 +5,94 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
+import 'package:lucid_clip/features/settings/domain/domain.dart';
 
 part 'search_state.dart';
 
 @lazySingleton
 class SearchCubit extends Cubit<SearchState> {
-  SearchCubit({required this.localClipboardRepository})
-    : super(
-        SearchState(query: '', searchResults: <ClipboardItem>[].toInitial()),
-      ) {
+  SearchCubit({
+    required this.authRepository,
+    required this.localClipboardRepository,
+    required this.localSettingsRepository,
+  }) : super(
+         SearchState(query: '', searchResults: <ClipboardItem>[].toInitial()),
+       ) {
     _loadLocalClipboardItems();
+    _initializeAuthListener();
   }
 
+  //subscriptions
+  StreamSubscription<UserSettings?>? _userSettingsSubscription;
   late StreamSubscription<ClipboardItems>? _localItemsSubscription;
+  StreamSubscription<User?>? _authSubscription;
+
+  // repositories
   final LocalClipboardRepository localClipboardRepository;
+  final LocalSettingsRepository localSettingsRepository;
+  final AuthRepository authRepository;
 
   ClipboardItems _allItems = [];
+  String _currentUserId = 'guest';
+
+  UserSettings? _userSettings;
+
+  void _initializeAuthListener() {
+    _authSubscription?.cancel();
+    _authSubscription = authRepository.authStateChanges.listen((user) {
+      _currentUserId = user?.id ?? 'guest';
+
+      _watchSettings();
+    });
+  }
+
+  void _watchSettings() {
+    _userSettingsSubscription?.cancel();
+    _userSettingsSubscription = localSettingsRepository
+        .watchSettings(_currentUserId)
+        .listen((s) {
+          developer.log(
+            'Watching settings: $s from clipboard cubit',
+            name: 'ClipboardCubit',
+          );
+          _userSettings = s;
+        });
+  }
 
   Future<void> _loadLocalClipboardItems() async {
-    _localItemsSubscription = localClipboardRepository.watchAll().listen(
-      (items) {
-        _allItems = items;
-        if (state.isSearchMode) {
-          _applyFilter(state.query);
-        }
-      },
-      onError: (Object error, StackTrace stackTrace) {
-        emit(
-          state.copyWith(
-            searchResults: <ClipboardItem>[].toError(
-              ErrorDetails(
-                message: 'Error watching local clipboard items',
-                stackTrace: stackTrace,
+    await _localItemsSubscription?.cancel();
+    _localItemsSubscription = localClipboardRepository
+        .watchAll(
+          limit: _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value,
+        )
+        .listen(
+          (items) {
+            _allItems = items;
+            if (state.isSearchMode) {
+              _applyFilter(state.query);
+            }
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            emit(
+              state.copyWith(
+                searchResults: <ClipboardItem>[].toError(
+                  ErrorDetails(
+                    message: 'Error watching local clipboard items',
+                    stackTrace: stackTrace,
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+            developer.log(
+              'Error watching local clipboard items',
+              error: error,
+              stackTrace: stackTrace,
+              name: 'ClipboardCubit',
+            );
+          },
         );
-        developer.log(
-          'Error watching local clipboard items',
-          error: error,
-          stackTrace: stackTrace,
-          name: 'ClipboardCubit',
-        );
-      },
-    );
   }
 
   void _applyFilter(String query) {

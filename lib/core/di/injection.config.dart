@@ -300,11 +300,6 @@ extension GetItInjectableX on _i174.GetIt {
         networkClient: gh<_i183.RemoteSyncClient>(),
       ),
     );
-    gh.lazySingleton<_i997.SearchCubit>(
-      () => _i997.SearchCubit(
-        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
-      ),
-    );
     gh.lazySingleton<_i183.HttpClient>(
       () => _i762.DioNetworkClient(gh<_i361.Dio>()),
     );
@@ -377,6 +372,13 @@ extension GetItInjectableX on _i174.GetIt {
         localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
         authRepository: gh<_i895.AuthRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i997.SearchCubit>(
+      () => _i997.SearchCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
+        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
       ),
     );
     gh.lazySingleton<_i958.ClipboardCubit>(

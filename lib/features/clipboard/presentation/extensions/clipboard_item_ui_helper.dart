@@ -97,14 +97,22 @@ extension ClipboardUiHelper on ClipboardItem {
     }
   }
 
-  Widget resolveSourceAppIcon(ColorScheme colorScheme) {
-    return sourceApp?.getIconWidget(colorScheme) ??
-        HugeIcon(
-          icon: HugeIcons.strokeRounded0Square,
-          size: 20,
-          color: colorScheme.onSurfaceVariant,
-        );
-  }
+  Widget resolveSourceAppIcon(ColorScheme colorScheme) =>
+      sourceApp?.getIconWidget(colorScheme) ??
+      CircleAvatar(
+        radius: 12,
+        backgroundColor: colorScheme.primaryContainer,
+        child: Text(
+          sourceApp?.name.isNotEmpty ?? false
+              ? sourceApp!.name.substring(0, 1).toUpperCase()
+              : '?',
+          style: TextStyle(
+            color: colorScheme.onPrimaryContainer,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
 }
 
 extension ClipboardItemTypeUiHelper on ClipboardItemType {

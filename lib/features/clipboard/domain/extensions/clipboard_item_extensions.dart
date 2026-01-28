@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -35,7 +37,6 @@ extension ClipboardItemsIconExtension on List<ClipboardItem> {
 
 // Cache for code detection results to avoid expensive re-computation
 final _codeDetectionCache = LruCache<bool>(200);
-final _languageDetectionCache = LruCache<String?>(200);
 
 extension ClipboardItemCodeExtension on ClipboardItem {
   /// Check if the clipboard item content is code
@@ -55,29 +56,12 @@ extension ClipboardItemCodeExtension on ClipboardItem {
       _codeDetectionCache.put(cacheKey, result);
       return result;
     } catch (e) {
+      log(
+        'ClipboardItemCodeExtension.isCode: Failed to detect code. Error: $e',
+        name: 'ClipboardItemCodeExtension',
+      );
       _codeDetectionCache.put(cacheKey, false);
       return false;
-    }
-  }
-
-  /// Get the detected programming language of the content
-  String? get detectedLanguage {
-    if (!isCode) return null;
-
-    // Check cache first
-    final cacheKey = contentHash;
-    if (_languageDetectionCache.containsKey(cacheKey)) {
-      return _languageDetectionCache.get(cacheKey);
-    }
-
-    try {
-      final syntaxHighlighter = getIt<SyntaxHighlighter>();
-      final result = syntaxHighlighter.detectLanguage(content);
-      _languageDetectionCache.put(cacheKey, result);
-      return result;
-    } catch (e) {
-      _languageDetectionCache.put(cacheKey, null);
-      return null;
     }
   }
 }

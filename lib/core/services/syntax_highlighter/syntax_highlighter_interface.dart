@@ -9,7 +9,7 @@ abstract class SyntaxHighlighter {
   /// [code] The code content to highlight
   /// [language] Optional language hint for better detection
   /// [theme] Optional theme for syntax highlighting
-  Widget highlight({required String code, String? language, Brightness? theme});
+  Widget highlight({required String code, String? language, Brightness theme});
 
   /// Detect if the given content is likely to be code
   ///

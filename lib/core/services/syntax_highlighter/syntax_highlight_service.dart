@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/atom-one-dark-reasonable.dart';
+import 'package:flutter_highlight/themes/github.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
@@ -19,15 +20,19 @@ class SyntaxHighlightService implements SyntaxHighlighter {
   Widget highlight({
     required String code,
     String? language,
-    Brightness? theme,
+    Brightness theme = Brightness.dark,
   }) {
     try {
       final detectedLang = language ?? detectLanguage(code) ?? 'dart';
 
+      final highlightTheme = (theme == Brightness.dark)
+          ? atomOneDarkReasonableTheme
+          : githubTheme;
+
       final highlighted = HighlightView(
         code,
         language: detectedLang,
-        theme: atomOneDarkReasonableTheme,
+        theme: highlightTheme,
         padding: const EdgeInsets.all(AppSpacing.xs),
         textStyle: const TextStyle(fontFamily: 'monospace', fontSize: 12),
       );

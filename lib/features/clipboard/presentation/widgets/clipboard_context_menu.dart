@@ -120,7 +120,7 @@ class ClipboardContextMenu extends StatelessWidget {
     widgets.add(
       const Padding(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
-        child: Divider(height: .3),
+        child: Divider(height: .2, thickness: .2),
       ),
     );
 

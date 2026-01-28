@@ -126,6 +126,8 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                           previewWidget: widget.clipboardItem.preview(
                             maxLines: 500,
                             colorScheme: colorScheme,
+                            imageWidth: null,
+                            imageHeight: null,
                           ),
                           preview: widget.clipboardItem.content,
                         ),

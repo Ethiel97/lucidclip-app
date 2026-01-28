@@ -6,11 +6,12 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
-final Map<String, Uint8List> _imagePreviewCache = {};
+final _imagePreviewCache = LruBytesCache(200);
 
 // Cached icon widgets to avoid rebuilding
 const _iconText = IconTheme(
@@ -57,13 +58,18 @@ extension ClipboardUiHelper on ClipboardItem {
     };
   }
 
-  bool get isImageFile =>
-      (filePath?.isNotEmpty ?? true) && File(filePath!).isImage;
+  bool get isImageFile {
+    final path = filePath;
+    if (path == null || path.isEmpty) return false;
+    return File(path).isImage;
+  }
 
   Widget preview({
     required ColorScheme colorScheme,
     int? maxLines,
     bool showLinkPreview = true,
+    double? imageWidth = 50,
+    double? imageHeight = 50,
   }) {
     final textPreview = Text(
       content,
@@ -84,14 +90,22 @@ extension ClipboardUiHelper on ClipboardItem {
         children: [textPreview, if (showLinkPreview) linkPreviewWidget],
       );
     } else if (type case ClipboardItemType.file when isImageFile) {
-      return CachedClipboardImage.file(filePath: filePath);
+      return CachedClipboardImage.file(
+        filePath: filePath,
+        width: imageWidth,
+        height: imageHeight,
+      );
     } else if (type case ClipboardItemType.image when imageBytes != null) {
       final cachedKey = 'clipboard_image_$id';
-      final cachedBytes = _imagePreviewCache.putIfAbsent(
+      final cachedBytes = _imagePreviewCache.put(
         cachedKey,
-        () => Uint8List.fromList(imageBytes!),
+        Uint8List.fromList(imageBytes!),
       );
-      return CachedClipboardImage.memory(bytes: cachedBytes);
+      return CachedClipboardImage.memory(
+        bytes: cachedBytes,
+        width: imageWidth,
+        height: imageHeight,
+      );
     } else {
       return textPreview;
     }

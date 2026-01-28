@@ -16,13 +16,9 @@ class ClipboardItemTile extends StatefulWidget {
   State<ClipboardItemTile> createState() => _ClipboardItemTileState();
 }
 
-class _ClipboardItemTileState extends State<ClipboardItemTile>
-    with AutomaticKeepAliveClientMixin {
+class _ClipboardItemTileState extends State<ClipboardItemTile> {
   bool isHovering = false;
   LinkPreviewController? _linkPreviewController;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
@@ -48,7 +44,6 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    super.build(context);
     return MouseRegion(
       onEnter: (_) {
         if (!isHovering) {
@@ -85,10 +80,12 @@ class _ClipboardItemTileState extends State<ClipboardItemTile>
                 Expanded(
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: widget.item.preview(
-                      maxLines: 1,
-                      colorScheme: colorScheme,
-                      showLinkPreview: false,
+                    child: RepaintBoundary(
+                      child: widget.item.preview(
+                        maxLines: 1,
+                        colorScheme: colorScheme,
+                        showLinkPreview: false,
+                      ),
                     ),
                   ),
                 ),

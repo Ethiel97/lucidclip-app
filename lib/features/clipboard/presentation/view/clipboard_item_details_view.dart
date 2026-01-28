@@ -94,6 +94,14 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                   ),
                 ),
 
+                // Show code badge in header if it's code
+                if (widget.clipboardItem.isCode)
+                  ClipboardBadge(
+                    label: 'Code',
+                    color: colorScheme.secondary,
+                  ),
+                const SizedBox(width: AppSpacing.sm),
+
                 IconButton(
                   onPressed: () {
                     widget.onClose?.call();
@@ -128,6 +136,7 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                             colorScheme: colorScheme,
                             imageWidth: null,
                             imageHeight: null,
+                            useSyntaxHighlighting: true,
                           ),
                           preview: widget.clipboardItem.content,
                         ),

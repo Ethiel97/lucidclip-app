@@ -1,6 +1,7 @@
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlighter.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 extension ClipboardItemIconExtension on ClipboardItem {
@@ -29,5 +30,32 @@ extension ClipboardItemIconExtension on ClipboardItem {
 extension ClipboardItemsIconExtension on List<ClipboardItem> {
   Future<List<ClipboardItem>> withEnrichedSourceApps() async {
     return Future.wait(map((item) => item.withEnrichedSourceApp()));
+  }
+}
+
+extension ClipboardItemCodeExtension on ClipboardItem {
+  /// Check if the clipboard item content is code
+  bool get isCode {
+    // Only check text-type items
+    if (!type.isText && !type.isUrl) return false;
+    
+    try {
+      final syntaxHighlighter = getIt<SyntaxHighlighter>();
+      return syntaxHighlighter.isCode(content);
+    } catch (e) {
+      return false;
+    }
+  }
+  
+  /// Get the detected programming language of the content
+  String? get detectedLanguage {
+    if (!isCode) return null;
+    
+    try {
+      final syntaxHighlighter = getIt<SyntaxHighlighter>();
+      return syntaxHighlighter.detectLanguage(content);
+    } catch (e) {
+      return null;
+    }
   }
 }

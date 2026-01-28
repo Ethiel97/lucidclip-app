@@ -3,8 +3,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlighter.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
@@ -70,6 +72,7 @@ extension ClipboardUiHelper on ClipboardItem {
     bool showLinkPreview = true,
     double? imageWidth = 50,
     double? imageHeight = 50,
+    bool useSyntaxHighlighting = false,
   }) {
     final textPreview = Text(
       content,
@@ -79,6 +82,18 @@ extension ClipboardUiHelper on ClipboardItem {
     );
 
     if (type case ClipboardItemType.text) {
+      // Use syntax highlighting for code content if enabled
+      if (useSyntaxHighlighting && isCode) {
+        try {
+          final syntaxHighlighter = getIt<SyntaxHighlighter>();
+          return syntaxHighlighter.highlight(
+            code: content,
+            theme: colorScheme.brightness,
+          );
+        } catch (e) {
+          return textPreview;
+        }
+      }
       return textPreview;
     }
 

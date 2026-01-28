@@ -17,6 +17,8 @@ import 'package:window_manager/window_manager.dart';
 class TrayManagerService with TrayListener {
   TrayManagerService() {
     trayManager.addListener(this);
+
+    initialize();
   }
 
   bool _isInitialized = false;

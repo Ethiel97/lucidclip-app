@@ -68,13 +68,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   configureDependencies();
 
   await Future.wait<void>([
-    getIt<WindowController>().initialize(),
-    getIt<TrayManagerService>().initialize(),
-    // Initialize hotkey manager
-    getIt<HotkeyManagerService>().initialize(),
-  ]);
-
-  await Future.wait<void>([
     getIt<HotkeyManagerService>().registerDefaultHotkeys(),
     getIt<WindowController>().bootstrapWindow(),
   ]);

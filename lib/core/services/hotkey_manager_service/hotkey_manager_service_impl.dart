@@ -13,7 +13,9 @@ import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 /// Implementation of HotkeyManagerService using hotkey_manager package
 @LazySingleton(as: HotkeyManagerService)
 class HotkeyManagerServiceImpl implements HotkeyManagerService {
-  HotkeyManagerServiceImpl();
+  HotkeyManagerServiceImpl() {
+    initialize();
+  }
 
   final Map<ShortcutAction, HotKey> _registeredHotkeys = {};
   bool _isInitialized = false;

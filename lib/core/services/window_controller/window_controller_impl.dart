@@ -17,7 +17,11 @@ class WindowControllerImpl implements WindowController {
   WindowControllerImpl({
     required this.windowManager,
     required this.macosOverlay,
-  });
+  }) {
+    initialize();
+  }
+
+  bool _isInitialized = false;
 
   static const positioner = OverlayPositioner();
 
@@ -41,7 +45,9 @@ class WindowControllerImpl implements WindowController {
 
   @override
   Future<void> initialize() async {
+    if (_isInitialized) return;
     await windowManager.ensureInitialized();
+    _isInitialized = true;
   }
 
   @override

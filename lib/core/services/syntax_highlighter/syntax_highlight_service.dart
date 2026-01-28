@@ -6,14 +6,16 @@ import 'package:syntax_highlight/syntax_highlight.dart';
 /// Implementation of syntax highlighting service using syntax_highlight package
 @LazySingleton(as: SyntaxHighlighter)
 class SyntaxHighlightService implements SyntaxHighlighter {
-  SyntaxHighlightService() {
-    _initializeHighlighter();
-  }
+  SyntaxHighlightService();
 
   Highlighter? _highlighter;
   bool _isInitialized = false;
+  bool _isInitializing = false;
 
-  Future<void> _initializeHighlighter() async {
+  Future<void> _ensureInitialized() async {
+    if (_isInitialized || _isInitializing) return;
+    
+    _isInitializing = true;
     try {
       await Highlighter.initialize(['dart', 'java', 'javascript', 'json', 'python', 'yaml', 'xml', 'html', 'css', 'sql', 'swift', 'kotlin', 'typescript', 'go', 'rust', 'cpp', 'c', 'csharp', 'php', 'ruby', 'bash', 'shell']);
       _highlighter = Highlighter(
@@ -25,6 +27,8 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     } catch (e) {
       // If initialization fails, we'll fall back to plain text
       _isInitialized = false;
+    } finally {
+      _isInitializing = false;
     }
   }
 
@@ -135,7 +139,7 @@ class SyntaxHighlightService implements SyntaxHighlighter {
         if (line.contains('{') || 
             line.contains('}') || 
             line.contains(';') ||
-            line.contains('(') && line.contains(')')) {
+            (line.contains('(') && line.contains(')'))) {
           linesWithSpecialChars++;
         }
       }
@@ -156,14 +160,14 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     
     // Dart
     if (code.contains('import \'package:') || 
-        code.contains('class') && code.contains('extends') ||
+        (code.contains('class') && code.contains('extends')) ||
         code.contains('void main(') ||
         code.contains('@override')) {
       return 'dart';
     }
     
     // JavaScript/TypeScript
-    if (code.contains('const ') && code.contains('=>') ||
+    if ((code.contains('const ') && code.contains('=>')) ||
         code.contains('function ') ||
         code.contains('console.log') ||
         code.contains('require(') ||
@@ -178,7 +182,7 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     
     // Python
     if (code.contains('def ') || 
-        code.contains('import ') && !code.contains('import \'') ||
+        (code.contains('import ') && !code.contains('import \'')) ||
         code.contains('if __name__ == "__main__"') ||
         code.contains('self.') ||
         code.contains('print(')) {
@@ -201,14 +205,14 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     
     // Swift
     if (code.contains('import UIKit') || 
-        code.contains('func ') && code.contains('->') ||
-        code.contains('var ') && code.contains(': ')) {
+        (code.contains('func ') && code.contains('->')) ||
+        (code.contains('var ') && code.contains(': '))) {
       return 'swift';
     }
     
     // Go
     if (code.contains('package main') || 
-        code.contains('func ') && code.contains('{') ||
+        (code.contains('func ') && code.contains('{')) ||
         code.contains('import (')) {
       return 'go';
     }
@@ -224,7 +228,7 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     if (code.contains('#include <') || 
         code.contains('int main(') ||
         code.contains('std::')) {
-      if (code.contains('std::') || code.contains('class') && code.contains('public:')) {
+      if (code.contains('std::') || (code.contains('class') && code.contains('public:'))) {
         return 'cpp';
       }
       return 'c';
@@ -233,7 +237,7 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     // C#
     if (code.contains('using System') || 
         code.contains('namespace ') ||
-        code.contains('public class') && code.contains('Main(string[]')) {
+        (code.contains('public class') && code.contains('Main(string[]'))) {
       return 'csharp';
     }
     
@@ -243,7 +247,7 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     }
     
     // YAML
-    if (code.contains(':\n') || code.contains(': ') && !code.contains(';')) {
+    if (code.contains(':\n') || (code.contains(': ') && !code.contains(';'))) {
       return 'yaml';
     }
     
@@ -257,12 +261,12 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     
     // XML
     if (code.contains('<?xml') || 
-        (code.contains('<') && code.contains('/>') && !code.contains('<html'))) {
+        ((code.contains('<') && code.contains('/>')) && !code.contains('<html'))) {
       return 'xml';
     }
     
     // CSS
-    if (code.contains('{') && code.contains('}') && 
+    if ((code.contains('{') && code.contains('}')) && 
         (code.contains('color:') || code.contains('margin:') || 
          code.contains('padding:') || code.contains('font-'))) {
       return 'css';
@@ -278,21 +282,21 @@ class SyntaxHighlightService implements SyntaxHighlighter {
     
     // PHP
     if (code.contains('<?php') || 
-        code.contains('function ') && code.contains('$')) {
+        (code.contains('function ') && code.contains('$'))) {
       return 'php';
     }
     
     // Ruby
-    if (code.contains('def ') && code.contains('end') ||
+    if ((code.contains('def ') && code.contains('end')) ||
         code.contains('require \'') ||
-        code.contains('class ') && code.contains('< ')) {
+        (code.contains('class ') && code.contains('< '))) {
       return 'ruby';
     }
     
     // Shell/Bash
     if (code.startsWith('#!/bin/bash') || 
         code.startsWith('#!/bin/sh') ||
-        code.contains('echo ') && code.contains('$')) {
+        (code.contains('echo ') && code.contains('$'))) {
       return 'bash';
     }
     

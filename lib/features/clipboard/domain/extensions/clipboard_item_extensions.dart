@@ -33,16 +33,29 @@ extension ClipboardItemsIconExtension on List<ClipboardItem> {
   }
 }
 
+// Cache for code detection results to avoid expensive re-computation
+final _codeDetectionCache = <String, bool>{};
+final _languageDetectionCache = <String, String?>{};
+
 extension ClipboardItemCodeExtension on ClipboardItem {
   /// Check if the clipboard item content is code
   bool get isCode {
     // Only check text-type items
     if (!type.isText && !type.isUrl) return false;
     
+    // Check cache first
+    final cacheKey = contentHash;
+    if (_codeDetectionCache.containsKey(cacheKey)) {
+      return _codeDetectionCache[cacheKey]!;
+    }
+    
     try {
       final syntaxHighlighter = getIt<SyntaxHighlighter>();
-      return syntaxHighlighter.isCode(content);
+      final result = syntaxHighlighter.isCode(content);
+      _codeDetectionCache[cacheKey] = result;
+      return result;
     } catch (e) {
+      _codeDetectionCache[cacheKey] = false;
       return false;
     }
   }
@@ -51,10 +64,19 @@ extension ClipboardItemCodeExtension on ClipboardItem {
   String? get detectedLanguage {
     if (!isCode) return null;
     
+    // Check cache first
+    final cacheKey = contentHash;
+    if (_languageDetectionCache.containsKey(cacheKey)) {
+      return _languageDetectionCache[cacheKey];
+    }
+    
     try {
       final syntaxHighlighter = getIt<SyntaxHighlighter>();
-      return syntaxHighlighter.detectLanguage(content);
+      final result = syntaxHighlighter.detectLanguage(content);
+      _languageDetectionCache[cacheKey] = result;
+      return result;
     } catch (e) {
+      _languageDetectionCache[cacheKey] = null;
       return null;
     }
   }

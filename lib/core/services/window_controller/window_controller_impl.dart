@@ -18,7 +18,7 @@ class WindowControllerImpl implements WindowController {
     required this.windowManager,
     required this.macosOverlay,
   }) {
-    initialize();
+    // initialize();
   }
 
   bool _isInitialized = false;
@@ -44,6 +44,7 @@ class WindowControllerImpl implements WindowController {
   bool get isShowing => _isShowing;
 
   @override
+  @PostConstruct(preResolve: true)
   Future<void> initialize() async {
     if (_isInitialized) return;
     await windowManager.ensureInitialized();

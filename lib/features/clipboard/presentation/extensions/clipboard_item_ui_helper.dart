@@ -3,15 +3,17 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
-final _imagePreviewCache = LruBytesCache(200);
+final _imagePreviewCache = LruCache<Uint8List>(200);
 
 // Cached icon widgets to avoid rebuilding
 const _iconText = IconTheme(
@@ -70,6 +72,7 @@ extension ClipboardUiHelper on ClipboardItem {
     bool showLinkPreview = true,
     double? imageWidth = 50,
     double? imageHeight = 50,
+    bool useSyntaxHighlighting = false,
   }) {
     final textPreview = Text(
       content,
@@ -79,6 +82,18 @@ extension ClipboardUiHelper on ClipboardItem {
     );
 
     if (type case ClipboardItemType.text) {
+      // Use syntax highlighting for code content if enabled
+      if (useSyntaxHighlighting && isCode) {
+        try {
+          final syntaxHighlighter = getIt<SyntaxHighlighter>();
+          return syntaxHighlighter.highlight(
+            code: content,
+            theme: colorScheme.brightness,
+          );
+        } catch (e) {
+          return textPreview;
+        }
+      }
       return textPreview;
     }
 
@@ -109,6 +124,14 @@ extension ClipboardUiHelper on ClipboardItem {
     } else {
       return textPreview;
     }
+  }
+
+  Widget resolveTypeBadge({required AppLocalizations l10n}) {
+    return switch (type) {
+      ClipboardItemType.unknown => const SizedBox.shrink(),
+      ClipboardItemType.text when isCode => ClipboardBadge(label: l10n.snippet),
+      _ => ClipboardBadge(label: type.label),
+    };
   }
 
   Widget resolveSourceAppIcon(ColorScheme colorScheme) =>

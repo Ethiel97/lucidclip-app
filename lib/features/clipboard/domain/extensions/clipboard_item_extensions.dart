@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/utils/lru_cache.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 extension ClipboardItemIconExtension on ClipboardItem {
@@ -29,5 +32,36 @@ extension ClipboardItemIconExtension on ClipboardItem {
 extension ClipboardItemsIconExtension on List<ClipboardItem> {
   Future<List<ClipboardItem>> withEnrichedSourceApps() async {
     return Future.wait(map((item) => item.withEnrichedSourceApp()));
+  }
+}
+
+// Cache for code detection results to avoid expensive re-computation
+final _codeDetectionCache = LruCache<bool>(200);
+
+extension ClipboardItemCodeExtension on ClipboardItem {
+  /// Check if the clipboard item content is code
+  bool get isCode {
+    // Only check text-type items
+    if (!type.isText && !type.isUrl) return false;
+
+    // Check cache first
+    final cacheKey = contentHash;
+    if (_codeDetectionCache.containsKey(cacheKey)) {
+      return _codeDetectionCache.get(cacheKey)!;
+    }
+
+    try {
+      final syntaxHighlighter = getIt<SyntaxHighlighter>();
+      final result = syntaxHighlighter.isCode(content);
+      _codeDetectionCache.put(cacheKey, result);
+      return result;
+    } catch (e) {
+      log(
+        'ClipboardItemCodeExtension.isCode: Failed to detect code. Error: $e',
+        name: 'ClipboardItemCodeExtension',
+      );
+      _codeDetectionCache.put(cacheKey, false);
+      return false;
+    }
   }
 }

@@ -43,6 +43,8 @@ import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_s
     as _i854;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
+import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlight_service.dart'
+    as _i1007;
 import 'package:lucid_clip/core/services/tray_manager_service/tray_manager_service.dart'
     as _i818;
 import 'package:lucid_clip/core/services/window_controller/method_channel_macos_overlay.dart'
@@ -132,10 +134,10 @@ import 'package:window_manager/window_manager.dart' as _i740;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  _i174.GetIt init({
+  Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final thirdPartyModule = _$ThirdPartyModule();
     final cacheModule = _$CacheModule();
@@ -177,6 +179,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i212.HotkeyManagerService>(
       () => _i854.HotkeyManagerServiceImpl(),
       dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i212.SyntaxHighlighter>(
+      () => _i1007.SyntaxHighlightService(),
     );
     gh.lazySingleton<_i212.MacosOverlay>(
       () => _i998.MethodChannelMacosOverlay(),
@@ -222,11 +227,15 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'iconCache',
     );
-    gh.lazySingleton<_i212.WindowController>(
-      () => _i1036.WindowControllerImpl(
-        windowManager: gh<_i740.WindowManager>(),
-        macosOverlay: gh<_i212.MacosOverlay>(),
-      ),
+    await gh.lazySingletonAsync<_i212.WindowController>(
+      () {
+        final i = _i1036.WindowControllerImpl(
+          windowManager: gh<_i740.WindowManager>(),
+          macosOverlay: gh<_i212.MacosOverlay>(),
+        );
+        return i.initialize().then((_) => i);
+      },
+      preResolve: true,
       dispose: (i) => i.dispose(),
     );
     gh.singleton<_i70.RemoteSyncClient>(

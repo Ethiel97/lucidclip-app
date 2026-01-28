@@ -1072,6 +1072,12 @@ abstract class AppLocalizations {
   /// **'Size'**
   String get size;
 
+  /// Label for Snippet input
+  ///
+  /// In en, this message translates to:
+  /// **'Snippet'**
+  String get snippet;
+
   /// Label for the Snippets feature
   ///
   /// In en, this message translates to:

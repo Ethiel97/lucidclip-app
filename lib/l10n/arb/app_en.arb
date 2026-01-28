@@ -773,6 +773,10 @@
   "@size": {
     "description": "Label for the size of the content"
   },
+  "snippet": "Snippet",
+  "@snippet": {
+    "description": "Label for Snippet input"
+  },
   "snippets": "Snippets",
   "@snippets": {
     "description": "Label for the Snippets feature"

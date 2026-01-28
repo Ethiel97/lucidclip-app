@@ -33,11 +33,9 @@ class SourceAppPrivacyControl extends StatelessWidget {
       excludedApps,
     );
 
-    return TextButton(
-      style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        backgroundColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.08),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       ),
       onPressed: () {
         ScaffoldMessenger.of(context)

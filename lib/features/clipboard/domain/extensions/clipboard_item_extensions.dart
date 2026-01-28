@@ -1,7 +1,7 @@
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlighter.dart';
+import 'package:lucid_clip/core/utils/lru_cache.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
 extension ClipboardItemIconExtension on ClipboardItem {
@@ -34,49 +34,49 @@ extension ClipboardItemsIconExtension on List<ClipboardItem> {
 }
 
 // Cache for code detection results to avoid expensive re-computation
-final _codeDetectionCache = <String, bool>{};
-final _languageDetectionCache = <String, String?>{};
+final _codeDetectionCache = LruCache<bool>(200);
+final _languageDetectionCache = LruCache<String?>(200);
 
 extension ClipboardItemCodeExtension on ClipboardItem {
   /// Check if the clipboard item content is code
   bool get isCode {
     // Only check text-type items
     if (!type.isText && !type.isUrl) return false;
-    
+
     // Check cache first
     final cacheKey = contentHash;
     if (_codeDetectionCache.containsKey(cacheKey)) {
-      return _codeDetectionCache[cacheKey]!;
+      return _codeDetectionCache.get(cacheKey)!;
     }
-    
+
     try {
       final syntaxHighlighter = getIt<SyntaxHighlighter>();
       final result = syntaxHighlighter.isCode(content);
-      _codeDetectionCache[cacheKey] = result;
+      _codeDetectionCache.put(cacheKey, result);
       return result;
     } catch (e) {
-      _codeDetectionCache[cacheKey] = false;
+      _codeDetectionCache.put(cacheKey, false);
       return false;
     }
   }
-  
+
   /// Get the detected programming language of the content
   String? get detectedLanguage {
     if (!isCode) return null;
-    
+
     // Check cache first
     final cacheKey = contentHash;
     if (_languageDetectionCache.containsKey(cacheKey)) {
-      return _languageDetectionCache[cacheKey];
+      return _languageDetectionCache.get(cacheKey);
     }
-    
+
     try {
       final syntaxHighlighter = getIt<SyntaxHighlighter>();
       final result = syntaxHighlighter.detectLanguage(content);
-      _languageDetectionCache[cacheKey] = result;
+      _languageDetectionCache.put(cacheKey, result);
       return result;
     } catch (e) {
-      _languageDetectionCache[cacheKey] = null;
+      _languageDetectionCache.put(cacheKey, null);
       return null;
     }
   }

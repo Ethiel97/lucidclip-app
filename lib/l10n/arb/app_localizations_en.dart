@@ -588,6 +588,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get size => 'Size';
 
   @override
+  String get snippet => 'Snippet';
+
+  @override
   String get snippets => 'Snippets';
 
   @override

@@ -6,14 +6,14 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
-import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlighter.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
-final _imagePreviewCache = LruBytesCache(200);
+final _imagePreviewCache = LruCache<Uint8List>(200);
 
 // Cached icon widgets to avoid rebuilding
 const _iconText = IconTheme(
@@ -124,6 +124,14 @@ extension ClipboardUiHelper on ClipboardItem {
     } else {
       return textPreview;
     }
+  }
+
+  Widget resolveTypeBadge({required AppLocalizations l10n}) {
+    return switch (type) {
+      ClipboardItemType.unknown => const SizedBox.shrink(),
+      ClipboardItemType.text when isCode => ClipboardBadge(label: l10n.snippet),
+      _ => ClipboardBadge(label: type.label),
+    };
   }
 
   Widget resolveSourceAppIcon(ColorScheme colorScheme) =>

@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 
 /// Interface for syntax highlighting service
 abstract class SyntaxHighlighter {
+  Future<void> initialize();
+
   /// Highlight code content and return a widget with syntax highlighting
   ///
   /// [code] The code content to highlight
   /// [language] Optional language hint for better detection
   /// [theme] Optional theme for syntax highlighting
-  Widget highlight({
-    required String code,
-    String? language,
-    Brightness? theme,
-  });
+  Widget highlight({required String code, String? language, Brightness? theme});
 
   /// Detect if the given content is likely to be code
   ///

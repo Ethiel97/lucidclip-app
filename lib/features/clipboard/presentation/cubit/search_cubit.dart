@@ -26,7 +26,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   //subscriptions
   StreamSubscription<UserSettings?>? _userSettingsSubscription;
-  late StreamSubscription<ClipboardItems>? _localItemsSubscription;
+  StreamSubscription<ClipboardItems>? _localItemsSubscription;
   StreamSubscription<User?>? _authSubscription;
 
   // repositories

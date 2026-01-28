@@ -94,12 +94,8 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                   ),
                 ),
 
-                // Show code badge in header if it's code
-                if (widget.clipboardItem.isCode)
-                  ClipboardBadge(
-                    label: 'Code',
-                    color: colorScheme.secondary,
-                  ),
+                widget.clipboardItem.resolveTypeBadge(l10n: l10n),
+
                 const SizedBox(width: AppSpacing.sm),
 
                 IconButton(
@@ -145,12 +141,6 @@ class _ClipboardItemDetailsViewState extends State<ClipboardItemDetailsView> {
                         _SectionLabel(l10n.information.toUpperCase()),
                         const SizedBox(height: AppSpacing.xs),
                         _InfoCard(clipboardItem: widget.clipboardItem),
-                        if (widget.clipboardItem.type.label.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.lg),
-                          _SectionLabel(l10n.tags.toUpperCase()),
-                          const SizedBox(height: AppSpacing.xs),
-                          _TagsWrap(tags: [widget.clipboardItem.type.label]),
-                        ],
                       ],
                     ),
                   ),
@@ -420,21 +410,6 @@ class _InfoRow extends StatelessWidget {
           ?actionWidget,
         ],
       ),
-    );
-  }
-}
-
-class _TagsWrap extends StatelessWidget {
-  const _TagsWrap({required this.tags});
-
-  final List<String> tags;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: AppSpacing.xs,
-      runSpacing: AppSpacing.xxxs,
-      children: tags.map((t) => ClipboardBadge(label: t)).toList(),
     );
   }
 }

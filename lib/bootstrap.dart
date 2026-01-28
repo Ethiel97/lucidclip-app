@@ -65,7 +65,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     ),
   );
 
-  configureDependencies();
+  await configureDependencies();
 
   await Future.wait<void>([
     getIt<HotkeyManagerService>().registerDefaultHotkeys(),

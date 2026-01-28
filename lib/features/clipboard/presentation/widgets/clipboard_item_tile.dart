@@ -93,15 +93,8 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
 
                 if (isHovering) RetentionWarningBadge(item: widget.item),
 
-                if (widget.item.isCode) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  ClipboardBadge(
-                    label: 'Code',
-                    color: colorScheme.secondary,
-                  ),
-                ],
                 const SizedBox(width: AppSpacing.sm),
-                ClipboardBadge(label: widget.item.type.label),
+                widget.item.resolveTypeBadge(l10n: context.l10n),
                 const SizedBox(width: AppSpacing.sm),
                 SizedBox(
                   width: 110,

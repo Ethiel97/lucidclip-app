@@ -37,7 +37,7 @@ class _ClipboardViewState extends State<ClipboardView>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 150),
       vsync: this,
     );
 
@@ -45,7 +45,8 @@ class _ClipboardViewState extends State<ClipboardView>
         Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _animationController,
-            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInOut,
+            curve: Curves.easeInOut,
           ),
         );
   }

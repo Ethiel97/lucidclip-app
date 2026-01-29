@@ -22,10 +22,24 @@ class EntitlementListener extends StatelessWidget {
           listener: (context, state) {
             final l10n = context.l10n;
             final settingsCubit = context.read<SettingsCubit>();
+
+            // ensure max history items is at least 5000 for Pro users
             if (settingsCubit.state.maxHistoryItems <
                 MaxHistorySize.size5000.value) {
               settingsCubit.updateMaxHistoryItems(
                 MaxHistorySize.size5000.value,
+              );
+            }
+
+            final retentionDuration = RetentionDuration.fromDays(
+              settingsCubit.state.retentionDays,
+            );
+
+            // ensure retention days is at least 7 days for Pro users
+            if (retentionDuration.duration.inDays <
+                RetentionDuration.sevenDays.duration.inDays) {
+              settingsCubit.updateRetentionDays(
+                RetentionDuration.sevenDays.duration.inDays,
               );
             }
 
@@ -46,9 +60,23 @@ class EntitlementListener extends StatelessWidget {
           listenWhen: (prev, curr) => prev.isProActive && !curr.isProActive,
           listener: (context, state) {
             final settingsCubit = context.read<SettingsCubit>();
+
+            // ensure max history items is at most 30 for free users
             if (settingsCubit.state.maxHistoryItems >
                 MaxHistorySize.size30.value) {
               settingsCubit.updateMaxHistoryItems(MaxHistorySize.size30.value);
+            }
+
+            final retentionDuration = RetentionDuration.fromDays(
+              settingsCubit.state.retentionDays,
+            );
+
+            // ensure retention days is at most 3 days for free users
+            if (retentionDuration.duration.inDays >
+                RetentionDuration.threeDays.duration.inDays) {
+              settingsCubit.updateRetentionDays(
+                RetentionDuration.threeDays.duration.inDays,
+              );
             }
           },
         ),

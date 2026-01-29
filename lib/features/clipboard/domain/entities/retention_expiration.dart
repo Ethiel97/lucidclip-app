@@ -11,9 +11,11 @@ enum RetentionDuration {
   /// Retain items for 1 day.
   oneDay,
 
+  /// default value for free users
   /// Retain items for 3 days.
   threeDays,
 
+  /// default value for pro users
   /// Retain items for 7 days.
   sevenDays,
 

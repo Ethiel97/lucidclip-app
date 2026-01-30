@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
@@ -52,6 +53,68 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
     }
   }
 
+  Future<void> editClipboardItem({
+    required ClipboardItem clipboardItem,
+    required String updatedContent,
+  }) async {
+    final previousItem = state.clipboardItem?.value ?? clipboardItem;
+    final sanitizedContent = updatedContent.trim();
+    if (sanitizedContent.isEmpty) {
+      emit(state.copyWith(editStatus: null.toError()));
+      return;
+    }
+
+    final now = DateTime.now().toUtc();
+    final resolvedType = _resolveClipboardItemType(
+      previousItem,
+      sanitizedContent,
+    );
+    final resolvedHtmlContent =
+        previousItem.type.isHtml ? sanitizedContent : previousItem.htmlContent;
+
+    final updatedItem = previousItem.copyWith(
+      content: sanitizedContent,
+      htmlContent: resolvedHtmlContent,
+      contentHash: _computeContentHash(
+        content: sanitizedContent,
+        type: resolvedType,
+        htmlContent: resolvedHtmlContent,
+        filePath: previousItem.filePath,
+        imageBytes: previousItem.imageBytes,
+      ),
+      type: resolvedType,
+      updatedAt: now,
+      lastUsedAt: now,
+    );
+
+    emit(
+      state.copyWith(
+        clipboardItem: state.clipboardItem?.value == null
+            ? null.toInitial()
+            : updatedItem.toSuccess(),
+        editStatus: null.toLoading(),
+      ),
+    );
+
+    try {
+      await localClipboardRepository.upsert(updatedItem);
+      emit(state.copyWith(editStatus: null.toSuccess()));
+
+      await _upsertClipboardHistory(
+        clipboardItem: updatedItem,
+        action: ClipboardAction.edit,
+      );
+    } catch (e, stack) {
+      emit(
+        state.copyWith(
+          clipboardItem: previousItem.toSuccess(),
+          editStatus: null.toError(),
+        ),
+      );
+      log('Error editing clipboard item: $e', stackTrace: stack);
+    }
+  }
+
   Future<void> deleteClipboardItem(ClipboardItem clipboardItem) async {
     final previousItem = state.clipboardItem?.value ?? clipboardItem;
 
@@ -85,9 +148,19 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
 
   void setClipboardItem(ClipboardItem clipboardItem) {
     try {
-      emit(state.copyWith(clipboardItem: clipboardItem.toSuccess()));
+      emit(
+        state.copyWith(
+          clipboardItem: clipboardItem.toSuccess(),
+          editStatus: null.toInitial(),
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(clipboardItem: null.toError()));
+      emit(
+        state.copyWith(
+          clipboardItem: null.toError(),
+          editStatus: null.toError(),
+        ),
+      );
     }
   }
 
@@ -115,6 +188,36 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
   // This can be used when navigating away from the detail view
   // will trigger the closing of the detail view in the UI
   void clearSelection() {
-    emit(state.copyWith(clipboardItem: null.toInitial()));
+    emit(
+      state.copyWith(
+        clipboardItem: null.toInitial(),
+        editStatus: null.toInitial(),
+      ),
+    );
+  }
+
+  ClipboardItemType _resolveClipboardItemType(
+    ClipboardItem item,
+    String content,
+  ) {
+    if (item.type.isFile || item.type.isImage) return item.type;
+    if (item.type.isHtml) return ClipboardItemType.html;
+    return content.isUrl ? ClipboardItemType.url : ClipboardItemType.text;
+  }
+
+  String _computeContentHash({
+    required ClipboardItemType type,
+    required String content,
+    String? htmlContent,
+    String? filePath,
+    List<int>? imageBytes,
+  }) {
+    return ContentHasher.hashOfParts([
+      type.name,
+      content,
+      htmlContent,
+      if (imageBytes != null) imageBytes,
+      if (filePath != null) filePath,
+    ]);
   }
 }

@@ -243,6 +243,10 @@
   "@delete": {
     "description": "Button text to delete content"
   },
+  "clipContent": "Clip content",
+  "@clipContent": {
+    "description": "Label for the clipboard item's editable content"
+  },
   "edit": "Edit",
   "@edit": {
     "description": "Button text to edit content"
@@ -262,6 +266,10 @@
   "errorOccurred": "An error occurred. Please try again later.",
   "@errorOccurred": {
     "description": "Error message shown when an error occurs"
+  },
+  "saveChanges": "Save changes",
+  "@saveChanges": {
+    "description": "Button text to save changes"
   },
   "exclude": "Exclude",
   "@exclude": {

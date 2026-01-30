@@ -181,7 +181,7 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i212.SyntaxHighlighter>(
-      () => _i1007.SyntaxHighlightService(),
+      () => const _i1007.SyntaxHighlightService(),
     );
     gh.lazySingleton<_i212.MacosOverlay>(
       () => _i998.MethodChannelMacosOverlay(),

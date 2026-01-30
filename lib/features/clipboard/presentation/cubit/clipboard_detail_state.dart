@@ -4,27 +4,36 @@ class ClipboardDetailState extends Equatable {
   const ClipboardDetailState({
     this.clipboardItem,
     this.deletionStatus,
+    this.editStatus,
     this.togglePinStatus,
   });
 
   final ValueWrapper<ClipboardItem>? clipboardItem;
   final ValueWrapper<void>? deletionStatus;
+  final ValueWrapper<void>? editStatus;
   final ValueWrapper<void>? togglePinStatus;
 
   ClipboardDetailState copyWith({
     ValueWrapper<ClipboardItem>? clipboardItem,
     ValueWrapper<void>? deletionStatus,
+    ValueWrapper<void>? editStatus,
     ValueWrapper<void>? togglePinStatus,
   }) {
     return ClipboardDetailState(
       clipboardItem: clipboardItem ?? this.clipboardItem,
       deletionStatus: deletionStatus ?? this.deletionStatus,
+      editStatus: editStatus ?? this.editStatus,
       togglePinStatus: togglePinStatus ?? this.togglePinStatus,
     );
   }
 
   @override
-  List<Object?> get props => [clipboardItem, deletionStatus, togglePinStatus];
+  List<Object?> get props => [
+        clipboardItem,
+        deletionStatus,
+        editStatus,
+        togglePinStatus,
+      ];
 
   bool get hasClipboardItem =>
       clipboardItem?.value != null &&

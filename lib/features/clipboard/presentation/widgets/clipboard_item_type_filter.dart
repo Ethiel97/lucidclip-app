@@ -58,7 +58,7 @@ class ClipboardItemTypeFilter extends StatelessWidget {
                 ),
                 onTap: () {
                   final cubit = context.read<SearchCubit>();
-                  context.pop();
+                  context.maybePop();
                   cubit.setFilterType(filterType);
                 },
               ),

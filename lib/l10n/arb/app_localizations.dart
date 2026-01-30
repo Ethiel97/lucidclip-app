@@ -382,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
+  /// Label for the clipboard item's editable content
+  ///
+  /// In en, this message translates to:
+  /// **'Clip content'**
+  String get clipContent;
+
   /// Button text to edit content
   ///
   /// In en, this message translates to:
@@ -411,6 +417,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again later.'**
   String get errorOccurred;
+
+  /// Button text to save changes
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
 
   /// Button text to exclude an app from tracking
   ///

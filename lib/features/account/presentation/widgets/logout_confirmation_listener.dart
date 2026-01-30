@@ -34,13 +34,13 @@ class LogoutConfirmationListener extends StatelessWidget {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        outerContext.router.pop(false);
+                        outerContext.router.maybePop(false);
                       },
                       child: Text(l10n.cancel.sentenceCase),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        outerContext.router.pop(true);
+                        outerContext.router.maybePop(true);
                       },
                       child: Text(l10n.signOut.sentenceCase),
                     ),

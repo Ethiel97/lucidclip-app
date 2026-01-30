@@ -52,5 +52,6 @@ class AppRouter extends RootStackRouter {
         ),
       ],
     ),
+    AutoRoute(path: '/clipboard/edit', page: ClipboardEditRoute.page),
   ];
 }

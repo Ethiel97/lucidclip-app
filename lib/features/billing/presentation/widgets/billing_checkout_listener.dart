@@ -23,7 +23,7 @@ class BillingCheckoutListener extends StatelessWidget {
 
             final url = Uri.tryParse(session.url);
             if (url != null) {
-              context.pop();
+              await context.maybePop();
               await launchUrl(url, mode: LaunchMode.externalApplication);
             }
 

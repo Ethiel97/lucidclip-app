@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -197,7 +199,10 @@ class ClipboardContextMenu extends StatelessWidget {
         return;
 
       case ClipboardMenuAction.edit:
-        // TODO(Ethiel97): Handle edit action
+        context.read<ClipboardDetailCubit>().setClipboardItem(clipboardItem);
+        context.router.root.push(
+          ClipboardEditRoute(clipboardItem: clipboardItem),
+        );
         return;
     }
   }

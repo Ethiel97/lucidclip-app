@@ -187,6 +187,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
+  String get clipContent => 'Clip content';
+
+  @override
   String get edit => 'Edit';
 
   @override
@@ -200,6 +203,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorOccurred => 'An error occurred. Please try again later.';
+
+  @override
+  String get saveChanges => 'Save changes';
 
   @override
   String get exclude => 'Exclude';

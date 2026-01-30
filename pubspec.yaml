@@ -100,6 +100,7 @@ melos:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/icons/icon.png"
   min_sdk_android: 21
 

@@ -117,12 +117,12 @@ class TrayManagerService with TrayListener {
   /// Get the appropriate tray icon path for the current platform
   String _getTrayIconPath() {
     if (Platform.isMacOS) {
-      return 'assets/icons/icon.png';
+      return 'assets/icons/icon_white.png';
     } else if (Platform.isWindows) {
       return 'assets/icons/icon.ico';
     } else {
       // Fallback for Linux or other platforms
-      return 'assets/icons/icon.png';
+      return 'assets/icons/icon_white.png';
     }
   }
 

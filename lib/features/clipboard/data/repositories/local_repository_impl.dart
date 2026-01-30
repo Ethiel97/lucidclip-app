@@ -4,7 +4,6 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/clipboard/domain/extensions/clipboard_item_extensions.dart';
 
 @LazySingleton(as: LocalClipboardRepository)
 class LocalClipboardStoreImpl implements LocalClipboardRepository {

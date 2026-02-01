@@ -80,17 +80,17 @@ android {
         production {
             dimension "default"
             applicationIdSuffix ""
-            manifestPlaceholders = [appName: "Lucid Clip"]
+            manifestPlaceholders = [appName: "LucidClip"]
         }
         staging {
             dimension "default"
             applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "[STG] Lucid Clip"]
+            manifestPlaceholders = [appName: "[STG] LucidClip"]
         }
         development {
             dimension "default"
             applicationIdSuffix ".dev"
-            manifestPlaceholders = [appName: "[DEV] Lucid Clip"]
+            manifestPlaceholders = [appName: "[DEV] LucidClip"]
         }
     }
 

@@ -1,4 +1,5 @@
 import 'package:app_links/app_links.dart';
+import 'package:auto_updater/auto_updater.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
@@ -37,4 +38,7 @@ abstract class ThirdPartyModule {
 
   @lazySingleton
   WindowManager get windowManager => WindowManager.instance;
+
+  @lazySingleton
+  AutoUpdater get autoUpdater => AutoUpdater.instance;
 }

@@ -45,5 +45,15 @@
 	<string>NSApplication</string>
 	<key>com.apple.security.network.client</key>
 	<true/>
+	<key>SUPublicEDKey</key>
+    <string>1tA+MXDqdFHzBP/dQQJithBQaoTVvUZ6BCbqbz90RCE=</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
+    <key>SUScheduledCheckInterval</key>
+    <integer>21600</integer>
+    <key>SUFeedURL</key>
+    <string>https://updates.lucidclip.app/macos/appcast.xml</string>
+    <key>SUAllowsAutomaticUpdates</key>
+    <true/>
 </dict>
 </plist>

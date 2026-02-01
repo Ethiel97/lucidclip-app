@@ -95,7 +95,7 @@ BEGIN
             VALUE "InternalName", "lucid_clip" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.dev-enthusiast.lucidclip.lucid-clip. All rights reserved." "\0"
             VALUE "OriginalFilename", "lucid_clip.exe" "\0"
-            VALUE "ProductName", "Lucid Clip" "\0"
+            VALUE "ProductName", "LucidClip" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

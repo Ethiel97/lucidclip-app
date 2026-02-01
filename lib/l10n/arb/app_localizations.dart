@@ -106,6 +106,12 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get account;
 
+  /// Tray menu item to check for app updates
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get checkForUpdates;
+
   /// Label for account information
   ///
   /// In en, this message translates to:

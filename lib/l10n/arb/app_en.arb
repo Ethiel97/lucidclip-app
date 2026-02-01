@@ -8,6 +8,10 @@
   "@account": {
     "description": "Label for the Account section"
   },
+  "checkForUpdates": "Check for Updates",
+  "@checkForUpdates": {
+    "description": "Tray menu item to check for app updates"
+  },
   "accountInformation": "Account Information",
   "@accountInformation": {
     "description": "Label for account information"

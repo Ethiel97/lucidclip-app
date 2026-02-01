@@ -1,4 +1,5 @@
 //GENERATED BARREL FILE
+export './app_update/app_update.dart';
 export './cache_service/cache_service.dart';
 export './deep_link_service/deep_link_service.dart';
 export './deep_link_service/deep_link_service_interface.dart';

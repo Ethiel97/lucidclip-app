@@ -12,6 +12,7 @@
 import 'dart:typed_data' as _i100;
 
 import 'package:app_links/app_links.dart' as _i327;
+import 'package:auto_updater/auto_updater.dart' as _i890;
 import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -35,6 +36,8 @@ import 'package:lucid_clip/core/network/remote_sync_client.dart' as _i70;
 import 'package:lucid_clip/core/platform/source_app/method_channel_source_app_provider.dart'
     as _i740;
 import 'package:lucid_clip/core/platform/source_app/source_app.dart' as _i51;
+import 'package:lucid_clip/core/services/app_update/app_update_service.dart'
+    as _i500;
 import 'package:lucid_clip/core/services/deep_link_service/deep_link_service.dart'
     as _i28;
 import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart'
@@ -167,6 +170,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
     gh.lazySingleton<_i740.WindowManager>(() => thirdPartyModule.windowManager);
+    gh.lazySingleton<_i890.AutoUpdater>(() => thirdPartyModule.autoUpdater);
     gh.lazySingleton<_i818.TrayManagerService>(
       () => _i818.TrayManagerService(),
       dispose: (i) => i.dispose(),
@@ -196,6 +200,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i387.EntitlementLocalDataSource>(
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
+    );
+    gh.lazySingleton<_i500.AppUpdateService>(
+      () => _i500.AppUpdateServiceImpl(
+        secureStorageService: gh<_i176.SecureStorageService>(),
+        autoUpdater: gh<_i890.AutoUpdater>(),
+      ),
     );
     gh.lazySingleton<_i457.DeviceIdProvider>(
       () =>

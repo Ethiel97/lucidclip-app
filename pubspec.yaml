@@ -1,7 +1,10 @@
 name: lucid_clip
 description: modern clipboard manager app
-version: 1.0.0+1
+version: 1.0.1+2
 publish_to: none
+
+#  psss-vxmy-laft-rqvc
+
 
 environment:
   sdk: '>=3.8.0 <4.0.0'
@@ -9,6 +12,7 @@ environment:
 dependencies:
   app_links: ^6.3.2
   auto_route: ^11.1.0
+  auto_updater: ^1.0.0
   bloc: ^9.1.0
   cached_network_image: ^3.3.1
   clipboard: ^3.0.8

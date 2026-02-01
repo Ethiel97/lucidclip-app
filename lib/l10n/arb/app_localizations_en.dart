@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
   String get accountInformation => 'Account Information';
 
   @override

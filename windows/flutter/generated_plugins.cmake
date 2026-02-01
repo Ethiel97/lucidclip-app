@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  auto_updater_windows
   clipboard
   firebase_auth
   firebase_core

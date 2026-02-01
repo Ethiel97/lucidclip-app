@@ -227,6 +227,11 @@ class TrayManagerService with TrayListener {
           MenuItem.separator(),
           MenuItem(key: 'settings', label: l10n?.settings ?? 'Settings'),
           MenuItem.separator(),
+          MenuItem(
+            key: 'check_updates',
+            label: l10n?.checkForUpdates ?? 'Check for Updates',
+          ),
+          MenuItem.separator(),
           MenuItem(key: 'about', label: l10n?.about ?? 'About'),
           MenuItem.separator(),
           MenuItem(key: 'quit', label: l10n?.quit ?? 'Quit'),
@@ -285,6 +290,8 @@ class TrayManagerService with TrayListener {
   /// Handle menu item clicks
   Future<void> _handleMenuItemClick(String key) async {
     switch (key) {
+      case 'check_updates':
+        await getIt<AppUpdateService>().checkFromMenu();
       case 'copy_last_item':
         await _copyLastItem();
       case 'show_hide':

@@ -14,14 +14,9 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
   final SourceAppIconService iconService;
 
   @override
-  Future<void> deleteClipboardItem({
-    required dynamic value,
-  }) async {
+  Future<void> deleteClipboardItem({required dynamic value}) async {
     try {
-      return remoteDataSource.deleteClipboardItem(
-        column: 'id',
-        value: value,
-      );
+      return remoteDataSource.deleteClipboardItem(column: 'id', value: value);
     } on NetworkException {
       rethrow;
     } catch (e) {
@@ -89,12 +84,11 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
   }
 
   @override
-  Stream<ClipboardItems> watchClipboardItems({
-    Map<String, dynamic>? filters,
-  }) {
+  Stream<ClipboardItems> watchClipboardItems({Map<String, dynamic>? filters}) {
     try {
-      final clipboardItems =
-          remoteDataSource.watchClipboardItems(filters: filters);
+      final clipboardItems = remoteDataSource.watchClipboardItems(
+        filters: filters,
+      );
 
       return clipboardItems.asyncMap((clipboardItems) async {
         final items = clipboardItems.map((item) => item.toEntity()).toList();
@@ -130,7 +124,7 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
   }
 
   @override
-  Future<ClipboardHistories> fetchClipboardHistory({
+  Future<ClipboardOutboxes> fetchClipboardHistory({
     Map<String, dynamic>? filters,
     String? orderBy,
     int? limit,
@@ -142,9 +136,7 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
         limit: limit,
       );
 
-      return List.from(
-        history.map((item) => item.toEntity()),
-      );
+      return List.from(history.map((item) => item.toEntity()));
     } on NetworkException {
       rethrow;
     } catch (e) {
@@ -165,9 +157,7 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
         limit: limit,
       );
 
-      return List.from(
-        tags.map((item) => item.toEntity()),
-      );
+      return List.from(tags.map((item) => item.toEntity()));
     } on NetworkException {
       rethrow;
     } catch (e) {
@@ -188,9 +178,7 @@ class SupabaseRepositoryImpl implements ClipboardRepository {
         limit: limit,
       );
 
-      return List.from(
-        tags.map((item) => item.toEntity()),
-      );
+      return List.from(tags.map((item) => item.toEntity()));
     } on NetworkException {
       rethrow;
     } catch (e) {

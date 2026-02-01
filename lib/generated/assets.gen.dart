@@ -26,8 +26,12 @@ class $AssetsIconsGen {
   /// File path: assets/icons/icon.png
   AssetGenImage get iconPng => const AssetGenImage('assets/icons/icon.png');
 
+  /// File path: assets/icons/icon_white.png
+  AssetGenImage get iconWhite =>
+      const AssetGenImage('assets/icons/icon_white.png');
+
   /// List of all assets
-  List<dynamic> get values => [aGitkeep, readme, iconIco, iconPng];
+  List<dynamic> get values => [aGitkeep, readme, iconIco, iconPng, iconWhite];
 }
 
 class Assets {

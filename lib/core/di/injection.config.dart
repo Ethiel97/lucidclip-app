@@ -39,6 +39,8 @@ import 'package:lucid_clip/core/services/deep_link_service/deep_link_service.dar
     as _i28;
 import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart'
     as _i995;
+import 'package:lucid_clip/core/services/device_id_provider/secure_installation_id_provider.dart'
+    as _i457;
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
     as _i854;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
@@ -53,6 +55,7 @@ import 'package:lucid_clip/core/services/window_controller/window_controller_imp
     as _i1036;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
+import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
 import 'package:lucid_clip/features/auth/auth.dart' as _i895;
 import 'package:lucid_clip/features/auth/data/data.dart' as _i13;
@@ -74,14 +77,14 @@ import 'package:lucid_clip/features/billing/presentation/cubit/billing_cubit.dar
     as _i696;
 import 'package:lucid_clip/features/clipboard/clipboard.dart' as _i42;
 import 'package:lucid_clip/features/clipboard/data/data.dart' as _i669;
-import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_history_local_data_source.dart'
-    as _i988;
 import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_local_data_source.dart'
     as _i158;
+import 'package:lucid_clip/features/clipboard/data/data_sources/drift_clipboard_outbox_local_data_source.dart'
+    as _i115;
 import 'package:lucid_clip/features/clipboard/data/data_sources/supabase_remote_data_source.dart'
     as _i272;
-import 'package:lucid_clip/features/clipboard/data/repositories/local_clipboard_history_repository_impl.dart'
-    as _i354;
+import 'package:lucid_clip/features/clipboard/data/repositories/local_clipboard_outbox_repository_impl.dart'
+    as _i373;
 import 'package:lucid_clip/features/clipboard/data/repositories/local_repository_impl.dart'
     as _i752;
 import 'package:lucid_clip/features/clipboard/data/repositories/supabase_repository_impl.dart'
@@ -194,17 +197,21 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
     );
+    gh.lazySingleton<_i457.DeviceIdProvider>(
+      () =>
+          _i457.SecureInstallationIdProvider(gh<_i176.SecureStorageService>()),
+    );
+    gh.lazySingleton<_i669.ClipboardOutboxLocalDataSource>(
+      () => _i115.DriftClipboardOutboxLocalDataSource(
+        gh<_i669.ClipboardDatabase>(),
+      ),
+      dispose: (i) => i.clear(),
+    );
     gh.factory<_i826.DioAuthInterceptor>(
       () => _i826.DioAuthInterceptor(gh<_i407.SecureStorageService>()),
     );
     gh.lazySingleton<_i669.ClipboardLocalDataSource>(
       () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
-      dispose: (i) => i.clear(),
-    );
-    gh.lazySingleton<_i669.ClipboardHistoryLocalDataSource>(
-      () => _i988.DriftClipboardHistoryLocalDataSource(
-        gh<_i669.ClipboardDatabase>(),
-      ),
       dispose: (i) => i.clear(),
     );
     gh.lazySingleton<_i995.DeepLinkService>(
@@ -241,12 +248,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
     );
-    gh.lazySingleton<_i782.LocalClipboardHistoryRepository>(
-      () => _i354.LocalClipboardHistoryStoreImpl(
-        gh<_i669.ClipboardHistoryLocalDataSource>(),
-      ),
-      dispose: (i) => i.clear(),
-    );
     gh.lazySingleton<_i387.EntitlementRemoteDataSource>(
       () => _i670.SupabaseEntitlementRemoteDataSource(
         gh<_i183.RemoteSyncClient>(),
@@ -256,15 +257,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
       dispose: (i) => i.clear(),
     );
-    gh.lazySingleton<_i68.ClipboardDetailCubit>(
-      () => _i68.ClipboardDetailCubit(
-        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
-        localClipboardHistoryRepository:
-            gh<_i782.LocalClipboardHistoryRepository>(),
-      ),
-    );
     gh.lazySingleton<_i922.AuthRepository>(
       () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
+    );
+    gh.lazySingleton<_i782.LocalClipboardOutboxRepository>(
+      () => _i373.LocalClipboardOutboxImpl(
+        gh<_i669.ClipboardOutboxLocalDataSource>(),
+      ),
+      dispose: (i) => i.clear(),
     );
     gh.lazySingleton<_i361.Dio>(
       () => dioModule.dio(gh<_i183.DioAuthInterceptor>()),
@@ -280,6 +280,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i212.CacheSerializer<String, List<int>>>(),
       ),
       instanceName: 'sourceAppCache',
+    );
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(
+        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
+        localClipboardOutboxRepository:
+            gh<_i782.LocalClipboardOutboxRepository>(),
+      ),
     );
     gh.lazySingleton<_i51.SourceAppProvider>(
       () => _i740.MethodChannelSourceAppProvider(
@@ -392,12 +400,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(
+        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
         authRepository: gh<_i895.AuthRepository>(),
         clipboardManager: gh<_i108.BaseClipboardManager>(),
         clipboardRepository: gh<_i42.ClipboardRepository>(),
         localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
-        localClipboardHistoryRepository:
-            gh<_i42.LocalClipboardHistoryRepository>(),
+        localClipboardOutboxRepository:
+            gh<_i42.LocalClipboardOutboxRepository>(),
         localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
         remoteSettingsRepository: gh<_i340.SettingsRepository>(),
         retentionCleanupService: gh<_i42.RetentionCleanupService>(),

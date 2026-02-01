@@ -92,6 +92,52 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('clean'),
+  );
+  static const VerificationMeta _lastModifiedByDeviceIdMeta =
+      const VerificationMeta('lastModifiedByDeviceId');
+  @override
+  late final GeneratedColumn<String> lastModifiedByDeviceId =
+      GeneratedColumn<String>(
+        'last_modified_by_device_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _lastUsedAtMeta = const VerificationMeta(
     'lastUsedAt',
   );
@@ -166,21 +212,6 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     ),
     defaultValue: const Constant(false),
   );
-  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
-    'isSynced',
-  );
-  @override
-  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
-    'is_synced',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_synced" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
-  );
   static const VerificationMeta _metadataJsonMeta = const VerificationMeta(
     'metadataJson',
   );
@@ -202,13 +233,16 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     type,
     createdAt,
     updatedAt,
+    deletedAt,
+    version,
+    syncStatus,
+    lastModifiedByDeviceId,
     lastUsedAt,
     htmlContent,
     imageBytes,
     filePath,
     isPinned,
     isSnippet,
-    isSynced,
     metadataJson,
   ];
   @override
@@ -285,6 +319,33 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    }
+    if (data.containsKey('last_modified_by_device_id')) {
+      context.handle(
+        _lastModifiedByDeviceIdMeta,
+        lastModifiedByDeviceId.isAcceptableOrUnknown(
+          data['last_modified_by_device_id']!,
+          _lastModifiedByDeviceIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('last_used_at')) {
       context.handle(
         _lastUsedAtMeta,
@@ -325,12 +386,6 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
       context.handle(
         _isSnippetMeta,
         isSnippet.isAcceptableOrUnknown(data['is_snippet']!, _isSnippetMeta),
-      );
-    }
-    if (data.containsKey('is_synced')) {
-      context.handle(
-        _isSyncedMeta,
-        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
       );
     }
     if (data.containsKey('metadata_json')) {
@@ -383,6 +438,22 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+      lastModifiedByDeviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_modified_by_device_id'],
+      ),
       lastUsedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_used_at'],
@@ -407,10 +478,6 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
         DriftSqlType.bool,
         data['${effectivePrefix}is_snippet'],
       )!,
-      isSynced: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_synced'],
-      )!,
       metadataJson: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}metadata_json'],
@@ -434,13 +501,16 @@ class ClipboardItemEntry extends DataClass
   final String type;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int version;
+  final String syncStatus;
+  final String? lastModifiedByDeviceId;
   final DateTime? lastUsedAt;
   final String? htmlContent;
   final String? imageBytes;
   final String? filePath;
   final bool isPinned;
   final bool isSnippet;
-  final bool isSynced;
   final String? metadataJson;
   const ClipboardItemEntry({
     required this.id,
@@ -451,13 +521,16 @@ class ClipboardItemEntry extends DataClass
     required this.type,
     required this.createdAt,
     required this.updatedAt,
+    this.deletedAt,
+    required this.version,
+    required this.syncStatus,
+    this.lastModifiedByDeviceId,
     this.lastUsedAt,
     this.htmlContent,
     this.imageBytes,
     this.filePath,
     required this.isPinned,
     required this.isSnippet,
-    required this.isSynced,
     this.metadataJson,
   });
   @override
@@ -471,6 +544,16 @@ class ClipboardItemEntry extends DataClass
     map['type'] = Variable<String>(type);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['version'] = Variable<int>(version);
+    map['sync_status'] = Variable<String>(syncStatus);
+    if (!nullToAbsent || lastModifiedByDeviceId != null) {
+      map['last_modified_by_device_id'] = Variable<String>(
+        lastModifiedByDeviceId,
+      );
+    }
     if (!nullToAbsent || lastUsedAt != null) {
       map['last_used_at'] = Variable<DateTime>(lastUsedAt);
     }
@@ -485,7 +568,6 @@ class ClipboardItemEntry extends DataClass
     }
     map['is_pinned'] = Variable<bool>(isPinned);
     map['is_snippet'] = Variable<bool>(isSnippet);
-    map['is_synced'] = Variable<bool>(isSynced);
     if (!nullToAbsent || metadataJson != null) {
       map['metadata_json'] = Variable<String>(metadataJson);
     }
@@ -502,6 +584,14 @@ class ClipboardItemEntry extends DataClass
       type: Value(type),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      version: Value(version),
+      syncStatus: Value(syncStatus),
+      lastModifiedByDeviceId: lastModifiedByDeviceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastModifiedByDeviceId),
       lastUsedAt: lastUsedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(lastUsedAt),
@@ -516,7 +606,6 @@ class ClipboardItemEntry extends DataClass
           : Value(filePath),
       isPinned: Value(isPinned),
       isSnippet: Value(isSnippet),
-      isSynced: Value(isSynced),
       metadataJson: metadataJson == null && nullToAbsent
           ? const Value.absent()
           : Value(metadataJson),
@@ -537,13 +626,18 @@ class ClipboardItemEntry extends DataClass
       type: serializer.fromJson<String>(json['type']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      version: serializer.fromJson<int>(json['version']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+      lastModifiedByDeviceId: serializer.fromJson<String?>(
+        json['lastModifiedByDeviceId'],
+      ),
       lastUsedAt: serializer.fromJson<DateTime?>(json['lastUsedAt']),
       htmlContent: serializer.fromJson<String?>(json['htmlContent']),
       imageBytes: serializer.fromJson<String?>(json['imageBytes']),
       filePath: serializer.fromJson<String?>(json['filePath']),
       isPinned: serializer.fromJson<bool>(json['isPinned']),
       isSnippet: serializer.fromJson<bool>(json['isSnippet']),
-      isSynced: serializer.fromJson<bool>(json['isSynced']),
       metadataJson: serializer.fromJson<String?>(json['metadataJson']),
     );
   }
@@ -559,13 +653,18 @@ class ClipboardItemEntry extends DataClass
       'type': serializer.toJson<String>(type),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'version': serializer.toJson<int>(version),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+      'lastModifiedByDeviceId': serializer.toJson<String?>(
+        lastModifiedByDeviceId,
+      ),
       'lastUsedAt': serializer.toJson<DateTime?>(lastUsedAt),
       'htmlContent': serializer.toJson<String?>(htmlContent),
       'imageBytes': serializer.toJson<String?>(imageBytes),
       'filePath': serializer.toJson<String?>(filePath),
       'isPinned': serializer.toJson<bool>(isPinned),
       'isSnippet': serializer.toJson<bool>(isSnippet),
-      'isSynced': serializer.toJson<bool>(isSynced),
       'metadataJson': serializer.toJson<String?>(metadataJson),
     };
   }
@@ -579,13 +678,16 @@ class ClipboardItemEntry extends DataClass
     String? type,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    int? version,
+    String? syncStatus,
+    Value<String?> lastModifiedByDeviceId = const Value.absent(),
     Value<DateTime?> lastUsedAt = const Value.absent(),
     Value<String?> htmlContent = const Value.absent(),
     Value<String?> imageBytes = const Value.absent(),
     Value<String?> filePath = const Value.absent(),
     bool? isPinned,
     bool? isSnippet,
-    bool? isSynced,
     Value<String?> metadataJson = const Value.absent(),
   }) => ClipboardItemEntry(
     id: id ?? this.id,
@@ -596,13 +698,18 @@ class ClipboardItemEntry extends DataClass
     type: type ?? this.type,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    version: version ?? this.version,
+    syncStatus: syncStatus ?? this.syncStatus,
+    lastModifiedByDeviceId: lastModifiedByDeviceId.present
+        ? lastModifiedByDeviceId.value
+        : this.lastModifiedByDeviceId,
     lastUsedAt: lastUsedAt.present ? lastUsedAt.value : this.lastUsedAt,
     htmlContent: htmlContent.present ? htmlContent.value : this.htmlContent,
     imageBytes: imageBytes.present ? imageBytes.value : this.imageBytes,
     filePath: filePath.present ? filePath.value : this.filePath,
     isPinned: isPinned ?? this.isPinned,
     isSnippet: isSnippet ?? this.isSnippet,
-    isSynced: isSynced ?? this.isSynced,
     metadataJson: metadataJson.present ? metadataJson.value : this.metadataJson,
   );
   ClipboardItemEntry copyWithCompanion(ClipboardItemEntriesCompanion data) {
@@ -619,6 +726,14 @@ class ClipboardItemEntry extends DataClass
       type: data.type.present ? data.type.value : this.type,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      version: data.version.present ? data.version.value : this.version,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+      lastModifiedByDeviceId: data.lastModifiedByDeviceId.present
+          ? data.lastModifiedByDeviceId.value
+          : this.lastModifiedByDeviceId,
       lastUsedAt: data.lastUsedAt.present
           ? data.lastUsedAt.value
           : this.lastUsedAt,
@@ -631,7 +746,6 @@ class ClipboardItemEntry extends DataClass
       filePath: data.filePath.present ? data.filePath.value : this.filePath,
       isPinned: data.isPinned.present ? data.isPinned.value : this.isPinned,
       isSnippet: data.isSnippet.present ? data.isSnippet.value : this.isSnippet,
-      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
       metadataJson: data.metadataJson.present
           ? data.metadataJson.value
           : this.metadataJson,
@@ -649,13 +763,16 @@ class ClipboardItemEntry extends DataClass
           ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('version: $version, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('lastModifiedByDeviceId: $lastModifiedByDeviceId, ')
           ..write('lastUsedAt: $lastUsedAt, ')
           ..write('htmlContent: $htmlContent, ')
           ..write('imageBytes: $imageBytes, ')
           ..write('filePath: $filePath, ')
           ..write('isPinned: $isPinned, ')
           ..write('isSnippet: $isSnippet, ')
-          ..write('isSynced: $isSynced, ')
           ..write('metadataJson: $metadataJson')
           ..write(')'))
         .toString();
@@ -671,13 +788,16 @@ class ClipboardItemEntry extends DataClass
     type,
     createdAt,
     updatedAt,
+    deletedAt,
+    version,
+    syncStatus,
+    lastModifiedByDeviceId,
     lastUsedAt,
     htmlContent,
     imageBytes,
     filePath,
     isPinned,
     isSnippet,
-    isSynced,
     metadataJson,
   );
   @override
@@ -692,13 +812,16 @@ class ClipboardItemEntry extends DataClass
           other.type == this.type &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.version == this.version &&
+          other.syncStatus == this.syncStatus &&
+          other.lastModifiedByDeviceId == this.lastModifiedByDeviceId &&
           other.lastUsedAt == this.lastUsedAt &&
           other.htmlContent == this.htmlContent &&
           other.imageBytes == this.imageBytes &&
           other.filePath == this.filePath &&
           other.isPinned == this.isPinned &&
           other.isSnippet == this.isSnippet &&
-          other.isSynced == this.isSynced &&
           other.metadataJson == this.metadataJson);
 }
 
@@ -712,13 +835,16 @@ class ClipboardItemEntriesCompanion
   final Value<String> type;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int> version;
+  final Value<String> syncStatus;
+  final Value<String?> lastModifiedByDeviceId;
   final Value<DateTime?> lastUsedAt;
   final Value<String?> htmlContent;
   final Value<String?> imageBytes;
   final Value<String?> filePath;
   final Value<bool> isPinned;
   final Value<bool> isSnippet;
-  final Value<bool> isSynced;
   final Value<String?> metadataJson;
   final Value<int> rowid;
   const ClipboardItemEntriesCompanion({
@@ -730,13 +856,16 @@ class ClipboardItemEntriesCompanion
     this.type = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.version = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.lastModifiedByDeviceId = const Value.absent(),
     this.lastUsedAt = const Value.absent(),
     this.htmlContent = const Value.absent(),
     this.imageBytes = const Value.absent(),
     this.filePath = const Value.absent(),
     this.isPinned = const Value.absent(),
     this.isSnippet = const Value.absent(),
-    this.isSynced = const Value.absent(),
     this.metadataJson = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -749,13 +878,16 @@ class ClipboardItemEntriesCompanion
     required String type,
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.version = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.lastModifiedByDeviceId = const Value.absent(),
     this.lastUsedAt = const Value.absent(),
     this.htmlContent = const Value.absent(),
     this.imageBytes = const Value.absent(),
     this.filePath = const Value.absent(),
     this.isPinned = const Value.absent(),
     this.isSnippet = const Value.absent(),
-    this.isSynced = const Value.absent(),
     this.metadataJson = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -774,13 +906,16 @@ class ClipboardItemEntriesCompanion
     Expression<String>? type,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? version,
+    Expression<String>? syncStatus,
+    Expression<String>? lastModifiedByDeviceId,
     Expression<DateTime>? lastUsedAt,
     Expression<String>? htmlContent,
     Expression<String>? imageBytes,
     Expression<String>? filePath,
     Expression<bool>? isPinned,
     Expression<bool>? isSnippet,
-    Expression<bool>? isSynced,
     Expression<String>? metadataJson,
     Expression<int>? rowid,
   }) {
@@ -793,13 +928,17 @@ class ClipboardItemEntriesCompanion
       if (type != null) 'type': type,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (version != null) 'version': version,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (lastModifiedByDeviceId != null)
+        'last_modified_by_device_id': lastModifiedByDeviceId,
       if (lastUsedAt != null) 'last_used_at': lastUsedAt,
       if (htmlContent != null) 'html_content': htmlContent,
       if (imageBytes != null) 'image_bytes': imageBytes,
       if (filePath != null) 'file_path': filePath,
       if (isPinned != null) 'is_pinned': isPinned,
       if (isSnippet != null) 'is_snippet': isSnippet,
-      if (isSynced != null) 'is_synced': isSynced,
       if (metadataJson != null) 'metadata_json': metadataJson,
       if (rowid != null) 'rowid': rowid,
     });
@@ -814,13 +953,16 @@ class ClipboardItemEntriesCompanion
     Value<String>? type,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int>? version,
+    Value<String>? syncStatus,
+    Value<String?>? lastModifiedByDeviceId,
     Value<DateTime?>? lastUsedAt,
     Value<String?>? htmlContent,
     Value<String?>? imageBytes,
     Value<String?>? filePath,
     Value<bool>? isPinned,
     Value<bool>? isSnippet,
-    Value<bool>? isSynced,
     Value<String?>? metadataJson,
     Value<int>? rowid,
   }) {
@@ -833,13 +975,17 @@ class ClipboardItemEntriesCompanion
       type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      version: version ?? this.version,
+      syncStatus: syncStatus ?? this.syncStatus,
+      lastModifiedByDeviceId:
+          lastModifiedByDeviceId ?? this.lastModifiedByDeviceId,
       lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       htmlContent: htmlContent ?? this.htmlContent,
       imageBytes: imageBytes ?? this.imageBytes,
       filePath: filePath ?? this.filePath,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
-      isSynced: isSynced ?? this.isSynced,
       metadataJson: metadataJson ?? this.metadataJson,
       rowid: rowid ?? this.rowid,
     );
@@ -872,6 +1018,20 @@ class ClipboardItemEntriesCompanion
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (lastModifiedByDeviceId.present) {
+      map['last_modified_by_device_id'] = Variable<String>(
+        lastModifiedByDeviceId.value,
+      );
+    }
     if (lastUsedAt.present) {
       map['last_used_at'] = Variable<DateTime>(lastUsedAt.value);
     }
@@ -889,9 +1049,6 @@ class ClipboardItemEntriesCompanion
     }
     if (isSnippet.present) {
       map['is_snippet'] = Variable<bool>(isSnippet.value);
-    }
-    if (isSynced.present) {
-      map['is_synced'] = Variable<bool>(isSynced.value);
     }
     if (metadataJson.present) {
       map['metadata_json'] = Variable<String>(metadataJson.value);
@@ -913,13 +1070,16 @@ class ClipboardItemEntriesCompanion
           ..write('type: $type, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('version: $version, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('lastModifiedByDeviceId: $lastModifiedByDeviceId, ')
           ..write('lastUsedAt: $lastUsedAt, ')
           ..write('htmlContent: $htmlContent, ')
           ..write('imageBytes: $imageBytes, ')
           ..write('filePath: $filePath, ')
           ..write('isPinned: $isPinned, ')
           ..write('isSnippet: $isSnippet, ')
-          ..write('isSynced: $isSynced, ')
           ..write('metadataJson: $metadataJson, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -927,27 +1087,29 @@ class ClipboardItemEntriesCompanion
   }
 }
 
-class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
-    with TableInfo<$ClipboardHistoryEntriesTable, ClipboardHistoryEntry> {
+class $ClipboardOutboxEntriesTable extends ClipboardOutboxEntries
+    with TableInfo<$ClipboardOutboxEntriesTable, ClipboardOutboxEntry> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $ClipboardHistoryEntriesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  $ClipboardOutboxEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _operationIdMeta = const VerificationMeta(
+    'operationId',
+  );
   @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
+  late final GeneratedColumn<String> operationId = GeneratedColumn<String>(
+    'operation_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _clipboardItemIdMeta = const VerificationMeta(
-    'clipboardItemId',
+  static const VerificationMeta _entityIdMeta = const VerificationMeta(
+    'entityId',
   );
   @override
-  late final GeneratedColumn<String> clipboardItemId = GeneratedColumn<String>(
-    'clipboard_item_id',
+  late final GeneratedColumn<String> entityId = GeneratedColumn<String>(
+    'entity_id',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -962,14 +1124,80 @@ class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _actionMeta = const VerificationMeta('action');
+  static const VerificationMeta _operationTypeMeta = const VerificationMeta(
+    'operationType',
+  );
   @override
-  late final GeneratedColumn<String> action = GeneratedColumn<String>(
-    'action',
+  late final GeneratedColumn<String> operationType = GeneratedColumn<String>(
+    'operation_type',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deviceIdMeta = const VerificationMeta(
+    'deviceId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceId = GeneratedColumn<String>(
+    'device_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _sentAtMeta = const VerificationMeta('sentAt');
+  @override
+  late final GeneratedColumn<DateTime> sentAt = GeneratedColumn<DateTime>(
+    'sent_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _retryCountMeta = const VerificationMeta(
+    'retryCount',
+  );
+  @override
+  late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
+    'retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -982,53 +1210,50 @@ class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
   @override
   List<GeneratedColumn> get $columns => [
-    id,
-    clipboardItemId,
+    operationId,
+    entityId,
     userId,
-    action,
+    operationType,
+    payload,
+    deviceId,
+    status,
+    sentAt,
+    retryCount,
+    lastError,
     createdAt,
-    updatedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'clipboard_history_entries';
+  static const String $name = 'clipboard_outbox_entries';
   @override
   VerificationContext validateIntegrity(
-    Insertable<ClipboardHistoryEntry> instance, {
+    Insertable<ClipboardOutboxEntry> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('clipboard_item_id')) {
+    if (data.containsKey('operation_id')) {
       context.handle(
-        _clipboardItemIdMeta,
-        clipboardItemId.isAcceptableOrUnknown(
-          data['clipboard_item_id']!,
-          _clipboardItemIdMeta,
+        _operationIdMeta,
+        operationId.isAcceptableOrUnknown(
+          data['operation_id']!,
+          _operationIdMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_clipboardItemIdMeta);
+      context.missing(_operationIdMeta);
+    }
+    if (data.containsKey('entity_id')) {
+      context.handle(
+        _entityIdMeta,
+        entityId.isAcceptableOrUnknown(data['entity_id']!, _entityIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityIdMeta);
     }
     if (data.containsKey('user_id')) {
       context.handle(
@@ -1038,13 +1263,54 @@ class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
     } else if (isInserting) {
       context.missing(_userIdMeta);
     }
-    if (data.containsKey('action')) {
+    if (data.containsKey('operation_type')) {
       context.handle(
-        _actionMeta,
-        action.isAcceptableOrUnknown(data['action']!, _actionMeta),
+        _operationTypeMeta,
+        operationType.isAcceptableOrUnknown(
+          data['operation_type']!,
+          _operationTypeMeta,
+        ),
       );
     } else if (isInserting) {
-      context.missing(_actionMeta);
+      context.missing(_operationTypeMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    }
+    if (data.containsKey('device_id')) {
+      context.handle(
+        _deviceIdMeta,
+        deviceId.isAcceptableOrUnknown(data['device_id']!, _deviceIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('sent_at')) {
+      context.handle(
+        _sentAtMeta,
+        sentAt.isAcceptableOrUnknown(data['sent_at']!, _sentAtMeta),
+      );
+    }
+    if (data.containsKey('retry_count')) {
+      context.handle(
+        _retryCountMeta,
+        retryCount.isAcceptableOrUnknown(data['retry_count']!, _retryCountMeta),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -1054,248 +1320,375 @@ class $ClipboardHistoryEntriesTable extends ClipboardHistoryEntries
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
-    }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {operationId};
   @override
-  ClipboardHistoryEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ClipboardOutboxEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return ClipboardHistoryEntry(
-      id: attachedDatabase.typeMapping.read(
+    return ClipboardOutboxEntry(
+      operationId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}id'],
+        data['${effectivePrefix}operation_id'],
       )!,
-      clipboardItemId: attachedDatabase.typeMapping.read(
+      entityId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}clipboard_item_id'],
+        data['${effectivePrefix}entity_id'],
       )!,
       userId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}user_id'],
       )!,
-      action: attachedDatabase.typeMapping.read(
+      operationType: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}action'],
+        data['${effectivePrefix}operation_type'],
       )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      ),
+      deviceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      sentAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}sent_at'],
+      ),
+      retryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}retry_count'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
     );
   }
 
   @override
-  $ClipboardHistoryEntriesTable createAlias(String alias) {
-    return $ClipboardHistoryEntriesTable(attachedDatabase, alias);
+  $ClipboardOutboxEntriesTable createAlias(String alias) {
+    return $ClipboardOutboxEntriesTable(attachedDatabase, alias);
   }
 }
 
-class ClipboardHistoryEntry extends DataClass
-    implements Insertable<ClipboardHistoryEntry> {
-  final String id;
-  final String clipboardItemId;
+class ClipboardOutboxEntry extends DataClass
+    implements Insertable<ClipboardOutboxEntry> {
+  final String operationId;
+  final String entityId;
   final String userId;
-  final String action;
+  final String operationType;
+  final String? payload;
+  final String deviceId;
+  final String status;
+  final DateTime? sentAt;
+  final int retryCount;
+  final String? lastError;
   final DateTime createdAt;
-  final DateTime updatedAt;
-  const ClipboardHistoryEntry({
-    required this.id,
-    required this.clipboardItemId,
+  const ClipboardOutboxEntry({
+    required this.operationId,
+    required this.entityId,
     required this.userId,
-    required this.action,
+    required this.operationType,
+    this.payload,
+    required this.deviceId,
+    required this.status,
+    this.sentAt,
+    required this.retryCount,
+    this.lastError,
     required this.createdAt,
-    required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['clipboard_item_id'] = Variable<String>(clipboardItemId);
+    map['operation_id'] = Variable<String>(operationId);
+    map['entity_id'] = Variable<String>(entityId);
     map['user_id'] = Variable<String>(userId);
-    map['action'] = Variable<String>(action);
+    map['operation_type'] = Variable<String>(operationType);
+    if (!nullToAbsent || payload != null) {
+      map['payload'] = Variable<String>(payload);
+    }
+    map['device_id'] = Variable<String>(deviceId);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || sentAt != null) {
+      map['sent_at'] = Variable<DateTime>(sentAt);
+    }
+    map['retry_count'] = Variable<int>(retryCount);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
 
-  ClipboardHistoryEntriesCompanion toCompanion(bool nullToAbsent) {
-    return ClipboardHistoryEntriesCompanion(
-      id: Value(id),
-      clipboardItemId: Value(clipboardItemId),
+  ClipboardOutboxEntriesCompanion toCompanion(bool nullToAbsent) {
+    return ClipboardOutboxEntriesCompanion(
+      operationId: Value(operationId),
+      entityId: Value(entityId),
       userId: Value(userId),
-      action: Value(action),
+      operationType: Value(operationType),
+      payload: payload == null && nullToAbsent
+          ? const Value.absent()
+          : Value(payload),
+      deviceId: Value(deviceId),
+      status: Value(status),
+      sentAt: sentAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sentAt),
+      retryCount: Value(retryCount),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
       createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
     );
   }
 
-  factory ClipboardHistoryEntry.fromJson(
+  factory ClipboardOutboxEntry.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return ClipboardHistoryEntry(
-      id: serializer.fromJson<String>(json['id']),
-      clipboardItemId: serializer.fromJson<String>(json['clipboardItemId']),
+    return ClipboardOutboxEntry(
+      operationId: serializer.fromJson<String>(json['operationId']),
+      entityId: serializer.fromJson<String>(json['entityId']),
       userId: serializer.fromJson<String>(json['userId']),
-      action: serializer.fromJson<String>(json['action']),
+      operationType: serializer.fromJson<String>(json['operationType']),
+      payload: serializer.fromJson<String?>(json['payload']),
+      deviceId: serializer.fromJson<String>(json['deviceId']),
+      status: serializer.fromJson<String>(json['status']),
+      sentAt: serializer.fromJson<DateTime?>(json['sentAt']),
+      retryCount: serializer.fromJson<int>(json['retryCount']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'clipboardItemId': serializer.toJson<String>(clipboardItemId),
+      'operationId': serializer.toJson<String>(operationId),
+      'entityId': serializer.toJson<String>(entityId),
       'userId': serializer.toJson<String>(userId),
-      'action': serializer.toJson<String>(action),
+      'operationType': serializer.toJson<String>(operationType),
+      'payload': serializer.toJson<String?>(payload),
+      'deviceId': serializer.toJson<String>(deviceId),
+      'status': serializer.toJson<String>(status),
+      'sentAt': serializer.toJson<DateTime?>(sentAt),
+      'retryCount': serializer.toJson<int>(retryCount),
+      'lastError': serializer.toJson<String?>(lastError),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
-  ClipboardHistoryEntry copyWith({
-    String? id,
-    String? clipboardItemId,
+  ClipboardOutboxEntry copyWith({
+    String? operationId,
+    String? entityId,
     String? userId,
-    String? action,
+    String? operationType,
+    Value<String?> payload = const Value.absent(),
+    String? deviceId,
+    String? status,
+    Value<DateTime?> sentAt = const Value.absent(),
+    int? retryCount,
+    Value<String?> lastError = const Value.absent(),
     DateTime? createdAt,
-    DateTime? updatedAt,
-  }) => ClipboardHistoryEntry(
-    id: id ?? this.id,
-    clipboardItemId: clipboardItemId ?? this.clipboardItemId,
+  }) => ClipboardOutboxEntry(
+    operationId: operationId ?? this.operationId,
+    entityId: entityId ?? this.entityId,
     userId: userId ?? this.userId,
-    action: action ?? this.action,
+    operationType: operationType ?? this.operationType,
+    payload: payload.present ? payload.value : this.payload,
+    deviceId: deviceId ?? this.deviceId,
+    status: status ?? this.status,
+    sentAt: sentAt.present ? sentAt.value : this.sentAt,
+    retryCount: retryCount ?? this.retryCount,
+    lastError: lastError.present ? lastError.value : this.lastError,
     createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
   );
-  ClipboardHistoryEntry copyWithCompanion(
-    ClipboardHistoryEntriesCompanion data,
-  ) {
-    return ClipboardHistoryEntry(
-      id: data.id.present ? data.id.value : this.id,
-      clipboardItemId: data.clipboardItemId.present
-          ? data.clipboardItemId.value
-          : this.clipboardItemId,
+  ClipboardOutboxEntry copyWithCompanion(ClipboardOutboxEntriesCompanion data) {
+    return ClipboardOutboxEntry(
+      operationId: data.operationId.present
+          ? data.operationId.value
+          : this.operationId,
+      entityId: data.entityId.present ? data.entityId.value : this.entityId,
       userId: data.userId.present ? data.userId.value : this.userId,
-      action: data.action.present ? data.action.value : this.action,
+      operationType: data.operationType.present
+          ? data.operationType.value
+          : this.operationType,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      deviceId: data.deviceId.present ? data.deviceId.value : this.deviceId,
+      status: data.status.present ? data.status.value : this.status,
+      sentAt: data.sentAt.present ? data.sentAt.value : this.sentAt,
+      retryCount: data.retryCount.present
+          ? data.retryCount.value
+          : this.retryCount,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('ClipboardHistoryEntry(')
-          ..write('id: $id, ')
-          ..write('clipboardItemId: $clipboardItemId, ')
+    return (StringBuffer('ClipboardOutboxEntry(')
+          ..write('operationId: $operationId, ')
+          ..write('entityId: $entityId, ')
           ..write('userId: $userId, ')
-          ..write('action: $action, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('operationType: $operationType, ')
+          ..write('payload: $payload, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('status: $status, ')
+          ..write('sentAt: $sentAt, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('lastError: $lastError, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, clipboardItemId, userId, action, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    operationId,
+    entityId,
+    userId,
+    operationType,
+    payload,
+    deviceId,
+    status,
+    sentAt,
+    retryCount,
+    lastError,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is ClipboardHistoryEntry &&
-          other.id == this.id &&
-          other.clipboardItemId == this.clipboardItemId &&
+      (other is ClipboardOutboxEntry &&
+          other.operationId == this.operationId &&
+          other.entityId == this.entityId &&
           other.userId == this.userId &&
-          other.action == this.action &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.operationType == this.operationType &&
+          other.payload == this.payload &&
+          other.deviceId == this.deviceId &&
+          other.status == this.status &&
+          other.sentAt == this.sentAt &&
+          other.retryCount == this.retryCount &&
+          other.lastError == this.lastError &&
+          other.createdAt == this.createdAt);
 }
 
-class ClipboardHistoryEntriesCompanion
-    extends UpdateCompanion<ClipboardHistoryEntry> {
-  final Value<String> id;
-  final Value<String> clipboardItemId;
+class ClipboardOutboxEntriesCompanion
+    extends UpdateCompanion<ClipboardOutboxEntry> {
+  final Value<String> operationId;
+  final Value<String> entityId;
   final Value<String> userId;
-  final Value<String> action;
+  final Value<String> operationType;
+  final Value<String?> payload;
+  final Value<String> deviceId;
+  final Value<String> status;
+  final Value<DateTime?> sentAt;
+  final Value<int> retryCount;
+  final Value<String?> lastError;
   final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
   final Value<int> rowid;
-  const ClipboardHistoryEntriesCompanion({
-    this.id = const Value.absent(),
-    this.clipboardItemId = const Value.absent(),
+  const ClipboardOutboxEntriesCompanion({
+    this.operationId = const Value.absent(),
+    this.entityId = const Value.absent(),
     this.userId = const Value.absent(),
-    this.action = const Value.absent(),
+    this.operationType = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.deviceId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.sentAt = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.lastError = const Value.absent(),
     this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  ClipboardHistoryEntriesCompanion.insert({
-    required String id,
-    required String clipboardItemId,
+  ClipboardOutboxEntriesCompanion.insert({
+    required String operationId,
+    required String entityId,
     required String userId,
-    required String action,
+    required String operationType,
+    this.payload = const Value.absent(),
+    required String deviceId,
+    this.status = const Value.absent(),
+    this.sentAt = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.lastError = const Value.absent(),
     required DateTime createdAt,
-    required DateTime updatedAt,
     this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       clipboardItemId = Value(clipboardItemId),
+  }) : operationId = Value(operationId),
+       entityId = Value(entityId),
        userId = Value(userId),
-       action = Value(action),
-       createdAt = Value(createdAt),
-       updatedAt = Value(updatedAt);
-  static Insertable<ClipboardHistoryEntry> custom({
-    Expression<String>? id,
-    Expression<String>? clipboardItemId,
+       operationType = Value(operationType),
+       deviceId = Value(deviceId),
+       createdAt = Value(createdAt);
+  static Insertable<ClipboardOutboxEntry> custom({
+    Expression<String>? operationId,
+    Expression<String>? entityId,
     Expression<String>? userId,
-    Expression<String>? action,
+    Expression<String>? operationType,
+    Expression<String>? payload,
+    Expression<String>? deviceId,
+    Expression<String>? status,
+    Expression<DateTime>? sentAt,
+    Expression<int>? retryCount,
+    Expression<String>? lastError,
     Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (clipboardItemId != null) 'clipboard_item_id': clipboardItemId,
+      if (operationId != null) 'operation_id': operationId,
+      if (entityId != null) 'entity_id': entityId,
       if (userId != null) 'user_id': userId,
-      if (action != null) 'action': action,
+      if (operationType != null) 'operation_type': operationType,
+      if (payload != null) 'payload': payload,
+      if (deviceId != null) 'device_id': deviceId,
+      if (status != null) 'status': status,
+      if (sentAt != null) 'sent_at': sentAt,
+      if (retryCount != null) 'retry_count': retryCount,
+      if (lastError != null) 'last_error': lastError,
       if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  ClipboardHistoryEntriesCompanion copyWith({
-    Value<String>? id,
-    Value<String>? clipboardItemId,
+  ClipboardOutboxEntriesCompanion copyWith({
+    Value<String>? operationId,
+    Value<String>? entityId,
     Value<String>? userId,
-    Value<String>? action,
+    Value<String>? operationType,
+    Value<String?>? payload,
+    Value<String>? deviceId,
+    Value<String>? status,
+    Value<DateTime?>? sentAt,
+    Value<int>? retryCount,
+    Value<String?>? lastError,
     Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
     Value<int>? rowid,
   }) {
-    return ClipboardHistoryEntriesCompanion(
-      id: id ?? this.id,
-      clipboardItemId: clipboardItemId ?? this.clipboardItemId,
+    return ClipboardOutboxEntriesCompanion(
+      operationId: operationId ?? this.operationId,
+      entityId: entityId ?? this.entityId,
       userId: userId ?? this.userId,
-      action: action ?? this.action,
+      operationType: operationType ?? this.operationType,
+      payload: payload ?? this.payload,
+      deviceId: deviceId ?? this.deviceId,
+      status: status ?? this.status,
+      sentAt: sentAt ?? this.sentAt,
+      retryCount: retryCount ?? this.retryCount,
+      lastError: lastError ?? this.lastError,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1303,23 +1696,38 @@ class ClipboardHistoryEntriesCompanion
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
+    if (operationId.present) {
+      map['operation_id'] = Variable<String>(operationId.value);
     }
-    if (clipboardItemId.present) {
-      map['clipboard_item_id'] = Variable<String>(clipboardItemId.value);
+    if (entityId.present) {
+      map['entity_id'] = Variable<String>(entityId.value);
     }
     if (userId.present) {
       map['user_id'] = Variable<String>(userId.value);
     }
-    if (action.present) {
-      map['action'] = Variable<String>(action.value);
+    if (operationType.present) {
+      map['operation_type'] = Variable<String>(operationType.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (deviceId.present) {
+      map['device_id'] = Variable<String>(deviceId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (sentAt.present) {
+      map['sent_at'] = Variable<DateTime>(sentAt.value);
+    }
+    if (retryCount.present) {
+      map['retry_count'] = Variable<int>(retryCount.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1329,13 +1737,18 @@ class ClipboardHistoryEntriesCompanion
 
   @override
   String toString() {
-    return (StringBuffer('ClipboardHistoryEntriesCompanion(')
-          ..write('id: $id, ')
-          ..write('clipboardItemId: $clipboardItemId, ')
+    return (StringBuffer('ClipboardOutboxEntriesCompanion(')
+          ..write('operationId: $operationId, ')
+          ..write('entityId: $entityId, ')
           ..write('userId: $userId, ')
-          ..write('action: $action, ')
+          ..write('operationType: $operationType, ')
+          ..write('payload: $payload, ')
+          ..write('deviceId: $deviceId, ')
+          ..write('status: $status, ')
+          ..write('sentAt: $sentAt, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('lastError: $lastError, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1347,15 +1760,15 @@ abstract class _$ClipboardDatabase extends GeneratedDatabase {
   $ClipboardDatabaseManager get managers => $ClipboardDatabaseManager(this);
   late final $ClipboardItemEntriesTable clipboardItemEntries =
       $ClipboardItemEntriesTable(this);
-  late final $ClipboardHistoryEntriesTable clipboardHistoryEntries =
-      $ClipboardHistoryEntriesTable(this);
+  late final $ClipboardOutboxEntriesTable clipboardOutboxEntries =
+      $ClipboardOutboxEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     clipboardItemEntries,
-    clipboardHistoryEntries,
+    clipboardOutboxEntries,
   ];
 }
 
@@ -1369,13 +1782,16 @@ typedef $$ClipboardItemEntriesTableCreateCompanionBuilder =
       required String type,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> version,
+      Value<String> syncStatus,
+      Value<String?> lastModifiedByDeviceId,
       Value<DateTime?> lastUsedAt,
       Value<String?> htmlContent,
       Value<String?> imageBytes,
       Value<String?> filePath,
       Value<bool> isPinned,
       Value<bool> isSnippet,
-      Value<bool> isSynced,
       Value<String?> metadataJson,
       Value<int> rowid,
     });
@@ -1389,13 +1805,16 @@ typedef $$ClipboardItemEntriesTableUpdateCompanionBuilder =
       Value<String> type,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int> version,
+      Value<String> syncStatus,
+      Value<String?> lastModifiedByDeviceId,
       Value<DateTime?> lastUsedAt,
       Value<String?> htmlContent,
       Value<String?> imageBytes,
       Value<String?> filePath,
       Value<bool> isPinned,
       Value<bool> isSnippet,
-      Value<bool> isSynced,
       Value<String?> metadataJson,
       Value<int> rowid,
     });
@@ -1449,6 +1868,26 @@ class $$ClipboardItemEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastModifiedByDeviceId => $composableBuilder(
+    column: $table.lastModifiedByDeviceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get lastUsedAt => $composableBuilder(
     column: $table.lastUsedAt,
     builder: (column) => ColumnFilters(column),
@@ -1476,11 +1915,6 @@ class $$ClipboardItemEntriesTableFilterComposer
 
   ColumnFilters<bool> get isSnippet => $composableBuilder(
     column: $table.isSnippet,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get isSynced => $composableBuilder(
-    column: $table.isSynced,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1539,6 +1973,26 @@ class $$ClipboardItemEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastModifiedByDeviceId => $composableBuilder(
+    column: $table.lastModifiedByDeviceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get lastUsedAt => $composableBuilder(
     column: $table.lastUsedAt,
     builder: (column) => ColumnOrderings(column),
@@ -1566,11 +2020,6 @@ class $$ClipboardItemEntriesTableOrderingComposer
 
   ColumnOrderings<bool> get isSnippet => $composableBuilder(
     column: $table.isSnippet,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get isSynced => $composableBuilder(
-    column: $table.isSynced,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1617,6 +2066,22 @@ class $$ClipboardItemEntriesTableAnnotationComposer
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastModifiedByDeviceId => $composableBuilder(
+    column: $table.lastModifiedByDeviceId,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get lastUsedAt => $composableBuilder(
     column: $table.lastUsedAt,
     builder: (column) => column,
@@ -1640,9 +2105,6 @@ class $$ClipboardItemEntriesTableAnnotationComposer
 
   GeneratedColumn<bool> get isSnippet =>
       $composableBuilder(column: $table.isSnippet, builder: (column) => column);
-
-  GeneratedColumn<bool> get isSynced =>
-      $composableBuilder(column: $table.isSynced, builder: (column) => column);
 
   GeneratedColumn<String> get metadataJson => $composableBuilder(
     column: $table.metadataJson,
@@ -1701,13 +2163,16 @@ class $$ClipboardItemEntriesTableTableManager
                 Value<String> type = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<String?> lastModifiedByDeviceId = const Value.absent(),
                 Value<DateTime?> lastUsedAt = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
                 Value<String?> imageBytes = const Value.absent(),
                 Value<String?> filePath = const Value.absent(),
                 Value<bool> isPinned = const Value.absent(),
                 Value<bool> isSnippet = const Value.absent(),
-                Value<bool> isSynced = const Value.absent(),
                 Value<String?> metadataJson = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ClipboardItemEntriesCompanion(
@@ -1719,13 +2184,16 @@ class $$ClipboardItemEntriesTableTableManager
                 type: type,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                version: version,
+                syncStatus: syncStatus,
+                lastModifiedByDeviceId: lastModifiedByDeviceId,
                 lastUsedAt: lastUsedAt,
                 htmlContent: htmlContent,
                 imageBytes: imageBytes,
                 filePath: filePath,
                 isPinned: isPinned,
                 isSnippet: isSnippet,
-                isSynced: isSynced,
                 metadataJson: metadataJson,
                 rowid: rowid,
               ),
@@ -1739,13 +2207,16 @@ class $$ClipboardItemEntriesTableTableManager
                 required String type,
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<String?> lastModifiedByDeviceId = const Value.absent(),
                 Value<DateTime?> lastUsedAt = const Value.absent(),
                 Value<String?> htmlContent = const Value.absent(),
                 Value<String?> imageBytes = const Value.absent(),
                 Value<String?> filePath = const Value.absent(),
                 Value<bool> isPinned = const Value.absent(),
                 Value<bool> isSnippet = const Value.absent(),
-                Value<bool> isSynced = const Value.absent(),
                 Value<String?> metadataJson = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ClipboardItemEntriesCompanion.insert(
@@ -1757,13 +2228,16 @@ class $$ClipboardItemEntriesTableTableManager
                 type: type,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                version: version,
+                syncStatus: syncStatus,
+                lastModifiedByDeviceId: lastModifiedByDeviceId,
                 lastUsedAt: lastUsedAt,
                 htmlContent: htmlContent,
                 imageBytes: imageBytes,
                 filePath: filePath,
                 isPinned: isPinned,
                 isSnippet: isSnippet,
-                isSynced: isSynced,
                 metadataJson: metadataJson,
                 rowid: rowid,
               ),
@@ -1796,43 +2270,53 @@ typedef $$ClipboardItemEntriesTableProcessedTableManager =
       ClipboardItemEntry,
       PrefetchHooks Function()
     >;
-typedef $$ClipboardHistoryEntriesTableCreateCompanionBuilder =
-    ClipboardHistoryEntriesCompanion Function({
-      required String id,
-      required String clipboardItemId,
+typedef $$ClipboardOutboxEntriesTableCreateCompanionBuilder =
+    ClipboardOutboxEntriesCompanion Function({
+      required String operationId,
+      required String entityId,
       required String userId,
-      required String action,
+      required String operationType,
+      Value<String?> payload,
+      required String deviceId,
+      Value<String> status,
+      Value<DateTime?> sentAt,
+      Value<int> retryCount,
+      Value<String?> lastError,
       required DateTime createdAt,
-      required DateTime updatedAt,
       Value<int> rowid,
     });
-typedef $$ClipboardHistoryEntriesTableUpdateCompanionBuilder =
-    ClipboardHistoryEntriesCompanion Function({
-      Value<String> id,
-      Value<String> clipboardItemId,
+typedef $$ClipboardOutboxEntriesTableUpdateCompanionBuilder =
+    ClipboardOutboxEntriesCompanion Function({
+      Value<String> operationId,
+      Value<String> entityId,
       Value<String> userId,
-      Value<String> action,
+      Value<String> operationType,
+      Value<String?> payload,
+      Value<String> deviceId,
+      Value<String> status,
+      Value<DateTime?> sentAt,
+      Value<int> retryCount,
+      Value<String?> lastError,
       Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
       Value<int> rowid,
     });
 
-class $$ClipboardHistoryEntriesTableFilterComposer
-    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
-  $$ClipboardHistoryEntriesTableFilterComposer({
+class $$ClipboardOutboxEntriesTableFilterComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardOutboxEntriesTable> {
+  $$ClipboardOutboxEntriesTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
+  ColumnFilters<String> get operationId => $composableBuilder(
+    column: $table.operationId,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get clipboardItemId => $composableBuilder(
-    column: $table.clipboardItemId,
+  ColumnFilters<String> get entityId => $composableBuilder(
+    column: $table.entityId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1841,8 +2325,38 @@ class $$ClipboardHistoryEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get action => $composableBuilder(
-    column: $table.action,
+  ColumnFilters<String> get operationType => $composableBuilder(
+    column: $table.operationType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceId => $composableBuilder(
+    column: $table.deviceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get sentAt => $composableBuilder(
+    column: $table.sentAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1850,29 +2364,24 @@ class $$ClipboardHistoryEntriesTableFilterComposer
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
   );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
 }
 
-class $$ClipboardHistoryEntriesTableOrderingComposer
-    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
-  $$ClipboardHistoryEntriesTableOrderingComposer({
+class $$ClipboardOutboxEntriesTableOrderingComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardOutboxEntriesTable> {
+  $$ClipboardOutboxEntriesTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
+  ColumnOrderings<String> get operationId => $composableBuilder(
+    column: $table.operationId,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get clipboardItemId => $composableBuilder(
-    column: $table.clipboardItemId,
+  ColumnOrderings<String> get entityId => $composableBuilder(
+    column: $table.entityId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1881,8 +2390,38 @@ class $$ClipboardHistoryEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get action => $composableBuilder(
-    column: $table.action,
+  ColumnOrderings<String> get operationType => $composableBuilder(
+    column: $table.operationType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceId => $composableBuilder(
+    column: $table.deviceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get sentAt => $composableBuilder(
+    column: $table.sentAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1890,121 +2429,155 @@ class $$ClipboardHistoryEntriesTableOrderingComposer
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
-class $$ClipboardHistoryEntriesTableAnnotationComposer
-    extends Composer<_$ClipboardDatabase, $ClipboardHistoryEntriesTable> {
-  $$ClipboardHistoryEntriesTableAnnotationComposer({
+class $$ClipboardOutboxEntriesTableAnnotationComposer
+    extends Composer<_$ClipboardDatabase, $ClipboardOutboxEntriesTable> {
+  $$ClipboardOutboxEntriesTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get clipboardItemId => $composableBuilder(
-    column: $table.clipboardItemId,
+  GeneratedColumn<String> get operationId => $composableBuilder(
+    column: $table.operationId,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get entityId =>
+      $composableBuilder(column: $table.entityId, builder: (column) => column);
 
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
 
-  GeneratedColumn<String> get action =>
-      $composableBuilder(column: $table.action, builder: (column) => column);
+  GeneratedColumn<String> get operationType => $composableBuilder(
+    column: $table.operationType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceId =>
+      $composableBuilder(column: $table.deviceId, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get sentAt =>
+      $composableBuilder(column: $table.sentAt, builder: (column) => column);
+
+  GeneratedColumn<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
-class $$ClipboardHistoryEntriesTableTableManager
+class $$ClipboardOutboxEntriesTableTableManager
     extends
         RootTableManager<
           _$ClipboardDatabase,
-          $ClipboardHistoryEntriesTable,
-          ClipboardHistoryEntry,
-          $$ClipboardHistoryEntriesTableFilterComposer,
-          $$ClipboardHistoryEntriesTableOrderingComposer,
-          $$ClipboardHistoryEntriesTableAnnotationComposer,
-          $$ClipboardHistoryEntriesTableCreateCompanionBuilder,
-          $$ClipboardHistoryEntriesTableUpdateCompanionBuilder,
+          $ClipboardOutboxEntriesTable,
+          ClipboardOutboxEntry,
+          $$ClipboardOutboxEntriesTableFilterComposer,
+          $$ClipboardOutboxEntriesTableOrderingComposer,
+          $$ClipboardOutboxEntriesTableAnnotationComposer,
+          $$ClipboardOutboxEntriesTableCreateCompanionBuilder,
+          $$ClipboardOutboxEntriesTableUpdateCompanionBuilder,
           (
-            ClipboardHistoryEntry,
+            ClipboardOutboxEntry,
             BaseReferences<
               _$ClipboardDatabase,
-              $ClipboardHistoryEntriesTable,
-              ClipboardHistoryEntry
+              $ClipboardOutboxEntriesTable,
+              ClipboardOutboxEntry
             >,
           ),
-          ClipboardHistoryEntry,
+          ClipboardOutboxEntry,
           PrefetchHooks Function()
         > {
-  $$ClipboardHistoryEntriesTableTableManager(
+  $$ClipboardOutboxEntriesTableTableManager(
     _$ClipboardDatabase db,
-    $ClipboardHistoryEntriesTable table,
+    $ClipboardOutboxEntriesTable table,
   ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$ClipboardHistoryEntriesTableFilterComposer(
+              $$ClipboardOutboxEntriesTableFilterComposer(
                 $db: db,
                 $table: table,
               ),
           createOrderingComposer: () =>
-              $$ClipboardHistoryEntriesTableOrderingComposer(
+              $$ClipboardOutboxEntriesTableOrderingComposer(
                 $db: db,
                 $table: table,
               ),
           createComputedFieldComposer: () =>
-              $$ClipboardHistoryEntriesTableAnnotationComposer(
+              $$ClipboardOutboxEntriesTableAnnotationComposer(
                 $db: db,
                 $table: table,
               ),
           updateCompanionCallback:
               ({
-                Value<String> id = const Value.absent(),
-                Value<String> clipboardItemId = const Value.absent(),
+                Value<String> operationId = const Value.absent(),
+                Value<String> entityId = const Value.absent(),
                 Value<String> userId = const Value.absent(),
-                Value<String> action = const Value.absent(),
+                Value<String> operationType = const Value.absent(),
+                Value<String?> payload = const Value.absent(),
+                Value<String> deviceId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime?> sentAt = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => ClipboardHistoryEntriesCompanion(
-                id: id,
-                clipboardItemId: clipboardItemId,
+              }) => ClipboardOutboxEntriesCompanion(
+                operationId: operationId,
+                entityId: entityId,
                 userId: userId,
-                action: action,
+                operationType: operationType,
+                payload: payload,
+                deviceId: deviceId,
+                status: status,
+                sentAt: sentAt,
+                retryCount: retryCount,
+                lastError: lastError,
                 createdAt: createdAt,
-                updatedAt: updatedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                required String id,
-                required String clipboardItemId,
+                required String operationId,
+                required String entityId,
                 required String userId,
-                required String action,
+                required String operationType,
+                Value<String?> payload = const Value.absent(),
+                required String deviceId,
+                Value<String> status = const Value.absent(),
+                Value<DateTime?> sentAt = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
                 required DateTime createdAt,
-                required DateTime updatedAt,
                 Value<int> rowid = const Value.absent(),
-              }) => ClipboardHistoryEntriesCompanion.insert(
-                id: id,
-                clipboardItemId: clipboardItemId,
+              }) => ClipboardOutboxEntriesCompanion.insert(
+                operationId: operationId,
+                entityId: entityId,
                 userId: userId,
-                action: action,
+                operationType: operationType,
+                payload: payload,
+                deviceId: deviceId,
+                status: status,
+                sentAt: sentAt,
+                retryCount: retryCount,
+                lastError: lastError,
                 createdAt: createdAt,
-                updatedAt: updatedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -2015,25 +2588,25 @@ class $$ClipboardHistoryEntriesTableTableManager
       );
 }
 
-typedef $$ClipboardHistoryEntriesTableProcessedTableManager =
+typedef $$ClipboardOutboxEntriesTableProcessedTableManager =
     ProcessedTableManager<
       _$ClipboardDatabase,
-      $ClipboardHistoryEntriesTable,
-      ClipboardHistoryEntry,
-      $$ClipboardHistoryEntriesTableFilterComposer,
-      $$ClipboardHistoryEntriesTableOrderingComposer,
-      $$ClipboardHistoryEntriesTableAnnotationComposer,
-      $$ClipboardHistoryEntriesTableCreateCompanionBuilder,
-      $$ClipboardHistoryEntriesTableUpdateCompanionBuilder,
+      $ClipboardOutboxEntriesTable,
+      ClipboardOutboxEntry,
+      $$ClipboardOutboxEntriesTableFilterComposer,
+      $$ClipboardOutboxEntriesTableOrderingComposer,
+      $$ClipboardOutboxEntriesTableAnnotationComposer,
+      $$ClipboardOutboxEntriesTableCreateCompanionBuilder,
+      $$ClipboardOutboxEntriesTableUpdateCompanionBuilder,
       (
-        ClipboardHistoryEntry,
+        ClipboardOutboxEntry,
         BaseReferences<
           _$ClipboardDatabase,
-          $ClipboardHistoryEntriesTable,
-          ClipboardHistoryEntry
+          $ClipboardOutboxEntriesTable,
+          ClipboardOutboxEntry
         >,
       ),
-      ClipboardHistoryEntry,
+      ClipboardOutboxEntry,
       PrefetchHooks Function()
     >;
 
@@ -2042,9 +2615,9 @@ class $ClipboardDatabaseManager {
   $ClipboardDatabaseManager(this._db);
   $$ClipboardItemEntriesTableTableManager get clipboardItemEntries =>
       $$ClipboardItemEntriesTableTableManager(_db, _db.clipboardItemEntries);
-  $$ClipboardHistoryEntriesTableTableManager get clipboardHistoryEntries =>
-      $$ClipboardHistoryEntriesTableTableManager(
+  $$ClipboardOutboxEntriesTableTableManager get clipboardOutboxEntries =>
+      $$ClipboardOutboxEntriesTableTableManager(
         _db,
-        _db.clipboardHistoryEntries,
+        _db.clipboardOutboxEntries,
       );
 }

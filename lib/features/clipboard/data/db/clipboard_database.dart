@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart'; // pour ClipboardItemModel
 
 part 'clipboard_database.g.dart';
 
-@DriftDatabase(tables: [ClipboardItemEntries, ClipboardHistoryEntries])
+@DriftDatabase(tables: [ClipboardItemEntries, ClipboardOutboxEntries])
 class ClipboardDatabase extends _$ClipboardDatabase {
   ClipboardDatabase([QueryExecutor? executor])
     : super(executor ?? _openConnection());
@@ -30,7 +30,6 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       }
       return NativeDatabase(dbFile);
     });
-    // return driftDatabase(name: 'clipboard_db.sqlite');
   }
 
   @override
@@ -43,8 +42,8 @@ class ClipboardDatabase extends _$ClipboardDatabase {
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from == 1 && to == 2) {
-        // Add ClipboardHistoryEntries table
-        await m.createTable(clipboardHistoryEntries);
+        // Add clipboardOutboxEntries table
+        await m.createTable(clipboardOutboxEntries);
       }
     },
   );
@@ -64,15 +63,20 @@ class ClipboardDatabase extends _$ClipboardDatabase {
   )..where((t) => t.contentHash.equals(contentHash))).getSingleOrNull();
 
   Future<List<ClipboardItemEntry>> getAllEntries() =>
-      (select(clipboardItemEntries)..orderBy([
-            (t) =>
-                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
-          ]))
+      (select(clipboardItemEntries)
+            ..orderBy([
+              (t) => OrderingTerm(
+                expression: t.createdAt,
+                mode: OrderingMode.desc,
+              ),
+            ])
+            ..where((t) => t.deletedAt.isNull()))
           .get();
 
   Stream<List<ClipboardItemEntry>> watchAllEntries({required int limit}) =>
       (select(clipboardItemEntries)
             ..limit(limit)
+            ..where((t) => t.deletedAt.isNull())
             ..orderBy([
               (t) => OrderingTerm(
                 expression: t.createdAt,
@@ -83,29 +87,44 @@ class ClipboardDatabase extends _$ClipboardDatabase {
 
   Future<List<ClipboardItemEntry>> getUnsyncedEntries() => (select(
     clipboardItemEntries,
-  )..where((t) => t.isSynced.equals(false))).get();
+  )..where((t) => t.syncStatus.equals(SyncStatusModel.pending.name))).get();
 
-  Future<void> updateSyncStatus(String id, {bool isSynced = false}) async {
+  //update sync status
+  Future<void> updateSyncStatus(String id, {required bool isSynced}) async {
+    final status = isSynced ? SyncStatusModel.clean : SyncStatusModel.pending;
     await (update(clipboardItemEntries)..where((t) => t.id.equals(id))).write(
-      ClipboardItemEntriesCompanion(isSynced: Value(isSynced)),
+      ClipboardItemEntriesCompanion(syncStatus: Value(status.name)),
     );
   }
 
   Future<void> deleteById(String id) async {
-    await (delete(clipboardItemEntries)..where((t) => t.id.equals(id))).go();
+    // await (delete(clipboardItemEntries)..where((t) => t.id.equals(id))).go();
+    final now = DateTime.now().toUtc();
+    await (update(clipboardItemEntries)..where((t) => t.id.equals(id))).write(
+      ClipboardItemEntriesCompanion(deletedAt: Value(now)),
+    );
   }
 
   Future<void> deleteByContentHash(String contentHash) async {
-    await (delete(
-      clipboardItemEntries,
-    )..where((t) => t.contentHash.equals(contentHash))).go();
+    // await (delete(clipboardItemEntries)..where((t)
+    // => t.contentHash.equals(contentHash))).go();
+    final now = DateTime.now().toUtc();
+    await (update(clipboardItemEntries)
+          ..where((t) => t.contentHash.equals(contentHash)))
+        .write(ClipboardItemEntriesCompanion(deletedAt: Value(now)));
   }
 
   Future<void> clearAll() => delete(clipboardItemEntries).go();
 
   Future<Set<String>> getAllContentHashes() async {
-    final rows = await select(clipboardItemEntries).get();
-    return rows.map((r) => r.contentHash).toSet();
+    final table = clipboardItemEntries;
+    final query = selectOnly(table)..addColumns([table.contentHash]);
+    final rows = await query.get();
+
+    return rows
+        .map((row) => row.read<String>(table.contentHash))
+        .whereType<String>()
+        .toSet();
   }
 
   // Mapping helpers : entry <-> model
@@ -114,6 +133,11 @@ class ClipboardDatabase extends _$ClipboardDatabase {
     final type = ClipboardItemTypeModel.values.firstWhere(
       (v) => v.name == e.type,
       orElse: () => ClipboardItemTypeModel.unknown,
+    );
+
+    final syncStatus = SyncStatusModel.values.firstWhere(
+      (v) => v.name == e.syncStatus,
+      orElse: () => SyncStatusModel.unknown,
     );
 
     final metadata = e.metadataJson == null
@@ -130,19 +154,21 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       content: e.content,
       contentHash: e.contentHash,
       createdAt: e.createdAt,
+      deletedAt: e.deletedAt,
       filePath: e.filePath,
       htmlContent: e.htmlContent,
       id: e.id,
       imageBytes: imageBytes,
       isPinned: e.isPinned,
       isSnippet: e.isSnippet,
-      isSynced: e.isSynced,
       lastUsedAt: e.lastUsedAt,
       metadata: metadata,
+      syncStatus: syncStatus,
       type: type,
       updatedAt: e.updatedAt,
       usageCount: e.usageCount,
       userId: e.userId,
+      version: e.version,
     );
   }
 
@@ -152,10 +178,10 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       content: Value(m.content),
       contentHash: Value(m.contentHash),
       createdAt: Value(m.createdAt),
+      deletedAt: Value(m.deletedAt),
       filePath: Value(m.filePath),
       isPinned: Value(m.isPinned),
       isSnippet: Value(m.isSnippet),
-      isSynced: Value(m.isSynced),
       htmlContent: Value(m.htmlContent),
       imageBytes: Value(
         (m.imageBytes?.isNotEmpty ?? false)
@@ -166,32 +192,32 @@ class ClipboardDatabase extends _$ClipboardDatabase {
       metadataJson: Value(
         m.metadata.isNotEmpty ? jsonEncode(m.metadata) : null,
       ),
+      syncStatus: Value(m.syncStatus.name),
       type: Value(m.type.name),
       updatedAt: Value(m.updatedAt),
       usageCount: Value(m.usageCount),
       userId: Value(m.userId),
+      version: Value(m.version),
     );
   }
 
-  // Clipboard History methods
+  // ---------------------------
+  // Outbox methods (Sync Engine)
+  // ---------------------------
 
-  Future<void> upsertHistory(ClipboardHistoryEntriesCompanion companion) =>
-      into(clipboardHistoryEntries).insertOnConflictUpdate(companion);
+  Future<void> upsertOutbox(ClipboardOutboxEntriesCompanion companion) =>
+      into(clipboardOutboxEntries).insertOnConflictUpdate(companion);
 
-  Future<void> upsertHistoriesBatch(
-    List<ClipboardHistoryEntriesCompanion> comps,
-  ) =>
-      batch((b) => b.insertAllOnConflictUpdate(clipboardHistoryEntries, comps));
+  Future<void> upsertOutboxBatch(List<ClipboardOutboxEntriesCompanion> comps) =>
+      batch((b) => b.insertAllOnConflictUpdate(clipboardOutboxEntries, comps));
 
-  Future<ClipboardHistoryEntry?> getHistoryById(String id) => (select(
-    clipboardHistoryEntries,
-  )..where((t) => t.id.equals(id))).getSingleOrNull();
+  Future<ClipboardOutboxEntry?> getOutboxById(String opId) => (select(
+    clipboardOutboxEntries,
+  )..where((t) => t.operationId.equals(opId))).getSingleOrNull();
 
-  Future<List<ClipboardHistoryEntry>> getHistoriesByClipboardItemId(
-    String clipboardItemId,
-  ) =>
-      (select(clipboardHistoryEntries)
-            ..where((t) => t.clipboardItemId.equals(clipboardItemId))
+  Future<List<ClipboardOutboxEntry>> getOutboxesByEntityId(String entityId) =>
+      (select(clipboardOutboxEntries)
+            ..where((t) => t.entityId.equals(entityId))
             ..orderBy([
               (t) => OrderingTerm(
                 expression: t.createdAt,
@@ -200,40 +226,84 @@ class ClipboardDatabase extends _$ClipboardDatabase {
             ]))
           .get();
 
-  Future<List<ClipboardHistoryEntry>> getAllHistories() =>
-      (select(clipboardHistoryEntries)..orderBy([
-            (t) =>
-                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
-          ]))
-          .get();
+  Future<List<ClipboardOutboxEntry>> getAllOutboxes({int? limit}) {
+    final q = select(clipboardOutboxEntries)
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+      ]);
 
-  Future<List<ClipboardHistoryEntry>> getHistoriesByAction(String action) =>
-      (select(clipboardHistoryEntries)
-            ..where((t) => t.action.equals(action))
-            ..orderBy([
-              (t) => OrderingTerm(
-                expression: t.createdAt,
-                mode: OrderingMode.desc,
-              ),
-            ]))
-          .get();
-
-  Stream<List<ClipboardHistoryEntry>> watchAllHistories() =>
-      (select(clipboardHistoryEntries)..orderBy([
-            (t) =>
-                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
-          ]))
-          .watch();
-
-  Future<void> deleteHistoryById(String id) async {
-    await (delete(clipboardHistoryEntries)..where((t) => t.id.equals(id))).go();
+    if (limit != null) q.limit(limit);
+    return q.get();
   }
 
-  Future<void> deleteHistoriesByClipboardItemId(String clipboardItemId) async {
+  Future<List<ClipboardOutboxEntry>> getPendingOutboxes({int? limit}) {
+    final q = select(clipboardOutboxEntries)
+      ..where((t) => t.sentAt.isNull()) // simplest invariant
+      ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]);
+
+    if (limit != null) q.limit(limit);
+    return q.get();
+  }
+
+  Future<List<ClipboardOutboxEntry>> getOutboxesByOperationType(
+    String operationType, {
+    int? limit,
+  }) {
+    final q = select(clipboardOutboxEntries)
+      ..where((t) => t.operationType.equals(operationType))
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+      ]);
+
+    if (limit != null) q.limit(limit);
+    return q.get();
+  }
+
+  Stream<List<ClipboardOutboxEntry>> watchOutboxes({int? limit}) {
+    final q = select(clipboardOutboxEntries)
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+      ]);
+
+    if (limit != null) q.limit(limit);
+    return q.watch();
+  }
+
+  /// Mark an op as sent (acknowledged by remote)
+  Future<void> markOutboxSent(String opId, DateTime sentAt) async {
+    await (update(clipboardOutboxEntries)
+          ..where((t) => t.operationId.equals(opId)))
+        .write(ClipboardOutboxEntriesCompanion(sentAt: Value(sentAt)));
+  }
+
+  /// Mark failure (and keep it pending for retry)
+  Future<void> markOutboxFailed(String opId, String error) async {
+    await (update(clipboardOutboxEntries)
+          ..where((t) => t.operationId.equals(opId)))
+        .write(ClipboardOutboxEntriesCompanion(lastError: Value(error)));
+  }
+
+  Future<void> incrementOutboxRetry(String opId) async {
+    await customStatement(
+      'UPDATE clipboard_outbox_entries '
+      'SET retry_count = retry_count + 1 '
+      'WHERE operation_id = ?',
+      [opId],
+    );
+  }
+
+  /// Delete outbox item by op id
+  Future<void> deleteOutboxById(String opId) async {
     await (delete(
-      clipboardHistoryEntries,
-    )..where((t) => t.clipboardItemId.equals(clipboardItemId))).go();
+      clipboardOutboxEntries,
+    )..where((t) => t.operationId.equals(opId))).go();
   }
 
-  Future<void> clearAllHistories() => delete(clipboardHistoryEntries).go();
+  Future<void> deleteOutboxesByEntityId(String entityId) async {
+    await (delete(
+      clipboardOutboxEntries,
+    )..where((t) => t.entityId.equals(entityId))).go();
+  }
+
+  Future<void> clearOutbox() => delete(clipboardOutboxEntries).go();
 }

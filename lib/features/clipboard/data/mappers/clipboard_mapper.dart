@@ -13,6 +13,7 @@ class ClipboardMapper {
       content: e.content,
       contentHash: e.contentHash,
       createdAt: e.createdAt,
+      deletedAt: e.deletedAt,
       filePath: e.filePath,
       htmlContent: e.htmlContent,
       id: e.id,
@@ -23,6 +24,10 @@ class ClipboardMapper {
       type: ClipboardItemTypeModel.values[e.type.index],
       updatedAt: e.updatedAt,
       userId: e.userId,
+      syncStatus: SyncStatusModel.values[e.syncStatus.index],
+      usageCount: e.usageCount,
+      lastUsedAt: e.lastUsedAt,
+      version: e.version,
     );
   }
 
@@ -38,28 +43,33 @@ class ClipboardMapper {
       );
 
   // --- ClipboardHistory ---
-  static ClipboardHistoryModel historyToModel(ClipboardHistory h) {
-    return ClipboardHistoryModel(
-      action: ClipboardActionModel.values[h.action.index],
-      clipboardItemId: h.clipboardItemId,
+  static ClipboardOutboxModel historyToModel(ClipboardOutbox h) {
+    return ClipboardOutboxModel(
+      operationType: ClipboardOperationTypeModel.values[h.operationType.index],
+      entityId: h.entityId,
       createdAt: h.createdAt,
       id: h.id,
-      updatedAt: h.updatedAt,
       userId: h.userId,
+      deviceId: h.deviceId,
+      lastError: h.lastError,
+      payload: h.payload,
+      retryCount: h.retryCount,
+      sentAt: h.sentAt,
+      status: ClipboardOutboxStatusModel.values[h.status.index],
     );
   }
 
-  static ClipboardHistory historyFromModel(ClipboardHistoryModel m) =>
+  static ClipboardOutbox historyFromModel(ClipboardOutboxModel m) =>
       m.toEntity();
 
   static List<Map<String, dynamic>>? historyToJson(
-    List<ClipboardHistory>? history,
-  ) => toJsonList<ClipboardHistory>(history, (h) => historyToModel(h).toJson());
+    List<ClipboardOutbox>? history,
+  ) => toJsonList<ClipboardOutbox>(history, (h) => historyToModel(h).toJson());
 
-  static List<ClipboardHistory>? historyFromJson(List<dynamic>? json) =>
-      fromJsonList<ClipboardHistory>(
+  static List<ClipboardOutbox>? historyFromJson(List<dynamic>? json) =>
+      fromJsonList<ClipboardOutbox>(
         json,
-        (m) => ClipboardHistoryModel.fromJson(m).toEntity(),
+        (m) => ClipboardOutboxModel.fromJson(m).toEntity(),
       );
 
   // --- ClipboardItemTag ---
@@ -125,6 +135,7 @@ extension ClipboardDataMapper on ClipboardData {
       filePath: filePath,
       htmlContent: html,
       metadata: metadata ?? {},
+      syncStatus: SyncStatus.pending,
     );
   }
 }

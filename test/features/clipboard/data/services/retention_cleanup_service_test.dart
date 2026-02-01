@@ -72,6 +72,7 @@ void main() {
           createdAt: now.subtract(const Duration(days: 2)),
           // 2 days ago
           updatedAt: now.subtract(const Duration(days: 2)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -95,6 +96,7 @@ void main() {
           createdAt: now.subtract(const Duration(hours: 12)),
           // 12 hours ago
           updatedAt: now.subtract(const Duration(hours: 12)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -155,6 +157,7 @@ void main() {
           userId: 'test-user',
           createdAt: now.subtract(const Duration(days: 5)),
           updatedAt: now.subtract(const Duration(days: 5)),
+          syncStatus: SyncStatus.unknown,
         );
 
         // Item that is 8 days old - should be deleted (exceeds 7 day retention)
@@ -166,6 +169,7 @@ void main() {
           userId: 'test-user',
           createdAt: now.subtract(const Duration(days: 8)),
           updatedAt: now.subtract(const Duration(days: 8)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -197,6 +201,7 @@ void main() {
             userId: 'test-user',
             createdAt: now.subtract(const Duration(days: 2)),
             updatedAt: now.subtract(const Duration(days: 2)),
+            syncStatus: SyncStatus.unknown,
           );
 
           when(
@@ -229,6 +234,7 @@ void main() {
           createdAt: now.subtract(const Duration(days: 30)),
           // Very old
           updatedAt: now.subtract(const Duration(days: 30)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -253,6 +259,7 @@ void main() {
           createdAt: now.subtract(const Duration(days: 30)),
           // Very old
           updatedAt: now.subtract(const Duration(days: 30)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -278,6 +285,7 @@ void main() {
             userId: 'test-user',
             createdAt: now.subtract(const Duration(days: 2)),
             updatedAt: now.subtract(const Duration(days: 2)),
+            syncStatus: SyncStatus.unknown,
           );
 
           final expiredPinnedItem = ClipboardItem(
@@ -289,6 +297,7 @@ void main() {
             isPinned: true,
             createdAt: now.subtract(const Duration(days: 2)),
             updatedAt: now.subtract(const Duration(days: 2)),
+            syncStatus: SyncStatus.unknown,
           );
 
           final expiredSnippetItem = ClipboardItem(
@@ -300,6 +309,7 @@ void main() {
             isSnippet: true,
             createdAt: now.subtract(const Duration(days: 2)),
             updatedAt: now.subtract(const Duration(days: 2)),
+            syncStatus: SyncStatus.unknown,
           );
 
           when(() => mockLocalClipboardRepository.getAll()).thenAnswer(
@@ -337,6 +347,7 @@ void main() {
           userId: 'test-user',
           createdAt: now.subtract(const Duration(days: 2)),
           updatedAt: now.subtract(const Duration(days: 2)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -373,6 +384,7 @@ void main() {
           userId: 'test-user',
           createdAt: now.subtract(const Duration(days: 2)),
           updatedAt: now.subtract(const Duration(days: 2)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(
@@ -409,6 +421,7 @@ void main() {
           userId: 'guest',
           createdAt: now.subtract(const Duration(days: 2)),
           updatedAt: now.subtract(const Duration(days: 2)),
+          syncStatus: SyncStatus.unknown,
         );
 
         when(

@@ -13,14 +13,16 @@ class ClipboardItemModel extends Equatable {
     required this.contentHash,
     required this.createdAt,
     required this.id,
+    required this.syncStatus,
     required this.type,
     required this.updatedAt,
     required this.userId,
     this.isPinned = false,
     this.isSnippet = false,
-    this.isSynced = false,
     this.metadata = const {},
     this.usageCount = 0,
+    this.version = 0,
+    this.deletedAt,
     this.filePath,
     this.htmlContent,
     this.imageBytes,
@@ -32,6 +34,7 @@ class ClipboardItemModel extends Equatable {
       content: item.content,
       contentHash: item.contentHash,
       createdAt: item.createdAt,
+      deletedAt: item.deletedAt,
       filePath: item.filePath,
       htmlContent: item.htmlContent,
       id: item.id,
@@ -40,10 +43,12 @@ class ClipboardItemModel extends Equatable {
       isSnippet: item.isSnippet,
       lastUsedAt: item.lastUsedAt,
       metadata: item.metadata,
+      syncStatus: SyncStatusModel.values[item.syncStatus.index],
       type: ClipboardItemTypeModel.values[item.type.index],
       updatedAt: item.updatedAt,
       usageCount: item.usageCount,
       userId: item.userId,
+      version: item.version,
     );
   }
 
@@ -54,8 +59,12 @@ class ClipboardItemModel extends Equatable {
 
   @JsonKey(name: 'content_hash')
   final String contentHash;
+
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
+
+  @JsonKey(name: 'deleted_at')
+  final DateTime? deletedAt;
 
   @JsonKey(name: 'file_path')
   final String? filePath;
@@ -73,13 +82,19 @@ class ClipboardItemModel extends Equatable {
   @JsonKey(name: 'is_snippet')
   final bool isSnippet;
 
-  @JsonKey(name: 'is_synced')
-  final bool isSynced;
-
   @JsonKey(name: 'last_used_at')
   final DateTime? lastUsedAt;
 
   final Map<String, dynamic> metadata;
+
+  @JsonKey(
+    name: 'sync_status',
+    defaultValue: SyncStatusModel.clean,
+    unknownEnumValue: SyncStatusModel.clean,
+  )
+  final SyncStatusModel syncStatus;
+
+  final int version;
 
   @JsonKey(
     defaultValue: ClipboardItemTypeModel.unknown,
@@ -103,37 +118,41 @@ class ClipboardItemModel extends Equatable {
     String? content,
     String? contentHash,
     DateTime? createdAt,
+    DateTime? deletedAt,
     String? filePath,
     String? htmlContent,
     String? id,
     List<int>? imageBytes,
     bool? isPinned,
     bool? isSnippet,
-    bool? isSynced,
     DateTime? lastUsedAt,
     Map<String, dynamic>? metadata,
+    SyncStatusModel? syncStatus,
     ClipboardItemTypeModel? type,
     DateTime? updatedAt,
     int? usageCount,
     String? userId,
+    int? version,
   }) {
     return ClipboardItemModel(
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt ?? this.deletedAt,
       filePath: filePath ?? this.filePath,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
       imageBytes: imageBytes ?? this.imageBytes,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
-      isSynced: isSynced ?? this.isSynced,
       lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       metadata: metadata ?? this.metadata,
+      syncStatus: syncStatus ?? this.syncStatus,
       type: type ?? this.type,
       updatedAt: updatedAt ?? this.updatedAt,
       usageCount: usageCount ?? this.usageCount,
       userId: userId ?? this.userId,
+      version: version ?? this.version,
     );
   }
 
@@ -142,6 +161,7 @@ class ClipboardItemModel extends Equatable {
       content: content,
       contentHash: contentHash,
       createdAt: createdAt,
+      deletedAt: deletedAt,
       filePath: filePath,
       htmlContent: htmlContent,
       id: id,
@@ -150,10 +170,12 @@ class ClipboardItemModel extends Equatable {
       isSnippet: isSnippet,
       lastUsedAt: lastUsedAt,
       metadata: metadata,
+      syncStatus: SyncStatus.values[syncStatus.index],
       type: ClipboardItemType.values[type.index],
       updatedAt: updatedAt,
       usageCount: usageCount,
       userId: userId,
+      version: version,
     );
   }
 
@@ -162,20 +184,24 @@ class ClipboardItemModel extends Equatable {
     content,
     contentHash,
     createdAt,
+    deletedAt,
     filePath,
     htmlContent,
     id,
     imageBytes,
     isPinned,
     isSnippet,
-    isSynced,
     lastUsedAt,
     metadata,
+    syncStatus,
     type,
     updatedAt,
     usageCount,
     userId,
+    version,
   ];
 }
 
 enum ClipboardItemTypeModel { text, image, file, url, html, unknown }
+
+enum SyncStatusModel { clean, dirty, pending, conflict, error, unknown }

@@ -51,7 +51,7 @@ class ClipboardState extends Equatable {
     );
   }
 
-  final ValueWrapper<ClipboardHistories> clipboardHistory;
+  final ValueWrapper<ClipboardOutboxes> clipboardHistory;
   final ValueWrapper<ClipboardItems> clipboardItems;
   final ValueWrapper<ClipboardItemTags> clipboardItemTags;
   final ValueWrapper<SourceApp> excludeAppResult;
@@ -61,7 +61,7 @@ class ClipboardState extends Equatable {
   final ValueWrapper<Tags> tags;
 
   ClipboardState copyWith({
-    ValueWrapper<ClipboardHistories>? clipboardHistory,
+    ValueWrapper<ClipboardOutboxes>? clipboardHistory,
     ValueWrapper<ClipboardItems>? clipboardItems,
     ValueWrapper<ClipboardItemTags>? clipboardItemTags,
     ValueWrapper<SourceApp>? excludeAppResult,

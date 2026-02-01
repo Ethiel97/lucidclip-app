@@ -70,8 +70,8 @@ extension ClipboardUiHelper on ClipboardItem {
     required ColorScheme colorScheme,
     int? maxLines,
     bool showLinkPreview = true,
-    double? imageWidth = 50,
-    double? imageHeight = 50,
+    double? imageWidth = 30,
+    double? imageHeight = 30,
     bool useSyntaxHighlighting = false,
   }) {
     final textPreview = Text(

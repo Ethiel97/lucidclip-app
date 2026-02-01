@@ -13,11 +13,23 @@ class ClipboardItemEntries extends Table {
   IntColumn get usageCount =>
       integer().named('usage_count').withDefault(const Constant(0))();
 
-  TextColumn get type => text()();
+  TextColumn get type => text().named('type')();
 
   DateTimeColumn get createdAt => dateTime().named('created_at')();
 
   DateTimeColumn get updatedAt => dateTime().named('updated_at')();
+
+  DateTimeColumn get deletedAt => dateTime().named('deleted_at').nullable()();
+
+  IntColumn get version =>
+      integer().named('version').withDefault(const Constant(0))();
+
+  //0 clean, 1 dirty, 2 pending 3 conflict 4 error
+  TextColumn get syncStatus =>
+      text().named('sync_status').withDefault(const Constant('clean'))();
+
+  TextColumn get lastModifiedByDeviceId =>
+      text().named('last_modified_by_device_id').nullable()();
 
   DateTimeColumn get lastUsedAt =>
       dateTime().named('last_used_at').nullable()();
@@ -34,28 +46,37 @@ class ClipboardItemEntries extends Table {
   BoolColumn get isSnippet =>
       boolean().named('is_snippet').withDefault(const Constant(false))();
 
-  BoolColumn get isSynced =>
-      boolean().named('is_synced').withDefault(const Constant(false))();
-
   TextColumn get metadataJson => text().named('metadata_json').nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
 }
 
-class ClipboardHistoryEntries extends Table {
-  TextColumn get id => text()();
+class ClipboardOutboxEntries extends Table {
+  TextColumn get operationId => text().named('operation_id')();
 
-  TextColumn get clipboardItemId => text().named('clipboard_item_id')();
+  TextColumn get entityId => text().named('entity_id')();
 
   TextColumn get userId => text().named('user_id')();
 
-  TextColumn get action => text()();
+  TextColumn get operationType => text()();
+
+  TextColumn get payload => text().named('payload').nullable()();
+
+  TextColumn get deviceId => text().named('device_id')();
+
+  TextColumn get status =>
+      text().named('status').withDefault(const Constant('pending'))();
+
+  DateTimeColumn get sentAt => dateTime().named('sent_at').nullable()();
+
+  IntColumn get retryCount =>
+      integer().named('retry_count').withDefault(const Constant(0))();
+
+  TextColumn get lastError => text().named('last_error').nullable()();
 
   DateTimeColumn get createdAt => dateTime().named('created_at')();
 
-  DateTimeColumn get updatedAt => dateTime().named('updated_at')();
-
   @override
-  Set<Column> get primaryKey => {id};
+  Set<Column> get primaryKey => {operationId};
 }

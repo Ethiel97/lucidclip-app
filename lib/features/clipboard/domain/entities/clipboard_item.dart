@@ -15,14 +15,16 @@ class ClipboardItem extends Equatable {
     required this.contentHash,
     required this.createdAt,
     required this.id,
+    required this.syncStatus,
     required this.type,
     required this.updatedAt,
     required this.userId,
+    this.deletedAt,
     this.isPinned = false,
     this.isSnippet = false,
-    this.isSynced = false,
     this.metadata = const {},
     this.usageCount = 0,
+    this.version = 0,
     this.filePath,
     this.htmlContent,
     this.imageBytes,
@@ -35,6 +37,7 @@ class ClipboardItem extends Equatable {
       contentHash: '',
       createdAt: DateTime.now().toUtc(),
       id: '',
+      syncStatus: SyncStatus.clean,
       type: ClipboardItemType.unknown,
       updatedAt: DateTime.now().toUtc(),
       userId: '',
@@ -49,6 +52,7 @@ class ClipboardItem extends Equatable {
 
   final String contentHash;
   final DateTime createdAt;
+  final DateTime? deletedAt;
 
   final String? filePath;
 
@@ -58,10 +62,12 @@ class ClipboardItem extends Equatable {
   final bool isPinned;
 
   final bool isSnippet;
-  final bool isSynced;
 
   final DateTime? lastUsedAt;
+
   final Map<String, dynamic> metadata;
+
+  final SyncStatus syncStatus;
 
   final ClipboardItemType type;
 
@@ -69,43 +75,48 @@ class ClipboardItem extends Equatable {
   final int usageCount;
 
   final String userId;
+  final int version;
 
   //copyWith method
   ClipboardItem copyWith({
     String? content,
     String? contentHash,
     DateTime? createdAt,
+    DateTime? deletedAt,
     String? filePath,
     String? htmlContent,
     String? id,
     List<int>? imageBytes,
     bool? isPinned,
     bool? isSnippet,
-    bool? isSynced,
     DateTime? lastUsedAt,
     Map<String, dynamic>? metadata,
+    SyncStatus? syncStatus,
     ClipboardItemType? type,
     DateTime? updatedAt,
     int? usageCount,
     String? userId,
+    int? version,
   }) {
     return ClipboardItem(
       content: content ?? this.content,
       contentHash: contentHash ?? this.contentHash,
       createdAt: createdAt ?? this.createdAt,
+      deletedAt: deletedAt ?? this.deletedAt,
       filePath: filePath ?? this.filePath,
       htmlContent: htmlContent ?? this.htmlContent,
       id: id ?? this.id,
       imageBytes: imageBytes ?? this.imageBytes,
       isPinned: isPinned ?? this.isPinned,
       isSnippet: isSnippet ?? this.isSnippet,
-      isSynced: isSynced ?? this.isSynced,
       lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       metadata: metadata ?? this.metadata,
+      syncStatus: syncStatus ?? this.syncStatus,
       type: type ?? this.type,
       updatedAt: updatedAt ?? this.updatedAt,
       usageCount: usageCount ?? this.usageCount,
       userId: userId ?? this.userId,
+      version: version ?? this.version,
     );
   }
 
@@ -148,19 +159,21 @@ class ClipboardItem extends Equatable {
     content,
     contentHash,
     createdAt,
+    deletedAt,
     filePath,
     htmlContent,
     id,
     imageBytes,
     isPinned,
     isSnippet,
-    isSynced,
     lastUsedAt,
     metadata,
+    syncStatus,
     type,
     updatedAt,
     usageCount,
     userId,
+    version,
   ];
 }
 
@@ -198,6 +211,8 @@ enum ClipboardItemType {
     };
   }
 }
+
+enum SyncStatus { clean, dirty, pending, conflict, error, unknown }
 
 /// Extension to map ClipboardItem to ClipboardContentType for reusability
 extension ClipboardItemHelper on ClipboardItem {

@@ -13,7 +13,7 @@ abstract class ClipboardRepository {
     int? limit,
   });
 
-  Future<ClipboardHistories> fetchClipboardHistory({
+  Future<ClipboardOutboxes> fetchClipboardHistory({
     Map<String, dynamic>? filters,
     String? orderBy,
     int? limit,

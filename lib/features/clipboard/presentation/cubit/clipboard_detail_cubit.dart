@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 
@@ -12,21 +13,28 @@ part 'clipboard_detail_state.dart';
 @lazySingleton
 class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
   ClipboardDetailCubit({
+    required this.deviceIdProvider,
     required this.localClipboardRepository,
-    required this.localClipboardHistoryRepository,
-  }) : super(const ClipboardDetailState());
+    required this.localClipboardOutboxRepository,
+  }) : super(const ClipboardDetailState()) {
+    _init();
+  }
 
+  final DeviceIdProvider deviceIdProvider;
   final LocalClipboardRepository localClipboardRepository;
-  final LocalClipboardHistoryRepository localClipboardHistoryRepository;
+  final LocalClipboardOutboxRepository localClipboardOutboxRepository;
 
-  final String _pendingUserId = '';
+  late final String _deviceId;
+
+  Future<void> _init() async {
+    _deviceId = await deviceIdProvider.getInstallationId();
+  }
 
   Future<void> togglePinClipboardItem(ClipboardItem clipboardItem) async {
     final previousItem = state.clipboardItem?.value ?? clipboardItem;
     final isPinned = previousItem.isPinned;
     final optimisticItem = previousItem.copyWith(isPinned: !isPinned);
 
-    //don't open the detail view if the clipboard item state is null
     emit(
       state.copyWith(
         clipboardItem: state.clipboardItem?.value == null
@@ -35,13 +43,16 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         togglePinStatus: null.toLoading(),
       ),
     );
+
     try {
       await localClipboardRepository.upsert(optimisticItem);
       emit(state.copyWith(togglePinStatus: null.toSuccess()));
 
-      await _upsertClipboardHistory(
+      await _enqueueOutboxOp(
         clipboardItem: optimisticItem,
-        action: isPinned ? ClipboardAction.unpin : ClipboardAction.pin,
+        operationType: isPinned
+            ? ClipboardOperationType.unpin
+            : ClipboardOperationType.pin,
       );
     } catch (e) {
       emit(
@@ -69,8 +80,9 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
       previousItem,
       sanitizedContent,
     );
-    final resolvedHtmlContent =
-        previousItem.type.isHtml ? sanitizedContent : previousItem.htmlContent;
+    final resolvedHtmlContent = previousItem.type.isHtml
+        ? sanitizedContent
+        : previousItem.htmlContent;
 
     final updatedItem = previousItem.copyWith(
       content: sanitizedContent,
@@ -100,9 +112,9 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
       await localClipboardRepository.upsert(updatedItem);
       emit(state.copyWith(editStatus: null.toSuccess()));
 
-      await _upsertClipboardHistory(
+      await _enqueueOutboxOp(
         clipboardItem: updatedItem,
-        action: ClipboardAction.edit,
+        operationType: ClipboardOperationType.update,
       );
     } catch (e, stack) {
       emit(
@@ -130,9 +142,9 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
 
       emit(state.copyWith(deletionStatus: null.toSuccess()));
 
-      await _upsertClipboardHistory(
+      await _enqueueOutboxOp(
         clipboardItem: previousItem,
-        action: ClipboardAction.delete,
+        operationType: ClipboardOperationType.delete,
       );
     } catch (e, stack) {
       emit(
@@ -154,7 +166,7 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
           editStatus: null.toInitial(),
         ),
       );
-    } catch (e) {
+    } catch (_) {
       emit(
         state.copyWith(
           clipboardItem: null.toError(),
@@ -164,29 +176,34 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
     }
   }
 
-  Future<void> _upsertClipboardHistory({
+  Future<void> _enqueueOutboxOp({
     required ClipboardItem clipboardItem,
-    required ClipboardAction action,
+    required ClipboardOperationType operationType,
   }) async {
     try {
-      final history = ClipboardHistory(
+      final now = DateTime.now().toUtc();
+
+      final op = ClipboardOutbox(
         id: IdGenerator.generate(),
-        clipboardItemId: clipboardItem.id,
-        action: action,
-        userId: _pendingUserId,
-        createdAt: DateTime.now().toUtc(),
-        updatedAt: DateTime.now().toUtc(),
+        deviceId: _deviceId,
+        entityId: clipboardItem.id,
+        operationType: operationType,
+        userId: clipboardItem.userId.isNotEmpty
+            ? clipboardItem.userId
+            : 'guest',
+
+        createdAt: now,
+        // Recommandé si ton entity le supporte :
+        // payload: jsonEncode({...}),
+        // deviceId: ...
       );
-      await localClipboardHistoryRepository.upsert(history);
+
+      await localClipboardOutboxRepository.enqueue(op);
     } catch (e, stack) {
-      log('Error upserting clipboard history: $e', stackTrace: stack);
-      // Handle error if necessary
+      log('Error enqueuing outbox op: $e', stackTrace: stack);
     }
   }
 
-  // Clear the selected clipboard item
-  // This can be used when navigating away from the detail view
-  // will trigger the closing of the detail view in the UI
   void clearSelection() {
     emit(
       state.copyWith(

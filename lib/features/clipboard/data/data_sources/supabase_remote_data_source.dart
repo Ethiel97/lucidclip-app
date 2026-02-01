@@ -5,15 +5,13 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 @LazySingleton(as: ClipboardRemoteDataSource)
 class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
-  const SupabaseRemoteDataSource({
-    required RemoteSyncClient networkClient,
-  }) : _networkClient = networkClient;
+  const SupabaseRemoteDataSource({required RemoteSyncClient networkClient})
+    : _networkClient = networkClient;
   static String clipboardItemsTable = 'clipboard_items';
 
   static String tagsTable = 'tags';
 
   static String clipboardHistoryTable = 'clipboard_history';
-
 
   static String clipboardItemTagsTable = 'clipboard_item_tags';
 
@@ -31,9 +29,7 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
         value: value,
       );
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to delete clipboard item: $e $stack ',
-      );
+      throw NetworkException('Failed to delete clipboard item: $e $stack ');
     }
   }
 
@@ -49,18 +45,11 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
         filters: filters,
         orderBy: orderBy,
         limit: limit,
-
       );
 
-      return List.from(
-        response.map(
-          ClipboardItemModel.fromJson,
-        ),
-      );
+      return List.from(response.map(ClipboardItemModel.fromJson));
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to fetch clipboard items: $e $stack',
-      );
+      throw NetworkException('Failed to fetch clipboard items: $e $stack');
     }
   }
 
@@ -78,25 +67,16 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
         data: data,
       );
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to update clipboard item: $e $stack',
-      );
+      throw NetworkException('Failed to update clipboard item: $e $stack');
     }
   }
 
   @override
-  Future<void> upsertClipboardItem({
-    required Map<String, dynamic> data,
-  }) {
+  Future<void> upsertClipboardItem({required Map<String, dynamic> data}) {
     try {
-      return _networkClient.upsert(
-        table: clipboardItemsTable,
-        data: data,
-      );
+      return _networkClient.upsert(table: clipboardItemsTable, data: data);
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to upsert clipboard item: $e $stack',
-      );
+      throw NetworkException('Failed to upsert clipboard item: $e $stack');
     }
   }
 
@@ -105,10 +85,7 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
     required List<Map<String, dynamic>> data,
   }) {
     try {
-      return _networkClient.upsertBatch(
-        table: clipboardItemsTable,
-        data: data,
-      );
+      return _networkClient.upsertBatch(table: clipboardItemsTable, data: data);
     } catch (e, stack) {
       throw NetworkException(
         'Failed to upsert clipboard items batch: $e $stack',
@@ -127,25 +104,17 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
       );
 
       return response.map(
-        (event) => ClipboardItemModels.from(
-          event.map(
-            ClipboardItemModel.fromJson,
-          ),
-        ),
+        (event) =>
+            ClipboardItemModels.from(event.map(ClipboardItemModel.fromJson)),
       );
     } catch (e, stack) {
-      throw NetworkException(
-        'Failed to watch clipboard items: $e $stack',
-      );
+      throw NetworkException('Failed to watch clipboard items: $e $stack');
     }
   }
 
   @override
   Future<void> createTag({required Map<String, dynamic> data}) async {
-    await _networkClient.upsert(
-      table: tagsTable,
-      data: data,
-    );
+    await _networkClient.upsert(table: tagsTable, data: data);
   }
 
   @override
@@ -174,15 +143,9 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
         limit: limit,
       );
 
-      return List.from(
-        response.map(
-          ClipboardHistoryModel.fromJson,
-        ),
-      );
+      return List.from(response.map(ClipboardOutboxModel.fromJson));
     } catch (e) {
-      throw NetworkException(
-        'Failed to fetch clipboard history: $e',
-      );
+      throw NetworkException('Failed to fetch clipboard history: $e');
     }
   }
 
@@ -200,15 +163,9 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
         limit: limit,
       );
 
-      return List.from(
-        response.map(
-          TagModel.fromJson,
-        ),
-      );
+      return List.from(response.map(TagModel.fromJson));
     } catch (e) {
-      throw NetworkException(
-        'Failed to fetch tags: $e',
-      );
+      throw NetworkException('Failed to fetch tags: $e');
     }
   }
 
@@ -226,15 +183,9 @@ class SupabaseRemoteDataSource implements ClipboardRemoteDataSource {
         limit: limit,
       );
 
-      return List.from(
-        response.map(
-          ClipboardItemTagModel.fromJson,
-        ),
-      );
+      return List.from(response.map(ClipboardItemTagModel.fromJson));
     } catch (e) {
-      throw NetworkException(
-        'Failed to fetch clipboard item tags: $e',
-      );
+      throw NetworkException('Failed to fetch clipboard item tags: $e');
     }
   }
 }

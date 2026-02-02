@@ -11,17 +11,23 @@ const double _warningThresholdRatio = 0.9;
 class ClipboardStorageWarningListener extends StatelessWidget {
   const ClipboardStorageWarningListener({
     required this.child,
+    required this.isEntitlementLoaded,
     this.isProUser = false,
     this.onUpgradeTap,
     super.key,
   });
 
+  final bool isEntitlementLoaded;
   final bool isProUser;
   final Widget child;
   final VoidCallback? onUpgradeTap;
 
   @override
   Widget build(BuildContext context) {
+    if (!isEntitlementLoaded) {
+      return child;
+    }
+
     final l10n = context.l10n;
     final maxHistoryItems = context.select(
       (SettingsCubit cubit) => cubit.state.maxHistoryItems,

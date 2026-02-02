@@ -39,7 +39,7 @@ jobs:
           JSON
           flutter --version
           flutter pub get
-          flutter build macos --release --no-codesign --flavor production -t lib/main_production.dart --dart-define-from-file=dart_defines.json
+          flutter build macos --flavor production -t lib/main_production.dart --dart-define-from-file=dart_defines.json
 
       # ---------- Import Developer ID cert ----------
       - name: Import Developer ID certificate

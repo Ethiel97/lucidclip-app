@@ -147,7 +147,6 @@ class _ClipboardViewState extends State<ClipboardView>
                               ),
                             )
                           : ListView.builder(
-                              // key: ValueKey(value)
                               key: ValueKey(
                                 'list_${isSearchMode}_$searchFilterType',
                               ),
@@ -155,22 +154,12 @@ class _ClipboardViewState extends State<ClipboardView>
                               itemCount: allItems.length,
                               addAutomaticKeepAlives: false,
                               cacheExtent: 200,
-                              findChildIndexCallback: (Key key) {
-                                if (key is ValueKey<String>) {
-                                  final id = key.value;
-
-                                  return allItems.indexWhere(
-                                    (item) =>
-                                        item is ClipboardItem && item.id == id,
-                                  );
-                                }
-                                return null;
-                              },
                               itemBuilder: (context, index) {
                                 final item = allItems[index];
 
                                 return switch (item) {
                                   SectionHeader() => Padding(
+                                    key: ValueKey('header:${item.title}'),
                                     padding: const EdgeInsets.symmetric(
                                       vertical: AppSpacing.md,
                                     ),
@@ -178,7 +167,10 @@ class _ClipboardViewState extends State<ClipboardView>
                                   ),
 
                                   ClipboardItem() => ClipboardItemTile(
-                                    key: ValueKey(item.id),
+                                    key: ValueKey<String>(
+                                      //ignore: lines_longer_than_80_chars
+                                      '${pinnedItems.any((p) => p.id == item.id) ? 'pinned' : 'recent'}:${item.id}',
+                                    ),
                                     item: item,
                                   ),
                                   _ => const SizedBox.shrink(),

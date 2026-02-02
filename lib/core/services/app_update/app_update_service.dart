@@ -4,6 +4,7 @@ import 'package:auto_updater/auto_updater.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/storage/secure_storage_service.dart';
 
+//TODO(Ethiel): Implement for Windows
 abstract class AppUpdateService {
   Future<void> checkFromMenu();
 

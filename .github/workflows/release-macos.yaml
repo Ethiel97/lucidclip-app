@@ -1,0 +1,157 @@
+name: Release macOS (DMG + Sparkle + R2 + Pages)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  macos-release:
+    environment: production
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Resolve version
+        id: ver
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "dmg=LucidClip-v${VERSION}.dmg" >> $GITHUB_OUTPUT
+
+      # ---------- Build ----------
+      - name: Build macOS (production)
+        shell: bash
+        run: |
+          cat > dart_defines.json << 'JSON'
+          ${{secrets.DART_DEFINES_JSON}}
+          JSON
+          flutter --version
+          flutter pub get
+          flutter build macos --release --flavor production -t lib/main_production.dart --dart-defines-from-file=dart_defines.json
+
+      # ---------- Import Developer ID cert ----------
+      - name: Import Developer ID certificate
+        shell: bash
+        env:
+          P12_B64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo "$P12_B64" | base64 --decode > cert.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security import cert.p12 -k build.keychain -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+
+      # ---------- Sign .app ----------
+      - name: Codesign .app
+        shell: bash
+        run: |
+          APP="build/macos/Build/Products/Release-production/LucidClip.app"
+          codesign --deep --force --options runtime --sign "Developer ID Application" "$APP"
+          codesign --verify --deep --strict --verbose=2 "$APP"
+
+      # ---------- Create DMG ----------
+      - name: Create DMG (versioned)
+        shell: bash
+        run: |
+          APP="build/macos/Build/Products/Release-production/LucidClip.app"
+          DMG="${{ steps.ver.outputs.dmg }}"
+          rm -f "$DMG"
+          hdiutil create -volname "LucidClip" -srcfolder "$APP" -ov -format UDZO "$DMG"
+          ls -lh "$DMG"
+
+      # ---------- Notarize + Staple ----------
+      - name: Notarize DMG
+        shell: bash
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASS: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          DMG="${{ steps.ver.outputs.dmg }}"
+          xcrun notarytool submit "$DMG" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASS" \
+            --team-id "$TEAM_ID" \
+            --wait
+
+      - name: Staple + validate
+        shell: bash
+        run: |
+          DMG="${{ steps.ver.outputs.dmg }}"
+          xcrun stapler staple "$DMG"
+          xcrun stapler validate "$DMG"
+
+      # ---------- Sparkle tools ----------
+      - name: Download Sparkle (CLI tools)
+        shell: bash
+        run: |
+          # Télécharge Sparkle release zip (adapter si tu veux pinner une version)
+          curl -L -o sparkle.zip "https://github.com/sparkle-project/Sparkle/releases/latest/download/Sparkle.zip"
+          unzip -q sparkle.zip -d sparkle
+          ls -la sparkle
+
+      - name: Restore Sparkle private key (file)
+        shell: bash
+        env:
+          SPARKLE_PRIV_B64: ${{ secrets.SPARKLE_PRIV_KEY_BASE64 }}
+        run: |
+          echo "$SPARKLE_PRIV_B64" | base64 --decode > sparkle_ed25519.priv
+          ls -lh sparkle_ed25519.priv
+
+      # ---------- Generate appcast ----------
+      - name: Generate appcast.xml
+        shell: bash
+        run: |
+          mkdir -p updates/macos
+          cp "${{ steps.ver.outputs.dmg }}" "updates/macos/${{ steps.ver.outputs.dmg }}"
+
+          # Import key into keychain (preferred) so generate_appcast can sign automatically
+          # generate_keys supports importing a private key file (-f). :contentReference[oaicite:1]{index=1}
+          ./sparkle/Sparkle/bin/generate_keys -f sparkle_ed25519.priv
+
+          ./sparkle/Sparkle/bin/generate_appcast \
+            --download-url-prefix "https://downloads.lucidclip.app/macos/" \
+            updates/macos
+
+          grep -q "sparkle:edSignature" updates/macos/appcast.xml
+
+      # ---------- Upload DMG to R2 ----------
+      - name: Upload DMG to R2 (Cloudflare)
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          npm i -g wrangler
+          wrangler r2 object put "${R2_BUCKET}/macos/${{ steps.ver.outputs.dmg }}" \
+            --file "${{ steps.ver.outputs.dmg }}"
+
+      # ---------- Deploy appcast to Pages ----------
+      - name: Deploy appcast.xml to Pages
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PAGES_PROJECT: ${{ secrets.PAGES_PROJECT }}
+        run: |
+          npm i -g wrangler
+          # On déploie uniquement appcast.xml (Pages limite 25 MiB)
+          mkdir -p pages_out/macos
+          cp updates/macos/appcast.xml pages_out/macos/appcast.xml
+          wrangler pages deploy pages_out --project-name "$PAGES_PROJECT"

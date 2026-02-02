@@ -37,6 +37,12 @@ jobs:
           cat > dart_defines.json << 'JSON'
           ${{secrets.DART_DEFINES_JSON}}
           JSON
+          export CODE_SIGNING_ALLOWED=NO
+          export CODE_SIGNING_REQUIRED=NO
+          export CODE_SIGNING_IDENTITY=""
+          export CODE_SIGN_STYLE=Manual
+          export PROVISIONING_PROFILE_SPECIFIER=""
+          export PROVISIONING_PROFILE=""
           flutter --version
           flutter pub get
           flutter build macos --flavor production -t lib/main_production.dart --dart-define-from-file=dart_defines.json

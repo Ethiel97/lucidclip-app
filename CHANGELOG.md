@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.1...v1.1.2) (2026-02-02)
+
+
+### Bug Fixes
+
+* test release please ([#49](https://github.com/Ethiel97/lucidclip-app/issues/49)) ([ffefec4](https://github.com/Ethiel97/lucidclip-app/commit/ffefec4f9e092283f436283d5b1def29c41cf808))
+
 ## [1.1.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.0...v1.1.1) (2026-02-02)
 
 

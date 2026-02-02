@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.8...v1.2.0) (2026-02-02)
+
+
+### Features
+
+* add concurrency controls to release workflows ([#66](https://github.com/Ethiel97/lucidclip-app/issues/66)) ([6e13b83](https://github.com/Ethiel97/lucidclip-app/commit/6e13b838bf70cbbe3f349477f172ea26efb68e16))
+* improve concurrency controls with tag-specific grouping for macos ([#67](https://github.com/Ethiel97/lucidclip-app/issues/67)) ([40f7a01](https://github.com/Ethiel97/lucidclip-app/commit/40f7a0136738be474325487ddf2ac38eb5558acd))
+
+
+### Bug Fixes
+
+* add TODO comment for Windows implementation in AppUpdateService ([#65](https://github.com/Ethiel97/lucidclip-app/issues/65)) ([8b315d3](https://github.com/Ethiel97/lucidclip-app/commit/8b315d3e60e5b1c9cd7da8653daa843f6ec81d66))
+* Disable code signing in Xcode ([#63](https://github.com/Ethiel97/lucidclip-app/issues/63)) ([09482e7](https://github.com/Ethiel97/lucidclip-app/commit/09482e7cfb4c5d23130a09f8adccd4a9625e59b3))
+* disable Xcode signing ([#64](https://github.com/Ethiel97/lucidclip-app/issues/64)) ([c5e1712](https://github.com/Ethiel97/lucidclip-app/commit/c5e17128fab9dcdc454999e2cfa5999b2af8c753))
+* pin ubuntu runner to specific version in release-please workflow ([#68](https://github.com/Ethiel97/lucidclip-app/issues/68)) ([101bc12](https://github.com/Ethiel97/lucidclip-app/commit/101bc128f58d5dc1deb72c325104f7a02a95bccb))
+
 ## [1.1.8](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.7...v1.1.8) (2026-02-02)
 
 

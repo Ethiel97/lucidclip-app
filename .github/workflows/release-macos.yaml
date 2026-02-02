@@ -1,7 +1,3 @@
-concurrency:
-  group: release-macos
-  cancel-in-progress: false
-
 name: Release macOS (DMG + Sparkle + R2 + Pages)
 
 on:
@@ -10,6 +6,11 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: release-macos-${{github.event.release.tag_name}}
+  cancel-in-progress: true
+
 
 jobs:
   macos-release:

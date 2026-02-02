@@ -1,12 +1,13 @@
-concurrency:
-  group: release-please
-  cancel-in-progress: true
-
 name: release-please
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
+concurrency:
+  group: release-please
+  cancel-in-progress: true
+
 
 permissions:
   contents: write

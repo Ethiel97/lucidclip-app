@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.0...v1.2.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* add caching and improve macOS release workflow configuration ([#70](https://github.com/Ethiel97/lucidclip-app/issues/70)) ([7be6812](https://github.com/Ethiel97/lucidclip-app/commit/7be68127bb2ba80d2996d25fd4940a659b906bef))
+
 ## [1.2.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.8...v1.2.0) (2026-02-02)
 
 

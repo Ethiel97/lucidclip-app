@@ -32,6 +32,11 @@ class LucidClipPage extends StatelessWidget {
             SettingsRoute(),
           ],
           builder: (context, child) {
+            final (isEntitlementLoaded, isProUser) = context.select(
+              (EntitlementCubit cubit) =>
+                  (cubit.state.isEntitlementLoaded, cubit.state.isProActive),
+            );
+
             return EntitlementListener(
               child: LogoutConfirmationListener(
                 child: UpgradePromptListener(
@@ -39,9 +44,8 @@ class LucidClipPage extends StatelessWidget {
                   monthlyProductId: AppConstants.monthlyProductId,
                   child: BillingCheckoutListener(
                     child: ClipboardStorageWarningListener(
-                      isProUser: context.select(
-                        (EntitlementCubit cubit) => cubit.state.isProActive,
-                      ),
+                      isEntitlementLoaded: isEntitlementLoaded,
+                      isProUser: isProUser,
                       onUpgradeTap: () {
                         context.read<UpgradePromptCubit>().request(
                           ProFeature.unlimitedHistory,

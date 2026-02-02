@@ -23,6 +23,8 @@ class EntitlementState extends Equatable {
 
   bool get isProActive => entitlement.value?.isProActive ?? false;
 
+  bool get isEntitlementLoaded => entitlement.value != null;
+
   Map<String, dynamic> toJson() {
     return {
       'entitlement': entitlement.value != null

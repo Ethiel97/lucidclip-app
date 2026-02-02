@@ -9,8 +9,7 @@ permissions:
 
 concurrency:
   group: release-macos-${{github.event.release.tag_name}}
-  cancel-in-progress: true
-
+  cancel-in-progress: false
 
 jobs:
   macos-release:
@@ -27,6 +26,26 @@ jobs:
         with:
           channel: stable
 
+      # --- NEW: Cache Flutter Dependencies ---
+      - name: Cache Pub Packages
+        uses: actions/cache@v5.0.3
+        with:
+          path: |
+            ${{ env.PUB_CACHE }}
+            ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      # --- NEW: Cache CocoaPods ---
+      - name: Cache CocoaPods
+        uses: actions/cache@v5.0.3
+        with:
+          path: macos/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('macos/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
       - name: Resolve version
         id: ver
         shell: bash
@@ -36,15 +55,31 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "dmg=LucidClip-v${VERSION}.dmg" >> $GITHUB_OUTPUT
 
-      - name: Disable Code Signing in Xcode Project
+      #      # --- FIX: Update Deployment Target to 10.15 ---
+      #      - name: Update macOS Deployment Target
+      #        run: |
+      #          sed -i '' "s/platform :osx, '10.11'/platform :osx, '10.15'/g" macos/Podfile
+      #          # Uncomment below if the line is commented out in your Podfile:
+      #          # sed -i '' "s/# platform :osx, '10.11'/platform :osx, '10.15'/g" macos/Podfile
+
+      - name: Disable Code Signing (Hard Remove)
         run: |
-          sed -i '' 's/CODE_SIGNING_ALLOWED = YES/CODE_SIGNING_ALLOWED = NO/g' macos/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/CODE_SIGNING_REQUIRED = YES/CODE_SIGNING_REQUIRED = NO/g' macos/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic/CODE_SIGN_STYLE = Manual/g' macos/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/DevelopmentTeam = .*/DevelopmentTeam = "";/g' macos/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = .*/PROVISIONING_PROFILE_SPECIFIER = "";/g' macos/Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/PROVISIONING_PROFILE = .*/PROVISIONING_PROFILE = "";/g' macos/Runner.xcodeproj/project.pbxproj
-      # ---------- Build ----------
+          pbx="macos/Runner.xcodeproj/project.pbxproj"
+          
+          # 1. Wipe the signing identity (replaces "Developer ID Application" with empty string)
+          sed -i '' 's/CODE_SIGN_IDENTITY = .*/CODE_SIGN_IDENTITY = "";/g' $pbx
+          sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=macosx\*\]" = .*/"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";/g' $pbx
+          
+          # 2. Wipe the Development Team (replaces your Team ID with empty string)
+          sed -i '' 's/DEVELOPMENT_TEAM = .*/DEVELOPMENT_TEAM = "";/g' $pbx
+          
+          # 3. Wipe the Provisioning Profile Specifier
+          sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = .*/PROVISIONING_PROFILE_SPECIFIER = "";/g' $pbx
+          
+          # 4. Force Manual Signing AND inject the "Disable Signing" flags into the same line
+          # This ensures CODE_SIGNING_REQUIRED=NO is actually present inside the buildSettings block
+          sed -i '' 's/CODE_SIGN_STYLE = .*/CODE_SIGN_STYLE = Manual; CODE_SIGNING_REQUIRED = NO; CODE_SIGNING_ALLOWED = NO;/g' $pbx
+
       - name: Build macOS (production)
         shell: bash
         run: |
@@ -114,7 +149,6 @@ jobs:
       - name: Download Sparkle (CLI tools)
         shell: bash
         run: |
-          # Télécharge Sparkle release zip (adapter si tu veux pinner une version)
           curl -L -o sparkle.zip "https://github.com/sparkle-project/Sparkle/releases/latest/download/Sparkle.zip"
           unzip -q sparkle.zip -d sparkle
           ls -la sparkle
@@ -133,15 +167,14 @@ jobs:
         run: |
           mkdir -p updates/macos
           cp "${{ steps.ver.outputs.dmg }}" "updates/macos/${{ steps.ver.outputs.dmg }}"
-
-          # Import key into keychain (preferred) so generate_appcast can sign automatically
-          # generate_keys supports importing a private key file (-f). :contentReference[oaicite:1]{index=1}
+          
+          # Import key into keychain so generate_appcast can sign automatically
           ./sparkle/Sparkle/bin/generate_keys -f sparkle_ed25519.priv
-
+          
           ./sparkle/Sparkle/bin/generate_appcast \
             --download-url-prefix "https://downloads.lucidclip.app/macos/" \
             updates/macos
-
+          
           grep -q "sparkle:edSignature" updates/macos/appcast.xml
 
       # ---------- Upload DMG to R2 ----------
@@ -165,7 +198,6 @@ jobs:
           PAGES_PROJECT: ${{ secrets.PAGES_PROJECT }}
         run: |
           npm i -g wrangler
-          # On déploie uniquement appcast.xml (Pages limite 25 MiB)
           mkdir -p pages_out/macos
           cp updates/macos/appcast.xml pages_out/macos/appcast.xml
           wrangler pages deploy pages_out --project-name "$PAGES_PROJECT"

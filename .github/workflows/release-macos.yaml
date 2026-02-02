@@ -39,8 +39,10 @@ jobs:
           JSON
           export CODE_SIGNING_ALLOWED=NO
           export CODE_SIGNING_REQUIRED=NO
-          export CODE_SIGNING_IDENTITY=""
+          export CODE_SIGN_IDENTITY=""
+          export EXPANDED_CODE_SIGN_IDENTITY=""
           export CODE_SIGN_STYLE=Manual
+          export DEVELOPMENT_TEAM=""
           export PROVISIONING_PROFILE_SPECIFIER=""
           export PROVISIONING_PROFILE=""
           flutter --version

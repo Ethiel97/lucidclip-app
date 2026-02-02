@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.3...v1.1.4) (2026-02-02)
+
+
+### Bug Fixes
+
+* remove tag triggers and fix dart-define-from-file flag in macOS ([#53](https://github.com/Ethiel97/lucidclip-app/issues/53)) ([8767bbb](https://github.com/Ethiel97/lucidclip-app/commit/8767bbbd8b24549eb1c5bb83b75a8836607aae40))
+
 ## [1.1.3](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.2...v1.1.3) (2026-02-02)
 
 

@@ -16,4 +16,4 @@ jobs:
         id: release
         with:
           release-type: dart
-          token: ${{ secrets.MY_RELEASE_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}

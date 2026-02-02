@@ -1,3 +1,7 @@
+concurrency:
+  group: release-macos
+  cancel-in-progress: false
+
 name: Release macOS (DMG + Sparkle + R2 + Pages)
 
 on:
@@ -11,6 +15,7 @@ jobs:
   macos-release:
     environment: production
     runs-on: macos-latest
+    if: github.actor != 'github-actions[bot]'
 
     steps:
       - name: Checkout

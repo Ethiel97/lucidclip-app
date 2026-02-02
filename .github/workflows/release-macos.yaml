@@ -3,10 +3,6 @@ name: Release macOS (DMG + Sparkle + R2 + Pages)
 on:
   release:
     types: [ published ]
-  push:
-    tags:
-      - "v*.*.*"
-      - "*.*.*"
 
 permissions:
   contents: read
@@ -29,7 +25,8 @@ jobs:
         id: ver
         shell: bash
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "dmg=LucidClip-v${VERSION}.dmg" >> $GITHUB_OUTPUT
 
@@ -42,7 +39,7 @@ jobs:
           JSON
           flutter --version
           flutter pub get
-          flutter build macos --release --flavor production -t lib/main_production.dart --dart-defines-from-file=dart_defines.json
+          flutter build macos --release --flavor production -t lib/main_production.dart --dart-define-from-file=dart_defines.json
 
       # ---------- Import Developer ID cert ----------
       - name: Import Developer ID certificate

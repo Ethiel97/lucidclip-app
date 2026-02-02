@@ -43,8 +43,8 @@ class AppUpdateServiceImpl implements AppUpdateService {
     final lastCheck =
         await secureStorageService.read(key: _kLastCheckKey) ?? '0';
     final lastCheckInt = int.tryParse(lastCheck) ?? 0;
-    final last = DateTime.fromMillisecondsSinceEpoch(lastCheckInt);
-    final now = DateTime.now();
+    final last = DateTime.fromMillisecondsSinceEpoch(lastCheckInt).toUtc();
+    final now = DateTime.now().toUtc();
 
     if (now.difference(last) < _minInterval) return;
 

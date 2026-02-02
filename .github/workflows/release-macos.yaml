@@ -1,9 +1,12 @@
 name: Release macOS (DMG + Sparkle + R2 + Pages)
 
 on:
+  release:
+    types: [ published ]
   push:
     tags:
       - "v*.*.*"
+      - "*.*.*"
 
 permissions:
   contents: read

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.4...v1.1.5) (2026-02-02)
+
+
+### Bug Fixes
+
+* add no-codesign flag, update release token, and lower macOS version ([3f44ca8](https://github.com/Ethiel97/lucidclip-app/commit/3f44ca8603690427d48c9a8137da94f9b77b2c95))
+
 ## [1.1.4](https://github.com/Ethiel97/lucidclip-app/compare/v1.1.3...v1.1.4) (2026-02-02)
 
 

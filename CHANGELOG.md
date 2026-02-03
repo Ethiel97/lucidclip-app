@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.1...v1.2.2) (2026-02-03)
+
+
+### Bug Fixes
+
+* remove missing .env asset from pubspec.yaml in macOS release workflow ([#72](https://github.com/Ethiel97/lucidclip-app/issues/72)) ([115f4d0](https://github.com/Ethiel97/lucidclip-app/commit/115f4d0e9d9e1f50f131f7ac9157d5d1ff1f5bc5))
+
 ## [1.2.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.0...v1.2.1) (2026-02-02)
 
 

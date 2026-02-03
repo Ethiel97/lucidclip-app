@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.11](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.10...v1.2.11) (2026-02-03)
+
+
+### Bug Fixes
+
+* improve wrangler pages deploy command formatting and syntax ([#92](https://github.com/Ethiel97/lucidclip-app/issues/92)) ([c23586d](https://github.com/Ethiel97/lucidclip-app/commit/c23586dfdd5ad88a83494f95dfd4b9ef59383cfc))
+
 ## [1.2.10](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.9...v1.2.10) (2026-02-03)
 
 

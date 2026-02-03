@@ -22,9 +22,9 @@ class MethodChannelPasteToAppService implements PasteToAppService {
       return result ?? false;
     } catch (e, stack) {
       log(
-        'MethodChannelPasteToAppService',
-        name: 'checkAccessibilityPermission',
-        error: 'Error checking accessibility permission: $e',
+        'Error checking accessibility permission: $e',
+        name: 'MethodChannelPasteToAppService.checkAccessibilityPermission',
+        error: e,
         stackTrace: stack,
       );
       return false;
@@ -38,9 +38,9 @@ class MethodChannelPasteToAppService implements PasteToAppService {
       return result ?? false;
     } catch (e, stack) {
       log(
-        'MethodChannelPasteToAppService',
-        name: 'requestAccessibilityPermission',
-        error: 'Error requesting accessibility permission: $e',
+        'Error requesting accessibility permission: $e',
+        name: 'MethodChannelPasteToAppService.requestAccessibilityPermission',
+        error: e,
         stackTrace: stack,
       );
       return false;
@@ -57,9 +57,9 @@ class MethodChannelPasteToAppService implements PasteToAppService {
       return result ?? false;
     } catch (e, stack) {
       log(
-        'MethodChannelPasteToAppService',
-        name: 'pasteToApp',
-        error: 'Error pasting to app: $e',
+        'Error pasting to app: $e',
+        name: 'MethodChannelPasteToAppService.pasteToApp',
+        error: e,
         stackTrace: stack,
       );
       return false;

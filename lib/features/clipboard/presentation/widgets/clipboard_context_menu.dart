@@ -48,6 +48,9 @@ class ClipboardContextMenu extends StatefulWidget {
 }
 
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
+  // Duration to wait for clipboard to be synchronized with system clipboard
+  static const _clipboardSyncDelay = Duration(milliseconds: 100);
+  
   // --- Sections -------------------------------------------------------------
 
   List<ClipboardContextMenuItem> _primaryActions(
@@ -171,8 +174,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     // Copy the clipboard item to system clipboard first
     context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
     
-    // Wait a bit for clipboard to be set
-    await Future.delayed(const Duration(milliseconds: 100));
+    // Wait for clipboard to be synchronized
+    await Future.delayed(_clipboardSyncDelay);
     
     // Paste to the source app
     await pasteService.pasteToApp(sourceApp.bundleId);

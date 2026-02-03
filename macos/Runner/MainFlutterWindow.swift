@@ -94,8 +94,10 @@ class MainFlutterWindow: NSWindow {
                 if let app = NSRunningApplication.runningApplications(withBundleIdentifier: bundleId).first {
                     app.activate(options: .activateIgnoringOtherApps)
                     
-                    // Wait a bit for app to activate
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    // Wait for app to activate before sending paste event
+                    // This delay allows the target app to process the activation and be ready to receive events
+                    let appActivationDelay = 0.1
+                    DispatchQueue.main.asyncAfter(deadline: .now() + appActivationDelay) {
                         // Simulate Cmd+V paste
                         let source = CGEventSource(stateID: .hidSystemState)
                         

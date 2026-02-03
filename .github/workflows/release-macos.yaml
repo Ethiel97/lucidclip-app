@@ -157,9 +157,21 @@ jobs:
       - name: Download Sparkle (CLI tools)
         shell: bash
         run: |
-          curl -L -o sparkle.zip "https://github.com/sparkle-project/Sparkle/releases/latest/download/Sparkle.zip"
-          unzip -q sparkle.zip -d sparkle
-          ls -la sparkle
+          # 1. Get the download URL for the latest 'Sparkle-VERSION.tar.xz'
+          DOWNLOAD_URL=$(curl -s https://api.github.com/repos/sparkle-project/Sparkle/releases/latest | \
+            jq -r '.assets[] | select(.name | test("Sparkle-[0-9.]+\\.tar\\.xz$")) | .browser_download_url')
+          
+          echo "Downloading from: $DOWNLOAD_URL"
+          
+          # 2. Download the file
+          curl -L -o sparkle.tar.xz "$DOWNLOAD_URL"
+          
+          # 3. Create directory and extract (use tar for .xz files)
+          mkdir -p sparkle
+          tar -xf sparkle.tar.xz -C sparkle
+          
+          # 4. Verify the binary exists
+          ls -la sparkle/bin/generate_appcast
 
       - name: Restore Sparkle private key (file)
         shell: bash
@@ -177,9 +189,9 @@ jobs:
           cp "${{ steps.ver.outputs.dmg }}" "updates/macos/${{ steps.ver.outputs.dmg }}"
           
           # Import key into keychain so generate_appcast can sign automatically
-          ./sparkle/Sparkle/bin/generate_keys -f sparkle_ed25519.priv
+          ./sparkle/bin/generate_keys -f sparkle_ed25519.priv
           
-          ./sparkle/Sparkle/bin/generate_appcast \
+          ./sparkle/bin/generate_appcast \
             --download-url-prefix "https://downloads.lucidclip.app/macos/" \
             updates/macos
           

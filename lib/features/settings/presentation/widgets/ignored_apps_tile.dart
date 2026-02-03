@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/settings/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
 class IgnoredAppsTile extends StatelessWidget {

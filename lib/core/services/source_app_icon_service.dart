@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 
 /// Service pour récupérer les icônes des applications sources

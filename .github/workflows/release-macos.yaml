@@ -208,7 +208,7 @@ jobs:
           R2_BUCKET: ${{ vars.R2_BUCKET }}
         run: |
           npm i -g wrangler
-          wrangler r2 object put "${R2_BUCKET}/macos/${{ steps.ver.outputs.dmg }}" \
+          wrangler r2 object put --remote "${R2_BUCKET}/macos/${{ steps.ver.outputs.dmg }}" \
             --file "${{ steps.ver.outputs.dmg }}"
 
       # ---------- Deploy appcast to Pages ----------

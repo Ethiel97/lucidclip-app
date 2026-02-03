@@ -6,7 +6,7 @@ import 'package:clipboard/clipboard.dart' hide ClipboardContentType;
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/clipboard_manager/base_clipboard_manager.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:pasteboard/pasteboard.dart';
 

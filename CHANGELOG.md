@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.3...v1.2.4) (2026-02-03)
+
+
+### Bug Fixes
+
+* update Sparkle download to use tar.xz format and correct binary ([#76](https://github.com/Ethiel97/lucidclip-app/issues/76)) ([361d82d](https://github.com/Ethiel97/lucidclip-app/commit/361d82de142663e0b1107bd7139364fea2b42664))
+
 ## [1.2.3](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.2...v1.2.3) (2026-02-03)
 
 

@@ -181,20 +181,31 @@ jobs:
           echo "$SPARKLE_PRIV_B64" | base64 --decode > sparkle_ed25519.priv
           ls -lh sparkle_ed25519.priv
 
-      # ---------- Generate appcast ----------
       - name: Generate appcast.xml
         shell: bash
+        env:
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
           mkdir -p updates/macos
           cp "${{ steps.ver.outputs.dmg }}" "updates/macos/${{ steps.ver.outputs.dmg }}"
           
-          # Import key into keychain so generate_appcast can sign automatically
-          ./sparkle/bin/generate_keys -f sparkle_ed25519.priv
+          # 1. Find the binary path (defensive check for tar extraction)
+          SPARKLE_BIN="$(find sparkle -name generate_appcast | head -n 1 | xargs dirname)"
+          echo "Using Sparkle binaries from: $SPARKLE_BIN"
           
-          ./sparkle/bin/generate_appcast \
+          # 2. Import key into keychain
+          "$SPARKLE_BIN/generate_keys" -f sparkle_ed25519.priv
+          
+          # 3. FIX: Grant access to the newly imported key
+          # This command prevents the "GUI prompt" hang by updating permissions
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          
+          # 4. Generate the appcast
+          "$SPARKLE_BIN/generate_appcast" \
             --download-url-prefix "https://downloads.lucidclip.app/macos/" \
             updates/macos
           
+          # 5. Verify signature exists
           grep -q "sparkle:edSignature" updates/macos/appcast.xml
 
       # ---------- Upload DMG to R2 ----------

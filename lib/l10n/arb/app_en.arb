@@ -77,6 +77,18 @@
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
   },
+  "accessibilityPermissionRequired": "Permission Required",
+  "@accessibilityPermissionRequired": {
+    "description": "Title for accessibility permission dialog"
+  },
+  "accessibilityPermissionDescription": "LucidClip needs permission to control your Mac in order to perform this action.",
+  "@accessibilityPermissionDescription": {
+    "description": "Description text for accessibility permission dialog"
+  },
+  "grantPermission": "Grant Permission",
+  "@grantPermission": {
+    "description": "Button text to grant accessibility permission"
+  },
   "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}",
   "@appsCount": {
     "description": "Label showing the number of apps with pluralization",

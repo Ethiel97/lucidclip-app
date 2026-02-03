@@ -62,6 +62,15 @@ import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart
     as _i923;
 import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
+import 'package:lucid_clip/features/accessibility/accessibility.dart' as _i100;
+import 'package:lucid_clip/features/accessibility/data/datasources/accessibility_datasource.dart'
+    as _i101;
+import 'package:lucid_clip/features/accessibility/data/repositories/accessibility_repository_impl.dart'
+    as _i102;
+import 'package:lucid_clip/features/accessibility/domain/repositories/accessibility_repository.dart'
+    as _i103;
+import 'package:lucid_clip/features/accessibility/presentation/cubit/accessibility_cubit.dart'
+    as _i104;
 import 'package:lucid_clip/features/auth/auth.dart' as _i895;
 import 'package:lucid_clip/features/auth/data/data.dart' as _i13;
 import 'package:lucid_clip/features/auth/data/data_sources/supabase_auth_data_source.dart'
@@ -183,6 +192,20 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i324.UpgradePromptCubit>(
       () => _i324.UpgradePromptCubit(),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i101.AccessibilityDataSource>(
+      () => _i101.MethodChannelAccessibilityDataSource(),
+    );
+    gh.lazySingleton<_i103.AccessibilityRepository>(
+      () => _i102.AccessibilityRepositoryImpl(
+        dataSource: gh<_i101.AccessibilityDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i104.AccessibilityCubit>(
+      () => _i104.AccessibilityCubit(
+        repository: gh<_i103.AccessibilityRepository>(),
+      ),
       dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i212.HotkeyManagerService>(

@@ -55,6 +55,29 @@ class MainFlutterWindow: NSWindow {
             }
         }
 
+        // Accessibility channel
+        let accessibilityChannel = FlutterMethodChannel(
+            name: "lucidclip/accessibility",
+            binaryMessenger: flutterViewController.engine.binaryMessenger
+        )
+
+        accessibilityChannel.setMethodCallHandler {
+            call, result in
+            switch call.method {
+            case "checkAccessibility":
+                let trusted = AXIsProcessTrusted()
+                result(trusted)
+                
+            case "requestAccessibility":
+                let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+                let trusted = AXIsProcessTrustedWithOptions(options as CFDictionary)
+                result(trusted)
+
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        }
+
         let pasteChannel = FlutterMethodChannel(
             name: "lucidclip/paste_to_app",
             binaryMessenger: flutterViewController.engine.binaryMessenger
@@ -63,15 +86,6 @@ class MainFlutterWindow: NSWindow {
         pasteChannel.setMethodCallHandler {
             call, result in
             switch call.method {
-            case "checkAccessibilityPermission":
-                let trusted = AXIsProcessTrusted()
-                result(trusted)
-                
-            case "requestAccessibilityPermission":
-                let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
-                let trusted = AXIsProcessTrustedWithOptions(options as CFDictionary)
-                result(trusted)
-                
             case "pasteToFrontmostApp":
                 guard let args = call.arguments as? [String: Any],
                       let bundleId = args["bundleId"] as? String else {

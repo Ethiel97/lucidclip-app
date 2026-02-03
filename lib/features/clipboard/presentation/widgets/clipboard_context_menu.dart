@@ -9,6 +9,7 @@ import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/accessibility/accessibility.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
@@ -172,16 +173,19 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       return;
     }
 
+    final accessibilityCubit = context.read<AccessibilityCubit>();
     final pasteService = context.read<PasteToAppService>();
 
     // Check if we have accessibility permission
-    final hasPermission = await pasteService.checkAccessibilityPermission();
-
-    if (!hasPermission) {
-      // Request permission
-      final granted = await pasteService.requestAccessibilityPermission();
-      if (!granted) {
-        // Show error or message
+    if (!accessibilityCubit.state.hasPermission) {
+      // Request permission through the cubit (will show custom dialog)
+      await accessibilityCubit.requestPermission();
+      
+      // Wait for the dialog to close and permission to be checked
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Check again if permission was granted
+      if (!accessibilityCubit.state.hasPermission) {
         return;
       }
     }

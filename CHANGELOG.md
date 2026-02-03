@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.4...v1.2.5) (2026-02-03)
+
+
+### Bug Fixes
+
+* improve Sparkle appcast generation with dynamic binary path and keychain permissions ([#78](https://github.com/Ethiel97/lucidclip-app/issues/78)) ([af21e9f](https://github.com/Ethiel97/lucidclip-app/commit/af21e9f60d224b11b408dc551a787db216534565))
+
 ## [1.2.4](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.3...v1.2.4) (2026-02-03)
 
 

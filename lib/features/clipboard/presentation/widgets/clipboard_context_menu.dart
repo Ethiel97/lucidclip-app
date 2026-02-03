@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
-import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -76,49 +76,44 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     });
   }
 
-  @override
-  void dispose() {
-    print('Disposing ClipboardContextMenu');
-
-    super.dispose();
-  }
-
   // --- Sections -------------------------------------------------------------
 
   List<ClipboardContextMenuItem> _primaryActions(
     AppLocalizations l10n,
     ClipboardItem item,
-  ) => [
-    if (_previousApp != null && _previousApp!.isValid)
+  ) {
+    return [
+      if (_previousApp != null && _previousApp!.isValid)
+        (
+          action: ClipboardMenuAction.pasteToApp,
+          label: l10n.pasteToApp(_previousApp!.name),
+          icon: _previousApp!,
+        ),
       (
-        action: ClipboardMenuAction.pasteToApp,
-        label: l10n.pasteToApp(_previousApp!.name),
-        icon: _previousApp!,
+        action: ClipboardMenuAction.appendToClipboard,
+        label: l10n.appendToClipboard.sentenceCase,
+        icon: HugeIcons.strokeRoundedCopy01,
       ),
-    (
-      action: ClipboardMenuAction.appendToClipboard,
-      label: l10n.appendToClipboard.sentenceCase,
-      icon: HugeIcons.strokeRoundedCopy01,
-    ),
-    if (item.type.isUrl)
-      (
-        action: ClipboardMenuAction.openLink,
-        label: l10n.openLink.sentenceCase,
-        icon: HugeIcons.strokeRoundedBrowser,
-      ),
-    if (item.type.isFile)
-      (
-        action: ClipboardMenuAction.copyPath,
-        label: l10n.copyPath.sentenceCase,
-        icon: HugeIcons.strokeRoundedFolderMoveTo,
-      ),
-    if (!item.type.isImage && !item.type.isFile)
-      (
-        action: ClipboardMenuAction.edit,
-        label: l10n.edit.sentenceCase,
-        icon: HugeIcons.strokeRoundedEdit01,
-      ),
-  ];
+      if (item.type.isUrl)
+        (
+          action: ClipboardMenuAction.openLink,
+          label: l10n.openLink.sentenceCase,
+          icon: HugeIcons.strokeRoundedBrowser,
+        ),
+      if (item.type.isFile)
+        (
+          action: ClipboardMenuAction.copyPath,
+          label: l10n.copyPath.sentenceCase,
+          icon: HugeIcons.strokeRoundedFolderMoveTo,
+        ),
+      if (!item.type.isImage && !item.type.isFile)
+        (
+          action: ClipboardMenuAction.edit,
+          label: l10n.edit.sentenceCase,
+          icon: HugeIcons.strokeRoundedEdit01,
+        ),
+    ];
+  }
 
   List<ClipboardContextMenuItem> _organizationActions(
     AppLocalizations l10n,
@@ -185,23 +180,26 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       return;
     }
 
-    final pasteService = getIt<PasteToAppService>();
-    final clipboardCubit = context.read<ClipboardCubit>();
+    final accessibilityCubit = context.read<AccessibilityCubit>();
+    final pasteService = context.read<PasteToAppService>();
 
     // Check if we have accessibility permission
-    final hasPermission = await pasteService.checkAccessibilityPermission();
+    if (!accessibilityCubit.state.hasPermission) {
+      // Request permission through the cubit (will show custom dialog)
+      await accessibilityCubit.requestPermission();
 
-    if (!hasPermission) {
-      // Request permission
-      final granted = await pasteService.requestAccessibilityPermission();
-      if (!granted) {
-        // Show error or message
+      // Wait for the dialog to close and permission to be checked
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Check again if permission was granted
+      if (!accessibilityCubit.state.hasPermission) {
         return;
       }
     }
 
     // Copy the clipboard item to system clipboard first
-    await clipboardCubit.copyToClipboard(widget.clipboardItem);
+    if (!context.mounted) return;
+    await context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
 
     // Wait for clipboard to be synchronized
     await Future<void>.delayed(_clipboardSyncDelay);

@@ -5,6 +5,7 @@ import 'package:lucid_clip/app/routes/routes.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
+import 'package:lucid_clip/features/accessibility/accessibility.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
@@ -79,6 +80,7 @@ class _AppState extends State<App> with WindowListener {
         BlocProvider(create: (_) => getIt<EntitlementCubit>()),
         BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
         BlocProvider(create: (_) => getIt<SettingsCubit>()),
+        BlocProvider(create: (_) => getIt<AccessibilityCubit>()),
       ],
       child: const _AppView(),
     );

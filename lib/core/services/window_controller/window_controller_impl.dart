@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:window_manager/window_manager.dart';
@@ -17,6 +18,7 @@ class WindowControllerImpl implements WindowController {
   WindowControllerImpl({
     required this.windowManager,
     required this.macosOverlay,
+    required this.sourceAppProvider,
   }) {
     // initialize();
   }
@@ -28,6 +30,11 @@ class WindowControllerImpl implements WindowController {
   final WindowManager windowManager;
 
   final MacosOverlay macosOverlay;
+  
+  final SourceAppProvider sourceAppProvider;
+  
+  /// The app that was frontmost before LucidClip was shown
+  SourceApp? _previousFrontmostApp;
 
   final windowOptions = const WindowOptions(
     size: Size(800, 500),
@@ -39,6 +46,9 @@ class WindowControllerImpl implements WindowController {
   );
 
   bool _isShowing = false;
+  
+  /// Get the app that was frontmost before LucidClip was shown
+  SourceApp? get previousFrontmostApp => _previousFrontmostApp;
 
   @override
   bool get isShowing => _isShowing;
@@ -75,6 +85,11 @@ class WindowControllerImpl implements WindowController {
   Future<void> showAsOverlay() async {
     try {
       log('Showing window as overlay');
+      
+      // Capture the frontmost app before showing LucidClip
+      _previousFrontmostApp = await sourceAppProvider.getFrontmostApp();
+      log('Previous frontmost app: ${_previousFrontmostApp?.name}');
+      
       _isShowing = true;
 
       final position = await positioner.computeTopCenterPosition(
@@ -103,6 +118,9 @@ class WindowControllerImpl implements WindowController {
   Future<void> hide() async {
     try {
       _isShowing = false;
+      
+      // Clear the previous frontmost app when hiding
+      _previousFrontmostApp = null;
 
       await setVisibleOnAllWorkspaces(visible: false);
       await windowManager.hide();

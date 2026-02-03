@@ -7,6 +7,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -50,6 +51,22 @@ class ClipboardContextMenu extends StatefulWidget {
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   // Duration to wait for clipboard to be synchronized with system clipboard
   static const _clipboardSyncDelay = Duration(milliseconds: 100);
+  
+  SourceApp? _previousApp;
+  
+  @override
+  void initState() {
+    super.initState();
+    // Get the previous frontmost app from WindowController
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final windowController = context.read<WindowController>() as WindowControllerImpl;
+      if (mounted) {
+        setState(() {
+          _previousApp = windowController.previousFrontmostApp;
+        });
+      }
+    });
+  }
 
   // --- Sections -------------------------------------------------------------
 
@@ -57,13 +74,12 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     AppLocalizations l10n,
     ClipboardItem item,
   ) {
-    final sourceApp = item.sourceApp;
     return [
-      if (sourceApp != null && sourceApp.isValid)
+      if (_previousApp != null && _previousApp!.isValid)
         (
           action: ClipboardMenuAction.pasteToApp,
-          label: l10n.pasteToApp(sourceApp.name),
-          icon: sourceApp,
+          label: l10n.pasteToApp(_previousApp!.name),
+          icon: _previousApp!,
         ),
       (
         action: ClipboardMenuAction.appendToClipboard,
@@ -152,8 +168,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   }
 
   Future<void> _handlePasteToApp(BuildContext context) async {
-    final sourceApp = widget.clipboardItem.sourceApp;
-    if (sourceApp == null || !sourceApp.isValid) {
+    if (_previousApp == null || !_previousApp!.isValid) {
       return;
     }
 
@@ -178,8 +193,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     // Wait for clipboard to be synchronized
     await Future<void>.delayed(_clipboardSyncDelay);
 
-    // Paste to the source app
-    await pasteService.pasteToApp(sourceApp.bundleId);
+    // Paste to the previous app
+    await pasteService.pasteToApp(_previousApp!.bundleId);
   }
 
   Widget _buildMenuTile({

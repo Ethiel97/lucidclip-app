@@ -251,6 +251,7 @@ extension GetItInjectableX on _i174.GetIt {
         final i = _i1036.WindowControllerImpl(
           windowManager: gh<_i740.WindowManager>(),
           macosOverlay: gh<_i212.MacosOverlay>(),
+          sourceAppProvider: gh<_i51.SourceAppProvider>(),
         );
         return i.initialize().then((_) => i);
       },

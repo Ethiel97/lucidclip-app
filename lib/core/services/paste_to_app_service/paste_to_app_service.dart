@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 
 const channelPasteToApp = 'lucidclip/paste_to_app';
 
+//ignore: one_member_abstracts
 abstract class PasteToAppService {
   Future<bool> pasteToApp(String bundleId);
 }
@@ -16,10 +17,9 @@ class MethodChannelPasteToAppService implements PasteToAppService {
   @override
   Future<bool> pasteToApp(String bundleId) async {
     try {
-      final result = await _channel.invokeMethod<bool>(
-        'pasteToFrontmostApp',
-        {'bundleId': bundleId},
-      );
+      final result = await _channel.invokeMethod<bool>('pasteToFrontmostApp', {
+        'bundleId': bundleId,
+      });
       return result ?? false;
     } catch (e, stack) {
       log(

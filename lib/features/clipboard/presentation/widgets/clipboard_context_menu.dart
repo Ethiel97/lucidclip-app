@@ -5,10 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
+import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
+import 'package:lucid_clip/features/accessibility/accessibility.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
@@ -181,7 +182,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     }
 
     final accessibilityCubit = context.read<AccessibilityCubit>();
-    final pasteService = context.read<PasteToAppService>();
+    final clipboardCubit = context.read<ClipboardCubit>();
+    final pasteService = getIt<PasteToAppService>();
 
     // Check if we have accessibility permission
     if (!accessibilityCubit.state.hasPermission) {
@@ -189,7 +191,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       await accessibilityCubit.requestPermission();
 
       // Wait for the dialog to close and permission to be checked
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       // Check again if permission was granted
       if (!accessibilityCubit.state.hasPermission) {
@@ -198,8 +200,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     }
 
     // Copy the clipboard item to system clipboard first
-    if (!context.mounted) return;
-    await context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
+    await clipboardCubit.copyToClipboard(widget.clipboardItem);
 
     // Wait for clipboard to be synchronized
     await Future<void>.delayed(_clipboardSyncDelay);

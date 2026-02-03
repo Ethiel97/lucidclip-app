@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/accessibility/presentation/cubit/accessibility_cubit.dart';
+import 'package:lucid_clip/features/accessibility/accessibility.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class AccessibilityPermissionDialog extends StatelessWidget {
   const AccessibilityPermissionDialog({super.key});
@@ -15,9 +18,7 @@ class AccessibilityPermissionDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 480),
         padding: const EdgeInsets.all(AppSpacing.xlg),
@@ -28,17 +29,17 @@ class AccessibilityPermissionDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: colorScheme.errorContainer,
+                color: colorScheme.errorContainer.toTinyColor().darken().color,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                Icons.accessibility_new_rounded,
-                size: 48,
+              child: HugeIcon(
+                icon: HugeIcons.strokeRoundedAccess,
+                size: 18,
                 color: colorScheme.onErrorContainer,
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            
+
             // Title
             Text(
               l10n.accessibilityPermissionRequired,
@@ -48,7 +49,7 @@ class AccessibilityPermissionDialog extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.sm),
-            
+
             // Description
             Text(
               l10n.accessibilityPermissionDescription,
@@ -58,17 +59,22 @@ class AccessibilityPermissionDialog extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xlg),
-            
+
             // Buttons
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      context.read<AccessibilityCubit>().cancelPermissionRequest();
+                      context.pop();
+                      context
+                          .read<AccessibilityCubit>()
+                          .cancelPermissionRequest();
                     },
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                       side: BorderSide(color: colorScheme.outline),
                     ),
                     child: Text(l10n.cancel),
@@ -78,10 +84,13 @@ class AccessibilityPermissionDialog extends StatelessWidget {
                 Expanded(
                   child: FilledButton(
                     onPressed: () {
+                      context.pop();
                       context.read<AccessibilityCubit>().grantPermission();
                     },
                     style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
                       backgroundColor: colorScheme.primary,
                     ),
                     child: Text(l10n.grantPermission),

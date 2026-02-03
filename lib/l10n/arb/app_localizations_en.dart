@@ -53,6 +53,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appendToClipboard => 'Append to Clipboard';
 
   @override
+  String get accessibilityPermissionRequired => 'Permission Required';
+
+  @override
+  String get accessibilityPermissionDescription =>
+      'LucidClip needs permission to control your Mac in order to perform this action.';
+
+  @override
+  String get grantPermission => 'Grant Permission';
+
+  @override
   String appsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

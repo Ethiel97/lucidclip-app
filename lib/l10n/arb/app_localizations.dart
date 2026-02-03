@@ -166,6 +166,24 @@ abstract class AppLocalizations {
   /// **'Append to Clipboard'**
   String get appendToClipboard;
 
+  /// Title for accessibility permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get accessibilityPermissionRequired;
+
+  /// Description text for accessibility permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'LucidClip needs permission to control your Mac in order to perform this action.'**
+  String get accessibilityPermissionDescription;
+
+  /// Button text to grant accessibility permission
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Permission'**
+  String get grantPermission;
+
   /// Label showing the number of apps with pluralization
   ///
   /// In en, this message translates to:

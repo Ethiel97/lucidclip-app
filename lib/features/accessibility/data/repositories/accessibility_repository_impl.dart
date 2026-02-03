@@ -1,6 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/features/accessibility/data/datasources/accessibility_datasource.dart';
-import 'package:lucid_clip/features/accessibility/domain/repositories/accessibility_repository.dart';
+import 'package:lucid_clip/features/accessibility/accessibility.dart';
 
 @LazySingleton(as: AccessibilityRepository)
 class AccessibilityRepositoryImpl implements AccessibilityRepository {

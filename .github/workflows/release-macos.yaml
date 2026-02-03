@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Remove missing assets from pubspec.yaml
+        run: |
+          # Removes the line "- .env"
+          sed -i '' '/- .env/d' pubspec.yaml
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:

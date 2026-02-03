@@ -21,15 +21,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Remove missing assets from pubspec.yaml
+      - name: Create .env file
         run: |
-          # Removes the line "- .env"
-          sed -i '' '/- .env/d' pubspec.yaml
+          touch .env
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+
+      - name: Install FlutterFire CLI
+        run: |
+          dart pub global activate flutterfire_cli
 
       # --- NEW: Cache Flutter Dependencies ---
       - name: Cache Pub Packages

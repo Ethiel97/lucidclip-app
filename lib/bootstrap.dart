@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'dart:developer';
 import 'dart:io';
 
@@ -37,7 +38,11 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  await dotenv.load();
+  try {
+    await dotenv.load();
+  } catch (e) {
+    developer.log('No .env file found, skipping...');
+  }
 
   Bloc.observer = const AppBlocObserver();
 

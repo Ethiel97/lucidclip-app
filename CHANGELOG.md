@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.2...v1.2.3) (2026-02-03)
+
+
+### Bug Fixes
+
+* handle missing .env file gracefully and update macOS release workflow ([#74](https://github.com/Ethiel97/lucidclip-app/issues/74)) ([10d818a](https://github.com/Ethiel97/lucidclip-app/commit/10d818a41f7d618b11d0341ba3c90cc084bd8743))
+
 ## [1.2.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.1...v1.2.2) (2026-02-03)
 
 

@@ -48,41 +48,25 @@ class ClipboardContextMenu extends StatefulWidget {
 }
 
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
-  SourceApp? _frontmostApp;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFrontmostApp();
-  }
-
-  Future<void> _loadFrontmostApp() async {
-    final provider = context.read<SourceAppProvider>();
-    final app = await provider.getFrontmostApp();
-    if (mounted) {
-      setState(() {
-        _frontmostApp = app;
-      });
-    }
-  }
-
   // --- Sections -------------------------------------------------------------
 
   List<ClipboardContextMenuItem> _primaryActions(
     AppLocalizations l10n,
     ClipboardItem item,
-  ) => [
-    if (_frontmostApp != null && _frontmostApp!.isValid)
+  ) {
+    final sourceApp = item.sourceApp;
+    return [
+      if (sourceApp != null && sourceApp.isValid)
+        (
+          action: ClipboardMenuAction.pasteToApp,
+          label: '${l10n.pasteTo} ${sourceApp.name}',
+          icon: sourceApp,
+        ),
       (
-        action: ClipboardMenuAction.pasteToApp,
-        label: '${l10n.pasteTo} ${_frontmostApp!.name}',
-        icon: _frontmostApp!,
+        action: ClipboardMenuAction.appendToClipboard,
+        label: l10n.appendToClipboard.sentenceCase,
+        icon: HugeIcons.strokeRoundedCopy01,
       ),
-    (
-      action: ClipboardMenuAction.appendToClipboard,
-      label: l10n.appendToClipboard.sentenceCase,
-      icon: HugeIcons.strokeRoundedCopy01,
-    ),
     if (item.type.isUrl)
       (
         action: ClipboardMenuAction.openLink,
@@ -101,7 +85,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         label: l10n.edit.sentenceCase,
         icon: HugeIcons.strokeRoundedEdit01,
       ),
-  ];
+    ];
+  }
 
   List<ClipboardContextMenuItem> _organizationActions(
     AppLocalizations l10n,
@@ -164,7 +149,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   }
 
   Future<void> _handlePasteToApp(BuildContext context) async {
-    if (_frontmostApp == null || !_frontmostApp!.isValid) {
+    final sourceApp = widget.clipboardItem.sourceApp;
+    if (sourceApp == null || !sourceApp.isValid) {
       return;
     }
 
@@ -188,8 +174,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     // Wait a bit for clipboard to be set
     await Future.delayed(const Duration(milliseconds: 100));
     
-    // Paste to the frontmost app
-    await pasteService.pasteToApp(_frontmostApp!.bundleId);
+    // Paste to the source app
+    await pasteService.pasteToApp(sourceApp.bundleId);
   }
 
   Widget _buildMenuTile({

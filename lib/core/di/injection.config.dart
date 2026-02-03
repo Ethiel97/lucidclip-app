@@ -63,15 +63,13 @@ import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart
     as _i923;
 import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
-import 'package:lucid_clip/features/accessibility/accessibility.dart' as _i100;
+import 'package:lucid_clip/features/accessibility/accessibility.dart' as _i23;
 import 'package:lucid_clip/features/accessibility/data/datasources/accessibility_datasource.dart'
-    as _i101;
+    as _i896;
 import 'package:lucid_clip/features/accessibility/data/repositories/accessibility_repository_impl.dart'
-    as _i102;
-import 'package:lucid_clip/features/accessibility/domain/repositories/accessibility_repository.dart'
-    as _i103;
+    as _i55;
 import 'package:lucid_clip/features/accessibility/presentation/cubit/accessibility_cubit.dart'
-    as _i104;
+    as _i464;
 import 'package:lucid_clip/features/auth/auth.dart' as _i895;
 import 'package:lucid_clip/features/auth/data/data.dart' as _i13;
 import 'package:lucid_clip/features/auth/data/data_sources/supabase_auth_data_source.dart'
@@ -196,20 +194,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i324.UpgradePromptCubit(),
       dispose: (i) => i.close(),
     );
-    gh.lazySingleton<_i101.AccessibilityDataSource>(
-      () => _i101.MethodChannelAccessibilityDataSource(),
-    );
-    gh.lazySingleton<_i103.AccessibilityRepository>(
-      () => _i102.AccessibilityRepositoryImpl(
-        dataSource: gh<_i101.AccessibilityDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i104.AccessibilityCubit>(
-      () => _i104.AccessibilityCubit(
-        repository: gh<_i103.AccessibilityRepository>(),
-      ),
-      dispose: (i) => i.close(),
-    );
     gh.lazySingleton<_i212.HotkeyManagerService>(
       () => _i854.HotkeyManagerServiceImpl(),
       dispose: (i) => i.dispose(),
@@ -226,6 +210,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i896.AccessibilityDataSource>(
+      () => _i896.MethodChannelAccessibilityDataSource(),
     );
     gh.lazySingleton<_i387.EntitlementLocalDataSource>(
       () =>
@@ -254,6 +241,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i158.DriftClipboardLocalDataSource(gh<_i669.ClipboardDatabase>()),
       dispose: (i) => i.clear(),
     );
+    gh.lazySingleton<_i23.AccessibilityRepository>(
+      () => _i55.AccessibilityRepositoryImpl(
+        dataSource: gh<_i23.AccessibilityDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i995.DeepLinkService>(
       () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
       dispose: (i) => i.dispose(),
@@ -276,6 +268,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i464.AccessibilityCubit>(
+      () => _i464.AccessibilityCubit(
+        repository: gh<_i23.AccessibilityRepository>(),
+      ),
     );
     gh.lazySingleton<_i387.EntitlementRemoteDataSource>(
       () => _i670.SupabaseEntitlementRemoteDataSource(

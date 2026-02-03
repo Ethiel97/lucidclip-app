@@ -172,10 +172,11 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     }
 
     // Copy the clipboard item to system clipboard first
-    context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
+    if (!context.mounted) return;
+    await context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
 
     // Wait for clipboard to be synchronized
-    await Future.delayed(_clipboardSyncDelay);
+    await Future<void>.delayed(_clipboardSyncDelay);
 
     // Paste to the source app
     await pasteService.pasteToApp(sourceApp.bundleId);

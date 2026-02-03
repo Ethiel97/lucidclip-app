@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.6...v1.2.7) (2026-02-03)
+
+
+### Bug Fixes
+
+* use ed-key-file parameter instead of environment variable for Sparkle appcast generation ([#82](https://github.com/Ethiel97/lucidclip-app/issues/82)) ([c46923a](https://github.com/Ethiel97/lucidclip-app/commit/c46923a5a7d1590648450f241a53da46ca4c5aca))
+
 ## [1.2.6](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.5...v1.2.6) (2026-02-03)
 
 

@@ -81,6 +81,10 @@
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
   },
+  "pasteTo": "Paste to",
+  "@pasteTo": {
+    "description": "Button text to paste content to another app"
+  },
   "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}",
   "@appsCount": {
     "description": "Label showing the number of apps with pluralization",

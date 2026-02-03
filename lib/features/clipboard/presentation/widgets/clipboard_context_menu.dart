@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -15,6 +17,7 @@ import 'package:recase/recase.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum ClipboardMenuAction {
+  pasteToApp,
   appendToClipboard,
   openLink,
   copyPath,
@@ -30,7 +33,7 @@ typedef ClipboardContextMenuItem = ({
   Object icon,
 });
 
-class ClipboardContextMenu extends StatelessWidget {
+class ClipboardContextMenu extends StatefulWidget {
   const ClipboardContextMenu({
     required this.child,
     required this.clipboardItem,
@@ -40,12 +43,41 @@ class ClipboardContextMenu extends StatelessWidget {
   final Widget child;
   final ClipboardItem clipboardItem;
 
+  @override
+  State<ClipboardContextMenu> createState() => _ClipboardContextMenuState();
+}
+
+class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
+  SourceApp? _frontmostApp;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFrontmostApp();
+  }
+
+  Future<void> _loadFrontmostApp() async {
+    final provider = context.read<SourceAppProvider>();
+    final app = await provider.getFrontmostApp();
+    if (mounted) {
+      setState(() {
+        _frontmostApp = app;
+      });
+    }
+  }
+
   // --- Sections -------------------------------------------------------------
 
   List<ClipboardContextMenuItem> _primaryActions(
     AppLocalizations l10n,
     ClipboardItem item,
   ) => [
+    if (_frontmostApp != null && _frontmostApp!.isValid)
+      (
+        action: ClipboardMenuAction.pasteToApp,
+        label: '${l10n.pasteTo} ${_frontmostApp!.name}',
+        icon: _frontmostApp!,
+      ),
     (
       action: ClipboardMenuAction.appendToClipboard,
       label: l10n.appendToClipboard.sentenceCase,
@@ -131,11 +163,42 @@ class ClipboardContextMenu extends StatelessWidget {
     return widgets;
   }
 
+  Future<void> _handlePasteToApp(BuildContext context) async {
+    if (_frontmostApp == null || !_frontmostApp!.isValid) {
+      return;
+    }
+
+    final pasteService = context.read<PasteToAppService>();
+    
+    // Check if we have accessibility permission
+    final hasPermission = await pasteService.checkAccessibilityPermission();
+    
+    if (!hasPermission) {
+      // Request permission
+      final granted = await pasteService.requestAccessibilityPermission();
+      if (!granted) {
+        // Show error or message
+        return;
+      }
+    }
+    
+    // Copy the clipboard item to system clipboard first
+    context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
+    
+    // Wait a bit for clipboard to be set
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    // Paste to the frontmost app
+    await pasteService.pasteToApp(_frontmostApp!.bundleId);
+  }
+
   Widget _buildMenuTile({
     required BuildContext context,
     required AppLocalizations l10n,
     required ClipboardContextMenuItem menuItem,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Padding(
@@ -144,7 +207,9 @@ class ClipboardContextMenu extends StatelessWidget {
       ),
       trailing: Padding(
         padding: const EdgeInsets.only(right: AppSpacing.sm),
-        child: HugeIcon(icon: menuItem.icon as List<List>),
+        child: menuItem.icon is SourceApp
+            ? (menuItem.icon as SourceApp).getIconWidget(colorScheme)
+            : HugeIcon(icon: menuItem.icon as List<List>),
       ),
       onTap: () {
         Navigator.pop(context);
@@ -163,12 +228,16 @@ class ClipboardContextMenu extends StatelessWidget {
     required ClipboardMenuAction action,
   }) {
     switch (action) {
+      case ClipboardMenuAction.pasteToApp:
+        _handlePasteToApp(context);
+        return;
+
       case ClipboardMenuAction.copyPath:
-        Clipboard.setData(ClipboardData(text: clipboardItem.filePath ?? ''));
+        Clipboard.setData(ClipboardData(text: widget.clipboardItem.filePath ?? ''));
         return;
 
       case ClipboardMenuAction.openLink:
-        launchUrl(Uri.parse(clipboardItem.content));
+        launchUrl(Uri.parse(widget.clipboardItem.content));
         return;
 
       case ClipboardMenuAction.togglePin:
@@ -182,16 +251,16 @@ class ClipboardContextMenu extends StatelessWidget {
         }
 
         context.read<ClipboardDetailCubit>().togglePinClipboardItem(
-          clipboardItem,
+          widget.clipboardItem,
         );
         return;
 
       case ClipboardMenuAction.deleteItem:
-        context.read<ClipboardDetailCubit>().deleteClipboardItem(clipboardItem);
+        context.read<ClipboardDetailCubit>().deleteClipboardItem(widget.clipboardItem);
         return;
 
       case ClipboardMenuAction.appendToClipboard:
-        context.read<ClipboardCubit>().copyToClipboard(clipboardItem);
+        context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
         return;
 
       case ClipboardMenuAction.clearHistory:
@@ -199,26 +268,24 @@ class ClipboardContextMenu extends StatelessWidget {
         return;
 
       case ClipboardMenuAction.edit:
-        context.read<ClipboardDetailCubit>().setClipboardItem(clipboardItem);
+        context.read<ClipboardDetailCubit>().setClipboardItem(widget.clipboardItem);
         context.router.root.push(
-          ClipboardEditRoute(clipboardItem: clipboardItem),
+          ClipboardEditRoute(clipboardItem: widget.clipboardItem),
         );
         return;
     }
   }
-
-  // --- Widget ---------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) => ContextMenuArea(
     builder: (innerContext) => [
       ...getContextMenuItems(
         l10n: context.l10n,
-        item: clipboardItem,
+        item: widget.clipboardItem,
         context: context,
       ),
     ],
     verticalPadding: AppSpacing.sm,
-    child: child,
+    child: widget.child,
   );
 }

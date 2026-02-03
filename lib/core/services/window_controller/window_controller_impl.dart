@@ -20,7 +20,7 @@ class WindowControllerImpl implements WindowController {
     required this.macosOverlay,
     required this.sourceAppProvider,
   }) {
-    // initialize();
+    initialize();
   }
 
   bool _isInitialized = false;
@@ -30,9 +30,9 @@ class WindowControllerImpl implements WindowController {
   final WindowManager windowManager;
 
   final MacosOverlay macosOverlay;
-  
+
   final SourceAppProvider sourceAppProvider;
-  
+
   /// The app that was frontmost before LucidClip was shown
   SourceApp? _previousFrontmostApp;
 
@@ -46,7 +46,7 @@ class WindowControllerImpl implements WindowController {
   );
 
   bool _isShowing = false;
-  
+
   /// Get the app that was frontmost before LucidClip was shown
   SourceApp? get previousFrontmostApp => _previousFrontmostApp;
 
@@ -54,7 +54,6 @@ class WindowControllerImpl implements WindowController {
   bool get isShowing => _isShowing;
 
   @override
-  @PostConstruct(preResolve: true)
   Future<void> initialize() async {
     if (_isInitialized) return;
     await windowManager.ensureInitialized();
@@ -85,11 +84,11 @@ class WindowControllerImpl implements WindowController {
   Future<void> showAsOverlay() async {
     try {
       log('Showing window as overlay');
-      
+
       // Capture the frontmost app before showing LucidClip
       _previousFrontmostApp = await sourceAppProvider.getFrontmostApp();
       log('Previous frontmost app: ${_previousFrontmostApp?.name}');
-      
+
       _isShowing = true;
 
       final position = await positioner.computeTopCenterPosition(
@@ -118,7 +117,7 @@ class WindowControllerImpl implements WindowController {
   Future<void> hide() async {
     try {
       _isShowing = false;
-      
+
       // Clear the previous frontmost app when hiding
       _previousFrontmostApp = null;
 

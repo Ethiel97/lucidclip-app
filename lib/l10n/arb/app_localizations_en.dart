@@ -15,9 +15,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get checkForUpdates => 'Check for Updates';
-
-  @override
   String get accountInformation => 'Account Information';
 
   @override
@@ -54,12 +51,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appendToClipboard => 'Append to Clipboard';
-
-  @override
-  String get paste => 'Paste';
-
-  @override
-  String get pasteTo => 'Paste to';
 
   @override
   String appsCount(int count) {
@@ -108,6 +99,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get characters => 'Characters';
 
   @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
   String get chooseYourAppTheme => 'Choose your app theme';
 
   @override
@@ -127,12 +121,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearClipboardShortcutDescription => 'Clear all clipboard history';
 
   @override
-  String get clipboard => 'Clipboard';
+  String get clipContent => 'Clip content';
 
   @override
-  String pasteToApp(String appName) {
-    return 'Paste to $appName';
-  }
+  String get clipboard => 'Clipboard';
 
   @override
   String get clipboardCaptureStarted => 'Clipboard capture started';
@@ -201,9 +193,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
-  String get clipContent => 'Clip content';
-
-  @override
   String get edit => 'Edit';
 
   @override
@@ -217,9 +206,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorOccurred => 'An error occurred. Please try again later.';
-
-  @override
-  String get saveChanges => 'Save changes';
 
   @override
   String get exclude => 'Exclude';
@@ -411,6 +397,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openLink => 'Open link';
 
   @override
+  String get paste => 'Paste';
+
+  @override
+  String get pasteTo => 'Paste to';
+
+  @override
+  String pasteToApp(String appName) {
+    return 'Paste to $appName';
+  }
+
+  @override
   String get pauseTracking => 'Pause Tracking';
 
   @override
@@ -531,6 +528,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get saveChanges => 'Save changes';
 
   @override
   String get searchClipboardShortcut => 'Search Clipboard';

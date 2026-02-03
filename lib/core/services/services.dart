@@ -10,4 +10,4 @@ export './source_app_icon_service.dart';
 export './syntax_highlighter/syntax_highlighter.dart';
 export './tray_manager_service/tray_manager_service.dart';
 export './window_controller/macos_overlay.dart';
-export './window_controller/window_controller_interface.dart';
+export './window_controller/window_controller.dart';

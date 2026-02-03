@@ -7,7 +7,9 @@ const channelPasteToApp = 'lucidclip/paste_to_app';
 
 abstract class PasteToAppService {
   Future<bool> checkAccessibilityPermission();
+
   Future<bool> requestAccessibilityPermission();
+
   Future<bool> pasteToApp(String bundleId);
 }
 
@@ -18,7 +20,11 @@ class MethodChannelPasteToAppService implements PasteToAppService {
   @override
   Future<bool> checkAccessibilityPermission() async {
     try {
-      final result = await _channel.invokeMethod<bool>('checkAccessibilityPermission');
+      final result = await _channel.invokeMethod<bool>(
+        'checkAccessibilityPermission',
+      );
+
+      log('Accessibility permission check result: $result');
       return result ?? false;
     } catch (e, stack) {
       log(
@@ -34,7 +40,11 @@ class MethodChannelPasteToAppService implements PasteToAppService {
   @override
   Future<bool> requestAccessibilityPermission() async {
     try {
-      final result = await _channel.invokeMethod<bool>('requestAccessibilityPermission');
+      final result = await _channel.invokeMethod<bool>(
+        'requestAccessibilityPermission',
+      );
+      log('Accessibility permission request result: $result');
+
       return result ?? false;
     } catch (e, stack) {
       log(
@@ -50,10 +60,10 @@ class MethodChannelPasteToAppService implements PasteToAppService {
   @override
   Future<bool> pasteToApp(String bundleId) async {
     try {
-      final result = await _channel.invokeMethod<bool>(
-        'pasteToFrontmostApp',
-        {'bundleId': bundleId},
-      );
+      final result = await _channel.invokeMethod<bool>('pasteToFrontmostApp', {
+        'bundleId': bundleId,
+      });
+      log('Pasting to app with bundleId: $bundleId with result: $result');
       return result ?? false;
     } catch (e, stack) {
       log(

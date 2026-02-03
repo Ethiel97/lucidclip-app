@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
+import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
@@ -51,21 +51,36 @@ class ClipboardContextMenu extends StatefulWidget {
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   // Duration to wait for clipboard to be synchronized with system clipboard
   static const _clipboardSyncDelay = Duration(milliseconds: 100);
-  
+
   SourceApp? _previousApp;
-  
+
   @override
   void initState() {
     super.initState();
-    // Get the previous frontmost app from WindowController
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final windowController = context.read<WindowController>() as WindowControllerImpl;
-      if (mounted) {
-        setState(() {
-          _previousApp = windowController.previousFrontmostApp;
-        });
-      }
+      final windowController =
+          getIt<WindowController>() as WindowControllerImpl;
+      setState(() {
+        _previousApp = windowController.previousFrontmostApp;
+      });
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant ClipboardContextMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update previous app if needed
+    final windowController = getIt<WindowController>() as WindowControllerImpl;
+    setState(() {
+      _previousApp = windowController.previousFrontmostApp;
+    });
+  }
+
+  @override
+  void dispose() {
+    print('Disposing ClipboardContextMenu');
+
+    super.dispose();
   }
 
   // --- Sections -------------------------------------------------------------
@@ -73,39 +88,37 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   List<ClipboardContextMenuItem> _primaryActions(
     AppLocalizations l10n,
     ClipboardItem item,
-  ) {
-    return [
-      if (_previousApp != null && _previousApp!.isValid)
-        (
-          action: ClipboardMenuAction.pasteToApp,
-          label: l10n.pasteToApp(_previousApp!.name),
-          icon: _previousApp!,
-        ),
+  ) => [
+    if (_previousApp != null && _previousApp!.isValid)
       (
-        action: ClipboardMenuAction.appendToClipboard,
-        label: l10n.appendToClipboard.sentenceCase,
-        icon: HugeIcons.strokeRoundedCopy01,
+        action: ClipboardMenuAction.pasteToApp,
+        label: l10n.pasteToApp(_previousApp!.name),
+        icon: _previousApp!,
       ),
-      if (item.type.isUrl)
-        (
-          action: ClipboardMenuAction.openLink,
-          label: l10n.openLink.sentenceCase,
-          icon: HugeIcons.strokeRoundedBrowser,
-        ),
-      if (item.type.isFile)
-        (
-          action: ClipboardMenuAction.copyPath,
-          label: l10n.copyPath.sentenceCase,
-          icon: HugeIcons.strokeRoundedFolderMoveTo,
-        ),
-      if (!item.type.isImage && !item.type.isFile)
-        (
-          action: ClipboardMenuAction.edit,
-          label: l10n.edit.sentenceCase,
-          icon: HugeIcons.strokeRoundedEdit01,
-        ),
-    ];
-  }
+    (
+      action: ClipboardMenuAction.appendToClipboard,
+      label: l10n.appendToClipboard.sentenceCase,
+      icon: HugeIcons.strokeRoundedCopy01,
+    ),
+    if (item.type.isUrl)
+      (
+        action: ClipboardMenuAction.openLink,
+        label: l10n.openLink.sentenceCase,
+        icon: HugeIcons.strokeRoundedBrowser,
+      ),
+    if (item.type.isFile)
+      (
+        action: ClipboardMenuAction.copyPath,
+        label: l10n.copyPath.sentenceCase,
+        icon: HugeIcons.strokeRoundedFolderMoveTo,
+      ),
+    if (!item.type.isImage && !item.type.isFile)
+      (
+        action: ClipboardMenuAction.edit,
+        label: l10n.edit.sentenceCase,
+        icon: HugeIcons.strokeRoundedEdit01,
+      ),
+  ];
 
   List<ClipboardContextMenuItem> _organizationActions(
     AppLocalizations l10n,
@@ -172,7 +185,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       return;
     }
 
-    final pasteService = context.read<PasteToAppService>();
+    final pasteService = getIt<PasteToAppService>();
+    final clipboardCubit = context.read<ClipboardCubit>();
 
     // Check if we have accessibility permission
     final hasPermission = await pasteService.checkAccessibilityPermission();
@@ -187,8 +201,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     }
 
     // Copy the clipboard item to system clipboard first
-    if (!context.mounted) return;
-    await context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
+    await clipboardCubit.copyToClipboard(widget.clipboardItem);
 
     // Wait for clipboard to be synchronized
     await Future<void>.delayed(_clipboardSyncDelay);

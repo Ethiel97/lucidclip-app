@@ -106,12 +106,6 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get account;
 
-  /// Tray menu item to check for app updates
-  ///
-  /// In en, this message translates to:
-  /// **'Check for Updates'**
-  String get checkForUpdates;
-
   /// Label for account information
   ///
   /// In en, this message translates to:
@@ -171,18 +165,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Append to Clipboard'**
   String get appendToClipboard;
-
-  /// Button text to paste content
-  ///
-  /// In en, this message translates to:
-  /// **'Paste'**
-  String get paste;
-
-  /// Button text to paste content to another app
-  ///
-  /// In en, this message translates to:
-  /// **'Paste to'**
-  String get pasteTo;
 
   /// Label showing the number of apps with pluralization
   ///
@@ -250,6 +232,12 @@ abstract class AppLocalizations {
   /// **'Characters'**
   String get characters;
 
+  /// Tray menu item to check for app updates
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get checkForUpdates;
+
   /// Label for the Theme settings
   ///
   /// In en, this message translates to:
@@ -286,17 +274,17 @@ abstract class AppLocalizations {
   /// **'Clear all clipboard history'**
   String get clearClipboardShortcutDescription;
 
+  /// Label for the clipboard item's editable content
+  ///
+  /// In en, this message translates to:
+  /// **'Clip content'**
+  String get clipContent;
+
   /// Label for the Clipboard feature
   ///
   /// In en, this message translates to:
   /// **'Clipboard'**
   String get clipboard;
-
-  /// Button text to paste content to a specific app
-  ///
-  /// In en, this message translates to:
-  /// **'Paste to {appName}'**
-  String pasteToApp(String appName);
 
   /// Message shown when clipboard capture has started
   ///
@@ -406,12 +394,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// Label for the clipboard item's editable content
-  ///
-  /// In en, this message translates to:
-  /// **'Clip content'**
-  String get clipContent;
-
   /// Button text to edit content
   ///
   /// In en, this message translates to:
@@ -441,12 +423,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again later.'**
   String get errorOccurred;
-
-  /// Button text to save changes
-  ///
-  /// In en, this message translates to:
-  /// **'Save changes'**
-  String get saveChanges;
 
   /// Button text to exclude an app from tracking
   ///
@@ -754,6 +730,24 @@ abstract class AppLocalizations {
   /// **'Open link'**
   String get openLink;
 
+  /// Button text to paste content
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// Button text to paste content to another app
+  ///
+  /// In en, this message translates to:
+  /// **'Paste to'**
+  String get pasteTo;
+
+  /// Button text to paste content to a specific app
+  ///
+  /// In en, this message translates to:
+  /// **'Paste to {appName}'**
+  String pasteToApp(String appName);
+
   /// Tray menu item to pause clipboard tracking (enable incognito mode)
   ///
   /// In en, this message translates to:
@@ -969,6 +963,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// Button text to save changes
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
 
   /// Label for search clipboard shortcut
   ///

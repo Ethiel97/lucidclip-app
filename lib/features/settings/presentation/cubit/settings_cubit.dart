@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';

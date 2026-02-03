@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/lru_cache.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';

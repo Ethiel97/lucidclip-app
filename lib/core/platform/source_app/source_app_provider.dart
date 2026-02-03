@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 final Map<String, Uint8List> _sourceAppIconCache = {};
 const _sourceAppDisplaySize = 18;

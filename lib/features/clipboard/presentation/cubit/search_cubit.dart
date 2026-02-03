@@ -20,59 +20,87 @@ class SearchCubit extends Cubit<SearchState> {
   }) : super(
          SearchState(query: '', searchResults: <ClipboardItem>[].toInitial()),
        ) {
-    _loadLocalClipboardItems();
-    _initializeAuthListener();
+    _initialize();
   }
 
-  //subscriptions
-  StreamSubscription<UserSettings?>? _userSettingsSubscription;
-  StreamSubscription<ClipboardItems>? _localItemsSubscription;
-  StreamSubscription<User?>? _authSubscription;
-
-  // repositories
   final LocalClipboardRepository localClipboardRepository;
   final LocalSettingsRepository localSettingsRepository;
   final AuthRepository authRepository;
 
+  StreamSubscription<User?>? _authSubscription;
+  StreamSubscription<UserSettings?>? _userSettingsSubscription;
+  StreamSubscription<ClipboardItems>? _localItemsSubscription;
+
   ClipboardItems _allItems = [];
   String _currentUserId = 'guest';
-
   UserSettings? _userSettings;
 
-  void _initializeAuthListener() {
-    _authSubscription?.cancel();
-    _authSubscription = authRepository.authStateChanges.listen((user) {
-      _currentUserId = user?.id ?? 'guest';
+  int get _effectiveMaxHistoryItems =>
+      _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value;
 
-      _watchSettings();
-    });
+  Future<void> _initialize() async {
+    _startAuthWatcher();
   }
 
-  void _watchSettings() {
+  void _startAuthWatcher() {
+    _authSubscription?.cancel();
+    _authSubscription = authRepository.authStateChanges.listen(
+      (user) {
+        final nextUserId = user?.id ?? 'guest';
+        if (nextUserId == _currentUserId && _userSettingsSubscription != null) {
+          return;
+        }
+
+        _currentUserId = nextUserId;
+        _startSettingsWatcherForUser(_currentUserId);
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        developer.log(
+          'Auth watcher error',
+          error: error,
+          stackTrace: stackTrace,
+          name: 'SearchCubit',
+        );
+      },
+    );
+  }
+
+  void _startSettingsWatcherForUser(String userId) {
     _userSettingsSubscription?.cancel();
     _userSettingsSubscription = localSettingsRepository
-        .watchSettings(_currentUserId)
-        .listen((s) {
-          developer.log(
-            'Watching settings: $s from clipboard cubit',
-            name: 'ClipboardCubit',
-          );
-          _userSettings = s;
-        });
+        .watchSettings(userId)
+        .listen(
+          (settings) {
+            final previousMax = _userSettings?.maxHistoryItems;
+            _userSettings = settings;
+            _ensureLocalItemsSubscription(previousMax: previousMax);
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            developer.log(
+              'Settings watcher error',
+              error: error,
+              stackTrace: stackTrace,
+              name: 'SearchCubit',
+            );
+            _ensureLocalItemsSubscription(previousMax: null);
+          },
+        );
   }
 
-  Future<void> _loadLocalClipboardItems() async {
-    await _localItemsSubscription?.cancel();
+  void _ensureLocalItemsSubscription({required int? previousMax}) {
+    final nextMax = _effectiveMaxHistoryItems;
+    if (previousMax == nextMax && _localItemsSubscription != null) return;
+    _subscribeLocalItems(limit: nextMax);
+  }
+
+  void _subscribeLocalItems({required int limit}) {
+    _localItemsSubscription?.cancel();
     _localItemsSubscription = localClipboardRepository
-        .watchAll(
-          limit: _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value,
-        )
+        .watchAll(limit: limit)
         .listen(
           (items) {
             _allItems = items;
-            if (state.isSearchMode) {
-              _applyFilter(state.query);
-            }
+            if (state.isSearchMode) _applyFilter(state.query);
           },
           onError: (Object error, StackTrace stackTrace) {
             emit(
@@ -89,29 +117,34 @@ class SearchCubit extends Cubit<SearchState> {
               'Error watching local clipboard items',
               error: error,
               stackTrace: stackTrace,
-              name: 'ClipboardCubit',
+              name: 'SearchCubit',
             );
           },
         );
   }
 
   void _applyFilter(String query) {
-    final normalizedQuery = query.toLowerCase();
+    final normalizedQuery = query.trim().toLowerCase();
+
+    if (normalizedQuery.isEmpty) {
+      emit(state.copyWith(searchResults: _allItems.toSuccess()));
+      return;
+    }
+
     final hasTypeFilter = !state.filterType.isUnknown;
 
     final filtered = _allItems.where((item) {
+      final typeMatch = !hasTypeFilter || item.type == state.filterType;
+
       final contentMatch = item.content.toLowerCase().contains(normalizedQuery);
 
-      var typeMatch = true;
+      final fileMatch =
+          item.filePath?.toLowerCase().contains(normalizedQuery) ?? false;
 
-      if (hasTypeFilter) {
-        typeMatch = item.type == state.filterType;
-      }
-
-      final fileMatch = item.filePath?.contains(normalizedQuery) ?? false;
       final metaMatch = item.metadata.values.any(
         (v) => v.toString().toLowerCase().contains(normalizedQuery),
       );
+
       return typeMatch && (contentMatch || fileMatch || metaMatch);
     }).toList();
 
@@ -131,13 +164,15 @@ class SearchCubit extends Cubit<SearchState> {
 
   void search(String query) {
     final trimmedQuery = query.trim();
-    emit(state.copyWith(query: query, searchResults: null.toLoading()));
+    emit(state.copyWith(query: trimmedQuery, searchResults: null.toLoading()));
     _applyFilter(trimmedQuery);
   }
 
   @override
-  Future<void> close() {
-    _localItemsSubscription?.cancel();
+  Future<void> close() async {
+    await _authSubscription?.cancel();
+    await _userSettingsSubscription?.cancel();
+    await _localItemsSubscription?.cancel();
     return super.close();
   }
 }

@@ -6,12 +6,12 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/features/settings/domain/domain.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 
 part 'clipboard_state.dart';
 
@@ -30,7 +30,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.remoteSettingsRepository,
     required this.retentionCleanupService,
   }) : super(const ClipboardState()) {
-    _boot();
+    _initialize();
   }
 
   final BaseClipboardManager clipboardManager;
@@ -57,146 +57,35 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   UserSettings? _userSettings;
   String _currentUserId = 'guest';
 
+  final List<ClipboardData> _pendingClipboardEvents = <ClipboardData>[];
+
   bool get isAuthenticated => _currentUserId != 'guest';
 
-  Future<void> _boot() async {
-    await Future.wait([_loadData(), _init()]);
-    _initializeAuthListener();
-    _startWatchingClipboard();
+  int get _effectiveMaxHistoryItems =>
+      _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value;
+
+  Future<void> _initialize() async {
+    await _initDeviceId();
     _startPeriodicCleanup();
+    _startClipboardWatcher(); // Start once; gate processing
+    // on settings readiness.
+    _startAuthWatcher();
   }
 
-  Future<void> _init() async {
+  Future<void> _initDeviceId() async {
     _deviceId = await deviceIdProvider.getInstallationId();
   }
 
-  Future<void> _loadData() async {
-    await Future.wait([_loadLocalClipboardItems(), loadTags()]);
-  }
-
-  void _initializeAuthListener() {
+  void _startAuthWatcher() {
     _authSubscription?.cancel();
-    _authSubscription = authRepository.authStateChanges.listen((user) {
-      _currentUserId = user?.id ?? 'guest';
-      _watchSettings();
-    });
-  }
-
-  void _watchSettings() {
-    _userSettingsSubscription?.cancel();
-    _userSettingsSubscription = localSettingsRepository
-        .watchSettings(_currentUserId)
-        .listen((s) {
-          developer.log(
-            'Watching settings: $s from clipboard cubit',
-            name: 'ClipboardCubit',
-          );
-          _userSettings = s;
-        });
-  }
-
-  /// Performs cleanup of expired items (non-blocking)
-  void _performCleanup() {
-    retentionCleanupService.cleanupExpiredItems().catchError(
-      (Object error, StackTrace stackTrace) => developer.log(
-        'Failed to perform cleanup on refresh',
-        error: error,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
-      ),
-    );
-  }
-
-  /// Starts periodic cleanup of expired items
-  void _startPeriodicCleanup() {
-    const cleanupInterval = expiredItemsCleanUpInterval;
-
-    _periodicCleanupTimer?.cancel();
-    _periodicCleanupTimer = Timer.periodic(cleanupInterval, (_) {
-      developer.log('Running periodic cleanup', name: 'ClipboardCubit');
-      _performCleanup();
-    });
-  }
-
-  void _startWatchingClipboard() {
-    _clipboardSubscription?.cancel();
-    _clipboardSubscription = clipboardManager.watchClipboard().listen(
-      (clipboardData) async {
-        final settings = _userSettings;
-
-        developer.log(
-          'incognito mode: ${settings?.incognitoMode}',
-          name: 'ClipboardCubit',
-        );
-
-        if (settings?.incognitoMode ?? false) {
-          developer.log(
-            'Incognito mode is enabled; skipping clipboard storage.',
-            name: 'ClipboardCubit',
-          );
-          return;
-        }
-
-        // Excluded apps check
-        final sourceApp = clipboardData.sourceApp;
-        if (_isSourceAppExcluded(sourceApp)) {
-          developer.log(
-            'Clipboard data from excluded app (${sourceApp?.bundleId}); '
-            'skipping storage.',
-            name: 'ClipboardCubit',
-          );
-          return;
-        }
-
-        final currentItems = state.clipboardItems.data;
-
-        final isDuplicate = currentItems.any(
-          (item) => item.contentHash == clipboardData.contentHash,
-        );
-
-        final now = DateTime.now().toUtc();
-
-        if (isDuplicate) {
-          developer.log('Duplicate detected; bumping lastUsedAt.');
-
-          final candidates = currentItems.where(
-            (i) => i.contentHash == clipboardData.contentHash,
-          );
-
-          final existingItem = candidates.reduce((a, b) {
-            final aToSort = a.lastUsedAt ?? a.createdAt;
-            final bToSort = b.lastUsedAt ?? b.createdAt;
-            return aToSort.isAfter(bToSort) ? a : b;
-          });
-
-          final last = existingItem.lastUsedAt ?? existingItem.createdAt;
-          const cooldown = Duration(seconds: 3);
-          final shouldEnqueueCopyOp = now.difference(last) > cooldown;
-
-          final updatedItem = existingItem.copyWith(
-            lastUsedAt: now,
-            usageCount: existingItem.usageCount + 1,
-          );
-
-          await _upsertClipboardItem(updatedItem);
-
-          if (shouldEnqueueCopyOp) {
-            await _enqueueOutboxCopy(updatedItem.id);
-          }
-        } else {
-          final newItem = clipboardData
-              .toDomain(userId: _currentUserId)
-              .copyWith(lastUsedAt: now);
-
-          await _upsertClipboardItem(newItem);
-
-          // Enqueue “copy” operation for sync purposes
-          await _enqueueOutboxCopy(newItem.id);
-        }
+    _authSubscription = authRepository.authStateChanges.listen(
+      (user) {
+        _currentUserId = user?.id ?? 'guest';
+        _startSettingsWatcherForUser(_currentUserId);
       },
       onError: (Object error, StackTrace stackTrace) {
         developer.log(
-          'Error watching clipboard stream',
+          'Auth watcher error',
           error: error,
           stackTrace: stackTrace,
           name: 'ClipboardCubit',
@@ -205,62 +94,52 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     );
   }
 
-  bool _isSourceAppExcluded(SourceApp? sourceApp) {
-    if (sourceApp == null || !sourceApp.isValid) return false;
-    final excludedApps = _userSettings?.excludedApps ?? <SourceApp>[];
-    return excludedApps.any((e) => e.bundleId == sourceApp.bundleId);
+  void _startSettingsWatcherForUser(String userId) {
+    _userSettingsSubscription?.cancel();
+
+    _userSettingsSubscription = localSettingsRepository
+        .watchSettings(userId)
+        .listen(
+          (settings) async {
+            final previousMax = _userSettings?.maxHistoryItems;
+            _userSettings = settings;
+
+            _ensureLocalItemsSubscription(previousMax: previousMax);
+
+            if (_pendingClipboardEvents.isEmpty) return;
+
+            final pending = List<ClipboardData>.from(_pendingClipboardEvents);
+            _pendingClipboardEvents.clear();
+
+            for (final data in pending) {
+              await _handleClipboardData(data);
+            }
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            developer.log(
+              'Settings watcher error',
+              error: error,
+              stackTrace: stackTrace,
+              name: 'ClipboardCubit',
+            );
+
+            // Still watch items with defaults if settings stream fails.
+            _ensureLocalItemsSubscription(previousMax: null);
+          },
+        );
   }
 
-  Future<void> _upsertClipboardItem(ClipboardItem item) async {
-    try {
-      await localClipboardRepository.upsertWithLimit(
-        item: item,
-        maxItems: _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value,
-      );
-    } catch (e, stackTrace) {
-      developer.log(
-        'Failed to upsert clipboard item to local repository',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
-      );
-    }
+  void _ensureLocalItemsSubscription({required int? previousMax}) {
+    final nextMax = _effectiveMaxHistoryItems;
+    if (previousMax == nextMax && _localItemsSubscription != null) return;
+    _subscribeLocalItems(limit: nextMax);
   }
 
-  Future<void> _enqueueOutboxCopy(String entityId) async {
-    try {
-      final op = ClipboardOutbox(
-        id: IdGenerator.generate(),
-        // operationId
-        deviceId: _deviceId,
-        entityId: entityId,
-        operationType: ClipboardOperationType.insert,
-        userId: _currentUserId,
-        createdAt: DateTime.now().toUtc(),
-
-        // Recommandé si ton modèle le supporte :
-        // payload: '{"v":1,"happenedAt":"...","patch":{"deltaUsage":1}}',
-        // deviceId: _deviceId,
-      );
-
-      await localClipboardOutboxRepository.enqueue(op);
-    } catch (e, stackTrace) {
-      developer.log(
-        'Failed to enqueue outbox operation',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
-      );
-    }
-  }
-
-  Future<void> _loadLocalClipboardItems() async {
-    await _localItemsSubscription?.cancel();
+  void _subscribeLocalItems({required int limit}) {
+    _localItemsSubscription?.cancel();
 
     _localItemsSubscription = localClipboardRepository
-        .watchAll(
-          limit: _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value,
-        )
+        .watchAll(limit: limit)
         .listen(
           (items) {
             emit(state.copyWith(clipboardItems: items.toSuccess()));
@@ -284,6 +163,156 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
             );
           },
         );
+  }
+
+  void _startClipboardWatcher() {
+    _clipboardSubscription?.cancel();
+    _clipboardSubscription = clipboardManager.watchClipboard().listen(
+      (clipboardData) async {
+        // Buffer a small backlog until settings arrive at least once.
+        if (_userSettings == null) {
+          if (_pendingClipboardEvents.length < 50) {
+            _pendingClipboardEvents.add(clipboardData);
+          }
+          return;
+        }
+        await _handleClipboardData(clipboardData);
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        developer.log(
+          'Error watching clipboard stream',
+          error: error,
+          stackTrace: stackTrace,
+          name: 'ClipboardCubit',
+        );
+      },
+    );
+  }
+
+  Future<void> _handleClipboardData(ClipboardData clipboardData) async {
+    final settings = _userSettings;
+
+    if (settings?.incognitoMode ?? false) {
+      developer.log(
+        'Incognito mode enabled; skipping clipboard storage.',
+        name: 'ClipboardCubit',
+      );
+      return;
+    }
+
+    final sourceApp = clipboardData.sourceApp;
+    if (_isSourceAppExcluded(sourceApp)) {
+      developer.log(
+        'Excluded source app (${sourceApp?.bundleId}); skipping storage.',
+        name: 'ClipboardCubit',
+      );
+      return;
+    }
+
+    final currentItems = state.clipboardItems.data;
+    final isDuplicate = currentItems.any(
+      (item) => item.contentHash == clipboardData.contentHash,
+    );
+
+    final now = DateTime.now().toUtc();
+
+    if (isDuplicate) {
+      final candidates = currentItems.where(
+        (i) => i.contentHash == clipboardData.contentHash,
+      );
+
+      final existingItem = candidates.reduce((a, b) {
+        final aToSort = a.lastUsedAt ?? a.createdAt;
+        final bToSort = b.lastUsedAt ?? b.createdAt;
+        return aToSort.isAfter(bToSort) ? a : b;
+      });
+
+      final last = existingItem.lastUsedAt ?? existingItem.createdAt;
+      const cooldown = Duration(seconds: 3);
+      final shouldEnqueueCopyOp = now.difference(last) > cooldown;
+
+      final updatedItem = existingItem.copyWith(
+        lastUsedAt: now,
+        usageCount: existingItem.usageCount + 1,
+      );
+
+      await _upsertClipboardItem(updatedItem);
+
+      if (shouldEnqueueCopyOp) {
+        await _enqueueOutboxCopy(updatedItem.id);
+      }
+      return;
+    }
+
+    final newItem = clipboardData
+        .toDomain(userId: _currentUserId)
+        .copyWith(lastUsedAt: now);
+
+    await _upsertClipboardItem(newItem);
+    await _enqueueOutboxCopy(newItem.id);
+  }
+
+  bool _isSourceAppExcluded(SourceApp? sourceApp) {
+    if (sourceApp == null || !sourceApp.isValid) return false;
+    final excludedApps = _userSettings?.excludedApps ?? <SourceApp>[];
+    return excludedApps.any((e) => e.bundleId == sourceApp.bundleId);
+  }
+
+  Future<void> _upsertClipboardItem(ClipboardItem item) async {
+    try {
+      await localClipboardRepository.upsertWithLimit(
+        item: item,
+        maxItems: _effectiveMaxHistoryItems,
+      );
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to upsert clipboard item to local repository',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    }
+  }
+
+  Future<void> _enqueueOutboxCopy(String entityId) async {
+    try {
+      final op = ClipboardOutbox(
+        id: IdGenerator.generate(),
+        deviceId: _deviceId,
+        entityId: entityId,
+        operationType: ClipboardOperationType.insert,
+        userId: _currentUserId,
+        createdAt: DateTime.now().toUtc(),
+      );
+
+      await localClipboardOutboxRepository.enqueue(op);
+    } catch (e, stackTrace) {
+      developer.log(
+        'Failed to enqueue outbox operation',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    }
+  }
+
+  void _performCleanup() {
+    retentionCleanupService.cleanupExpiredItems().catchError(
+      (Object error, StackTrace stackTrace) => developer.log(
+        'Failed to perform cleanup',
+        error: error,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      ),
+    );
+  }
+
+  void _startPeriodicCleanup() {
+    _periodicCleanupTimer?.cancel();
+    _periodicCleanupTimer = Timer.periodic(expiredItemsCleanUpInterval, (_) {
+      developer.log('Running periodic cleanup', name: 'ClipboardCubit');
+      _performCleanup();
+    });
   }
 
   Future<void> copyToClipboard(ClipboardItem item) async {
@@ -329,70 +358,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     }
   }
 
-  Future<void> loadTags() async {
-    try {
-      if (state.tags.isLoading) return;
-
-      emit(state.copyWith(tags: state.tags.toLoading()));
-
-      final data = await clipboardRepository.fetchTags();
-      emit(state.copyWith(tags: data.toSuccess()));
-    } on ServerException {
-      emit(
-        state.copyWith(
-          tags: state.tags.toError(
-            const ErrorDetails(
-              message: 'Server error occurred while loading tags.',
-            ),
-          ),
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          tags: state.tags.toError(
-            ErrorDetails(message: 'An error occurred while loading tags: $e'),
-          ),
-        ),
-      );
-    }
-  }
-
-  Future<void> loadClipboardItemTags() async {
-    try {
-      if (state.clipboardItemTags.isLoading) return;
-
-      emit(
-        state.copyWith(clipboardItemTags: state.clipboardItemTags.toLoading()),
-      );
-
-      final data = await clipboardRepository.fetchClipboardItemTags();
-      emit(state.copyWith(clipboardItemTags: data.toSuccess()));
-    } on ServerException {
-      emit(
-        state.copyWith(
-          clipboardItemTags: state.clipboardItemTags.toError(
-            const ErrorDetails(
-              message:
-                  'Server error occurred while loading clipboard item tags.',
-            ),
-          ),
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          clipboardItemTags: state.clipboardItemTags.toError(
-            ErrorDetails(
-              message:
-                  'An error occurred while loading clipboard item tags: $e',
-            ),
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   ClipboardState? fromJson(Map<String, dynamic> json) {
     try {
@@ -415,11 +380,12 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   @override
   Future<void> close() async {
     _periodicCleanupTimer?.cancel();
+    _pendingClipboardEvents.clear();
     await _authSubscription?.cancel();
+    await _userSettingsSubscription?.cancel();
+    await _localItemsSubscription?.cancel();
     await _clipboardSubscription?.cancel();
     await clipboardManager.dispose();
-    await _localItemsSubscription?.cancel();
-    await _userSettingsSubscription?.cancel();
     return super.close();
   }
 }

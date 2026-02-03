@@ -182,6 +182,11 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
     final items = await getAll();
 
     final atCapacity = items.length >= maxItems;
+
+    print(
+      'UpsertWithLimit: atCapacity=$atCapacity, current=${items.length}, max=$maxItems',
+    );
+
     if (atCapacity) {
       final oldestUnpinned = items
           .where((e) => !e.isPinned)

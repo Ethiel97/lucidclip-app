@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 
 // TODO(Ethiel97): AUTO SYNC SETTING SHOULD BE FOR PREMIUM USERS ONLY
 //  HISTORY LIMIT SHOULD BE FOR PREMIUM USERS ONLY,

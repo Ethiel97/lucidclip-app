@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/platform/source_app/source_app.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 
 const channelFrontmostApp = 'lucidclip/frontmost_app';

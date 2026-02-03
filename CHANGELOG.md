@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.9](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.8...v1.2.9) (2026-02-03)
+
+
+### Bug Fixes
+
+* improve clipboard cubit initialization and fix import paths ([#87](https://github.com/Ethiel97/lucidclip-app/issues/87)) ([74bba2a](https://github.com/Ethiel97/lucidclip-app/commit/74bba2a12efa9292ebdac620e11658586f65fdc1))
+
 ## [1.2.8](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.7...v1.2.8) (2026-02-03)
 
 

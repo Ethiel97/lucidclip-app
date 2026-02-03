@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.5...v1.2.6) (2026-02-03)
+
+
+### Bug Fixes
+
+* simplify Sparkle appcast generation by using environment variable for private key ([#80](https://github.com/Ethiel97/lucidclip-app/issues/80)) ([4c4e7a8](https://github.com/Ethiel97/lucidclip-app/commit/4c4e7a8a83d21bddc24633324be1f5b6e279740a))
+
 ## [1.2.5](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.4...v1.2.5) (2026-02-03)
 
 

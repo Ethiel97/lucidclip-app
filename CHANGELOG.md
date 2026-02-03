@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.8](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.7...v1.2.8) (2026-02-03)
+
+
+### Bug Fixes
+
+* use repository variables instead of secrets for R2_BUCKET and PAGES_PROJECT ([#85](https://github.com/Ethiel97/lucidclip-app/issues/85)) ([5fec480](https://github.com/Ethiel97/lucidclip-app/commit/5fec480cc79e581dccf6087634cc85aaf9a70de2))
+
 ## [1.2.7](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.6...v1.2.7) (2026-02-03)
 
 

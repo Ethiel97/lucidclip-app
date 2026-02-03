@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.10](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.9...v1.2.10) (2026-02-03)
+
+
+### Bug Fixes
+
+* improve wrangler deployment with branch and commit info, remove debug logging ([#90](https://github.com/Ethiel97/lucidclip-app/issues/90)) ([b32377e](https://github.com/Ethiel97/lucidclip-app/commit/b32377ee22a21ed8749a02f31a01bd0675f32e79))
+
 ## [1.2.9](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.8...v1.2.9) (2026-02-03)
 
 

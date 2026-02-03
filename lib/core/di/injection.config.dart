@@ -47,6 +47,8 @@ import 'package:lucid_clip/core/services/device_id_provider/secure_installation_
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
     as _i854;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
+import 'package:lucid_clip/core/services/paste_to_app_service/paste_to_app_service.dart'
+    as _i999;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
 import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlight_service.dart'
     as _i1007;
@@ -306,6 +308,9 @@ extension GetItInjectableX on _i174.GetIt {
         ),
         gh<_i212.CacheService<_i100.Uint8List>>(instanceName: 'iconCache'),
       ),
+    );
+    gh.lazySingleton<_i999.PasteToAppService>(
+      () => _i999.MethodChannelPasteToAppService(),
     );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
       () => _i175.SupabaseSettingsRemoteDataSource(

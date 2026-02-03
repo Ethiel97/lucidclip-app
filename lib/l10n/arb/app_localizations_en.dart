@@ -56,6 +56,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appendToClipboard => 'Append to Clipboard';
 
   @override
+  String get paste => 'Paste';
+
+  @override
+  String get pasteTo => 'Paste to';
+
+  @override
   String appsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -122,6 +128,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clipboard => 'Clipboard';
+
+  @override
+  String pasteToApp(String appName) {
+    return 'Paste to $appName';
+  }
 
   @override
   String get clipboardCaptureStarted => 'Clipboard capture started';

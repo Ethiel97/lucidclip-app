@@ -8,10 +8,6 @@
   "@account": {
     "description": "Label for the Account section"
   },
-  "checkForUpdates": "Check for Updates",
-  "@checkForUpdates": {
-    "description": "Tray menu item to check for app updates"
-  },
   "accountInformation": "Account Information",
   "@accountInformation": {
     "description": "Label for account information"
@@ -81,10 +77,6 @@
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
   },
-  "pasteTo": "Paste to",
-  "@pasteTo": {
-    "description": "Button text to paste content to another app"
-  },
   "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}",
   "@appsCount": {
     "description": "Label showing the number of apps with pluralization",
@@ -137,6 +129,10 @@
   "@characters": {
     "description": "Label for the number of characters"
   },
+  "checkForUpdates": "Check for Updates",
+  "@checkForUpdates": {
+    "description": "Tray menu item to check for app updates"
+  },
   "chooseYourAppTheme": "Choose your app theme",
   "@chooseYourAppTheme": {
     "description": "Label for the Theme settings"
@@ -160,6 +156,10 @@
   "clearClipboardShortcutDescription": "Clear all clipboard history",
   "@clearClipboardShortcutDescription": {
     "description": "Description for clear clipboard shortcut"
+  },
+  "clipContent": "Clip content",
+  "@clipContent": {
+    "description": "Label for the clipboard item's editable content"
   },
   "clipboard": "Clipboard",
   "@clipboard": {
@@ -251,10 +251,6 @@
   "@delete": {
     "description": "Button text to delete content"
   },
-  "clipContent": "Clip content",
-  "@clipContent": {
-    "description": "Label for the clipboard item's editable content"
-  },
   "edit": "Edit",
   "@edit": {
     "description": "Button text to edit content"
@@ -274,10 +270,6 @@
   "errorOccurred": "An error occurred. Please try again later.",
   "@errorOccurred": {
     "description": "Error message shown when an error occurs"
-  },
-  "saveChanges": "Save changes",
-  "@saveChanges": {
-    "description": "Button text to save changes"
   },
   "exclude": "Exclude",
   "@exclude": {
@@ -524,6 +516,25 @@
   "@openLink": {
     "description": "Button text to open a link"
   },
+  "paste": "Paste",
+  "@paste": {
+    "description": "Button text to paste content"
+  },
+  "pasteTo": "Paste to",
+  "@pasteTo": {
+    "description": "Button text to paste content to another app"
+  },
+  "pasteToApp": "Paste to {appName}",
+  "@pasteToApp": {
+    "description": "Button text to paste content to a specific app",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "description": "Name of the app",
+        "example": "Visual Studio Code"
+      }
+    }
+  },
   "pauseTracking": "Pause Tracking",
   "@pauseTracking": {
     "description": "Tray menu item to pause clipboard tracking (enable incognito mode)"
@@ -689,6 +700,10 @@
   "retry": "Retry",
   "@retry": {
     "description": "Button text to retry an operation"
+  },
+  "saveChanges": "Save changes",
+  "@saveChanges": {
+    "description": "Button text to save changes"
   },
   "searchClipboardShortcut": "Search Clipboard",
   "@searchClipboardShortcut": {

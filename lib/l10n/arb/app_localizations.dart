@@ -172,6 +172,18 @@ abstract class AppLocalizations {
   /// **'Append to Clipboard'**
   String get appendToClipboard;
 
+  /// Button text to paste content
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// Button text to paste content to another app
+  ///
+  /// In en, this message translates to:
+  /// **'Paste to'**
+  String get pasteTo;
+
   /// Label showing the number of apps with pluralization
   ///
   /// In en, this message translates to:
@@ -279,6 +291,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clipboard'**
   String get clipboard;
+
+  /// Button text to paste content to a specific app
+  ///
+  /// In en, this message translates to:
+  /// **'Paste to {appName}'**
+  String pasteToApp(String appName);
 
   /// Message shown when clipboard capture has started
   ///

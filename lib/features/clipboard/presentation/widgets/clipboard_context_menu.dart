@@ -50,7 +50,7 @@ class ClipboardContextMenu extends StatefulWidget {
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   // Duration to wait for clipboard to be synchronized with system clipboard
   static const _clipboardSyncDelay = Duration(milliseconds: 100);
-  
+
   // --- Sections -------------------------------------------------------------
 
   List<ClipboardContextMenuItem> _primaryActions(
@@ -62,7 +62,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       if (sourceApp != null && sourceApp.isValid)
         (
           action: ClipboardMenuAction.pasteToApp,
-          label: '${l10n.pasteTo} ${sourceApp.name}',
+          label: l10n.pasteToApp(sourceApp.name),
           icon: sourceApp,
         ),
       (
@@ -70,24 +70,24 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         label: l10n.appendToClipboard.sentenceCase,
         icon: HugeIcons.strokeRoundedCopy01,
       ),
-    if (item.type.isUrl)
-      (
-        action: ClipboardMenuAction.openLink,
-        label: l10n.openLink.sentenceCase,
-        icon: HugeIcons.strokeRoundedBrowser,
-      ),
-    if (item.type.isFile)
-      (
-        action: ClipboardMenuAction.copyPath,
-        label: l10n.copyPath.sentenceCase,
-        icon: HugeIcons.strokeRoundedFolderMoveTo,
-      ),
-    if (!item.type.isImage && !item.type.isFile)
-      (
-        action: ClipboardMenuAction.edit,
-        label: l10n.edit.sentenceCase,
-        icon: HugeIcons.strokeRoundedEdit01,
-      ),
+      if (item.type.isUrl)
+        (
+          action: ClipboardMenuAction.openLink,
+          label: l10n.openLink.sentenceCase,
+          icon: HugeIcons.strokeRoundedBrowser,
+        ),
+      if (item.type.isFile)
+        (
+          action: ClipboardMenuAction.copyPath,
+          label: l10n.copyPath.sentenceCase,
+          icon: HugeIcons.strokeRoundedFolderMoveTo,
+        ),
+      if (!item.type.isImage && !item.type.isFile)
+        (
+          action: ClipboardMenuAction.edit,
+          label: l10n.edit.sentenceCase,
+          icon: HugeIcons.strokeRoundedEdit01,
+        ),
     ];
   }
 
@@ -158,10 +158,10 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     }
 
     final pasteService = context.read<PasteToAppService>();
-    
+
     // Check if we have accessibility permission
     final hasPermission = await pasteService.checkAccessibilityPermission();
-    
+
     if (!hasPermission) {
       // Request permission
       final granted = await pasteService.requestAccessibilityPermission();
@@ -170,13 +170,13 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         return;
       }
     }
-    
+
     // Copy the clipboard item to system clipboard first
     context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
-    
+
     // Wait for clipboard to be synchronized
     await Future.delayed(_clipboardSyncDelay);
-    
+
     // Paste to the source app
     await pasteService.pasteToApp(sourceApp.bundleId);
   }
@@ -187,7 +187,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     required ClipboardContextMenuItem menuItem,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Padding(
@@ -222,7 +222,9 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         return;
 
       case ClipboardMenuAction.copyPath:
-        Clipboard.setData(ClipboardData(text: widget.clipboardItem.filePath ?? ''));
+        Clipboard.setData(
+          ClipboardData(text: widget.clipboardItem.filePath ?? ''),
+        );
         return;
 
       case ClipboardMenuAction.openLink:
@@ -245,7 +247,9 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         return;
 
       case ClipboardMenuAction.deleteItem:
-        context.read<ClipboardDetailCubit>().deleteClipboardItem(widget.clipboardItem);
+        context.read<ClipboardDetailCubit>().deleteClipboardItem(
+          widget.clipboardItem,
+        );
         return;
 
       case ClipboardMenuAction.appendToClipboard:
@@ -257,7 +261,9 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         return;
 
       case ClipboardMenuAction.edit:
-        context.read<ClipboardDetailCubit>().setClipboardItem(widget.clipboardItem);
+        context.read<ClipboardDetailCubit>().setClipboardItem(
+          widget.clipboardItem,
+        );
         context.router.root.push(
           ClipboardEditRoute(clipboardItem: widget.clipboardItem),
         );

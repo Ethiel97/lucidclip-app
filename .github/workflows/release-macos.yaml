@@ -179,6 +179,7 @@ jobs:
           SPARKLE_PRIV_B64: ${{ secrets.SPARKLE_PRIV_KEY_BASE64 }}
         run: |
           echo "$SPARKLE_PRIV_B64" | base64 --decode > sparkle_ed25519.priv
+          chmod 600 sparkle_ed25519.priv
           ls -lh sparkle_ed25519.priv
 
       # ---------- Generate appcast ----------
@@ -188,20 +189,14 @@ jobs:
           mkdir -p updates/macos
           cp "${{ steps.ver.outputs.dmg }}" "updates/macos/${{ steps.ver.outputs.dmg }}"
 
-          # 1. Find Sparkle binaries
           SPARKLE_BIN="$(find sparkle -name generate_appcast | head -n 1 | xargs dirname)"
-          echo "Using Sparkle binaries from: $SPARKLE_BIN"
 
-          # 2. Load the private key into an Environment Variable
-          # This tells Sparkle to use this key directly, skipping the Keychain lookup.
-          export SPARKLE_PRIVATE_KEY=$(cat sparkle_ed25519.priv)
-
-          # 3. Generate the appcast (No 'generate_keys' or 'security' commands needed)
           "$SPARKLE_BIN/generate_appcast" \
+            --ed-key-file sparkle_ed25519.priv \
             --download-url-prefix "https://downloads.lucidclip.app/macos/" \
             updates/macos
 
-          # 4. Verify signature exists
+          # Sanity check
           grep -q "sparkle:edSignature" updates/macos/appcast.xml
 
       # ---------- Upload DMG to R2 ----------

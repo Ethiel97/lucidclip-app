@@ -179,8 +179,11 @@ class _SidebarToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return IconButton(
+      mouseCursor: SystemMouseCursors.resizeLeftRight,
+      hoverColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
       onPressed: () {
         context.read<SidebarCubit>().toggle();
       },

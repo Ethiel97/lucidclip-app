@@ -362,7 +362,7 @@ class _InfoRow extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.xs,
+        spacing: AppSpacing.sm,
         children: [
           Row(
             children: [

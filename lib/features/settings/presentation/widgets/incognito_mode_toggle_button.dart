@@ -76,7 +76,7 @@ class IncognitoModeToggleButton extends StatelessWidget {
           icon: incognitoMode
               ? HugeIcons.strokeRoundedPlay
               : HugeIcons.strokeRoundedPause,
-          size: 18,
+          size: 14,
         ),
         label: Text(
           incognitoMode

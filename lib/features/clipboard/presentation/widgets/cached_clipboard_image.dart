@@ -39,7 +39,6 @@ class CachedClipboardImage extends StatelessWidget {
         width: width,
         height: height,
         fit: BoxFit.cover,
-        filterQuality: FilterQuality.low,
         gaplessPlayback: true,
         errorBuilder: (_, __, ___) => SizedBox(
           width: width,

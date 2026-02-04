@@ -142,10 +142,10 @@ abstract class AppLocalizations {
   /// **'{appName} no longer tracked'**
   String appNoLongerTracked(String appName);
 
-  /// No description provided for @couldNotPasteToApp.
+  /// Error message shown when unable to paste to a specific app
   ///
   /// In en, this message translates to:
-  /// **'Sorry! We couldn\'t paste to the app Please try again.'**
+  /// **'Sorry! We couldn\'t paste to the app. Please try again.'**
   String get couldNotPasteToApp;
 
   /// Description shown when an app is no longer tracked

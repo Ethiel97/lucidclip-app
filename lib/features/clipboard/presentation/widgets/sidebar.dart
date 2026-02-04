@@ -108,8 +108,6 @@ class _SidebarState extends State<Sidebar> {
       (AuthCubit cubit) => cubit.state.isAuthenticated,
     );
 
-    print('isAuthenticated: $isAuthenticated');
-
     final tabsRouter = context.tabsRouter;
 
     return AnimatedContainer(

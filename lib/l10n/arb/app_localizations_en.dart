@@ -40,7 +40,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotPasteToApp =>
-      'Sorry! We couldn\'t paste to the app Please try again.';
+      'Sorry! We couldn\'t paste to the app. Please try again.';
 
   @override
   String appNoLongerTrackedDescription(String appName) {

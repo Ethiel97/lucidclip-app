@@ -4,4 +4,6 @@ abstract class AccessibilityRepository {
   Future<bool> requestPermission();
 
   Stream<bool> get permissionStatusStream;
+
+  void dispose();
 }

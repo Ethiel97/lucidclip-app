@@ -26,4 +26,10 @@ class AccessibilityRepositoryImpl implements AccessibilityRepository {
   Stream<bool> get permissionStatusStream {
     return _permissionStatusController.stream.distinct();
   }
+
+  @disposeMethod
+  @override
+  void dispose() {
+    _permissionStatusController.close();
+  }
 }

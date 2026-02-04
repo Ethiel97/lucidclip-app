@@ -245,6 +245,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i55.AccessibilityRepositoryImpl(
         dataSource: gh<_i23.AccessibilityDataSource>(),
       ),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i995.DeepLinkService>(
       () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),

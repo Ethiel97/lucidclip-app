@@ -236,7 +236,6 @@ class _InfoCard extends StatelessWidget {
       (cubit) => cubit.state.excludedApps,
     );
 
-    print("Source app: ${clipboardItem.sourceApp?.bundleId}");
     final isSourceAppValid = clipboardItem.sourceApp?.isValid ?? false;
     final isSourceAppExcluded = clipboardItem.getIsSourceAppExcluded(
       excludedApps,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/app_spacing.dart';
+import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/auth/presentation/presentation.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -21,7 +22,7 @@ class LoginView extends StatelessWidget {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<AuthCubit, AuthState>(
+        SafeBlocListener<AuthCubit, AuthState>(
           listenWhen: (previous, current) => previous.user != current.user,
           listener: (context, state) {
             if (state.hasError) {

@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/accessibility/accessibility.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -85,6 +87,7 @@ class AccessibilityPermissionDialog extends StatelessWidget {
                   child: FilledButton(
                     onPressed: () {
                       context.pop();
+                      getIt<WindowController>().hide();
                       context.read<AccessibilityCubit>().grantPermission();
                     },
                     style: FilledButton.styleFrom(

@@ -8,7 +8,7 @@ import 'package:lucid_clip/features/accessibility/accessibility.dart';
 class AccessibilityPermissionListener extends StatelessWidget {
   const AccessibilityPermissionListener({required this.child, super.key});
 
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) => MultiBlocListener(
@@ -44,6 +44,6 @@ class AccessibilityPermissionListener extends StatelessWidget {
         },
       ),
     ],
-    child: child,
+    child: child ?? const SizedBox.shrink(),
   );
 }

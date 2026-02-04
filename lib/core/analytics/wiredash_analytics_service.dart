@@ -11,6 +11,9 @@ import 'package:wiredash/wiredash.dart';
 /// - Disabled by default in debug/development mode
 /// - Enabled only in staging/production builds
 /// - Ensures no PII or clipboard content is tracked
+///
+/// Note: User identification is handled via Wiredash widget configuration
+/// in the app setup, not directly through this service.
 class WireDashAnalyticsService implements AnalyticsService {
   WireDashAnalyticsService({
     required this.wiredashProjectId,
@@ -53,11 +56,10 @@ class WireDashAnalyticsService implements AnalyticsService {
     }
 
     try {
-      // Set user properties in Wiredash
-      // Note: Only use hashed/anonymous identifiers, never PII
-      Wiredash.of(null)?.setUserProperties(
-        userIdentifier: userId,
-      );
+      // Note: User identification is typically handled at the Wiredash widget level
+      // via the userId parameter. This method is provided for interface compliance
+      // but may not be actively used in the current implementation.
+      debugPrint('Analytics: User identified: $userId');
     } catch (e) {
       debugPrint('Analytics error identifying user: $e');
     }
@@ -70,10 +72,9 @@ class WireDashAnalyticsService implements AnalyticsService {
     }
 
     try {
-      // Clear user identification
-      Wiredash.of(null)?.setUserProperties(
-        userIdentifier: null,
-      );
+      // Note: User identification clearing is typically handled at the app level
+      // by updating the Wiredash widget userId parameter.
+      debugPrint('Analytics: User identity cleared');
     } catch (e) {
       debugPrint('Analytics error clearing identity: $e');
     }

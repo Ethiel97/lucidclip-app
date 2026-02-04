@@ -41,7 +41,7 @@ class UpgradePromptListener extends StatelessWidget {
 
         // Track upgrade prompt shown with source
         final source = state.source;
-        final upgradeSource = _mapToUpgradeSource(source);
+        final upgradeSource = mapProFeatureSourceToUpgradeSource(source);
         await Analytics.track(
           AnalyticsEvent.upgradePromptShown,
           UpgradePromptShownParams(source: upgradeSource).toMap(),
@@ -51,29 +51,16 @@ class UpgradePromptListener extends StatelessWidget {
           context: context,
           barrierDismissible: !isStartingCheckout,
           barrierColor: Colors.black.withValues(alpha: 0.55),
-          builder: (_) => UpgradePaywallSheet(
-            feature: feature,
-            monthlyProductId: monthlyProductId,
-            yearlyProductId: yearlyProductId,
+          builder: (_) => Center(
+            child: UpgradePaywallSheet(
+              feature: feature,
+              monthlyProductId: monthlyProductId,
+              yearlyProductId: yearlyProductId,
+            ),
           ),
         );
       },
       child: child,
     );
   }
-}
-
-/// Map ProFeatureRequestSource to UpgradeSource for analytics
-UpgradeSource _mapToUpgradeSource(ProFeatureRequestSource? source) {
-  return switch (source) {
-    ProFeatureRequestSource.historyLimitReached => UpgradeSource.limitHit,
-    ProFeatureRequestSource.extendedRetentionSettings ||
-    ProFeatureRequestSource.accountPage =>
-      UpgradeSource.settings,
-    ProFeatureRequestSource.pinButton ||
-    ProFeatureRequestSource.ignoredApps ||
-    ProFeatureRequestSource.autoSync =>
-      UpgradeSource.proGate,
-    null => UpgradeSource.proGate,
-  };
 }

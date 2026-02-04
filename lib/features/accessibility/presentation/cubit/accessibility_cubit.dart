@@ -71,6 +71,9 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
       // Track permission granted if successful
       if (state.hasPermission) {
         await Analytics.track(AnalyticsEvent.permissionAccessibilityGranted);
+      } else {
+        // Permission was requested but not granted (user may have closed system dialog)
+        await Analytics.track(AnalyticsEvent.permissionAccessibilityDenied);
       }
     } catch (e, stack) {
       log(
@@ -81,7 +84,7 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
       );
       emit(state.copyWith(hasPermission: false));
       
-      // Track permission denied on error
+      // Track permission denied on error (system-level failure)
       await Analytics.track(AnalyticsEvent.permissionAccessibilityDenied);
     }
   }

@@ -302,29 +302,13 @@ class _PlanCard extends StatelessWidget {
 }
 
 /// Get upgrade source from the current context
-/// This is a simplified version - ideally would track the actual source
 UpgradeSource _upgradeSourceFromContext(BuildContext context) {
   // Try to get the source from the UpgradePromptCubit state if available
   try {
     final state = context.read<UpgradePromptCubit>().state;
     final source = state.source;
-    return _mapToUpgradeSource(source);
+    return mapProFeatureSourceToUpgradeSource(source);
   } catch (_) {
     return UpgradeSource.proGate;
   }
-}
-
-/// Map ProFeatureRequestSource to UpgradeSource for analytics
-UpgradeSource _mapToUpgradeSource(ProFeatureRequestSource? source) {
-  return switch (source) {
-    ProFeatureRequestSource.historyLimitReached => UpgradeSource.limitHit,
-    ProFeatureRequestSource.extendedRetentionSettings ||
-    ProFeatureRequestSource.accountPage =>
-      UpgradeSource.settings,
-    ProFeatureRequestSource.pinButton ||
-    ProFeatureRequestSource.ignoredApps ||
-    ProFeatureRequestSource.autoSync =>
-      UpgradeSource.proGate,
-    null => UpgradeSource.proGate,
-  };
 }

@@ -1,8 +1,10 @@
 import 'package:app_links/app_links.dart';
 import 'package:auto_updater/auto_updater.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/entitlement/data/data.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
@@ -13,6 +15,9 @@ import 'package:window_manager/window_manager.dart';
 abstract class ThirdPartyModule {
   @lazySingleton
   FirebaseAuth get firebaseAuth => FirebaseAuth.instance;
+
+  @lazySingleton
+  FirebaseAnalytics get firebaseAnalytics => FirebaseAnalytics.instance;
 
   @lazySingleton
   SupabaseClient get supabase => Supabase.instance.client;
@@ -41,4 +46,13 @@ abstract class ThirdPartyModule {
 
   @lazySingleton
   AutoUpdater get autoUpdater => AutoUpdater.instance;
+
+  // WireDash configuration for feedback service
+  @Named('wiredashProjectId')
+  @lazySingleton
+  String get wiredashProjectId => AppConstants.wiredashProjectId;
+
+  @Named('wiredashSecret')
+  @lazySingleton
+  String get wiredashSecret => AppConstants.wiredashSecret;
 }

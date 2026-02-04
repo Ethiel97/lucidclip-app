@@ -73,14 +73,8 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await configureDependencies();
 
-  // Initialize analytics service
-  Analytics.initialize(
-    WireDashAnalyticsService(
-      wiredashProjectId: AppConstants.wiredashProjectId,
-      wiredashSecret: AppConstants.wiredashSecret,
-      enabledInDebug: false, // Disabled in debug mode
-    ),
-  );
+  // Initialize analytics service via DI
+  Analytics.initialize(getIt<AnalyticsService>());
 
   // Track app opened event (includes first launch detection)
   final retentionTracker = RetentionTracker();

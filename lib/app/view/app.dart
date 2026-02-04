@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/routes.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
@@ -13,6 +14,7 @@ import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:wiredash/wiredash.dart';
 
 final appRouter = AppRouter();
 
@@ -122,14 +124,18 @@ class _AppViewState extends State<_AppView> with WindowListener {
         builder: (context, state) {
           final settings = state.settings.value;
           final themeMode = _getThemeMode(settings?.theme ?? 'dark');
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            theme: const AppTheme().light,
-            darkTheme: const AppTheme().dark,
-            themeMode: themeMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            routerConfig: appRouter.config(),
+          return Wiredash(
+            projectId: AppConstants.wiredashProjectId,
+            secret: AppConstants.wiredashSecret,
+            child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              theme: const AppTheme().light,
+              darkTheme: const AppTheme().dark,
+              themeMode: themeMode,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              routerConfig: appRouter.config(),
+            ),
           );
         },
       ),

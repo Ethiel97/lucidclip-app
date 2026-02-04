@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -71,6 +72,15 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   );
 
   await configureDependencies();
+
+  // Initialize analytics service
+  Analytics.initialize(
+    WireDashAnalyticsService(
+      wiredashProjectId: AppConstants.wiredashProjectId,
+      wiredashSecret: AppConstants.wiredashSecret,
+      enabledInDebug: false, // Disabled in debug mode
+    ),
+  );
 
   await Future.wait<void>([
     getIt<HotkeyManagerService>().registerDefaultHotkeys(),

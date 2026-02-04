@@ -45,6 +45,14 @@ class AppConstants {
       dotenv.env['LUCID_YEARLY_PRODUCT_ID'] ??
       const String.fromEnvironment('LUCID_YEARLY_PRODUCT_ID');
 
+  static final wiredashProjectId =
+      dotenv.env['WIREDASH_PROJECT_ID'] ??
+      const String.fromEnvironment('WIREDASH_PROJECT_ID', defaultValue: '');
+
+  static final wiredashSecret =
+      dotenv.env['WIREDASH_SECRET'] ??
+      const String.fromEnvironment('WIREDASH_SECRET', defaultValue: '');
+
   static const clipboardItemDetailsViewWidth = 380.0;
   static const clipboardSidebarWidth = 220.0;
   static const collapsedSidebarWidth = 100.0;

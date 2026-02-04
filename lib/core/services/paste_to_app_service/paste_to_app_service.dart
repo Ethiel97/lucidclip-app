@@ -28,7 +28,7 @@ class MethodChannelPasteToAppService implements PasteToAppService {
         error: e,
         stackTrace: stack,
       );
-      return false;
+      rethrow;
     }
   }
 }

@@ -1,7 +1,11 @@
+import 'package:lucid_clip/core/platform/platform.dart';
+
 /// Interface for managing application window visibility and behavior
 abstract class WindowController {
   /// Check if the window is currently showing
   bool get isShowing;
+
+  SourceApp? get previousFrontmostApp;
 
   /// Toggle window visibility (show if hidden, hide if showing)
   Future<void> toggle();

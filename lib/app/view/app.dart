@@ -31,8 +31,10 @@ class _AppState extends State<App> {
       BlocProvider(create: (_) => getIt<BillingCubit>()),
       BlocProvider(create: (_) => getIt<EntitlementCubit>()),
       BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
-      BlocProvider(create: (_) => getIt<SettingsCubit>()),
-      BlocProvider(create: (_) => getIt<AccessibilityCubit>()),
+      BlocProvider(create: (_) => getIt<SettingsCubit>()..loadSettings()),
+      BlocProvider(
+        create: (_) => getIt<AccessibilityCubit>()..checkPermission(),
+      ),
     ],
     child: const _AppView(),
   );
@@ -54,9 +56,10 @@ class _AppViewState extends State<_AppView> with WindowListener {
   @override
   void initState() {
     super.initState();
-    context.read<SettingsCubit>().loadSettings();
-    windowManager.addListener(this);
-    _trayService.startWatchingClipboard();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      windowManager.addListener(this);
+      _trayService.startWatchingClipboard();
+    });
   }
 
   @override
@@ -79,14 +82,6 @@ class _AppViewState extends State<_AppView> with WindowListener {
     getIt<ClipboardDetailCubit>().clearSelection();
 
     final shortcuts = getIt<SettingsCubit>().state.shortcuts;
-    final isAuthenticating = getIt<AuthCubit>().state.isAuthenticating;
-
-    if (isAuthenticating) {
-      await getIt<WindowController>().setAlwaysOnTop(alwaysOnTop: false);
-      return;
-    } else {
-      await getIt<WindowController>().setAlwaysOnTop();
-    }
 
     //if the user has set shortcuts for displaying the app we can hide on blur
     // otherwise we keep it open since there is no way to bring it back

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ui';
 
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -48,6 +48,7 @@ class WindowControllerImpl implements WindowController {
   bool _isShowing = false;
 
   /// Get the app that was frontmost before LucidClip was shown
+  @override
   SourceApp? get previousFrontmostApp => _previousFrontmostApp;
 
   @override
@@ -224,5 +225,20 @@ class WindowControllerImpl implements WindowController {
 
       await showAsOverlay();
     });
+  }
+}
+
+extension WindowControllerSafe on WindowController {
+  /// Ensures the engine/window is ready before toggling always-on-top.
+  Future<void> setSafeAlwaysOnTop({bool alwaysOnTop = true}) async {
+    // Wait until at least one frame is rendered (window is typically ready).
+    await WidgetsBinding.instance.endOfFrame;
+
+    try {
+      await setAlwaysOnTop(alwaysOnTop: alwaysOnTop);
+    } catch (_) {
+      // If the controller still isn't ready on some platforms/starts, skip.
+      // The permission flow can still proceed; OS dialog may or may not show.
+    }
   }
 }

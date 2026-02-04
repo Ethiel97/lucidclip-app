@@ -59,8 +59,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final windowController =
-          getIt<WindowController>() as WindowControllerImpl;
+      final windowController = getIt<WindowController>();
       setState(() {
         _previousApp = windowController.previousFrontmostApp;
       });
@@ -71,7 +70,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   void didUpdateWidget(covariant ClipboardContextMenu oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update previous app if needed
-    final windowController = getIt<WindowController>() as WindowControllerImpl;
+    final windowController = getIt<WindowController>();
     setState(() {
       _previousApp = windowController.previousFrontmostApp;
     });
@@ -189,9 +188,6 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     if (!accessibilityCubit.state.hasPermission) {
       // Request permission through the cubit (will show custom dialog)
       await accessibilityCubit.requestPermission();
-
-      // Wait for the dialog to close and permission to be checked
-      await Future<void>.delayed(const Duration(milliseconds: 500));
 
       // Check again if permission was granted
       if (!accessibilityCubit.state.hasPermission) {

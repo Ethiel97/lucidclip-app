@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
@@ -11,10 +12,28 @@ part 'accessibility_state.dart';
 class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
   AccessibilityCubit({required this.repository})
     : super(const AccessibilityState()) {
-    checkPermission();
+    listenToPermissionChanges();
   }
 
+  StreamSubscription<bool>? _permissionStatusSubscription;
+
   final AccessibilityRepository repository;
+
+  void listenToPermissionChanges() {
+    _permissionStatusSubscription?.cancel();
+    _permissionStatusSubscription = repository.permissionStatusStream.listen(
+      (hasPermission) {
+        emit(state.copyWith(hasPermission: hasPermission));
+      },
+      onError: (Object error) {
+        log(
+          'Permission status stream error: $error',
+          name: 'AccessibilityCubit.listenToPermissionChanges',
+        );
+        emit(state.copyWith(hasPermission: false));
+      },
+    );
+  }
 
   /// Check if accessibility permission is granted
   Future<void> checkPermission() async {
@@ -42,20 +61,9 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
   /// User granted permission from the custom dialog
   Future<void> grantPermission() async {
     emit(state.copyWith(showPermissionDialog: false));
-
     try {
-      final granted = await repository.requestPermission();
-
-      // Re-check after a short delay to get the updated status
-      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      await repository.requestPermission();
       await checkPermission();
-
-      if (!granted) {
-        log(
-          'Permission not granted',
-          name: 'AccessibilityCubit.grantPermission',
-        );
-      }
     } catch (e, stack) {
       log(
         'Error granting accessibility permission: $e',
@@ -68,7 +76,7 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
   }
 
   /// User cancelled the permission dialog
-  void cancelPermissionRequest() {
+  Future<void> cancelPermissionRequest() async {
     emit(state.copyWith(showPermissionDialog: false));
   }
 
@@ -100,5 +108,11 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
       );
       return null;
     }
+  }
+
+  @override
+  Future<void> close() {
+    _permissionStatusSubscription?.cancel();
+    return super.close();
   }
 }

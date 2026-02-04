@@ -6,9 +6,8 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
-import 'package:lucid_clip/features/settings/presentation/presentation.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
@@ -331,11 +330,12 @@ class TrayManagerService with TrayListener {
   Future<void> _copyLastItem() async {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
+      final clipboardDetailCubit = getIt<ClipboardDetailCubit>();
       final clipboardItems = clipboardCubit.state.clipboardItems.data;
 
       if (clipboardItems.isNotEmpty) {
         final lastItem = clipboardItems.first;
-        await clipboardCubit.copyToClipboard(lastItem);
+        await clipboardDetailCubit.copyToClipboard(lastItem);
       }
     } catch (e, stackTrace) {
       developer.log(

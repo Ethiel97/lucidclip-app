@@ -43,6 +43,8 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>LucidClip needs permission to send events to paste content into other applications.</string>
 	<key>com.apple.security.network.client</key>
 	<true/>
 	<key>SUPublicEDKey</key>

@@ -4,7 +4,5 @@ import 'package:lucid_clip/core/di/di.dart';
 
 final getIt = GetIt.instance;
 
-@InjectableInit(
-  
-)
-Future<void> configureDependencies() => getIt.init();
+@InjectableInit()
+Future<void> configureDependencies() async => getIt.init();

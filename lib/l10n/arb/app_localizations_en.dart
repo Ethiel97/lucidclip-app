@@ -15,9 +15,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get checkForUpdates => 'Check for Updates';
-
-  @override
   String get accountInformation => 'Account Information';
 
   @override
@@ -42,6 +39,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get couldNotPasteToApp =>
+      'Sorry! We couldn\'t paste to the app. Please try again.';
+
+  @override
   String appNoLongerTrackedDescription(String appName) {
     return 'ClipboardItem from $appName will no longer be saved. You can change this in the Settings.';
   }
@@ -54,6 +55,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appendToClipboard => 'Append to Clipboard';
+
+  @override
+  String get accessibilityPermissionRequired => 'Permission Required';
+
+  @override
+  String get accessibilityPermissionDescription =>
+      'LucidClip needs permission to control your Mac in order to perform this action.';
+
+  @override
+  String get grantPermission => 'Grant Permission';
 
   @override
   String appsCount(int count) {
@@ -102,6 +113,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get characters => 'Characters';
 
   @override
+  String get checkForUpdates => 'Check for Updates';
+
+  @override
   String get chooseYourAppTheme => 'Choose your app theme';
 
   @override
@@ -119,6 +133,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearClipboardShortcutDescription => 'Clear all clipboard history';
+
+  @override
+  String get clipContent => 'Clip content';
 
   @override
   String get clipboard => 'Clipboard';
@@ -190,9 +207,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete => 'Delete';
 
   @override
-  String get clipContent => 'Clip content';
-
-  @override
   String get edit => 'Edit';
 
   @override
@@ -206,9 +220,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorOccurred => 'An error occurred. Please try again later.';
-
-  @override
-  String get saveChanges => 'Save changes';
 
   @override
   String get exclude => 'Exclude';
@@ -400,6 +411,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openLink => 'Open link';
 
   @override
+  String get paste => 'Paste';
+
+  @override
+  String get pasteTo => 'Paste to';
+
+  @override
+  String pasteToApp(String appName) {
+    return 'Paste to $appName';
+  }
+
+  @override
   String get pauseTracking => 'Pause Tracking';
 
   @override
@@ -520,6 +542,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get saveChanges => 'Save changes';
 
   @override
   String get searchClipboardShortcut => 'Search Clipboard';

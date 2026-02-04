@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ui';
 
+import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:window_manager/window_manager.dart';
@@ -17,8 +18,9 @@ class WindowControllerImpl implements WindowController {
   WindowControllerImpl({
     required this.windowManager,
     required this.macosOverlay,
+    required this.sourceAppProvider,
   }) {
-    // initialize();
+    initialize();
   }
 
   bool _isInitialized = false;
@@ -28,6 +30,11 @@ class WindowControllerImpl implements WindowController {
   final WindowManager windowManager;
 
   final MacosOverlay macosOverlay;
+
+  final SourceAppProvider sourceAppProvider;
+
+  /// The app that was frontmost before LucidClip was shown
+  SourceApp? _previousFrontmostApp;
 
   final windowOptions = const WindowOptions(
     size: Size(800, 500),
@@ -40,11 +47,14 @@ class WindowControllerImpl implements WindowController {
 
   bool _isShowing = false;
 
+  /// Get the app that was frontmost before LucidClip was shown
+  @override
+  SourceApp? get previousFrontmostApp => _previousFrontmostApp;
+
   @override
   bool get isShowing => _isShowing;
 
   @override
-  @PostConstruct(preResolve: true)
   Future<void> initialize() async {
     if (_isInitialized) return;
     await windowManager.ensureInitialized();
@@ -75,6 +85,11 @@ class WindowControllerImpl implements WindowController {
   Future<void> showAsOverlay() async {
     try {
       log('Showing window as overlay');
+
+      // Capture the frontmost app before showing LucidClip
+      _previousFrontmostApp = await sourceAppProvider.getFrontmostApp();
+      log('Previous frontmost app: ${_previousFrontmostApp?.name}');
+
       _isShowing = true;
 
       final position = await positioner.computeTopCenterPosition(
@@ -103,6 +118,9 @@ class WindowControllerImpl implements WindowController {
   Future<void> hide() async {
     try {
       _isShowing = false;
+
+      // Clear the previous frontmost app when hiding
+      _previousFrontmostApp = null;
 
       await setVisibleOnAllWorkspaces(visible: false);
       await windowManager.hide();
@@ -207,5 +225,20 @@ class WindowControllerImpl implements WindowController {
 
       await showAsOverlay();
     });
+  }
+}
+
+extension WindowControllerSafe on WindowController {
+  /// Ensures the engine/window is ready before toggling always-on-top.
+  Future<void> setSafeAlwaysOnTop({bool alwaysOnTop = true}) async {
+    // Wait until at least one frame is rendered (window is typically ready).
+    await WidgetsBinding.instance.endOfFrame;
+
+    try {
+      await setAlwaysOnTop(alwaysOnTop: alwaysOnTop);
+    } catch (_) {
+      // If the controller still isn't ready on some platforms/starts, skip.
+      // The permission flow can still proceed; OS dialog may or may not show.
+    }
   }
 }

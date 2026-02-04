@@ -106,12 +106,6 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get account;
 
-  /// Tray menu item to check for app updates
-  ///
-  /// In en, this message translates to:
-  /// **'Check for Updates'**
-  String get checkForUpdates;
-
   /// Label for account information
   ///
   /// In en, this message translates to:
@@ -148,6 +142,12 @@ abstract class AppLocalizations {
   /// **'{appName} no longer tracked'**
   String appNoLongerTracked(String appName);
 
+  /// Error message shown when unable to paste to a specific app
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry! We couldn\'t paste to the app. Please try again.'**
+  String get couldNotPasteToApp;
+
   /// Description shown when an app is no longer tracked
   ///
   /// In en, this message translates to:
@@ -171,6 +171,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Append to Clipboard'**
   String get appendToClipboard;
+
+  /// Title for accessibility permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get accessibilityPermissionRequired;
+
+  /// Description text for accessibility permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'LucidClip needs permission to control your Mac in order to perform this action.'**
+  String get accessibilityPermissionDescription;
+
+  /// Button text to grant accessibility permission
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Permission'**
+  String get grantPermission;
 
   /// Label showing the number of apps with pluralization
   ///
@@ -238,6 +256,12 @@ abstract class AppLocalizations {
   /// **'Characters'**
   String get characters;
 
+  /// Tray menu item to check for app updates
+  ///
+  /// In en, this message translates to:
+  /// **'Check for Updates'**
+  String get checkForUpdates;
+
   /// Label for the Theme settings
   ///
   /// In en, this message translates to:
@@ -273,6 +297,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear all clipboard history'**
   String get clearClipboardShortcutDescription;
+
+  /// Label for the clipboard item's editable content
+  ///
+  /// In en, this message translates to:
+  /// **'Clip content'**
+  String get clipContent;
 
   /// Label for the Clipboard feature
   ///
@@ -388,12 +418,6 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// Label for the clipboard item's editable content
-  ///
-  /// In en, this message translates to:
-  /// **'Clip content'**
-  String get clipContent;
-
   /// Button text to edit content
   ///
   /// In en, this message translates to:
@@ -423,12 +447,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again later.'**
   String get errorOccurred;
-
-  /// Button text to save changes
-  ///
-  /// In en, this message translates to:
-  /// **'Save changes'**
-  String get saveChanges;
 
   /// Button text to exclude an app from tracking
   ///
@@ -736,6 +754,24 @@ abstract class AppLocalizations {
   /// **'Open link'**
   String get openLink;
 
+  /// Button text to paste content
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get paste;
+
+  /// Button text to paste content to another app
+  ///
+  /// In en, this message translates to:
+  /// **'Paste to'**
+  String get pasteTo;
+
+  /// Button text to paste content to a specific app
+  ///
+  /// In en, this message translates to:
+  /// **'Paste to {appName}'**
+  String pasteToApp(String appName);
+
   /// Tray menu item to pause clipboard tracking (enable incognito mode)
   ///
   /// In en, this message translates to:
@@ -951,6 +987,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// Button text to save changes
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
 
   /// Label for search clipboard shortcut
   ///

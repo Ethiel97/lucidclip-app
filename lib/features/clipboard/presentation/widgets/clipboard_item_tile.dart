@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
@@ -56,6 +58,16 @@ class _ClipboardItemTileState extends State<ClipboardItemTile> {
         }
       },
       child: GestureDetector(
+        onDoubleTap: () {
+          final previousApp = getIt<WindowController>().previousFrontmostApp;
+
+          if (previousApp == null || !previousApp.isValid) return;
+
+          context.read<ClipboardDetailCubit>().handlePasteToApp(
+            bundleId: previousApp.bundleId,
+            clipboardItem: widget.item,
+          );
+        },
         onTap: () {
           context.read<ClipboardDetailCubit>().setClipboardItem(widget.item);
         },

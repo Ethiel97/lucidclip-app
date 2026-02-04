@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/app/app.dart';
+import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/platform/platform.dart';
+import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -15,6 +17,7 @@ import 'package:recase/recase.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum ClipboardMenuAction {
+  pasteToApp,
   appendToClipboard,
   openLink,
   copyPath,
@@ -30,7 +33,7 @@ typedef ClipboardContextMenuItem = ({
   Object icon,
 });
 
-class ClipboardContextMenu extends StatelessWidget {
+class ClipboardContextMenu extends StatefulWidget {
   const ClipboardContextMenu({
     required this.child,
     required this.clipboardItem,
@@ -40,36 +43,74 @@ class ClipboardContextMenu extends StatelessWidget {
   final Widget child;
   final ClipboardItem clipboardItem;
 
+  @override
+  State<ClipboardContextMenu> createState() => _ClipboardContextMenuState();
+}
+
+class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
+  SourceApp? _previousApp;
+
+  final windowController = getIt<WindowController>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _previousApp = windowController.previousFrontmostApp;
+  }
+
+  @override
+  void didUpdateWidget(covariant ClipboardContextMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update previous app if needed
+
+    if (oldWidget.clipboardItem != widget.clipboardItem) {
+      if (windowController.previousFrontmostApp != _previousApp) {
+        setState(() {
+          _previousApp = windowController.previousFrontmostApp;
+        });
+      }
+    }
+  }
+
   // --- Sections -------------------------------------------------------------
 
   List<ClipboardContextMenuItem> _primaryActions(
     AppLocalizations l10n,
     ClipboardItem item,
-  ) => [
-    (
-      action: ClipboardMenuAction.appendToClipboard,
-      label: l10n.appendToClipboard.sentenceCase,
-      icon: HugeIcons.strokeRoundedCopy01,
-    ),
-    if (item.type.isUrl)
+  ) {
+    return [
+      if (_previousApp != null && _previousApp!.isValid)
+        (
+          action: ClipboardMenuAction.pasteToApp,
+          label: l10n.pasteToApp(_previousApp!.name),
+          icon: _previousApp!,
+        ),
       (
-        action: ClipboardMenuAction.openLink,
-        label: l10n.openLink.sentenceCase,
-        icon: HugeIcons.strokeRoundedBrowser,
+        action: ClipboardMenuAction.appendToClipboard,
+        label: l10n.appendToClipboard.sentenceCase,
+        icon: HugeIcons.strokeRoundedCopy01,
       ),
-    if (item.type.isFile)
-      (
-        action: ClipboardMenuAction.copyPath,
-        label: l10n.copyPath.sentenceCase,
-        icon: HugeIcons.strokeRoundedFolderMoveTo,
-      ),
-    if (!item.type.isImage && !item.type.isFile)
-      (
-        action: ClipboardMenuAction.edit,
-        label: l10n.edit.sentenceCase,
-        icon: HugeIcons.strokeRoundedEdit01,
-      ),
-  ];
+      if (item.type.isUrl)
+        (
+          action: ClipboardMenuAction.openLink,
+          label: l10n.openLink.sentenceCase,
+          icon: HugeIcons.strokeRoundedBrowser,
+        ),
+      if (item.type.isFile)
+        (
+          action: ClipboardMenuAction.copyPath,
+          label: l10n.copyPath.sentenceCase,
+          icon: HugeIcons.strokeRoundedFolderMoveTo,
+        ),
+      if (!item.type.isImage && !item.type.isFile)
+        (
+          action: ClipboardMenuAction.edit,
+          label: l10n.edit.sentenceCase,
+          icon: HugeIcons.strokeRoundedEdit01,
+        ),
+    ];
+  }
 
   List<ClipboardContextMenuItem> _organizationActions(
     AppLocalizations l10n,
@@ -131,11 +172,24 @@ class ClipboardContextMenu extends StatelessWidget {
     return widgets;
   }
 
+  Future<void> _handlePasteToApp(BuildContext context) async {
+    if (_previousApp == null || !_previousApp!.isValid) {
+      return;
+    }
+
+    await context.read<ClipboardDetailCubit>().handlePasteToApp(
+      clipboardItem: widget.clipboardItem,
+      bundleId: _previousApp!.bundleId,
+    );
+  }
+
   Widget _buildMenuTile({
     required BuildContext context,
     required AppLocalizations l10n,
     required ClipboardContextMenuItem menuItem,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Padding(
@@ -144,7 +198,9 @@ class ClipboardContextMenu extends StatelessWidget {
       ),
       trailing: Padding(
         padding: const EdgeInsets.only(right: AppSpacing.sm),
-        child: HugeIcon(icon: menuItem.icon as List<List>),
+        child: menuItem.icon is SourceApp
+            ? (menuItem.icon as SourceApp).getIconWidget(colorScheme)
+            : HugeIcon(icon: menuItem.icon as List<List>),
       ),
       onTap: () {
         Navigator.pop(context);
@@ -163,12 +219,18 @@ class ClipboardContextMenu extends StatelessWidget {
     required ClipboardMenuAction action,
   }) {
     switch (action) {
+      case ClipboardMenuAction.pasteToApp:
+        _handlePasteToApp(context);
+        return;
+
       case ClipboardMenuAction.copyPath:
-        Clipboard.setData(ClipboardData(text: clipboardItem.filePath ?? ''));
+        Clipboard.setData(
+          ClipboardData(text: widget.clipboardItem.filePath ?? ''),
+        );
         return;
 
       case ClipboardMenuAction.openLink:
-        launchUrl(Uri.parse(clipboardItem.content));
+        launchUrl(Uri.parse(widget.clipboardItem.content));
         return;
 
       case ClipboardMenuAction.togglePin:
@@ -182,16 +244,20 @@ class ClipboardContextMenu extends StatelessWidget {
         }
 
         context.read<ClipboardDetailCubit>().togglePinClipboardItem(
-          clipboardItem,
+          widget.clipboardItem,
         );
         return;
 
       case ClipboardMenuAction.deleteItem:
-        context.read<ClipboardDetailCubit>().deleteClipboardItem(clipboardItem);
+        context.read<ClipboardDetailCubit>().deleteClipboardItem(
+          widget.clipboardItem,
+        );
         return;
 
       case ClipboardMenuAction.appendToClipboard:
-        context.read<ClipboardCubit>().copyToClipboard(clipboardItem);
+        context.read<ClipboardDetailCubit>().copyToClipboard(
+          widget.clipboardItem,
+        );
         return;
 
       case ClipboardMenuAction.clearHistory:
@@ -199,26 +265,26 @@ class ClipboardContextMenu extends StatelessWidget {
         return;
 
       case ClipboardMenuAction.edit:
-        context.read<ClipboardDetailCubit>().setClipboardItem(clipboardItem);
+        context.read<ClipboardDetailCubit>().setClipboardItem(
+          widget.clipboardItem,
+        );
         context.router.root.push(
-          ClipboardEditRoute(clipboardItem: clipboardItem),
+          ClipboardEditRoute(clipboardItem: widget.clipboardItem),
         );
         return;
     }
   }
-
-  // --- Widget ---------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) => ContextMenuArea(
     builder: (innerContext) => [
       ...getContextMenuItems(
         l10n: context.l10n,
-        item: clipboardItem,
+        item: widget.clipboardItem,
         context: context,
       ),
     ],
     verticalPadding: AppSpacing.sm,
-    child: child,
+    child: widget.child,
   );
 }

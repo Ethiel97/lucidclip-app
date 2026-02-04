@@ -4,7 +4,9 @@ import 'package:lucid_clip/generated/assets.gen.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 
 class AppLogo extends StatelessWidget {
-  const AppLogo({super.key});
+  const AppLogo({super.key, this.showAppName = true});
+
+  final bool showAppName;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +29,17 @@ class AppLogo extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        Flexible(
-          child: Text(
-            l10n.appName,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              color: colorScheme.onSurface,
+        if (showAppName)
+          Flexible(
+            child: Text(
+              l10n.appName,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: colorScheme.onSurface,
+              ),
+              overflow: TextOverflow.fade,
+              softWrap: false,
             ),
-            overflow: TextOverflow.fade,
-            softWrap: false,
           ),
-        ),
       ],
     );
   }

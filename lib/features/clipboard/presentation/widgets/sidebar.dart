@@ -129,12 +129,14 @@ class _SidebarState extends State<Sidebar> {
                     ? MainAxisAlignment.spaceBetween
                     : MainAxisAlignment.center,
                 children: [
-                  if (isExpanded) const Flexible(child: AppLogo()),
-                  const _SidebarToggleButton(),
+                  Flexible(child: AppLogo(showAppName: isExpanded)),
+                  if (isExpanded) const _SidebarToggleButton(),
                 ],
               ),
             ),
           ),
+
+          if (!isExpanded) ...[const _SidebarToggleButton()],
           const SizedBox(height: AppSpacing.xlg),
           Expanded(
             child: ListView.separated(
@@ -179,8 +181,11 @@ class _SidebarToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isExpanded = context.select((SidebarCubit cubit) => cubit.state);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return IconButton(
+      mouseCursor: SystemMouseCursors.resizeLeftRight,
+      hoverColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.15),
       onPressed: () {
         context.read<SidebarCubit>().toggle();
       },

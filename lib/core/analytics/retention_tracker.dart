@@ -1,0 +1,63 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
+
+/// Service to track app launch and retention metrics
+class RetentionTracker {
+  RetentionTracker({FlutterSecureStorage? secureStorage})
+      : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+
+  final FlutterSecureStorage _secureStorage;
+
+  static const _firstLaunchKey = 'analytics_first_launch_timestamp';
+  static const _lastLaunchKey = 'analytics_last_launch_timestamp';
+
+  /// Track app opened event with day bucket
+  Future<void> trackAppOpened() async {
+    final now = DateTime.now();
+    final firstLaunchStr = await _secureStorage.read(key: _firstLaunchKey);
+
+    // Check if this is the first launch
+    if (firstLaunchStr == null) {
+      // First launch ever
+      await _secureStorage.write(
+        key: _firstLaunchKey,
+        value: now.toIso8601String(),
+      );
+      await Analytics.track(AnalyticsEvent.appFirstLaunch);
+      
+      // Track app_opened with d0 bucket
+      await Analytics.track(
+        AnalyticsEvent.appOpened,
+        AppOpenedParams(dayBucket: DayBucket.d0).toMap(),
+      );
+    } else {
+      // Calculate days since first launch
+      final firstLaunch = DateTime.parse(firstLaunchStr);
+      final daysSinceFirstLaunch = now.difference(firstLaunch).inDays;
+      
+      final dayBucket = DayBucket.fromDaysSinceFirstLaunch(daysSinceFirstLaunch);
+      
+      await Analytics.track(
+        AnalyticsEvent.appOpened,
+        AppOpenedParams(dayBucket: dayBucket).toMap(),
+      );
+    }
+
+    // Update last launch timestamp
+    await _secureStorage.write(
+      key: _lastLaunchKey,
+      value: now.toIso8601String(),
+    );
+  }
+
+  /// Check if this is the first time capturing a clipboard item
+  Future<bool> isFirstClipboardCapture() async {
+    const key = 'analytics_first_clipboard_capture';
+    final value = await _secureStorage.read(key: key);
+    if (value == null) {
+      await _secureStorage.write(key: key, value: 'true');
+      return true;
+    }
+    return false;
+  }
+}

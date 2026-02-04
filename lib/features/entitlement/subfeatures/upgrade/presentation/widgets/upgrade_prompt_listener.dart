@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/app_routes.gr.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
@@ -38,20 +39,41 @@ class UpgradePromptListener extends StatelessWidget {
           return;
         }
 
+        // Track upgrade prompt shown with source
+        final source = state.source;
+        final upgradeSource = _mapToUpgradeSource(source);
+        await Analytics.track(
+          AnalyticsEvent.upgradePromptShown,
+          UpgradePromptShownParams(source: upgradeSource).toMap(),
+        );
+
         await showDialog<void>(
           context: context,
           barrierDismissible: !isStartingCheckout,
           barrierColor: Colors.black.withValues(alpha: 0.55),
-          builder: (_) => Center(
-            child: UpgradePaywallSheet(
-              feature: feature,
-              monthlyProductId: monthlyProductId,
-              yearlyProductId: yearlyProductId,
-            ),
+          builder: (_) => UpgradePaywallSheet(
+            feature: feature,
+            monthlyProductId: monthlyProductId,
+            yearlyProductId: yearlyProductId,
           ),
         );
       },
       child: child,
     );
   }
+}
+
+/// Map ProFeatureRequestSource to UpgradeSource for analytics
+UpgradeSource _mapToUpgradeSource(ProFeatureRequestSource? source) {
+  return switch (source) {
+    ProFeatureRequestSource.historyLimitReached => UpgradeSource.limitHit,
+    ProFeatureRequestSource.extendedRetentionSettings ||
+    ProFeatureRequestSource.accountPage =>
+      UpgradeSource.settings,
+    ProFeatureRequestSource.pinButton ||
+    ProFeatureRequestSource.ignoredApps ||
+    ProFeatureRequestSource.autoSync =>
+      UpgradeSource.proGate,
+    null => UpgradeSource.proGate,
+  };
 }

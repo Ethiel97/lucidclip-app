@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
@@ -56,6 +57,13 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
           if (expiration.isExpired) {
             await localClipboardRepository.delete(item.id);
             deletedCount++;
+            
+            // Track item auto-deleted due to retention
+            await Analytics.track(
+              AnalyticsEvent.itemAutoDeleted,
+              ItemAutoDeletedParams(reason: DeletionReason.retention).toMap(),
+            );
+            
             developer.log(
               'Deleted expired clipboard item: ${item.id}',
               name: 'RetentionCleanupService',

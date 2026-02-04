@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
@@ -123,6 +124,14 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
                     const SizedBox(width: AppSpacing.md),
                     FilledButton(
                       onPressed: () {
+                        // Track upgrade clicked event
+                        Analytics.track(
+                          AnalyticsEvent.upgradeClicked,
+                          UpgradeClickedParams(
+                            source: _upgradeSourceFromContext(context),
+                          ).toMap(),
+                        );
+                        
                         context.read<BillingCubit>().startCheckout(
                           productId: _selected.productId,
                         );
@@ -290,4 +299,32 @@ class _PlanCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Get upgrade source from the current context
+/// This is a simplified version - ideally would track the actual source
+UpgradeSource _upgradeSourceFromContext(BuildContext context) {
+  // Try to get the source from the UpgradePromptCubit state if available
+  try {
+    final state = context.read<UpgradePromptCubit>().state;
+    final source = state.source;
+    return _mapToUpgradeSource(source);
+  } catch (_) {
+    return UpgradeSource.proGate;
+  }
+}
+
+/// Map ProFeatureRequestSource to UpgradeSource for analytics
+UpgradeSource _mapToUpgradeSource(ProFeatureRequestSource? source) {
+  return switch (source) {
+    ProFeatureRequestSource.historyLimitReached => UpgradeSource.limitHit,
+    ProFeatureRequestSource.extendedRetentionSettings ||
+    ProFeatureRequestSource.accountPage =>
+      UpgradeSource.settings,
+    ProFeatureRequestSource.pinButton ||
+    ProFeatureRequestSource.ignoredApps ||
+    ProFeatureRequestSource.autoSync =>
+      UpgradeSource.proGate,
+    null => UpgradeSource.proGate,
+  };
 }

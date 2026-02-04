@@ -82,6 +82,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     ),
   );
 
+  // Track app opened event (includes first launch detection)
+  final retentionTracker = RetentionTracker();
+  await retentionTracker.trackAppOpened();
+
   await Future.wait<void>([
     getIt<HotkeyManagerService>().registerDefaultHotkeys(),
     getIt<WindowController>().bootstrapWindow(),

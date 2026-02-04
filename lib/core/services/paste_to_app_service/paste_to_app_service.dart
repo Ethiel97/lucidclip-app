@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 
 const channelPasteToApp = 'lucidclip/paste_to_app';
 
@@ -20,6 +21,12 @@ class MethodChannelPasteToAppService implements PasteToAppService {
       final result = await _channel.invokeMethod<bool>('pasteToFrontmostApp', {
         'bundleId': bundleId,
       });
+      
+      // Track paste to app usage
+      if (result == true) {
+        await Analytics.track(AnalyticsEvent.pasteToAppUsed);
+      }
+      
       return result ?? false;
     } catch (e, stack) {
       log(

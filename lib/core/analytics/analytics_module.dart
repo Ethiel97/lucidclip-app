@@ -4,4 +4,5 @@ library;
 export 'analytics.dart';
 export 'analytics_events.dart';
 export 'analytics_service.dart';
+export 'retention_tracker.dart';
 export 'wiredash_analytics_service.dart';

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.11...v1.3.0) (2026-02-04)
+
+
+### Features
+
+* Add "Paste to App" with dedicated accessibility feature ([#89](https://github.com/Ethiel97/lucidclip-app/issues/89)) ([1717d34](https://github.com/Ethiel97/lucidclip-app/commit/1717d3497265d9373cef4b583a1ebee1018cc03a))
+
 ## [1.2.11](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.10...v1.2.11) (2026-02-03)
 
 

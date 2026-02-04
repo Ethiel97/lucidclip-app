@@ -222,4 +222,9 @@ jobs:
           npm i -g wrangler
           mkdir -p pages_out/macos
           cp updates/macos/appcast.xml pages_out/macos/appcast.xml
-          wrangler pages deploy pages_out --project-name "$PAGES_PROJECT"
+          
+          wrangler pages deploy pages_out \
+            --project-name="$PAGES_PROJECT" \
+            --branch=master \
+            --commit-dirty=true \
+            --commit-message="Deploy macOS appcast for ${{ github.event.release.tag_name }}"

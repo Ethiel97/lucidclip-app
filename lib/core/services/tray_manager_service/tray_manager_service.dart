@@ -330,11 +330,12 @@ class TrayManagerService with TrayListener {
   Future<void> _copyLastItem() async {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
+      final clipboardDetailCubit = getIt<ClipboardDetailCubit>();
       final clipboardItems = clipboardCubit.state.clipboardItems.data;
 
       if (clipboardItems.isNotEmpty) {
         final lastItem = clipboardItems.first;
-        await clipboardCubit.copyToClipboard(lastItem);
+        await clipboardDetailCubit.copyToClipboard(lastItem);
       }
     } catch (e, stackTrace) {
       developer.log(

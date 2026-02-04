@@ -9,9 +9,7 @@ import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/accessibility/accessibility.dart';
-import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -50,9 +48,6 @@ class ClipboardContextMenu extends StatefulWidget {
 }
 
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
-  // Duration to wait for clipboard to be synchronized with system clipboard
-  static const _clipboardSyncDelay = Duration(milliseconds: 100);
-
   SourceApp? _previousApp;
 
   @override
@@ -180,29 +175,10 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       return;
     }
 
-    final accessibilityCubit = context.read<AccessibilityCubit>();
-    final clipboardCubit = context.read<ClipboardCubit>();
-    final pasteService = getIt<PasteToAppService>();
-
-    // Check if we have accessibility permission
-    if (!accessibilityCubit.state.hasPermission) {
-      // Request permission through the cubit (will show custom dialog)
-      await accessibilityCubit.requestPermission();
-
-      // Check again if permission was granted
-      if (!accessibilityCubit.state.hasPermission) {
-        return;
-      }
-    }
-
-    // Copy the clipboard item to system clipboard first
-    await clipboardCubit.copyToClipboard(widget.clipboardItem);
-
-    // Wait for clipboard to be synchronized
-    await Future<void>.delayed(_clipboardSyncDelay);
-
-    // Paste to the previous app
-    await pasteService.pasteToApp(_previousApp!.bundleId);
+    await context.read<ClipboardDetailCubit>().handlePasteToApp(
+      clipboardItem: widget.clipboardItem,
+      bundleId: _previousApp!.bundleId,
+    );
   }
 
   Widget _buildMenuTile({
@@ -277,7 +253,9 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         return;
 
       case ClipboardMenuAction.appendToClipboard:
-        context.read<ClipboardCubit>().copyToClipboard(widget.clipboardItem);
+        context.read<ClipboardDetailCubit>().copyToClipboard(
+          widget.clipboardItem,
+        );
         return;
 
       case ClipboardMenuAction.clearHistory:

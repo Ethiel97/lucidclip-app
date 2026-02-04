@@ -39,6 +39,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get couldNotPasteToApp =>
+      'Sorry! We couldn\'t paste to the app Please try again.';
+
+  @override
   String appNoLongerTrackedDescription(String appName) {
     return 'ClipboardItem from $appName will no longer be saved. You can change this in the Settings.';
   }

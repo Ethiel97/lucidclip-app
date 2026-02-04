@@ -53,6 +53,10 @@
       }
     }
   },
+  "couldNotPasteToApp": "Sorry! We couldn't paste to the app Please try again.",
+  "@couldNottPasteToApp": {
+    "description": "Error message shown when unable to paste to a specific app"
+  },
   "appNoLongerTrackedDescription": "ClipboardItem from {appName} will no longer be saved. You can change this in the Settings.",
   "@appNoLongerTrackedDescription": {
     "description": "Description shown when an app is no longer tracked",

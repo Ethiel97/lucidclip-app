@@ -123,6 +123,17 @@ class _ClipboardViewState extends State<ClipboardView>
             }
           },
         ),
+        BlocListener<ClipboardDetailCubit, ClipboardDetailState>(
+          listenWhen: (previous, current) =>
+              previous.pasteToAppStatus != current.pasteToAppStatus,
+          listener: (context, state) {
+            if (state.pasteToAppStatus?.isError ?? false) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(context.l10n.couldNotPasteToApp)),
+              );
+            }
+          },
+        ),
       ],
       child: Scaffold(
         body: Stack(
@@ -215,7 +226,7 @@ class _ClipboardViewState extends State<ClipboardView>
                 onCopyPressed: () {
                   if (hasClipboardItem) {
                     final clipboardItem = selectedClipboardItem!.data;
-                    context.read<ClipboardCubit>().copyToClipboard(
+                    context.read<ClipboardDetailCubit>().copyToClipboard(
                       clipboardItem,
                     );
                   }

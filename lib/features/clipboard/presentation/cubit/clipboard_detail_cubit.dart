@@ -3,26 +3,34 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
-import 'package:lucid_clip/features/clipboard/domain/domain.dart';
+import 'package:lucid_clip/features/accessibility/accessibility.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 part 'clipboard_detail_state.dart';
 
 @lazySingleton
 class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
   ClipboardDetailCubit({
+    required this.accessibilityRepository,
+    required this.clipboardManager,
     required this.deviceIdProvider,
     required this.localClipboardRepository,
     required this.localClipboardOutboxRepository,
+    required this.pasteToAppService,
   }) : super(const ClipboardDetailState()) {
     _init();
   }
 
+  final AccessibilityRepository accessibilityRepository;
+  final BaseClipboardManager clipboardManager;
   final DeviceIdProvider deviceIdProvider;
   final LocalClipboardRepository localClipboardRepository;
   final LocalClipboardOutboxRepository localClipboardOutboxRepository;
+  final PasteToAppService pasteToAppService;
 
   late final String _deviceId;
 
@@ -61,6 +69,47 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
           togglePinStatus: null.toError(),
         ),
       );
+    }
+  }
+
+  Future<void> copyToClipboard(ClipboardItem item) async {
+    try {
+      await clipboardManager.setClipboardContent(item.toInfrastructure());
+    } catch (e, stackTrace) {
+      log(
+        'Failed to copy content to clipboard',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'ClipboardCubit',
+      );
+    }
+  }
+
+  Future<void> handlePasteToApp({
+    required String bundleId,
+    required ClipboardItem clipboardItem,
+  }) async {
+    try {
+      final hasPermission = await accessibilityRepository.checkPermission();
+      if (!hasPermission) {
+        await accessibilityRepository.requestPermission();
+        return;
+      }
+
+      await copyToClipboard(clipboardItem);
+
+      emit(
+        state.copyWith(pasteToAppStatus: state.pasteToAppStatus.toLoading()),
+      );
+
+      await pasteToAppService.pasteToApp(bundleId);
+
+      emit(
+        state.copyWith(pasteToAppStatus: state.pasteToAppStatus.toSuccess()),
+      );
+    } catch (e, stack) {
+      log('Error pasting to app: $e', stackTrace: stack);
+      emit(state.copyWith(pasteToAppStatus: state.pasteToAppStatus.toError()));
     }
   }
 

@@ -110,6 +110,7 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() {
     _permissionStatusSubscription?.cancel();

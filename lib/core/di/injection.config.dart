@@ -273,6 +273,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i464.AccessibilityCubit(
         repository: gh<_i23.AccessibilityRepository>(),
       ),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i387.EntitlementRemoteDataSource>(
       () => _i670.SupabaseEntitlementRemoteDataSource(
@@ -298,14 +299,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i212.CacheSerializer<_i51.SourceAppModel, String>>(
       () => cacheModule.sourceAppJsonSerializer(
         gh<_i212.CacheService<_i100.Uint8List>>(instanceName: 'iconCache'),
-      ),
-    );
-    gh.lazySingleton<_i68.ClipboardDetailCubit>(
-      () => _i68.ClipboardDetailCubit(
-        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
-        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
-        localClipboardOutboxRepository:
-            gh<_i782.LocalClipboardOutboxRepository>(),
       ),
     );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
@@ -408,6 +401,17 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i958.LocalSettingsRepositoryImpl(
         iconService: gh<_i212.SourceAppIconService>(),
         localDataSource: gh<_i739.SettingsLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(
+        accessibilityRepository: gh<_i23.AccessibilityRepository>(),
+        clipboardManager: gh<_i108.BaseClipboardManager>(),
+        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        localClipboardOutboxRepository:
+            gh<_i42.LocalClipboardOutboxRepository>(),
+        pasteToAppService: gh<_i212.PasteToAppService>(),
       ),
     );
     gh.lazySingleton<_i966.SettingsCubit>(

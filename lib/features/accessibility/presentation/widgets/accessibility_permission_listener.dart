@@ -15,7 +15,8 @@ class AccessibilityPermissionListener extends StatelessWidget {
     listeners: [
       SafeBlocListener<AccessibilityCubit, AccessibilityState>(
         listenWhen: (previous, current) =>
-            previous.showPermissionDialog != current.showPermissionDialog,
+            previous.showPermissionDialog != current.showPermissionDialog ||
+            previous.hasPermission != current.hasPermission,
         listener: (context, state) async {
           if (state.showPermissionDialog) {
             await showDialog<void>(
@@ -24,23 +25,10 @@ class AccessibilityPermissionListener extends StatelessWidget {
               builder: (_) => const AccessibilityPermissionDialog(),
             );
           }
-        },
-      ),
 
-      SafeBlocListener<AccessibilityCubit, AccessibilityState>(
-        listenWhen: (previous, current) =>
-            previous.showPermissionDialog != current.showPermissionDialog ||
-            previous.hasPermission != current.hasPermission,
-        listener: (context, state) {
-          if (state.showPermissionDialog) {
-            getIt<WindowController>().setSafeAlwaysOnTop(alwaysOnTop: false);
-
-            return;
-          }
-
-          if (!state.showPermissionDialog || state.hasPermission) {
-            getIt<WindowController>().setSafeAlwaysOnTop();
-          }
+          await getIt<WindowController>().setSafeAlwaysOnTop(
+            alwaysOnTop: !state.showPermissionDialog,
+          );
         },
       ),
     ],

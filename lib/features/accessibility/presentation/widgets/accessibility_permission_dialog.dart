@@ -87,8 +87,8 @@ class AccessibilityPermissionDialog extends StatelessWidget {
                   child: FilledButton(
                     onPressed: () {
                       context.pop();
-                      getIt<WindowController>().hide();
                       context.read<AccessibilityCubit>().grantPermission();
+                      getIt<WindowController>().hide();
                     },
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(

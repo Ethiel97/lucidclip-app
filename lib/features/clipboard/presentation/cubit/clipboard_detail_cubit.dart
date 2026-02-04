@@ -80,7 +80,7 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         'Failed to copy content to clipboard',
         error: e,
         stackTrace: stackTrace,
-        name: 'ClipboardCubit',
+        name: 'ClipboardDetailCubit',
       );
     }
   }
@@ -101,6 +101,8 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
       emit(
         state.copyWith(pasteToAppStatus: state.pasteToAppStatus.toLoading()),
       );
+      //Wait for clipboard to sync
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       await pasteToAppService.pasteToApp(bundleId);
 

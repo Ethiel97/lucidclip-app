@@ -50,25 +50,27 @@ class ClipboardContextMenu extends StatefulWidget {
 class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   SourceApp? _previousApp;
 
+  final windowController = getIt<WindowController>();
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final windowController = getIt<WindowController>();
-      setState(() {
-        _previousApp = windowController.previousFrontmostApp;
-      });
-    });
+
+    _previousApp = windowController.previousFrontmostApp;
   }
 
   @override
   void didUpdateWidget(covariant ClipboardContextMenu oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Update previous app if needed
-    final windowController = getIt<WindowController>();
-    setState(() {
-      _previousApp = windowController.previousFrontmostApp;
-    });
+
+    if (oldWidget.clipboardItem != widget.clipboardItem) {
+      if (windowController.previousFrontmostApp != _previousApp) {
+        setState(() {
+          _previousApp = windowController.previousFrontmostApp;
+        });
+      }
+    }
   }
 
   // --- Sections -------------------------------------------------------------

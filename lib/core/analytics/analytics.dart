@@ -23,7 +23,7 @@ class Analytics {
   /// Track an event with optional parameters
   static Future<void> track(
     String eventName, [
-    Map<String, dynamic>? parameters,
+    Map<String, Object>? parameters,
   ]) async {
     await _instance?.track(eventName, parameters);
   }

@@ -47,11 +47,11 @@ class AppConstants {
 
   static final wiredashProjectId =
       dotenv.env['WIREDASH_PROJECT_ID'] ??
-      const String.fromEnvironment('WIREDASH_PROJECT_ID', defaultValue: '');
+      const String.fromEnvironment('WIREDASH_PROJECT_ID');
 
   static final wiredashSecret =
       dotenv.env['WIREDASH_SECRET'] ??
-      const String.fromEnvironment('WIREDASH_SECRET', defaultValue: '');
+      const String.fromEnvironment('WIREDASH_SECRET');
 
   static const clipboardItemDetailsViewWidth = 380.0;
   static const clipboardSidebarWidth = 220.0;

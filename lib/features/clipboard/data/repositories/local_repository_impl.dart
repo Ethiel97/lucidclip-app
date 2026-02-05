@@ -188,7 +188,7 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
       // Track that free limit was reached
       await Analytics.track(
         AnalyticsEvent.freeLimitReached,
-        FreeLimitReachedParams(limitType: LimitType.historySize).toMap(),
+        const FreeLimitReachedParams(limitType: LimitType.historySize).toMap(),
       );
       
       final oldestUnpinned = items
@@ -205,7 +205,7 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
         // Track item auto-deleted due to manual cleanup (limit reached)
         await Analytics.track(
           AnalyticsEvent.itemAutoDeleted,
-          ItemAutoDeletedParams(reason: DeletionReason.manualCleanup).toMap(),
+          const ItemAutoDeletedParams(reason: DeletionReason.manualCleanup).toMap(),
         );
       }
     }

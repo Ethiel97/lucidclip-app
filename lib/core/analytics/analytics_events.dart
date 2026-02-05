@@ -13,7 +13,8 @@ class AnalyticsEvent {
       'permission_accessibility_requested';
   static const permissionAccessibilityGranted =
       'permission_accessibility_granted';
-  static const permissionAccessibilityDenied = 'permission_accessibility_denied';
+  static const permissionAccessibilityDenied =
+      'permission_accessibility_denied';
   static const clipboardFirstItemCaptured = 'clipboard_first_item_captured';
 
   // Usage events
@@ -43,6 +44,7 @@ enum LimitType {
   excludedApps('excluded_apps');
 
   const LimitType(this.value);
+
   final String value;
 }
 
@@ -52,6 +54,7 @@ enum DeletionReason {
   manualCleanup('manual_cleanup');
 
   const DeletionReason(this.value);
+
   final String value;
 }
 
@@ -63,6 +66,7 @@ enum UpgradeSource {
   proGate('pro_gate');
 
   const UpgradeSource(this.value);
+
   final String value;
 }
 
@@ -74,6 +78,7 @@ enum DayBucket {
   d30('d30');
 
   const DayBucket(this.value);
+
   final String value;
 
   /// Calculate the day bucket based on days since first launch
@@ -92,7 +97,7 @@ class FreeLimitReachedParams {
 
   final LimitType limitType;
 
-  Map<String, dynamic> toMap() => {'limit_type': limitType.value};
+  Map<String, Object> toMap() => {'limit_type': limitType.value};
 }
 
 class ItemAutoDeletedParams {
@@ -100,7 +105,7 @@ class ItemAutoDeletedParams {
 
   final DeletionReason reason;
 
-  Map<String, dynamic> toMap() => {'reason': reason.value};
+  Map<String, Object> toMap() => {'reason': reason.value};
 }
 
 class UpgradePromptShownParams {
@@ -108,7 +113,7 @@ class UpgradePromptShownParams {
 
   final UpgradeSource source;
 
-  Map<String, dynamic> toMap() => {'source': source.value};
+  Map<String, Object> toMap() => {'source': source.value};
 }
 
 class UpgradeClickedParams {
@@ -116,7 +121,7 @@ class UpgradeClickedParams {
 
   final UpgradeSource source;
 
-  Map<String, dynamic> toMap() => {'source': source.value};
+  Map<String, Object> toMap() => {'source': source.value};
 }
 
 class AppOpenedParams {
@@ -124,5 +129,5 @@ class AppOpenedParams {
 
   final DayBucket dayBucket;
 
-  Map<String, dynamic> toMap() => {'day_bucket': dayBucket.value};
+  Map<String, Object> toMap() => {'day_bucket': dayBucket.value};
 }

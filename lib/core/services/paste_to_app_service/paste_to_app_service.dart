@@ -23,7 +23,7 @@ class MethodChannelPasteToAppService implements PasteToAppService {
       });
       
       // Track paste to app usage
-      if (result == true) {
+      if (result ?? false) {
         await Analytics.track(AnalyticsEvent.pasteToAppUsed);
       }
       

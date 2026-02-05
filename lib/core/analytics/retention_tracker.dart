@@ -6,7 +6,7 @@ import 'package:lucid_clip/core/storage/storage.dart';
 @lazySingleton
 class RetentionTracker {
   RetentionTracker({required SecureStorageService secureStorageService})
-      : _secureStorage = secureStorageService;
+    : _secureStorage = secureStorageService;
 
   final SecureStorageService _secureStorage;
 
@@ -26,19 +26,21 @@ class RetentionTracker {
         value: now.toIso8601String(),
       );
       await Analytics.track(AnalyticsEvent.appFirstLaunch);
-      
+
       // Track app_opened with d0 bucket
       await Analytics.track(
         AnalyticsEvent.appOpened,
-        AppOpenedParams(dayBucket: DayBucket.d0).toMap(),
+        const AppOpenedParams(dayBucket: DayBucket.d0).toMap(),
       );
     } else {
       // Calculate days since first launch
       final firstLaunch = DateTime.parse(firstLaunchStr);
       final daysSinceFirstLaunch = now.difference(firstLaunch).inDays;
-      
-      final dayBucket = DayBucket.fromDaysSinceFirstLaunch(daysSinceFirstLaunch);
-      
+
+      final dayBucket = DayBucket.fromDaysSinceFirstLaunch(
+        daysSinceFirstLaunch,
+      );
+
       await Analytics.track(
         AnalyticsEvent.appOpened,
         AppOpenedParams(dayBucket: dayBucket).toMap(),

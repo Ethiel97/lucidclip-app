@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_service.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
@@ -32,7 +32,10 @@ class FirebaseAnalyticsService implements AnalyticsService {
   bool get isEnabled => AppConstants.isProd || enabledInDebug;
 
   @override
-  Future<void> track(String eventName, [Map<String, dynamic>? parameters]) async {
+  Future<void> track(
+    String eventName, [
+    Map<String, Object>? parameters,
+  ]) async {
     if (!isEnabled) {
       // Skip tracking in disabled environments
       return;
@@ -44,15 +47,15 @@ class FirebaseAnalyticsService implements AnalyticsService {
       // - Cannot start with a number
       // - Can only contain alphanumeric characters and underscores
       final sanitizedName = _sanitizeEventName(eventName);
-      
+
       // Track the event using Firebase Analytics
-      await _analytics.logEvent(
-        name: sanitizedName,
-        parameters: parameters,
-      );
+      await _analytics.logEvent(name: sanitizedName, parameters: parameters);
     } catch (e) {
       // Silently fail - analytics errors should not crash the app
-      debugPrint('Analytics error tracking event "$eventName": $e');
+      log(
+        'Analytics error tracking event "$eventName": $e',
+        name: 'FirebaseAnalyticsService',
+      );
     }
   }
 
@@ -67,7 +70,10 @@ class FirebaseAnalyticsService implements AnalyticsService {
       // Note: Only use hashed/anonymous identifiers, never PII
       await _analytics.setUserId(id: userId);
     } catch (e) {
-      debugPrint('Analytics error identifying user: $e');
+      log(
+        'Analytics error identifying user: $e',
+        name: 'FirebaseAnalyticsService',
+      );
     }
   }
 
@@ -79,9 +85,12 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
     try {
       // Clear user identification
-      await _analytics.setUserId(id: null);
+      await _analytics.setUserId();
     } catch (e) {
-      debugPrint('Analytics error clearing identity: $e');
+      log(
+        'Analytics error clearing identity: $e',
+        name: 'FirebaseAnalyticsService',
+      );
     }
   }
 
@@ -91,23 +100,23 @@ class FirebaseAnalyticsService implements AnalyticsService {
     // - Must be <= 40 characters
     // - Can only contain letters, numbers, and underscores
     // - Cannot start with a number
-    
+
     var sanitized = eventName
         .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9_]'), '_')
-        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp('[^a-z0-9_]'), '_')
+        .replaceAll(RegExp('_+'), '_')
         .replaceAll(RegExp(r'^_|_$'), '');
-    
+
     // Ensure it doesn't start with a number
     if (sanitized.isNotEmpty && RegExp(r'^\d').hasMatch(sanitized)) {
       sanitized = 'event_$sanitized';
     }
-    
+
     // Truncate to 40 characters if needed
     if (sanitized.length > 40) {
       sanitized = sanitized.substring(0, 40);
     }
-    
+
     return sanitized;
   }
 }

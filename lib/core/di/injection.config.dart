@@ -14,10 +14,16 @@ import 'dart:typed_data' as _i100;
 import 'package:app_links/app_links.dart' as _i327;
 import 'package:auto_updater/auto_updater.dart' as _i890;
 import 'package:dio/dio.dart' as _i361;
+import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:lucid_clip/core/analytics/analytics_module.dart' as _i169;
+import 'package:lucid_clip/core/analytics/analytics_service.dart' as _i616;
+import 'package:lucid_clip/core/analytics/firebase_analytics_service.dart'
+    as _i666;
+import 'package:lucid_clip/core/analytics/retention_tracker.dart' as _i936;
 import 'package:lucid_clip/core/clipboard_manager/base_clipboard_manager.dart'
     as _i1016;
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart'
@@ -26,6 +32,9 @@ import 'package:lucid_clip/core/clipboard_manager/impl/flutter_clipboard_manager
     as _i647;
 import 'package:lucid_clip/core/di/cache_module.dart' as _i529;
 import 'package:lucid_clip/core/di/third_party_module.dart' as _i778;
+import 'package:lucid_clip/core/feedback/feedback_service.dart' as _i15;
+import 'package:lucid_clip/core/feedback/wiredash_feedback_service.dart'
+    as _i193;
 import 'package:lucid_clip/core/network/dio_auth_interceptor.dart' as _i826;
 import 'package:lucid_clip/core/network/dio_module.dart' as _i957;
 import 'package:lucid_clip/core/network/impl/dio_http_client.dart' as _i762;
@@ -175,6 +184,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => cacheModule.uint8ListBytesSerializer(),
     );
     gh.lazySingleton<_i59.FirebaseAuth>(() => thirdPartyModule.firebaseAuth);
+    gh.lazySingleton<_i398.FirebaseAnalytics>(
+      () => thirdPartyModule.firebaseAnalytics,
+    );
     gh.lazySingleton<_i454.SupabaseClient>(() => thirdPartyModule.supabase);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
@@ -207,6 +219,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i80.PasteToAppService>(
       () => _i80.MethodChannelPasteToAppService(),
     );
+    gh.lazySingleton<String>(
+      () => thirdPartyModule.wiredashSecret,
+      instanceName: 'wiredashSecret',
+    );
+    gh.lazySingleton<String>(
+      () => thirdPartyModule.wiredashProjectId,
+      instanceName: 'wiredashProjectId',
+    );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
@@ -217,6 +237,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i387.EntitlementLocalDataSource>(
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
+    );
+    gh.lazySingleton<_i936.RetentionTracker>(
+      () => _i936.RetentionTracker(
+        secureStorageService: gh<_i407.SecureStorageService>(),
+      ),
     );
     gh.lazySingleton<_i500.AppUpdateService>(
       () => _i500.AppUpdateServiceImpl(
@@ -251,6 +276,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i616.AnalyticsService>(
+      () => _i666.FirebaseAnalyticsService(
+        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
+        enabledInDebug: gh<bool>(),
+      ),
+    );
     gh.lazySingleton<_i72.SettingsLocalDataSource>(
       () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
     );
@@ -275,6 +306,12 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i23.AccessibilityRepository>(),
       ),
       dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i15.FeedbackService>(
+      () => _i193.WiredashFeedbackService(
+        wiredashProjectId: gh<String>(instanceName: 'wiredashProjectId'),
+        wiredashSecret: gh<String>(instanceName: 'wiredashSecret'),
+      ),
     );
     gh.lazySingleton<_i387.EntitlementRemoteDataSource>(
       () => _i670.SupabaseEntitlementRemoteDataSource(
@@ -449,6 +486,7 @@ extension GetItInjectableX on _i174.GetIt {
         localSettingsRepository: gh<_i761.LocalSettingsRepository>(),
         remoteSettingsRepository: gh<_i761.SettingsRepository>(),
         retentionCleanupService: gh<_i42.RetentionCleanupService>(),
+        retentionTracker: gh<_i169.RetentionTracker>(),
       ),
       dispose: (i) => i.close(),
     );

@@ -61,7 +61,7 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
             // Track item auto-deleted due to retention
             await Analytics.track(
               AnalyticsEvent.itemAutoDeleted,
-              ItemAutoDeletedParams(reason: DeletionReason.retention).toMap(),
+              const ItemAutoDeletedParams(reason: DeletionReason.retention).toMap(),
             );
             
             developer.log(

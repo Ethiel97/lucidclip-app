@@ -13,7 +13,7 @@ abstract class AnalyticsService {
   ///
   /// [eventName] - The name of the event to track
   /// [parameters] - Optional parameters for the event (must not contain PII)
-  Future<void> track(String eventName, [Map<String, dynamic>? parameters]);
+  Future<void> track(String eventName, [Map<String, Object>? parameters]);
 
   /// Identify a user (if applicable)
   /// Note: Should only use anonymous/hashed identifiers, never PII

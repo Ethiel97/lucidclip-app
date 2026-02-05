@@ -5,9 +5,7 @@ part 'clipboard_item_tag_model.g.dart';
 
 typedef ClipboardItemTagModels = List<ClipboardItemTagModel>;
 
-@JsonSerializable(
-  explicitToJson: true,
-)
+@JsonSerializable(explicitToJson: true)
 class ClipboardItemTagModel {
   ClipboardItemTagModel({
     required this.clipboardItemId,

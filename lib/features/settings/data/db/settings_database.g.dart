@@ -8,7 +8,9 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
+
   $UserSettingsEntriesTable(this.attachedDatabase, [this._alias]);
+
   static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
   @override
   late final GeneratedColumn<String> userId = GeneratedColumn<String>(
@@ -206,6 +208,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
         type: DriftSqlType.dateTime,
         requiredDuringInsert: false,
       );
+
   @override
   List<GeneratedColumn> get $columns => [
     userId,
@@ -225,11 +228,14 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
     incognitoSessionDurationMinutes,
     incognitoSessionEndTime,
   ];
+
   @override
   String get aliasedName => _alias ?? actualTableName;
+
   @override
   String get actualTableName => $name;
   static const String $name = 'user_settings_entries';
+
   @override
   VerificationContext validateIntegrity(
     Insertable<UserSettingsEntry> instance, {
@@ -374,6 +380,7 @@ class $UserSettingsEntriesTable extends UserSettingsEntries
 
   @override
   Set<GeneratedColumn> get $primaryKey => {userId};
+
   @override
   UserSettingsEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -469,6 +476,7 @@ class UserSettingsEntry extends DataClass
   final DateTime updatedAt;
   final int? incognitoSessionDurationMinutes;
   final DateTime? incognitoSessionEndTime;
+
   const UserSettingsEntry({
     required this.userId,
     required this.theme,
@@ -487,6 +495,7 @@ class UserSettingsEntry extends DataClass
     this.incognitoSessionDurationMinutes,
     this.incognitoSessionEndTime,
   });
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -573,6 +582,7 @@ class UserSettingsEntry extends DataClass
       ),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -639,6 +649,7 @@ class UserSettingsEntry extends DataClass
         ? incognitoSessionEndTime.value
         : this.incognitoSessionEndTime,
   );
+
   UserSettingsEntry copyWithCompanion(UserSettingsEntriesCompanion data) {
     return UserSettingsEntry(
       userId: data.userId.present ? data.userId.value : this.userId,
@@ -725,6 +736,7 @@ class UserSettingsEntry extends DataClass
     incognitoSessionDurationMinutes,
     incognitoSessionEndTime,
   );
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -766,6 +778,7 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   final Value<int?> incognitoSessionDurationMinutes;
   final Value<DateTime?> incognitoSessionEndTime;
   final Value<int> rowid;
+
   const UserSettingsEntriesCompanion({
     this.userId = const Value.absent(),
     this.theme = const Value.absent(),
@@ -785,6 +798,7 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
     this.incognitoSessionEndTime = const Value.absent(),
     this.rowid = const Value.absent(),
   });
+
   UserSettingsEntriesCompanion.insert({
     required String userId,
     this.theme = const Value.absent(),
@@ -806,6 +820,7 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
   }) : userId = Value(userId),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
+
   static Insertable<UserSettingsEntry> custom({
     Expression<String>? userId,
     Expression<String>? theme,
@@ -982,12 +997,15 @@ class UserSettingsEntriesCompanion extends UpdateCompanion<UserSettingsEntry> {
 
 abstract class _$SettingsDatabase extends GeneratedDatabase {
   _$SettingsDatabase(QueryExecutor e) : super(e);
+
   $SettingsDatabaseManager get managers => $SettingsDatabaseManager(this);
   late final $UserSettingsEntriesTable userSettingsEntries =
       $UserSettingsEntriesTable(this);
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [userSettingsEntries];
 }
@@ -1042,6 +1060,7 @@ class $$UserSettingsEntriesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   ColumnFilters<String> get userId => $composableBuilder(
     column: $table.userId,
     builder: (column) => ColumnFilters(column),
@@ -1132,6 +1151,7 @@ class $$UserSettingsEntriesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   ColumnOrderings<String> get userId => $composableBuilder(
     column: $table.userId,
     builder: (column) => ColumnOrderings(column),
@@ -1223,6 +1243,7 @@ class $$UserSettingsEntriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   GeneratedColumn<String> get userId =>
       $composableBuilder(column: $table.userId, builder: (column) => column);
 
@@ -1446,7 +1467,9 @@ typedef $$UserSettingsEntriesTableProcessedTableManager =
 
 class $SettingsDatabaseManager {
   final _$SettingsDatabase _db;
+
   $SettingsDatabaseManager(this._db);
+
   $$UserSettingsEntriesTableTableManager get userSettingsEntries =>
       $$UserSettingsEntriesTableTableManager(_db, _db.userSettingsEntries);
 }

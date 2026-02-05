@@ -8,7 +8,9 @@ class $EntitlementEntriesTable extends EntitlementEntries
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
+
   $EntitlementEntriesTable(this.attachedDatabase, [this._alias]);
+
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
@@ -79,6 +81,7 @@ class $EntitlementEntriesTable extends EntitlementEntries
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -89,11 +92,14 @@ class $EntitlementEntriesTable extends EntitlementEntries
     updatedAt,
     validUntil,
   ];
+
   @override
   String get aliasedName => _alias ?? actualTableName;
+
   @override
   String get actualTableName => $name;
   static const String $name = 'entitlement_entries';
+
   @override
   VerificationContext validateIntegrity(
     Insertable<EntitlementEntry> instance, {
@@ -157,6 +163,7 @@ class $EntitlementEntriesTable extends EntitlementEntries
 
   @override
   Set<GeneratedColumn> get $primaryKey => {userId};
+
   @override
   EntitlementEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -207,6 +214,7 @@ class EntitlementEntry extends DataClass
   final String status;
   final DateTime updatedAt;
   final DateTime? validUntil;
+
   const EntitlementEntry({
     required this.id,
     required this.userId,
@@ -216,6 +224,7 @@ class EntitlementEntry extends DataClass
     required this.updatedAt,
     this.validUntil,
   });
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -260,6 +269,7 @@ class EntitlementEntry extends DataClass
       validUntil: serializer.fromJson<DateTime?>(json['validUntil']),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -291,6 +301,7 @@ class EntitlementEntry extends DataClass
     updatedAt: updatedAt ?? this.updatedAt,
     validUntil: validUntil.present ? validUntil.value : this.validUntil,
   );
+
   EntitlementEntry copyWithCompanion(EntitlementEntriesCompanion data) {
     return EntitlementEntry(
       id: data.id.present ? data.id.value : this.id,
@@ -322,6 +333,7 @@ class EntitlementEntry extends DataClass
   @override
   int get hashCode =>
       Object.hash(id, userId, pro, source, status, updatedAt, validUntil);
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -344,6 +356,7 @@ class EntitlementEntriesCompanion extends UpdateCompanion<EntitlementEntry> {
   final Value<DateTime> updatedAt;
   final Value<DateTime?> validUntil;
   final Value<int> rowid;
+
   const EntitlementEntriesCompanion({
     this.id = const Value.absent(),
     this.userId = const Value.absent(),
@@ -354,6 +367,7 @@ class EntitlementEntriesCompanion extends UpdateCompanion<EntitlementEntry> {
     this.validUntil = const Value.absent(),
     this.rowid = const Value.absent(),
   });
+
   EntitlementEntriesCompanion.insert({
     required String id,
     required String userId,
@@ -369,6 +383,7 @@ class EntitlementEntriesCompanion extends UpdateCompanion<EntitlementEntry> {
        source = Value(source),
        status = Value(status),
        updatedAt = Value(updatedAt);
+
   static Insertable<EntitlementEntry> custom({
     Expression<String>? id,
     Expression<String>? userId,
@@ -461,12 +476,15 @@ class EntitlementEntriesCompanion extends UpdateCompanion<EntitlementEntry> {
 
 abstract class _$EntitlementDatabase extends GeneratedDatabase {
   _$EntitlementDatabase(QueryExecutor e) : super(e);
+
   $EntitlementDatabaseManager get managers => $EntitlementDatabaseManager(this);
   late final $EntitlementEntriesTable entitlementEntries =
       $EntitlementEntriesTable(this);
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [entitlementEntries];
 }
@@ -503,6 +521,7 @@ class $$EntitlementEntriesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -548,6 +567,7 @@ class $$EntitlementEntriesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -593,6 +613,7 @@ class $$EntitlementEntriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -727,7 +748,9 @@ typedef $$EntitlementEntriesTableProcessedTableManager =
 
 class $EntitlementDatabaseManager {
   final _$EntitlementDatabase _db;
+
   $EntitlementDatabaseManager(this._db);
+
   $$EntitlementEntriesTableTableManager get entitlementEntries =>
       $$EntitlementEntriesTableTableManager(_db, _db.entitlementEntries);
 }

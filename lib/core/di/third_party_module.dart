@@ -47,12 +47,6 @@ abstract class ThirdPartyModule {
   @lazySingleton
   AutoUpdater get autoUpdater => AutoUpdater.instance;
 
-  // WireDash configuration for feedback service
-  @Named('wiredashProjectId')
-  @lazySingleton
-  String get wiredashProjectId => AppConstants.wiredashProjectId;
-
-  @Named('wiredashSecret')
-  @lazySingleton
-  String get wiredashSecret => AppConstants.wiredashSecret;
+  @Named('analyticsEnabled')
+  bool get analyticsEnable => AppConstants.isProd;
 }

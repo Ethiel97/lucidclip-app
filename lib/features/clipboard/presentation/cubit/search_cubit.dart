@@ -167,7 +167,7 @@ class SearchCubit extends Cubit<SearchState> {
     final trimmedQuery = query.trim();
     emit(state.copyWith(query: trimmedQuery, searchResults: null.toLoading()));
     _applyFilter(trimmedQuery);
-    
+
     // Track search event (only when there's a non-empty query)
     if (trimmedQuery.isNotEmpty) {
       Analytics.track(AnalyticsEvent.searchUsed);

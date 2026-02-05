@@ -21,12 +21,12 @@ class MethodChannelPasteToAppService implements PasteToAppService {
       final result = await _channel.invokeMethod<bool>('pasteToFrontmostApp', {
         'bundleId': bundleId,
       });
-      
+
       // Track paste to app usage
       if (result ?? false) {
         await Analytics.track(AnalyticsEvent.pasteToAppUsed);
       }
-      
+
       return result ?? false;
     } catch (e, stack) {
       log(

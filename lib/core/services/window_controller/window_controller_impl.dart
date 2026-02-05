@@ -226,6 +226,14 @@ class WindowControllerImpl implements WindowController {
       await showAsOverlay();
     });
   }
+
+  @override
+  Future<void> quit() async {
+    await windowManager.setPreventClose(false);
+    await windowManager.destroy();
+
+    await dispose();
+  }
 }
 
 extension WindowControllerSafe on WindowController {

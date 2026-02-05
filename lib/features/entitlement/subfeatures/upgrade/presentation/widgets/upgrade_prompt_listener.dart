@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,9 +44,12 @@ class UpgradePromptListener extends StatelessWidget {
         // Track upgrade prompt shown with source
         final source = state.source;
         final upgradeSource = mapProFeatureSourceToUpgradeSource(source);
-        await Analytics.track(
-          AnalyticsEvent.upgradePromptShown,
-          UpgradePromptShownParams(source: upgradeSource).toMap(),
+
+        unawaited(
+          Analytics.track(
+            AnalyticsEvent.upgradePromptShown,
+            UpgradePromptShownParams(source: upgradeSource).toMap(),
+          ),
         );
 
         await showDialog<void>(

@@ -65,14 +65,14 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
       await _localSubscription?.cancel();
       _localSubscription = entitlementRepository.watchLocal(userId).listen((e) {
         log('EntitlementCubit: local entitlement updated: $e');
-        
+
         // Track pro activation when transitioning from non-pro to pro
         final wasProActive = state.entitlement.value?.isProActive ?? false;
         final isNowProActive = e?.isProActive ?? false;
         if (!wasProActive && isNowProActive) {
           Analytics.track(AnalyticsEvent.proActivated);
         }
-        
+
         emit(state.copyWith(entitlement: state.entitlement.toSuccess(e)));
       });
 

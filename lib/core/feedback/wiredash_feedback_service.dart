@@ -14,28 +14,17 @@ import 'package:wiredash/wiredash.dart';
 /// widget context to show the feedback UI.
 @LazySingleton(as: FeedbackService)
 class WiredashFeedbackService implements FeedbackService {
-  WiredashFeedbackService({
-    @Named('wiredashProjectId') required this.wiredashProjectId,
-    @Named('wiredashSecret') required this.wiredashSecret,
-  });
-
-  final String wiredashProjectId;
-  final String wiredashSecret;
+  WiredashFeedbackService();
 
   // Store metadata to be applied when showing feedback
   final Map<String, dynamic> _metadata = {};
 
   @override
-  bool get isAvailable =>
-      wiredashProjectId.isNotEmpty && wiredashSecret.isNotEmpty;
+  bool get isAvailable => true;
 
   @override
   Future<void> show(BuildContext context) async {
     if (!isAvailable) {
-      log(
-        'Feedback: WireDash not configured (missing credentials)',
-        name: 'WiredashFeedbackService',
-      );
       return;
     }
 

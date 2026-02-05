@@ -74,7 +74,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   await configureDependencies();
 
   // Initialize analytics service via DI
-  Analytics.initialize(getIt<AnalyticsService>());
+
+  final analyticsService = getIt<AnalyticsService>();
+  Analytics.initialize(analyticsService);
 
   // Track app opened event (includes first launch detection)
   final retentionTracker = getIt<RetentionTracker>();

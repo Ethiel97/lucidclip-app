@@ -23,4 +23,11 @@ class FeedbackCubit extends Cubit<FeedbackState> {
   void clearRequest() {
     emit(state.copyWith(showFeedback: false));
   }
+
+  @disposeMethod
+  @override
+  Future<void> close() {
+    clearRequest();
+    return super.close();
+  }
 }

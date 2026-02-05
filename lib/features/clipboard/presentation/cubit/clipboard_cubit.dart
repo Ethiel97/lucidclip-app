@@ -243,7 +243,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       if (shouldEnqueueCopyOp) {
         await _enqueueOutboxCopy(updatedItem.id);
-        
+
         // Track clipboard item used (duplicate/re-copy)
         await Analytics.track(AnalyticsEvent.clipboardItemUsed);
       }
@@ -256,10 +256,10 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
     await _upsertClipboardItem(newItem);
     await _enqueueOutboxCopy(newItem.id);
-    
+
     // Track clipboard item captured (new item)
     await Analytics.track(AnalyticsEvent.clipboardItemCaptured);
-    
+
     // Track first clipboard capture
     final isFirstCapture = await retentionTracker.isFirstClipboardCapture();
     if (isFirstCapture) {

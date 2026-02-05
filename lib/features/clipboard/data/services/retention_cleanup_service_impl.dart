@@ -57,13 +57,15 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
           if (expiration.isExpired) {
             await localClipboardRepository.delete(item.id);
             deletedCount++;
-            
+
             // Track item auto-deleted due to retention
             await Analytics.track(
               AnalyticsEvent.itemAutoDeleted,
-              const ItemAutoDeletedParams(reason: DeletionReason.retention).toMap(),
+              const ItemAutoDeletedParams(
+                reason: DeletionReason.retention,
+              ).toMap(),
             );
-            
+
             developer.log(
               'Deleted expired clipboard item: ${item.id}',
               name: 'RetentionCleanupService',

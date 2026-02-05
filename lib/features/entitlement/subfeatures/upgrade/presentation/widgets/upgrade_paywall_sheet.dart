@@ -131,7 +131,7 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
                             source: _upgradeSourceFromContext(context),
                           ).toMap(),
                         );
-                        
+
                         context.read<BillingCubit>().startCheckout(
                           productId: _selected.productId,
                         );

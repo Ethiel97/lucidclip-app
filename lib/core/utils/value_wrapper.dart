@@ -18,27 +18,19 @@ enum Status {
 class ErrorDetails extends Equatable {
   /// A class that represents error details.
   ///
-  const ErrorDetails({
-    required this.message,
-    this.errorCode,
-    this.stackTrace,
-  });
+  const ErrorDetails({required this.message, this.errorCode, this.stackTrace});
 
   const ErrorDetails.empty()
-      : message = '',
-        errorCode = null,
-        stackTrace = null;
+    : message = '',
+      errorCode = null,
+      stackTrace = null;
 
   final Object message;
   final int? errorCode;
   final StackTrace? stackTrace;
 
   @override
-  List<Object?> get props => [
-        errorCode,
-        message,
-        stackTrace,
-      ];
+  List<Object?> get props => [errorCode, message, stackTrace];
 }
 
 class ValueWrapper<T> extends Equatable {
@@ -76,18 +68,14 @@ class ValueWrapper<T> extends Equatable {
     Status? status,
     String? statusMessage,
     T? value,
-  }) =>
-      ValueWrapper<T>(
-        error: error ?? this.error,
-        status: status ?? this.status,
-        statusMessage: statusMessage ?? this.statusMessage,
-        value: value ?? this.value,
-      );
+  }) => ValueWrapper<T>(
+    error: error ?? this.error,
+    status: status ?? this.status,
+    statusMessage: statusMessage ?? this.statusMessage,
+    value: value ?? this.value,
+  );
 
-  ValueWrapper<T> toError([
-    ErrorDetails? error,
-    String? statusMessage,
-  ]) =>
+  ValueWrapper<T> toError([ErrorDetails? error, String? statusMessage]) =>
       copyWith(
         error: error,
         status: Status.error,
@@ -95,35 +83,20 @@ class ValueWrapper<T> extends Equatable {
         value: value,
       );
 
-  ValueWrapper<T> toInitial([
-    T? value,
-    ErrorDetails? error,
-  ]) =>
-      copyWith(
-        status: Status.initial,
-        value: value,
-        error: error,
-      );
+  ValueWrapper<T> toInitial([T? value, ErrorDetails? error]) =>
+      copyWith(status: Status.initial, value: value, error: error);
 
-  ValueWrapper<T> toLoading([
-    T? value,
-    String? statusMessage,
-  ]) =>
-      copyWith(
-        status: Status.loading,
-        statusMessage: statusMessage,
-        value: value,
-      );
+  ValueWrapper<T> toLoading([T? value, String? statusMessage]) => copyWith(
+    status: Status.loading,
+    statusMessage: statusMessage,
+    value: value,
+  );
 
-  ValueWrapper<T> toSuccess([
-    T? value,
-    String? statusMessage,
-  ]) =>
-      copyWith(
-        status: Status.success,
-        statusMessage: statusMessage,
-        value: value,
-      );
+  ValueWrapper<T> toSuccess([T? value, String? statusMessage]) => copyWith(
+    status: Status.success,
+    statusMessage: statusMessage,
+    value: value,
+  );
 
   @override
   String toString() => isError
@@ -133,12 +106,7 @@ class ValueWrapper<T> extends Equatable {
   bool get isComplete => status.isSuccess || status.isError;
 
   @override
-  List<Object?> get props => [
-        error,
-        status,
-        statusMessage,
-        value,
-      ];
+  List<Object?> get props => [error, status, statusMessage, value];
 }
 
 extension ValueWrapperExtension<T> on ValueWrapper<T> {
@@ -149,16 +117,12 @@ extension ValueWrapperExtension<T> on ValueWrapper<T> {
     required W Function(T? oldValue) loading,
     required W Function(T value) success,
     required W Function(ErrorDetails errorDetails, T? oldValue) error,
-  }) =>
-      switch (status) {
-        Status.initial => initial(),
-        Status.loading => loading(value),
-        Status.success => success(value as T),
-        Status.error => error(
-            this.error ?? const ErrorDetails.empty(),
-            value,
-          ),
-      };
+  }) => switch (status) {
+    Status.initial => initial(),
+    Status.loading => loading(value),
+    Status.success => success(value as T),
+    Status.error => error(this.error ?? const ErrorDetails.empty(), value),
+  };
 
   /// Returns the result of the [maybeWhen] function.
   ///
@@ -171,15 +135,13 @@ extension ValueWrapperExtension<T> on ValueWrapper<T> {
     W Function(T? oldValue)? loading,
     W Function(T value)? success,
     W Function(ErrorDetails errorDetails, T? oldValue)? error,
-  }) =>
-      switch (status) {
-        Status.initial => initial?.call() ?? orElse(),
-        Status.loading => loading?.call(value) ?? orElse(),
-        Status.success => success?.call(value as T) ?? orElse(),
-        Status.error =>
-          error?.call(this.error ?? const ErrorDetails.empty(), value) ??
-              orElse(),
-      };
+  }) => switch (status) {
+    Status.initial => initial?.call() ?? orElse(),
+    Status.loading => loading?.call(value) ?? orElse(),
+    Status.success => success?.call(value as T) ?? orElse(),
+    Status.error =>
+      error?.call(this.error ?? const ErrorDetails.empty(), value) ?? orElse(),
+  };
 
   /// Returns the result of the [map] function.
   /// which transforms the value of the [ValueWrapper]
@@ -204,15 +166,10 @@ extension ValueWrapperExtension<T> on ValueWrapper<T> {
 /// This extension provides a way to convert an [Object?] to a [ValueWrapper<T>]
 /// by using the [toSuccess], [toError], [toLoading], and [toInitial] methods.
 extension ValueWrapperObj on Object? {
-  ValueWrapper<T> toSuccess<T>() => ValueWrapper<T>(
-        status: Status.success,
-        value: this as T?,
-      );
+  ValueWrapper<T> toSuccess<T>() =>
+      ValueWrapper<T>(status: Status.success, value: this as T?);
 
-  ValueWrapper<T> toError<T>([
-    ErrorDetails? error,
-    String? statusMessage,
-  ]) =>
+  ValueWrapper<T> toError<T>([ErrorDetails? error, String? statusMessage]) =>
       ValueWrapper<T>(
         error: error,
         status: Status.error,
@@ -220,21 +177,12 @@ extension ValueWrapperObj on Object? {
         value: this as T?,
       );
 
-  ValueWrapper<T> toLoading<T>([
-    String? statusMessage,
-  ]) =>
-      ValueWrapper<T>(
-        status: Status.loading,
-        statusMessage: statusMessage,
-        value: this as T?,
-      );
+  ValueWrapper<T> toLoading<T>([String? statusMessage]) => ValueWrapper<T>(
+    status: Status.loading,
+    statusMessage: statusMessage,
+    value: this as T?,
+  );
 
-  ValueWrapper<T> toInitial<T>([
-    T? value,
-    ErrorDetails? error,
-  ]) =>
-      ValueWrapper<T>(
-        value: value ?? this as T?,
-        error: error,
-      );
+  ValueWrapper<T> toInitial<T>([T? value, ErrorDetails? error]) =>
+      ValueWrapper<T>(value: value ?? this as T?, error: error);
 }

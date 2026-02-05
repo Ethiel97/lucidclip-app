@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/routes.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/feedback/feedback_module.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/app_theme.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
@@ -105,18 +104,8 @@ class _AppViewState extends State<_AppView> with WindowListener {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SafeBlocListener<FeedbackCubit, FeedbackState>(
-      listenWhen: (previous, current) => current.showFeedback,
-      listener: (context, state) {
-        if (state.showFeedback) {
-          // Show the feedback UI
-          getIt<FeedbackService>().show(context);
-          // Clear the request
-          context.read<FeedbackCubit>().clearRequest();
-        }
-      },
-      child: SafeBlocListener<SettingsCubit, SettingsState>(
+  Widget build(BuildContext context) =>
+      SafeBlocListener<SettingsCubit, SettingsState>(
         listenWhen: (previous, current) {
           // Only listen when shortcuts actually change
           return previous.settings.value?.shortcuts !=
@@ -138,6 +127,11 @@ class _AppViewState extends State<_AppView> with WindowListener {
             final settings = state.settings.value;
             final themeMode = _getThemeMode(settings?.theme ?? 'dark');
             return Wiredash(
+              theme: WiredashThemeData(
+                brightness: themeMode == ThemeMode.dark
+                    ? Brightness.dark
+                    : Brightness.light,
+              ),
               projectId: AppConstants.wiredashProjectId,
               secret: AppConstants.wiredashSecret,
               child: MaterialApp.router(
@@ -152,9 +146,7 @@ class _AppViewState extends State<_AppView> with WindowListener {
             );
           },
         ),
-      ),
-    );
-  }
+      );
 
   ThemeMode _getThemeMode(String theme) => switch (theme.toLowerCase()) {
     'light' => ThemeMode.light,

@@ -1,1 +1,1 @@
-export 'presentation/cubit/feedback_cubit.dart';
+export 'presentation/presentation.dart';

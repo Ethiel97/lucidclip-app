@@ -5,9 +5,7 @@ part 'tag_model.g.dart';
 
 typedef TagModels = List<TagModel>;
 
-@JsonSerializable(
-  explicitToJson: true,
-)
+@JsonSerializable(explicitToJson: true)
 class TagModel {
   TagModel({
     required this.color,

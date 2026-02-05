@@ -8,9 +8,7 @@ class FeedbackState extends Equatable {
   final bool showFeedback;
 
   FeedbackState copyWith({bool? showFeedback}) {
-    return FeedbackState(
-      showFeedback: showFeedback ?? this.showFeedback,
-    );
+    return FeedbackState(showFeedback: showFeedback ?? this.showFeedback);
   }
 
   @override

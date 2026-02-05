@@ -14,10 +14,7 @@ class User extends Equatable {
 
   /// Create an empty user
   factory User.empty() {
-    return const User(
-      id: '',
-      email: null,
-    );
+    return const User(id: '', email: null);
   }
 
   /// User ID from Supabase Auth
@@ -49,12 +46,12 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        email,
-        displayName,
-        phone,
-        userMetadata,
-        createdAt,
-        lastSignInAt,
-      ];
+    id,
+    email,
+    displayName,
+    phone,
+    userMetadata,
+    createdAt,
+    lastSignInAt,
+  ];
 }

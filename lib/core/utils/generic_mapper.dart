@@ -18,8 +18,7 @@ List<T>? mapList<S, T>(List<S>? list, Mapper<S, T> mapper) =>
 List<Map<String, dynamic>>? toJsonList<S>(
   List<S>? list,
   Mapper<S, Map<String, dynamic>> mapper,
-) =>
-    mapList<S, Map<String, dynamic>>(list, mapper);
+) => mapList<S, Map<String, dynamic>>(list, mapper);
 
 /// Helper for converting a json list (List<dynamic>)
 /// to typed list using [fromJson].
@@ -32,4 +31,5 @@ List<T>? fromJsonList<T>(
 }
 
 /// Compose two mappers A->B and B->C into A->C.
-Mapper<A, C> compose<A, B, C>(Mapper<A, B> f, Mapper<B, C> g) => (a) => g(f(a));
+Mapper<A, C> compose<A, B, C>(Mapper<A, B> f, Mapper<B, C> g) =>
+    (a) => g(f(a));

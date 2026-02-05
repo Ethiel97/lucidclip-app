@@ -8,7 +8,8 @@ import 'package:lucid_clip/core/analytics/analytics_service.dart';
 /// Usage:
 /// ```dart
 /// Analytics.track(AnalyticsEvent.appFirstLaunch);
-/// Analytics.track(AnalyticsEvent.freeLimitReached, {'limit_type': 'history_size'});
+/// Analytics.track(AnalyticsEvent.freeLimitReached,
+/// {'limit_type': 'history_size'});
 /// ```
 class Analytics {
   Analytics._();
@@ -16,9 +17,8 @@ class Analytics {
   static AnalyticsService? _instance;
 
   /// Initialize the analytics service
-  static void initialize(AnalyticsService service) {
-    _instance = service;
-  }
+  // ignore: use_setters_to_change_properties
+  static void initialize(AnalyticsService service) => _instance = service;
 
   /// Track an event with optional parameters
   static Future<void> track(

@@ -8,12 +8,10 @@ UpgradeSource mapProFeatureSourceToUpgradeSource(
   return switch (source) {
     ProFeatureRequestSource.historyLimitReached => UpgradeSource.limitHit,
     ProFeatureRequestSource.extendedRetentionSettings ||
-    ProFeatureRequestSource.accountPage =>
-      UpgradeSource.settings,
+    ProFeatureRequestSource.accountPage => UpgradeSource.settings,
     ProFeatureRequestSource.pinButton ||
     ProFeatureRequestSource.ignoredApps ||
-    ProFeatureRequestSource.autoSync =>
-      UpgradeSource.proGate,
+    ProFeatureRequestSource.autoSync => UpgradeSource.proGate,
     null => UpgradeSource.proGate,
   };
 }

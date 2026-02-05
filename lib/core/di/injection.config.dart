@@ -134,6 +134,8 @@ import 'package:lucid_clip/features/entitlement/presentation/cubit/entitlement_c
     as _i9;
 import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation/cubit/upgrade_prompt_cubit.dart'
     as _i324;
+import 'package:lucid_clip/features/feedback/presentation/cubit/feedback_cubit.dart'
+    as _i311;
 import 'package:lucid_clip/features/settings/data/data.dart' as _i739;
 import 'package:lucid_clip/features/settings/data/data_sources/data_sources.dart'
     as _i173;
@@ -206,6 +208,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i324.UpgradePromptCubit(),
       dispose: (i) => i.close(),
     );
+    gh.lazySingleton<_i311.FeedbackCubit>(
+      () => _i311.FeedbackCubit(),
+      dispose: (i) => i.close(),
+    );
     gh.lazySingleton<_i212.HotkeyManagerService>(
       () => _i854.HotkeyManagerServiceImpl(),
       dispose: (i) => i.dispose(),
@@ -219,13 +225,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i80.PasteToAppService>(
       () => _i80.MethodChannelPasteToAppService(),
     );
-    gh.lazySingleton<String>(
-      () => thirdPartyModule.wiredashSecret,
-      instanceName: 'wiredashSecret',
-    );
-    gh.lazySingleton<String>(
-      () => thirdPartyModule.wiredashProjectId,
-      instanceName: 'wiredashProjectId',
+    gh.factory<bool>(
+      () => thirdPartyModule.analyticsEnable,
+      instanceName: 'analyticsEnabled',
     );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
@@ -242,6 +244,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i936.RetentionTracker(
         secureStorageService: gh<_i407.SecureStorageService>(),
       ),
+    );
+    gh.lazySingleton<_i15.FeedbackService>(
+      () => _i193.WiredashFeedbackService(),
     );
     gh.lazySingleton<_i500.AppUpdateService>(
       () => _i500.AppUpdateServiceImpl(
@@ -276,12 +281,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i616.AnalyticsService>(
-      () => _i666.FirebaseAnalyticsService(
-        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
-        enabledInDebug: gh<bool>(),
-      ),
-    );
     gh.lazySingleton<_i72.SettingsLocalDataSource>(
       () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
     );
@@ -290,6 +289,12 @@ extension GetItInjectableX on _i174.GetIt {
         supabaseClient: gh<_i454.SupabaseClient>(),
         secureStorage: gh<_i407.SecureStorageService>(),
         deepLinkService: gh<_i212.DeepLinkService>(),
+      ),
+    );
+    gh.lazySingleton<_i616.AnalyticsService>(
+      () => _i666.FirebaseAnalyticsService(
+        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
+        isAnalyticsEnabled: gh<bool>(instanceName: 'analyticsEnabled'),
       ),
     );
     gh.lazySingleton<_i212.CacheService<_i100.Uint8List>>(
@@ -306,12 +311,6 @@ extension GetItInjectableX on _i174.GetIt {
         repository: gh<_i23.AccessibilityRepository>(),
       ),
       dispose: (i) => i.close(),
-    );
-    gh.lazySingleton<_i15.FeedbackService>(
-      () => _i193.WiredashFeedbackService(
-        wiredashProjectId: gh<String>(instanceName: 'wiredashProjectId'),
-        wiredashSecret: gh<String>(instanceName: 'wiredashSecret'),
-      ),
     );
     gh.lazySingleton<_i387.EntitlementRemoteDataSource>(
       () => _i670.SupabaseEntitlementRemoteDataSource(

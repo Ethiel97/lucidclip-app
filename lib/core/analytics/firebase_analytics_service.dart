@@ -4,6 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_service.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 
 /// Firebase Analytics implementation of AnalyticsService.
 ///
@@ -25,10 +26,10 @@ class FirebaseAnalyticsService implements AnalyticsService {
   /// Whether analytics is enabled based on the current environment
   ///
   /// Analytics is enabled if:
-  /// - Not in debug mode (kDebugMode == false), OR
+  /// - In production mode (AppConstants.isProd == true), OR
   /// - Explicitly enabled in debug via enabledInDebug parameter
   @override
-  bool get isEnabled => !kDebugMode || enabledInDebug;
+  bool get isEnabled => AppConstants.isProd || enabledInDebug;
 
   @override
   Future<void> track(String eventName, [Map<String, dynamic>? parameters]) async {

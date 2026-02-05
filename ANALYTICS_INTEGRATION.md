@@ -38,6 +38,7 @@ lib/core/feedback/
 **Feedback (WireDash)**: Collect user feedback, bug reports, and feature requests
 
 This separation ensures:
+
 1. Each service has a single responsibility
 2. Analytics and feedback can be configured independently
 3. Easy to swap implementations without affecting the other
@@ -56,6 +57,7 @@ This separation ensures:
 ### Dependencies
 
 Firebase Analytics is already included in the project. The integration uses:
+
 - `firebase_analytics` - For event tracking
 - `firebase_core` - Already initialized in bootstrap
 - `wiredash` - For user feedback (not analytics)
@@ -67,11 +69,15 @@ Services are registered automatically via injectable:
 ```dart
 // FirebaseAnalyticsService
 @LazySingleton(as: AnalyticsService)
-class FirebaseAnalyticsService implements AnalyticsService { ... }
+class FirebaseAnalyticsService implements AnalyticsService {
+  ...
+}
 
 // WiredashFeedbackService
 @LazySingleton(as: FeedbackService)
-class WiredashFeedbackService implements FeedbackService { ... }
+class WiredashFeedbackService implements FeedbackService {
+  ...
+}
 ```
 
 ### Initialization
@@ -82,16 +88,25 @@ Analytics is initialized in `bootstrap.dart` via dependency injection:
 await configureDependencies();
 
 // Initialize analytics service via DI
-Analytics.initialize(getIt<AnalyticsService>());
+Analytics.initialize
+(
+getIt
+<
+AnalyticsService
+>
+(
+)
+);
 ```
 
 The app wraps MaterialApp with Wiredash widget for feedback:
 
 ```dart
-Wiredash(
-  projectId: AppConstants.wiredashProjectId,
-  secret: AppConstants.wiredashSecret,
-  child: MaterialApp.router(...)
+Wiredash
+(
+projectId: AppConstants.wiredashProjectId,
+secret: AppConstants.wiredashSecret,
+child: MaterialApp.router(...)
 )
 ```
 
@@ -101,38 +116,38 @@ All 16 events remain the same as the original implementation:
 
 ### Activation Events (5)
 
-| Event | Parameters | Tracked Where |
-|-------|-----------|---------------|
-| `app_first_launch` | None | `RetentionTracker.trackAppOpened()` |
-| `permission_accessibility_requested` | None | `AccessibilityCubit.requestPermission()` |
-| `permission_accessibility_granted` | None | `AccessibilityCubit.grantPermission()` |
-| `permission_accessibility_denied` | None | `AccessibilityCubit.cancelPermissionRequest()` |
-| `clipboard_first_item_captured` | None | `ClipboardCubit._handleClipboardData()` |
+| Event                                | Parameters | Tracked Where                                  |
+|--------------------------------------|------------|------------------------------------------------|
+| `app_first_launch`                   | None       | `RetentionTracker.trackAppOpened()`            |
+| `permission_accessibility_requested` | None       | `AccessibilityCubit.requestPermission()`       |
+| `permission_accessibility_granted`   | None       | `AccessibilityCubit.grantPermission()`         |
+| `permission_accessibility_denied`    | None       | `AccessibilityCubit.cancelPermissionRequest()` |
+| `clipboard_first_item_captured`      | None       | `ClipboardCubit._handleClipboardData()`        |
 
 ### Usage Events (5)
 
-| Event | Parameters | Tracked Where |
-|-------|-----------|---------------|
-| `clipboard_item_captured` | None | `ClipboardCubit._handleClipboardData()` |
-| `clipboard_item_used` | None | `ClipboardCubit._handleClipboardData()` (duplicate) |
-| `overlay_opened` | None | `ProGateOverlay` widget |
-| `search_used` | None | `SearchCubit.search()` |
-| `paste_to_app_used` | None | `PasteToAppService.pasteToApp()` |
+| Event                     | Parameters | Tracked Where                                       |
+|---------------------------|------------|-----------------------------------------------------|
+| `clipboard_item_captured` | None       | `ClipboardCubit._handleClipboardData()`             |
+| `clipboard_item_used`     | None       | `ClipboardCubit._handleClipboardData()` (duplicate) |
+| `pro_gate_overlay_opened` | None       | `ProGateOverlay` widget                             |
+| `search_used`             | None       | `SearchCubit.search()`                              |
+| `paste_to_app_used`       | None       | `PasteToAppService.pasteToApp()`                    |
 
 ### Monetization Events (5)
 
-| Event | Parameters | Tracked Where |
-|-------|-----------|---------------|
-| `free_limit_reached` | `limit_type: enum` | `LocalClipboardStoreImpl.upsertWithLimit()` |
-| `item_auto_deleted` | `reason: enum` | `RetentionCleanupServiceImpl`, `LocalClipboardStoreImpl` |
-| `upgrade_prompt_shown` | `source: enum` | `UpgradePromptListener` |
-| `upgrade_clicked` | `source: enum` | `UpgradePaywallSheet` |
-| `pro_activated` | None | `EntitlementCubit.boot()` |
+| Event                  | Parameters         | Tracked Where                                            |
+|------------------------|--------------------|----------------------------------------------------------|
+| `free_limit_reached`   | `limit_type: enum` | `LocalClipboardStoreImpl.upsertWithLimit()`              |
+| `item_auto_deleted`    | `reason: enum`     | `RetentionCleanupServiceImpl`, `LocalClipboardStoreImpl` |
+| `upgrade_prompt_shown` | `source: enum`     | `UpgradePromptListener`                                  |
+| `upgrade_clicked`      | `source: enum`     | `UpgradePaywallSheet`                                    |
+| `pro_activated`        | None               | `EntitlementCubit.boot()`                                |
 
 ### Retention Events (1)
 
-| Event | Parameters | Tracked Where |
-|-------|-----------|---------------|
+| Event        | Parameters         | Tracked Where                       |
+|--------------|--------------------|-------------------------------------|
 | `app_opened` | `day_bucket: enum` | `RetentionTracker.trackAppOpened()` |
 
 ## Event Parameters
@@ -144,24 +159,44 @@ Same enums as before (LimitType, DeletionReason, UpgradeSource, DayBucket).
 ### Simple Event
 
 ```dart
-await Analytics.track(AnalyticsEvent.searchUsed);
+await
+Analytics.track
+(
+AnalyticsEvent
+.
+searchUsed
+);
 ```
 
 ### Event with Parameters
 
 ```dart
-await Analytics.track(
-  AnalyticsEvent.freeLimitReached,
-  FreeLimitReachedParams(limitType: LimitType.historySize).toMap(),
+await
+Analytics.track
+(
+AnalyticsEvent.freeLimitReached,
+FreeLimitReachedParams(limitType: LimitType.historySize)
+.
+toMap
+(
+)
+,
 );
 ```
 
 ### Event with Source Tracking
 
 ```dart
-await Analytics.track(
-  AnalyticsEvent.upgradePromptShown,
-  UpgradePromptShownParams(source: UpgradeSource.limitHit).toMap(),
+await
+Analytics.track
+(
+AnalyticsEvent.upgradePromptShown,
+UpgradePromptShownParams(source: UpgradeSource.limitHit)
+.
+toMap
+(
+)
+,
 );
 ```
 
@@ -170,6 +205,7 @@ await Analytics.track(
 ### Event Name Sanitization
 
 Firebase Analytics has naming restrictions:
+
 - Event names must be <= 40 characters
 - Can only contain alphanumeric characters and underscores
 - Cannot start with a number
@@ -179,6 +215,7 @@ The `FirebaseAnalyticsService` automatically sanitizes event names to comply wit
 ### Automatic Features
 
 Firebase Analytics automatically provides:
+
 - User properties and demographics
 - Session tracking
 - Screen view tracking
@@ -207,10 +244,12 @@ Firebase Analytics automatically provides:
 ## Environment Control
 
 Analytics is **disabled** by default in:
+
 - Debug builds (`kDebugMode == true`)
 - Development flavor
 
 Analytics is **enabled** in:
+
 - Staging flavor
 - Production flavor
 - Release builds (`kReleaseMode == true`)
@@ -227,18 +266,18 @@ Analytics is **enabled** in:
 ### Recommended Setup
 
 1. **Mark conversion events**:
-   - `clipboard_first_item_captured`
-   - `pro_activated`
-   - `permission_accessibility_granted`
+    - `clipboard_first_item_captured`
+    - `pro_activated`
+    - `permission_accessibility_granted`
 
 2. **Create funnels**:
-   - Activation: first_launch → permission_requested → permission_granted → first_item_captured
-   - Conversion: upgrade_prompt_shown → upgrade_clicked → pro_activated
+    - Activation: first_launch → permission_requested → permission_granted → first_item_captured
+    - Conversion: upgrade_prompt_shown → upgrade_clicked → pro_activated
 
 3. **Set up audiences**:
-   - Active users: `app_opened` in last 7 days
-   - Power users: `clipboard_item_captured` > 10/day
-   - Conversion candidates: `free_limit_reached` without `pro_activated`
+    - Active users: `app_opened` in last 7 days
+    - Power users: `clipboard_item_captured` > 10/day
+    - Conversion candidates: `free_limit_reached` without `pro_activated`
 
 ## Testing
 
@@ -267,24 +306,29 @@ WireDash is used separately for collecting user feedback:
 final feedbackService = getIt<FeedbackService>();
 
 // Show feedback UI (requires BuildContext)
-await feedbackService.show();
+await
+feedbackService.show
+(
+context);
 
 // Set metadata
 await feedbackService.setMetadata({
-  'user_type': 'pro',
-  'platform': 'macos',
+'user_type': 'pro',
+'platform': 'macos',
 });
 ```
 
 ## Migration from WireDash Analytics
 
 The core analytics abstraction remains unchanged:
+
 - Same `AnalyticsService` interface
 - Same event names and parameters
 - Same privacy guarantees
 - Same instrumentation points
 
 **Key changes**:
+
 1. Backend changed from WireDash to Firebase Analytics
 2. WireDash now used only for feedback
 3. Services registered via dependency injection
@@ -302,6 +346,7 @@ The core analytics abstraction remains unchanged:
 ## Support
 
 For questions about:
+
 - **Analytics implementation**: Check this documentation
 - **Firebase Console**: Visit [Firebase documentation](https://firebase.google.com/docs/analytics)
 - **Privacy concerns**: Review the privacy section above
@@ -310,6 +355,7 @@ For questions about:
 ## Changelog
 
 ### v2.0.0 - Firebase Analytics Migration
+
 - Replaced WireDash analytics with Firebase Analytics
 - Created separate FeedbackService for WireDash
 - Implemented dependency injection for both services
@@ -317,6 +363,7 @@ For questions about:
 - Updated documentation
 
 ### v1.0.0 - Initial WireDash Implementation
+
 - Added 16 privacy-first analytics events
 - Implemented WireDash integration
 - Created typed event helpers and enums

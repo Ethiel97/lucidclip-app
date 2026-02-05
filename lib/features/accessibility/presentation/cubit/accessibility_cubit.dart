@@ -57,7 +57,7 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
   /// Request accessibility permission and show the custom dialog
   Future<void> requestPermission() async {
     // Track permission requested event
-    await Analytics.track(AnalyticsEvent.permissionAccessibilityRequested);
+    unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityRequested));
     emit(state.copyWith(showPermissionDialog: true));
   }
 
@@ -67,13 +67,18 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
     try {
       await repository.requestPermission();
       await checkPermission();
-      
+
       // Track permission granted if successful
       if (state.hasPermission) {
-        await Analytics.track(AnalyticsEvent.permissionAccessibilityGranted);
+        unawaited(
+          Analytics.track(AnalyticsEvent.permissionAccessibilityGranted),
+        );
       } else {
-        // Permission was requested but not granted (user may have closed system dialog)
-        await Analytics.track(AnalyticsEvent.permissionAccessibilityDenied);
+        // Permission was requested but not granted (user may
+        // have closed system dialog)
+        unawaited(
+          Analytics.track(AnalyticsEvent.permissionAccessibilityDenied),
+        );
       }
     } catch (e, stack) {
       log(
@@ -83,18 +88,18 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
         stackTrace: stack,
       );
       emit(state.copyWith(hasPermission: false));
-      
+
       // Track permission denied on error (system-level failure)
-      await Analytics.track(AnalyticsEvent.permissionAccessibilityDenied);
+      unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityDenied));
     }
   }
 
   /// User cancelled the permission dialog
   Future<void> cancelPermissionRequest() async {
     emit(state.copyWith(showPermissionDialog: false));
-    
+
     // Track permission denied when user cancels
-    await Analytics.track(AnalyticsEvent.permissionAccessibilityDenied);
+    unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityDenied));
   }
 
   @override

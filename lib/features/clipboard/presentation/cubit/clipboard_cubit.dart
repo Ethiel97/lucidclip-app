@@ -30,9 +30,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.localSettingsRepository,
     required this.remoteSettingsRepository,
     required this.retentionCleanupService,
-    required RetentionTracker retentionTracker,
-  })  : _retentionTracker = retentionTracker,
-        super(const ClipboardState()) {
+    required this.retentionTracker,
+  }) : super(const ClipboardState()) {
     _initialize();
   }
 
@@ -48,6 +47,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository remoteSettingsRepository;
   final RetentionCleanupService retentionCleanupService;
+  final RetentionTracker retentionTracker;
 
   StreamSubscription<User?>? _authSubscription;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
@@ -61,7 +61,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   String _currentUserId = 'guest';
 
   final List<ClipboardData> _pendingClipboardEvents = <ClipboardData>[];
-  final RetentionTracker _retentionTracker;
 
   bool get isAuthenticated => _currentUserId != 'guest';
 
@@ -262,7 +261,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     await Analytics.track(AnalyticsEvent.clipboardItemCaptured);
     
     // Track first clipboard capture
-    final isFirstCapture = await _retentionTracker.isFirstClipboardCapture();
+    final isFirstCapture = await retentionTracker.isFirstClipboardCapture();
     if (isFirstCapture) {
       await Analytics.track(AnalyticsEvent.clipboardFirstItemCaptured);
     }

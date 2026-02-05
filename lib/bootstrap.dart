@@ -77,7 +77,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   Analytics.initialize(getIt<AnalyticsService>());
 
   // Track app opened event (includes first launch detection)
-  final retentionTracker = RetentionTracker();
+  final retentionTracker = getIt<RetentionTracker>();
   await retentionTracker.trackAppOpened();
 
   await Future.wait<void>([

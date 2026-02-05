@@ -1,12 +1,14 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/storage/storage.dart';
 
 /// Service to track app launch and retention metrics
+@lazySingleton
 class RetentionTracker {
-  RetentionTracker({FlutterSecureStorage? secureStorage})
-      : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+  RetentionTracker({required SecureStorageService secureStorageService})
+      : _secureStorage = secureStorageService;
 
-  final FlutterSecureStorage _secureStorage;
+  final SecureStorageService _secureStorage;
 
   static const _firstLaunchKey = 'analytics_first_launch_timestamp';
   static const _lastLaunchKey = 'analytics_last_launch_timestamp';

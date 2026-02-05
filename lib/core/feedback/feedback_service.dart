@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 /// Abstract feedback service interface for collecting user feedback.
 ///
 /// Implementations should:
@@ -6,7 +8,8 @@
 /// - Handle feedback submission
 abstract class FeedbackService {
   /// Show the feedback UI to the user
-  Future<void> show();
+  /// Requires a BuildContext to show the feedback widget
+  Future<void> show(BuildContext context);
 
   /// Set custom metadata for feedback context
   /// Note: Should only use anonymous/hashed identifiers, never PII
@@ -14,4 +17,7 @@ abstract class FeedbackService {
 
   /// Clear all metadata
   Future<void> clearMetadata();
+
+  /// Check if feedback is available/configured
+  bool get isAvailable;
 }

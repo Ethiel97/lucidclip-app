@@ -30,7 +30,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.localSettingsRepository,
     required this.remoteSettingsRepository,
     required this.retentionCleanupService,
-  }) : super(const ClipboardState()) {
+    required RetentionTracker retentionTracker,
+  })  : _retentionTracker = retentionTracker,
+        super(const ClipboardState()) {
     _initialize();
   }
 
@@ -59,7 +61,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   String _currentUserId = 'guest';
 
   final List<ClipboardData> _pendingClipboardEvents = <ClipboardData>[];
-  final RetentionTracker _retentionTracker = RetentionTracker();
+  final RetentionTracker _retentionTracker;
 
   bool get isAuthenticated => _currentUserId != 'guest';
 

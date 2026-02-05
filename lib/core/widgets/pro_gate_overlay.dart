@@ -61,7 +61,7 @@ class ProGateOverlay extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 // Track overlay opened event
-                Analytics.track(AnalyticsEvent.overlayOpened);
+                Analytics.track(AnalyticsEvent.proGateOverlayOpened);
                 onUpgradeTap?.call();
               },
               borderRadius: BorderRadius.circular(12),

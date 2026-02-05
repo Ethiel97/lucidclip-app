@@ -19,7 +19,7 @@ class AnalyticsEvent {
   // Usage events
   static const clipboardItemCaptured = 'clipboard_item_captured';
   static const clipboardItemUsed = 'clipboard_item_used';
-  static const overlayOpened = 'overlay_opened';
+  static const proGateOverlayOpened = 'pro_gate_overlay_opened';
   static const searchUsed = 'search_used';
   static const pasteToAppUsed = 'paste_to_app_used';
 

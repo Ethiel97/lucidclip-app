@@ -85,7 +85,7 @@ class LogoutConfirmationListener extends StatelessWidget {
             // Clear state when user becomes unauthenticated
             context.read<AuthCubit>().clearState();
 
-            getIt<FeedbackService>().clearMetadata();
+            unawaited(getIt<FeedbackService>().clearMetadata());
           },
         ),
       ],

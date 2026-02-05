@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/di/di.dart';
@@ -35,10 +37,12 @@ class AuthListener extends StatelessWidget {
               previous.isAuthenticated != current.isAuthenticated,
           listener: (context, state) {
             if (state.isAuthenticated) {
-              getIt<FeedbackService>().setMetadata({
-                'userId': state.user.value?.id,
-                'userEmail': state.user.value?.email,
-              });
+              unawaited(
+                getIt<FeedbackService>().setMetadata({
+                  'userId': state.user.value?.id,
+                  'userEmail': state.user.value?.email,
+                }),
+              );
             }
           },
         ),

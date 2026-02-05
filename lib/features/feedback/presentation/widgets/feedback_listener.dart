@@ -14,12 +14,14 @@ class FeedbackListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeBlocListener<FeedbackCubit, FeedbackState>(
       listenWhen: (previous, current) => current.showFeedback,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.showFeedback) {
           // Show the feedback UI
-          getIt<FeedbackService>().show(context);
+          await getIt<FeedbackService>().show(context);
           // Clear the request
-          context.read<FeedbackCubit>().clearRequest();
+          if (context.mounted) {
+            context.read<FeedbackCubit>().clearRequest();
+          }
         }
       },
       child: child,

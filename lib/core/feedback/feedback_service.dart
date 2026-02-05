@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 ///
 /// Implementations should:
 /// - Provide a way to show feedback UI
-/// - Support custom metadata (non-PII)
+/// - Support custom metadata
 /// - Handle feedback submission
 abstract class FeedbackService {
   /// Show the feedback UI to the user
@@ -12,7 +12,6 @@ abstract class FeedbackService {
   Future<void> show(BuildContext context);
 
   /// Set custom metadata for feedback context
-  /// Note: Should only use anonymous/hashed identifiers, never PII
   Future<void> setMetadata(Map<String, dynamic> metadata);
 
   /// Clear all metadata

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
@@ -184,6 +185,12 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
     final atCapacity = items.length >= maxItems;
 
     if (atCapacity) {
+      // Track that free limit was reached
+      await Analytics.track(
+        AnalyticsEvent.freeLimitReached,
+        const FreeLimitReachedParams(limitType: LimitType.historySize).toMap(),
+      );
+
       final oldestUnpinned = items
           .where((e) => !e.isPinned)
           .toList()
@@ -194,6 +201,14 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
 
       if (toDelete != null) {
         await delete(toDelete.id);
+
+        // Track item auto-deleted due to manual cleanup (limit reached)
+        await Analytics.track(
+          AnalyticsEvent.itemAutoDeleted,
+          const ItemAutoDeletedParams(
+            reason: DeletionReason.manualCleanup,
+          ).toMap(),
+        );
       }
     }
 

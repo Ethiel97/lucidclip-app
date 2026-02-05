@@ -7,6 +7,7 @@ const _channelAccessibility = 'lucidclip/accessibility';
 
 abstract class AccessibilityDataSource {
   Future<bool> checkPermission();
+
   Future<bool> requestPermission();
 }
 

@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
@@ -29,6 +30,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.localSettingsRepository,
     required this.remoteSettingsRepository,
     required this.retentionCleanupService,
+    required this.retentionTracker,
   }) : super(const ClipboardState()) {
     _initialize();
   }
@@ -45,6 +47,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   final LocalSettingsRepository localSettingsRepository;
   final SettingsRepository remoteSettingsRepository;
   final RetentionCleanupService retentionCleanupService;
+  final RetentionTracker retentionTracker;
 
   StreamSubscription<User?>? _authSubscription;
   StreamSubscription<ClipboardData>? _clipboardSubscription;
@@ -240,6 +243,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       if (shouldEnqueueCopyOp) {
         await _enqueueOutboxCopy(updatedItem.id);
+
+        // Track clipboard item used (duplicate/re-copy)
+        await Analytics.track(AnalyticsEvent.clipboardItemUsed);
       }
       return;
     }
@@ -250,6 +256,15 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
     await _upsertClipboardItem(newItem);
     await _enqueueOutboxCopy(newItem.id);
+
+    // Track clipboard item captured (new item)
+    await Analytics.track(AnalyticsEvent.clipboardItemCaptured);
+
+    // Track first clipboard capture
+    final isFirstCapture = await retentionTracker.isFirstClipboardCapture();
+    if (isFirstCapture) {
+      await Analytics.track(AnalyticsEvent.clipboardFirstItemCaptured);
+    }
   }
 
   bool _isSourceAppExcluded(SourceApp? sourceApp) {

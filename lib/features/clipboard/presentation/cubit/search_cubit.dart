@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
@@ -166,6 +167,11 @@ class SearchCubit extends Cubit<SearchState> {
     final trimmedQuery = query.trim();
     emit(state.copyWith(query: trimmedQuery, searchResults: null.toLoading()));
     _applyFilter(trimmedQuery);
+
+    // Track search event (only when there's a non-empty query)
+    if (trimmedQuery.isNotEmpty) {
+      Analytics.track(AnalyticsEvent.searchUsed);
+    }
   }
 
   @override

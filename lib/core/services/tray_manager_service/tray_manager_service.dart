@@ -7,10 +7,10 @@ import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/feedback/feedback.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tray_manager/tray_manager.dart';
-import 'package:window_manager/window_manager.dart';
 
 @lazySingleton
 class TrayManagerService with TrayListener {
@@ -23,6 +23,8 @@ class TrayManagerService with TrayListener {
   bool _isInitialized = false;
   StreamSubscription<ClipboardState>? _clipboardSubscription;
   StreamSubscription<SettingsState>? _settingsSubscription;
+
+  final windowController = getIt<WindowController>();
 
   /// Initialize the tray icon and menu
   Future<void> initialize() async {
@@ -225,6 +227,10 @@ class TrayManagerService with TrayListener {
           ),
           MenuItem.separator(),
           MenuItem(key: 'settings', label: l10n?.settings ?? 'Settings'),
+          MenuItem(
+            key: 'send_feedback',
+            label: l10n?.sendFeedback ?? 'Send Feedback',
+          ),
           MenuItem.separator(),
           MenuItem(
             key: 'check_updates',
@@ -307,6 +313,8 @@ class TrayManagerService with TrayListener {
         await _clearClipboardHistory();
       case 'settings':
         await _openSettings();
+      case 'send_feedback':
+        await _sendFeedback();
       case 'quit':
         await _quit();
       default:
@@ -403,12 +411,7 @@ class TrayManagerService with TrayListener {
   /// Open settings page
   Future<void> _openSettings() async {
     try {
-      // First, show the window if it's hidden
-      final isVisible = await windowManager.isVisible();
-      if (!isVisible) {
-        await windowManager.show();
-        await windowManager.focus();
-      }
+      await windowController.toggle();
 
       final context = appRouter.navigatorKey.currentContext;
       if (context != null && context.mounted) {
@@ -434,14 +437,34 @@ class TrayManagerService with TrayListener {
     }
   }
 
+  /// Request feedback UI to be shown
+  Future<void> _sendFeedback() async {
+    try {
+      // First, show the window if it's hidden
+      await windowController.toggle();
+
+      // Request feedback via the FeedbackCubit
+      // The listener in the app will handle showing the UI
+      getIt<FeedbackCubit>().requestFeedback();
+
+      developer.log(
+        'Feedback requested from tray menu',
+        name: 'TrayManagerService',
+      );
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error requesting feedback',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
+    }
+  }
+
   /// Quit the application
   Future<void> _quit() async {
     try {
-      // Remove the prevent close flag
-      await windowManager.setPreventClose(false);
-
-      // Destroy the window
-      await windowManager.destroy();
+      await windowController.quit();
     } catch (e, stackTrace) {
       developer.log(
         'Error quitting application',

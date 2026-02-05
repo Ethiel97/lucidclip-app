@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
@@ -123,6 +124,14 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
                     const SizedBox(width: AppSpacing.md),
                     FilledButton(
                       onPressed: () {
+                        // Track upgrade clicked event
+                        Analytics.track(
+                          AnalyticsEvent.upgradeClicked,
+                          UpgradeClickedParams(
+                            source: _upgradeSourceFromContext(context),
+                          ).toMap(),
+                        );
+
                         context.read<BillingCubit>().startCheckout(
                           productId: _selected.productId,
                         );
@@ -289,5 +298,17 @@ class _PlanCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Get upgrade source from the current context
+UpgradeSource _upgradeSourceFromContext(BuildContext context) {
+  // Try to get the source from the UpgradePromptCubit state if available
+  try {
+    final state = context.read<UpgradePromptCubit>().state;
+    final source = state.source;
+    return mapProFeatureSourceToUpgradeSource(source);
+  } catch (_) {
+    return UpgradeSource.proGate;
   }
 }

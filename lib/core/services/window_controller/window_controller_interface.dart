@@ -42,4 +42,6 @@ abstract class WindowController {
 
   /// Dispose resources
   Future<void> dispose();
+
+  Future<void> quit();
 }

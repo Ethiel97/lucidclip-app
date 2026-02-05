@@ -733,6 +733,10 @@
   "@searchHint": {
     "description": "Hint shown in the Search Bar"
   },
+  "sendFeedback": "Send Feedback",
+  "@sendFeedback": {
+    "description": "Menu item to send feedback"
+  },
   "settings": "Settings",
   "@settings": {
     "description": "Title for the Settings Page"

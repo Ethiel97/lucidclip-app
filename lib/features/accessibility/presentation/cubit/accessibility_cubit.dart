@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/features/accessibility/accessibility.dart';
 
 part 'accessibility_state.dart';
@@ -55,6 +56,8 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
 
   /// Request accessibility permission and show the custom dialog
   Future<void> requestPermission() async {
+    // Track permission requested event
+    unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityRequested));
     emit(state.copyWith(showPermissionDialog: true));
   }
 
@@ -64,6 +67,19 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
     try {
       await repository.requestPermission();
       await checkPermission();
+
+      // Track permission granted if successful
+      if (state.hasPermission) {
+        unawaited(
+          Analytics.track(AnalyticsEvent.permissionAccessibilityGranted),
+        );
+      } else {
+        // Permission was requested but not granted (user may
+        // have closed system dialog)
+        unawaited(
+          Analytics.track(AnalyticsEvent.permissionAccessibilityDenied),
+        );
+      }
     } catch (e, stack) {
       log(
         'Error granting accessibility permission: $e',
@@ -72,12 +88,18 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
         stackTrace: stack,
       );
       emit(state.copyWith(hasPermission: false));
+
+      // Track permission denied on error (system-level failure)
+      unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityDenied));
     }
   }
 
   /// User cancelled the permission dialog
   Future<void> cancelPermissionRequest() async {
     emit(state.copyWith(showPermissionDialog: false));
+
+    // Track permission denied when user cancels
+    unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityDenied));
   }
 
   @override

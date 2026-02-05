@@ -1012,6 +1012,12 @@ abstract class AppLocalizations {
   /// **'Search...'**
   String get searchHint;
 
+  /// Menu item to send feedback
+  ///
+  /// In en, this message translates to:
+  /// **'Send Feedback'**
+  String get sendFeedback;
+
   /// Title for the Settings Page
   ///
   /// In en, this message translates to:

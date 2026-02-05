@@ -1,2 +1,2 @@
-//GENERATED BARREL FILE 
-export 'billing_repository_impl.dart'; 
+//GENERATED BARREL FILE
+export 'billing_repository_impl.dart';

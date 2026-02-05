@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.3.0...v1.4.0) (2026-02-05)
+
+
+### Features
+
+* Add Analytics and Feedback components ([146170a](https://github.com/Ethiel97/lucidclip-app/commit/146170ad5f185762ea1268d7e6a612ad409d3013))
+
 ## [1.3.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.2.11...v1.3.0) (2026-02-04)
 
 

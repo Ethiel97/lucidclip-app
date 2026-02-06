@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:contextmenu/contextmenu.dart';
@@ -215,6 +216,12 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       }
     } catch (e) {
       // Show user-facing error feedback
+      log(
+        '_handleShare: error sharing clipboard item: $e',
+        name: '_ClipboardContextMenuState._handleShare',
+        error: e,
+      );
+
       if (context.mounted) {
         toastification.show(
           context: context,

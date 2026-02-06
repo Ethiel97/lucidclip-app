@@ -72,9 +72,7 @@ class SharePlusService implements ShareService {
     try {
       final file = XFile(filePath);
 
-      await _sharePlus.share(
-        ShareParams(subject: subject, files: [file]),
-      );
+      await _sharePlus.share(ShareParams(subject: subject, files: [file]));
 
       // Track share usage
       await Analytics.track(
@@ -97,9 +95,7 @@ class SharePlusService implements ShareService {
     try {
       final image = XFile(imagePath);
 
-      await _sharePlus.share(
-        ShareParams(subject: subject, files: [image]),
-      );
+      await _sharePlus.share(ShareParams(subject: subject, files: [image]));
 
       await Analytics.track(
         AnalyticsEvent.shareUsed,
@@ -124,7 +120,7 @@ class SharePlusService implements ShareService {
       if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8) {
         return 'jpg';
       }
-      
+
       // Check for PNG (89 50 4E 47)
       if (imageBytes.length >= 4 &&
           imageBytes[0] == 0x89 &&
@@ -133,7 +129,7 @@ class SharePlusService implements ShareService {
           imageBytes[3] == 0x47) {
         return 'png';
       }
-      
+
       // Check for GIF (GIF87a or GIF89a)
       if (imageBytes.length >= 6 &&
           imageBytes[0] == 0x47 &&
@@ -145,55 +141,31 @@ class SharePlusService implements ShareService {
         return 'gif';
       }
     }
-    
+
     // Default to PNG for unknown formats
     return 'png';
   }
 
   @override
   Future<void> shareImageBytes(List<int> imageBytes, {String? subject}) async {
+    File? tempFile;
     try {
       final fileExtension = _detectImageFormat(imageBytes);
-
-      // Create a temporary file for the image
-      // Note: fileExtension is controlled (only 'png', 'jpg', or 'gif')
-      // and validated implicitly by the switch logic above
       final tempDir = Directory.systemTemp;
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      final tempFile = File(
-        '${tempDir.path}/shared_image_$timestamp.$fileExtension',
-      );
+      tempFile = File('${tempDir.path}/shared_image_$timestamp.$fileExtension');
       await tempFile.writeAsBytes(imageBytes);
 
       final image = XFile(tempFile.path);
-      await _sharePlus.share(
-        ShareParams(subject: subject, files: [image]),
-      );
+      await _sharePlus.share(ShareParams(subject: subject, files: [image]));
 
-      // Clean up the temporary file after a reasonable delay
-      // Give more time for the share operation to complete across platforms
-      // Using unawaited to explicitly mark this as fire-and-forget
-      unawaited(
-        Future.delayed(_tempFileCleanupDelay, () async {
-          try {
-            if (tempFile.existsSync()) {
-              await tempFile.delete();
-            }
-          } catch (e) {
-            developer.log(
-              'Error deleting temporary image file: $e',
-              name: 'SharePlusService.shareImageBytes',
-            );
-          }
-        }),
-      );
-
-      // Track share usage
+      // Track share usage only on success
       await Analytics.track(
         AnalyticsEvent.shareUsed,
         const ClipboardItemSharedParams(contentType: 'image').toMap(),
       );
     } catch (e, stack) {
+      // Log and rethrow
       developer.log(
         'Error sharing image bytes: $e',
         name: 'SharePlusService.shareImageBytes',
@@ -201,6 +173,24 @@ class SharePlusService implements ShareService {
         stackTrace: stack,
       );
       rethrow;
+    } finally {
+      // Clean up temp file in all cases
+      if (tempFile != null) {
+        unawaited(
+          Future.delayed(_tempFileCleanupDelay, () async {
+            try {
+              if (tempFile!.existsSync()) {
+                await tempFile.delete();
+              }
+            } catch (e) {
+              developer.log(
+                'Error deleting temporary image file: $e',
+                name: 'SharePlusService.shareImageBytes',
+              );
+            }
+          }),
+        );
+      }
     }
   }
 }

@@ -11,7 +11,6 @@ import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/core/services/share_service/share_module.dart';
 import 'package:lucid_clip/firebase_options.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';

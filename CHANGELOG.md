@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.4.1...v1.5.0) (2026-02-06)
+
+
+### Features
+
+* Add share functionality to clipboard context menu ([b465681](https://github.com/Ethiel97/lucidclip-app/commit/b465681d31325fadf0baa584825f90e2ec887226))
+
 ## [1.4.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.4.0...v1.4.1) (2026-02-06)
 
 

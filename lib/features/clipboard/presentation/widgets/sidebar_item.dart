@@ -53,7 +53,7 @@ class _SidebarItemState extends State<SidebarItem> {
       child: ClipRect(
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          padding: const EdgeInsets.all(AppSpacing.xs),
+          padding: const EdgeInsets.all(AppSpacing.xxs),
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(10),
@@ -85,7 +85,7 @@ class _SidebarItemState extends State<SidebarItem> {
                       color: contentColor,
                       fontWeight: widget.isSelected
                           ? FontWeight.w600
-                          : FontWeight.w500,
+                          : FontWeight.w400,
                     ),
                   ),
                 ),

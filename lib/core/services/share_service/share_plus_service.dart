@@ -7,6 +7,11 @@ import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/services/share_service/share_service.dart';
 import 'package:share_plus/share_plus.dart';
 
+/// Delay before cleaning up temporary files after sharing
+/// 10 seconds allows adequate time for the share operation to complete
+/// across different platforms (macOS, iOS, Android, Windows, Linux)
+const _tempFileCleanupDelay = Duration(seconds: 10);
+
 /// Share service implementation using share_plus package
 @LazySingleton(as: ShareService)
 class SharePlusService implements ShareService {
@@ -115,7 +120,7 @@ class SharePlusService implements ShareService {
   Future<void> shareImageBytes(List<int> imageBytes, {String? subject}) async {
     try {
       // Detect image format from bytes
-      var fileExtension = 'png'; // default
+      String fileExtension = 'png'; // default
       if (imageBytes.length >= 2) {
         // Check for common image formats by magic bytes
         if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8) {
@@ -138,9 +143,12 @@ class SharePlusService implements ShareService {
       }
 
       // Create a temporary file for the image
+      // Note: fileExtension is controlled (only 'png', 'jpg', or 'gif')
+      // and validated implicitly by the switch logic above
       final tempDir = Directory.systemTemp;
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
       final tempFile = File(
-        '${tempDir.path}/shared_image_${DateTime.now().millisecondsSinceEpoch}.$fileExtension',
+        '${tempDir.path}/shared_image_$timestamp.$fileExtension',
       );
       await tempFile.writeAsBytes(imageBytes);
 
@@ -153,7 +161,7 @@ class SharePlusService implements ShareService {
       // Give more time for the share operation to complete across platforms
       // Using unawaited to explicitly mark this as fire-and-forget
       unawaited(
-        Future.delayed(const Duration(seconds: 10), () async {
+        Future.delayed(_tempFileCleanupDelay, () async {
           try {
             if (tempFile.existsSync()) {
               await tempFile.delete();

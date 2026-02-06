@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.4.0...v1.4.1) (2026-02-06)
+
+
+### Bug Fixes
+
+* simplify settings architecture with unified repository pattern ([#101](https://github.com/Ethiel97/lucidclip-app/issues/101)) ([3e40c27](https://github.com/Ethiel97/lucidclip-app/commit/3e40c27ac158e080de03d61dec8064e97448623b))
+
 ## [1.4.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.3.0...v1.4.0) (2026-02-05)
 
 

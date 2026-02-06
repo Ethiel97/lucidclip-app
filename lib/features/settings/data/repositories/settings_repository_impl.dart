@@ -54,19 +54,19 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<UserSettings?> load(String userId) async {
-    var local = await localDataSource.getSettings(userId);
+    final local = await localDataSource.getSettings(userId);
 
     if (local == null) {
       final defaultSettings = _createDefaultSettings(userId);
       await update(defaultSettings);
-      local = await localDataSource.getSettings(userId);
+      return defaultSettings;
     }
 
     // 3) best-effort refresh (do not block UI)
     // ignore: unawaited_futures
     refresh(userId);
 
-    return local?.toEntity();
+    return local.toEntity();
   }
 
   UserSettings _createDefaultSettings(String userId) => UserSettings(

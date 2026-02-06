@@ -27,7 +27,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
   final AuthRepository authRepository;
   final SettingsRepository settingsRepository;
-  late StreamSubscription<User?>? _authSubscription;
+  late final StreamSubscription<User?>? _authSubscription;
   StreamSubscription<UserSettings?>? _localSubscription;
   Timer? _incognitoSessionTimer;
 

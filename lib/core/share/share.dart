@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:lucid_clip/core/share/share_service.dart';
 
 /// Global share singleton entry point.
@@ -22,22 +24,50 @@ class Share {
 
   /// Share text content
   static Future<void> shareText(String text, {String? subject}) async {
-    await _instance?.shareText(text, subject: subject);
+    if (_instance == null) {
+      developer.log(
+        'Share service not initialized',
+        name: 'Share.shareText',
+      );
+      return;
+    }
+    await _instance!.shareText(text, subject: subject);
   }
 
   /// Share a URL
   static Future<void> shareUrl(String url, {String? subject}) async {
-    await _instance?.shareUrl(url, subject: subject);
+    if (_instance == null) {
+      developer.log(
+        'Share service not initialized',
+        name: 'Share.shareUrl',
+      );
+      return;
+    }
+    await _instance!.shareUrl(url, subject: subject);
   }
 
   /// Share a file
   static Future<void> shareFile(String filePath, {String? subject}) async {
-    await _instance?.shareFile(filePath, subject: subject);
+    if (_instance == null) {
+      developer.log(
+        'Share service not initialized',
+        name: 'Share.shareFile',
+      );
+      return;
+    }
+    await _instance!.shareFile(filePath, subject: subject);
   }
 
   /// Share an image
   static Future<void> shareImage(String imagePath, {String? subject}) async {
-    await _instance?.shareImage(imagePath, subject: subject);
+    if (_instance == null) {
+      developer.log(
+        'Share service not initialized',
+        name: 'Share.shareImage',
+      );
+      return;
+    }
+    await _instance!.shareImage(imagePath, subject: subject);
   }
 
   /// Share image bytes
@@ -45,7 +75,14 @@ class Share {
     List<int> imageBytes, {
     String? subject,
   }) async {
-    await _instance?.shareImageBytes(imageBytes, subject: subject);
+    if (_instance == null) {
+      developer.log(
+        'Share service not initialized',
+        name: 'Share.shareImageBytes',
+      );
+      return;
+    }
+    await _instance!.shareImageBytes(imageBytes, subject: subject);
   }
 
   /// Whether share is supported

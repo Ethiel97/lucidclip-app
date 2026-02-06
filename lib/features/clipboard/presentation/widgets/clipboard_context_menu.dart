@@ -15,6 +15,7 @@ import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum ClipboardMenuAction {
@@ -194,6 +195,7 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
 
   Future<void> _handleShare(BuildContext context) async {
     final item = widget.clipboardItem;
+    final l10n = context.l10n;
 
     try {
       // Determine what to share based on item type
@@ -211,8 +213,15 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         await Share.shareText(item.content);
       }
     } catch (e) {
-      // Error is already logged in the service
-      // Could show a toast/snackbar to user if needed
+      // Show user-facing error feedback
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.minimal,
+        title: Text(l10n.errorOccurred.sentenceCase),
+        description: const Text('Unable to share this item'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
     }
   }
 

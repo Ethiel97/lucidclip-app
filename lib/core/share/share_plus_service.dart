@@ -129,15 +129,18 @@ class SharePlusService implements ShareService {
         subject: subject,
       );
 
-      // Clean up the temporary file after a short delay
-      Future.delayed(const Duration(seconds: 5), () {
-        if (tempFile.existsSync()) {
-          tempFile.delete().catchError((e) {
-            developer.log(
-              'Error deleting temporary image file: $e',
-              name: 'SharePlusService.shareImageBytes',
-            );
-          });
+      // Clean up the temporary file after a reasonable delay
+      // Give more time for the share operation to complete across platforms
+      Future.delayed(const Duration(seconds: 10), () async {
+        try {
+          if (tempFile.existsSync()) {
+            await tempFile.delete();
+          }
+        } catch (e) {
+          developer.log(
+            'Error deleting temporary image file: $e',
+            name: 'SharePlusService.shareImageBytes',
+          );
         }
       });
       

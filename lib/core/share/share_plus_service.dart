@@ -120,7 +120,7 @@ class SharePlusService implements ShareService {
       // Detect image format from bytes
       String extension = 'png'; // default
       if (imageBytes.length >= 2) {
-        // Check for common image formats
+        // Check for common image formats by magic bytes
         if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8) {
           extension = 'jpg'; // JPEG
         } else if (imageBytes.length >= 4 &&
@@ -130,16 +130,13 @@ class SharePlusService implements ShareService {
             imageBytes[3] == 0x47) {
           extension = 'png'; // PNG
         } else if (imageBytes.length >= 6 &&
-            ((imageBytes[0] == 0x47 &&
-                    imageBytes[1] == 0x49 &&
-                    imageBytes[2] == 0x46) ||
-                (imageBytes[0] == 0x47 &&
-                    imageBytes[1] == 0x49 &&
-                    imageBytes[2] == 0x46 &&
-                    imageBytes[3] == 0x38 &&
-                    (imageBytes[4] == 0x37 || imageBytes[4] == 0x39) &&
-                    imageBytes[5] == 0x61))) {
-          extension = 'gif'; // GIF
+            imageBytes[0] == 0x47 &&
+            imageBytes[1] == 0x49 &&
+            imageBytes[2] == 0x46 &&
+            imageBytes[3] == 0x38 &&
+            (imageBytes[4] == 0x37 || imageBytes[4] == 0x39) &&
+            imageBytes[5] == 0x61) {
+          extension = 'gif'; // GIF87a or GIF89a
         }
       }
 

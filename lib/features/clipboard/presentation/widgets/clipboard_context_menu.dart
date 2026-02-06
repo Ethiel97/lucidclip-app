@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
@@ -261,7 +263,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   }) {
     switch (action) {
       case ClipboardMenuAction.pasteToApp:
-        _handlePasteToApp(context);
+        // Fire-and-forget: menu closes immediately, errors handled in cubit
+        unawaited(_handlePasteToApp(context));
         return;
 
       case ClipboardMenuAction.copyPath:
@@ -315,7 +318,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         return;
 
       case ClipboardMenuAction.share:
-        _handleShare(context);
+        // Fire-and-forget: menu closes immediately, errors shown via toast
+        unawaited(_handleShare(context));
         return;
     }
   }

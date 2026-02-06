@@ -134,3 +134,11 @@ class AppOpenedParams {
 
   Map<String, Object> toMap() => {'day_bucket': dayBucket.value};
 }
+
+class ClipboardItemSharedParams {
+  const ClipboardItemSharedParams({required this.contentType});
+
+  final String contentType;
+
+  Map<String, Object> toMap() => {'content_type': contentType};
+}

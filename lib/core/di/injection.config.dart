@@ -68,6 +68,8 @@ import 'package:lucid_clip/core/services/window_controller/method_channel_macos_
     as _i998;
 import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
     as _i1036;
+import 'package:lucid_clip/core/share/share_plus_service.dart' as _i228;
+import 'package:lucid_clip/core/share/share_service.dart' as _i277;
 import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
@@ -213,6 +215,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i212.SyntaxHighlighter>(
       () => const _i1007.SyntaxHighlightService(),
     );
+    gh.lazySingleton<_i277.ShareService>(() => _i228.SharePlusService());
     gh.lazySingleton<_i212.MacosOverlay>(
       () => _i998.MethodChannelMacosOverlay(),
     );

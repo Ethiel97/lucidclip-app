@@ -216,13 +216,15 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       }
     } catch (e) {
       // Show user-facing error feedback
-      toastification.show(
-        context: context,
-        type: ToastificationType.error,
-        style: ToastificationStyle.minimal,
-        title: Text(l10n.errorOccurred.sentenceCase),
-        autoCloseDuration: const Duration(seconds: 5),
-      );
+      if (context.mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          style: ToastificationStyle.minimal,
+          title: Text(l10n.errorOccurred.sentenceCase),
+          autoCloseDuration: const Duration(seconds: 5),
+        );
+      }
     }
   }
 

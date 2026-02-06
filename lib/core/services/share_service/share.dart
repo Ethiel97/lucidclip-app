@@ -1,6 +1,6 @@
 import 'dart:developer' as developer;
 
-import 'package:lucid_clip/core/share/share_service.dart';
+import 'package:lucid_clip/core/services/share_service/share_service.dart';
 
 /// Global share singleton entry point.
 ///

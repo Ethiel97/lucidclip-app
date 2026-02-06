@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
-import 'package:lucid_clip/core/share/share_service.dart';
+import 'package:lucid_clip/core/services/share_service/share_service.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// Share service implementation using share_plus package

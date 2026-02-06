@@ -7,10 +7,10 @@ The share functionality has been successfully implemented for the clipboard cont
 ## 🎯 What Was Implemented
 
 ### 1. Share Service Architecture
-Following the hybrid service locator + facade pattern (same as Analytics):
+Following the pattern used for other utility services:
 
 ```
-lib/core/share/
+lib/core/services/share_service/
 ├── share_service.dart         # Abstract interface
 ├── share_plus_service.dart    # Implementation using share_plus package
 ├── share.dart                 # Facade for global access
@@ -74,14 +74,15 @@ Share.initialize(shareService);
 ## 📋 Files Changed
 
 1. **New Files (4)**:
-   - `lib/core/share/share_service.dart`
-   - `lib/core/share/share_plus_service.dart`
-   - `lib/core/share/share.dart`
-   - `lib/core/share/share_module.dart`
+   - `lib/core/services/share_service/share_service.dart`
+   - `lib/core/services/share_service/share_plus_service.dart`
+   - `lib/core/services/share_service/share.dart`
+   - `lib/core/services/share_service/share_module.dart`
 
-2. **Modified Files (3)**:
+2. **Modified Files (4)**:
    - `lib/bootstrap.dart` - Initialize Share service
    - `lib/core/analytics/analytics_events.dart` - Added `shareUsed` event
+   - `lib/core/services/services.dart` - Added share_service export
    - `lib/features/clipboard/presentation/widgets/clipboard_context_menu.dart` - Context menu integration
 
 3. **Documentation (2)**:

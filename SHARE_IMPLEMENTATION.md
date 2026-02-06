@@ -3,12 +3,12 @@
 ## Changes Made
 
 ### 1. Share Service Infrastructure
-Created a new share service following the same hybrid service locator + facade pattern used for Analytics:
+Created a new share service following the pattern used for other utility services:
 
-- **`lib/core/share/share_service.dart`**: Abstract interface defining the contract for share implementations
-- **`lib/core/share/share_plus_service.dart`**: Implementation using the `share_plus` package (already in dependencies)
-- **`lib/core/share/share.dart`**: Facade providing a singleton entry point for sharing
-- **`lib/core/share/share_module.dart`**: Module exports
+- **`lib/core/services/share_service/share_service.dart`**: Abstract interface defining the contract for share implementations
+- **`lib/core/services/share_service/share_plus_service.dart`**: Implementation using the `share_plus` package (already in dependencies)
+- **`lib/core/services/share_service/share.dart`**: Facade providing a singleton entry point for sharing
+- **`lib/core/services/share_service/share_module.dart`**: Module exports
 
 ### 2. Context Menu Integration
 Added share functionality to the clipboard context menu:

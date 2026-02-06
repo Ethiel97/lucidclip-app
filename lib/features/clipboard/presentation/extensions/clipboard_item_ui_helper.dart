@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/platform/source_app/source_app.dart';
@@ -42,6 +43,9 @@ const _iconUnknown = IconTheme(
 );
 
 extension ClipboardUiHelper on ClipboardItem {
+  String get userFacingCreatedAt =>
+      Jiffy.parseFromDateTime(lastUsedAt ?? createdAt).toUtc().yMMMMdjm;
+
   Widget get linkPreviewWidget {
     if (type case ClipboardItemType.url) {
       return LinkPreviewWidget(url: content);

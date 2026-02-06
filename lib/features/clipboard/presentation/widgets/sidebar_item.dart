@@ -66,7 +66,11 @@ class _SidebarItemState extends State<SidebarItem> {
             children: [
               IconTheme(
                 data: IconThemeData(color: contentColor),
-                child: widget.icon,
+                child: IconButton(
+                  onPressed: widget.onTap,
+                  icon: widget.icon,
+                  tooltip: isExpanded ? null : widget.label,
+                ),
               ),
               if (isExpanded) ...[
                 const SizedBox(width: AppSpacing.sm),

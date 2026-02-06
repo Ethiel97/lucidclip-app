@@ -315,7 +315,8 @@ class _InfoCard extends StatelessWidget {
         ),
         _InfoRow(
           label: l10n.copied.sentenceCase,
-          value: clipboardItem.timeAgo,
+          value:
+              '${clipboardItem.timeAgo} · ${clipboardItem.userFacingCreatedAt}',
           icon: const HugeIcon(icon: HugeIcons.strokeRoundedClock01),
         ),
         _InfoRow(

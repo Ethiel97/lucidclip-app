@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/network/network.dart';
@@ -45,22 +47,45 @@ class SupabaseSettingsRemoteDataSource implements SettingsRemoteDataSource {
   }
 
   @override
-  Stream<UserSettingsModel?> watchSettings(String userId) {
-    try {
-      final stream = _networkClient.watch<UserSettingsModel>(
-        table: userSettingsTable,
-        filters: {'user_id': userId},
-        primaryKey: 'user_id',
-      );
+  Future<SettingsRemoteSubscription> subscribeSettings(String userId) async {
+    final rawStream = _networkClient.watch<Map<String, dynamic>>(
+      table: userSettingsTable,
+      primaryKey: 'user_id',
+      filters: {'user_id': userId},
+    );
 
-      return stream.map((response) {
-        if (response.isEmpty) return null;
-        return UserSettingsModel.fromJson(
-          response.first as Map<String, dynamic>,
-        );
-      });
-    } catch (e, stack) {
-      throw NetworkException('Failed to watch settings: $e $stack');
+    return _SupabaseSettingsRemoteSubscription(rawStream);
+  }
+}
+
+class _SupabaseSettingsRemoteSubscription
+    implements SettingsRemoteSubscription {
+  _SupabaseSettingsRemoteSubscription(this._rawStream);
+
+  final Stream<List<Map<String, dynamic>>> _rawStream;
+
+  StreamSubscription<List<Map<String, dynamic>>>? _sub;
+  final _controller = StreamController<UserSettingsModel>.broadcast();
+
+  bool _started = false;
+
+  @override
+  Stream<UserSettingsModel> get stream {
+    if (!_started) {
+      _started = true;
+      _sub = _rawStream.listen((rows) {
+        if (rows.isEmpty) return;
+
+        final latest = rows.last;
+        _controller.add(UserSettingsModel.fromJson(latest));
+      }, onError: _controller.addError);
     }
+    return _controller.stream;
+  }
+
+  @override
+  Future<void> cancel() async {
+    await _sub?.cancel();
+    await _controller.close();
   }
 }

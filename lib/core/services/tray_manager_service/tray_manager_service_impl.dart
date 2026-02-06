@@ -12,9 +12,9 @@ import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:tray_manager/tray_manager.dart';
 
-@lazySingleton
-class TrayManagerService with TrayListener {
-  TrayManagerService() {
+@LazySingleton(as: TrayManagerService)
+class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
+  TrayManagerServiceImpl() {
     trayManager.addListener(this);
 
     initialize();
@@ -27,6 +27,8 @@ class TrayManagerService with TrayListener {
   final windowController = getIt<WindowController>();
 
   /// Initialize the tray icon and menu
+  ///
+  @override
   Future<void> initialize() async {
     if (_isInitialized) return;
 
@@ -52,6 +54,7 @@ class TrayManagerService with TrayListener {
 
   /// Start watching clipboard changes to update tray menu.
   /// This should be called after the app is fully initialized.
+  @override
   void startWatchingClipboard() {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
@@ -128,6 +131,7 @@ class TrayManagerService with TrayListener {
   }
 
   /// Update the tray menu with current clipboard items
+  @override
   Future<void> updateTrayMenu() async {
     try {
       final clipboardCubit = getIt<ClipboardCubit>();
@@ -157,18 +161,36 @@ class TrayManagerService with TrayListener {
         );
       } else {
         for (var i = 0; i < recentItems.length; i++) {
-          final item = recentItems[i];
-          final preview = _getItemPreview(item);
+          final clipboardItem = recentItems[i];
+          final preview = _getItemPreview(clipboardItem);
+
+          // fresh instance of windowController to ensure
+          // we have the latest previousFrontmostApp info
+          final windowController = getIt<WindowController>();
 
           historyMenuItems.add(
             MenuItem(
               key: 'clipboard_item_$i',
               label: preview,
-              onClick: (item) {
-                // copy to clipboard when clicked
-                //TODO(ETHIEL97): clipboardCubit.(itemKey: 'clipboard_item_$i');
+              toolTip: (windowController.previousFrontmostApp?.isValid ?? false)
+                  ? (l10n?.pasteToApp(
+                          windowController.previousFrontmostApp!.name,
+                        ) ??
+                        //ignore: lines_longer_than_80_chars
+                        'Paste to ${windowController.previousFrontmostApp?.name}')
+                  : null,
+              onClick: (item) async {
+                final previousApp = windowController.previousFrontmostApp;
+                final isPreviousAppValid =
+                    previousApp != null && previousApp.isValid;
+
+                if (isPreviousAppValid) {
+                  await getIt<ClipboardDetailCubit>().handlePasteToApp(
+                    bundleId: previousApp.bundleId,
+                    clipboardItem: clipboardItem,
+                  );
+                }
               },
-              // Preview only, clicking won't do anything
             ),
           );
           if (i < recentItems.length - 1) {
@@ -324,7 +346,7 @@ class TrayManagerService with TrayListener {
   /// Toggle main window visibility
   Future<void> _toggleWindowVisibility() async {
     try {
-      await getIt<WindowController>().toggle();
+      await windowController.toggle();
     } catch (e, stackTrace) {
       developer.log(
         'Error toggling window visibility',
@@ -477,6 +499,7 @@ class TrayManagerService with TrayListener {
 
   /// Dispose resources
   @disposeMethod
+  @override
   void dispose() {
     _clipboardSubscription?.cancel();
     _settingsSubscription?.cancel();

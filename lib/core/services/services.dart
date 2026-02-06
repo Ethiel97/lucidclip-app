@@ -8,6 +8,6 @@ export './hotkey_manager_service/hotkey_manager_service.dart';
 export './paste_to_app_service/paste_to_app_service.dart';
 export './source_app_icon_service.dart';
 export './syntax_highlighter/syntax_highlighter.dart';
-export './tray_manager_service/tray_manager_service.dart';
+export './tray_manager_service/tray_manager_module.dart';
 export './window_controller/macos_overlay.dart';
 export './window_controller/window_controller.dart';

@@ -1,120 +1,89 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
-import 'package:lucid_clip/features/auth/domain/domain.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
-import 'package:lucid_clip/features/settings/data/models/models.dart';
-import 'package:lucid_clip/features/settings/domain/domain.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 
 part 'settings_state.dart';
 
-// TODO(Ethiel): Refactor to handle local and remote settings
-//  in the repository layer
 @lazySingleton
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit({
     required this.authRepository,
-    required this.localSettingsRepository,
     required this.settingsRepository,
   }) : super(const SettingsState()) {
-    _initializeAuthListener();
-  }
-
-  final AuthRepository authRepository;
-  final LocalSettingsRepository localSettingsRepository;
-  final SettingsRepository settingsRepository;
-
-  StreamSubscription<UserSettings?>? _settingsSubscription;
-  StreamSubscription<User?>? _authSubscription;
-  Timer? _incognitoSessionTimer;
-
-  // Use a local storage key for unauthenticated users
-  String _currentUserId = 'guest';
-
-  User? _currentUser;
-
-  bool get isAuthenticated => _currentUser != null && _currentUserId != 'guest';
-
-  void _initializeAuthListener() {
-    _authSubscription?.cancel();
-    _authSubscription = authRepository.authStateChanges.listen((user) {
-      _currentUser = user;
-      _currentUserId = user?.id ?? 'guest';
-      loadSettings();
-      watchSettings();
-    });
-  }
-
-  UserSettings _createDefaultSettings() {
-    return UserSettings(
-      userId: _currentUserId,
-      createdAt: DateTime.now().toUtc(),
-      updatedAt: DateTime.now().toUtc(),
-      shortcuts: {
-        'toggle_window': Platform.isMacOS
-            ? 'Cmd + Shift + L'
-            : 'Ctrl + Shift + L',
-      },
+    _authSubscription = authRepository.authStateChanges.listen(
+      _onAuthStateChanged,
     );
   }
 
-  Future<void> loadSettings() async {
+  String? _currentUserId;
+
+  final AuthRepository authRepository;
+  final SettingsRepository settingsRepository;
+  late StreamSubscription<User?>? _authSubscription;
+  StreamSubscription<UserSettings?>? _localSubscription;
+  Timer? _incognitoSessionTimer;
+
+  Future<void> _onAuthStateChanged(User? user) async {
+    if (user == null) {
+      await _reset();
+      return;
+    }
+
+    if (_currentUserId == user.id && _localSubscription != null) {
+      return;
+    }
+
+    if (_currentUserId != null && _currentUserId != user.id) {
+      await _reset();
+    }
+
+    await boot(user.id);
+  }
+
+  Future<void> _reset() async {
+    await settingsRepository.stopRealtime();
+    await _localSubscription?.cancel();
+    _localSubscription = null;
+    _currentUserId = null;
+    _incognitoSessionTimer?.cancel();
+    _incognitoSessionTimer = null;
+    emit(const SettingsState());
+  }
+
+  Future<void> boot(String userId) async {
+    _currentUserId = userId;
+
     emit(state.copyWith(settings: state.settings.toLoading()));
 
     try {
-      final localSettings = await localSettingsRepository.getSettings(
-        _currentUserId,
-      );
+      // Start local stream first (fast UI updates)
+      await _localSubscription?.cancel();
+      _localSubscription = settingsRepository.watchLocal(userId).listen((s) {
+        log('SettingsCubit: local settings updated: $s');
 
-      if (localSettings != null) {
-        emit(state.copyWith(settings: state.settings.toSuccess(localSettings)));
-        // Check if we need to restore or expire an active session
-        await _checkAndRestorePrivateSession(localSettings);
-      }
-
-      // Only try to sync with remote if user is authenticated
-      if (isAuthenticated) {
-        try {
-          final remoteSettings = await settingsRepository.getSettings(
-            _currentUserId,
-          );
-          if (remoteSettings != null) {
-            await localSettingsRepository.upsertSettings(remoteSettings);
-            emit(
-              state.copyWith(
-                settings: state.settings.toSuccess(remoteSettings),
-              ),
-            );
-            await _checkAndRestorePrivateSession(remoteSettings);
-          } else if (localSettings == null) {
-            final defaultSettings = _createDefaultSettings();
-            await updateSettings(defaultSettings);
-          }
-        } catch (e) {
-          if (localSettings == null) {
-            final defaultSettings = _createDefaultSettings();
-            await localSettingsRepository.upsertSettings(defaultSettings);
-            emit(
-              state.copyWith(
-                settings: state.settings.toSuccess(defaultSettings),
-              ),
-            );
-          }
+        if (s != null) {
+          emit(state.copyWith(settings: state.settings.toSuccess(s)));
+          // Restore private session timer if needed when settings change
+          _checkAndRestorePrivateSession(s);
         }
-      } else if (localSettings == null) {
-        final defaultSettings = _createDefaultSettings();
-        await localSettingsRepository.upsertSettings(defaultSettings);
-        emit(
-          state.copyWith(settings: state.settings.toSuccess(defaultSettings)),
-        );
-        // No need to restore session for new default settings
-      }
+      });
+
+      // Load local + trigger refresh
+      // Repository handles default creation if needed
+      final local = await settingsRepository.load(userId);
+
+      emit(state.copyWith(settings: state.settings.toSuccess(local)));
+
+      // Start realtime (instant sync after remote updates)
+      await settingsRepository.startRealtime(userId);
     } catch (e) {
       emit(
         state.copyWith(
@@ -126,22 +95,19 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     }
   }
 
-  void watchSettings() {
-    _settingsSubscription?.cancel();
-    _settingsSubscription = localSettingsRepository
-        .watchSettings(_currentUserId)
-        .listen((settings) async {
-          if (settings != null) {
-            log(
-              'Settings updated for user $_currentUserId: $settings',
-              name: 'SettingsCubit',
-            );
+  Future<void> refresh(String userId) async {
+    try {
+      await settingsRepository.refresh(userId);
+    } catch (_) {
+      // silent: UI already has local value; realtime may catch later
+    }
+  }
 
-            emit(state.copyWith(settings: state.settings.toSuccess(settings)));
-            // Restore private session timer if needed when settings change
-            await _checkAndRestorePrivateSession(settings);
-          }
-        });
+  /// Refresh settings using the current user ID
+  Future<void> refreshSettings() async {
+    if (_currentUserId != null) {
+      await refresh(_currentUserId!);
+    }
   }
 
   Future<void> updatedExcludedApps(List<SourceApp> apps) async {
@@ -179,27 +145,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
   Future<void> updateSettings(UserSettings settings) async {
     try {
-      final updatedSettings = settings.copyWith(
-        updatedAt: DateTime.now().toUtc(),
-      );
-
-      // Update local first for immediate feedback
-      await localSettingsRepository.upsertSettings(updatedSettings);
-      emit(state.copyWith(settings: state.settings.toSuccess(updatedSettings)));
-
-      // Only sync to remote if user is authenticated (not guest)
-      if (isAuthenticated) {
-        try {
-          await settingsRepository.updateSettings(updatedSettings);
-        } catch (e) {
-          log(
-            'Failed to sync settings to remote for user $_currentUserId: $e',
-            name: 'SettingsCubit',
-          );
-          // Log but don't fail if remote sync fails
-          // The settings are already saved locally
-        }
-      }
+      await settingsRepository.update(settings);
+      // No need to emit here - the watchLocal stream will emit the update
     } catch (e, stack) {
       log(
         'Error updating settings for user $_currentUserId: $e',
@@ -286,7 +233,13 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       if (incognitoMode) {
         await startPrivateSession();
       } else {
-        await updateSettings(currentSettings.copyWith(incognitoMode: false));
+        await updateSettings(
+          currentSettings.copyWith(
+            incognitoMode: false,
+            incognitoSessionDurationMinutes: () => null,
+            incognitoSessionEndTime: () => null,
+          ),
+        );
         _incognitoSessionTimer?.cancel();
         _incognitoSessionTimer = null;
       }
@@ -305,8 +258,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       await updateSettings(
         currentSettings.copyWith(
           incognitoMode: true,
-          incognitoSessionDurationMinutes: durationMinutes,
-          incognitoSessionEndTime: endTime,
+          incognitoSessionDurationMinutes: () => durationMinutes,
+          incognitoSessionEndTime: () => endTime,
         ),
       );
 
@@ -376,9 +329,10 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
   @disposeMethod
   @override
-  Future<void> close() {
-    _authSubscription?.cancel();
-    _settingsSubscription?.cancel();
+  Future<void> close() async {
+    await settingsRepository.stopRealtime();
+    await _authSubscription?.cancel();
+    await _localSubscription?.cancel();
     _incognitoSessionTimer?.cancel();
     return super.close();
   }

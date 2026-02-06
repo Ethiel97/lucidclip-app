@@ -27,10 +27,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     required this.clipboardRepository,
     required this.localClipboardRepository,
     required this.localClipboardOutboxRepository,
-    required this.localSettingsRepository,
-    required this.remoteSettingsRepository,
     required this.retentionCleanupService,
     required this.retentionTracker,
+    required this.settingsRepository,
   }) : super(const ClipboardState()) {
     _initialize();
   }
@@ -43,9 +42,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   final LocalClipboardRepository localClipboardRepository;
   final LocalClipboardOutboxRepository localClipboardOutboxRepository;
+  final SettingsRepository settingsRepository;
 
-  final LocalSettingsRepository localSettingsRepository;
-  final SettingsRepository remoteSettingsRepository;
   final RetentionCleanupService retentionCleanupService;
   final RetentionTracker retentionTracker;
 
@@ -100,8 +98,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   void _startSettingsWatcherForUser(String userId) {
     _userSettingsSubscription?.cancel();
 
-    _userSettingsSubscription = localSettingsRepository
-        .watchSettings(userId)
+    _userSettingsSubscription = settingsRepository
+        .watchLocal(userId)
         .listen(
           (settings) async {
             final previousMax = _userSettings?.maxHistoryItems;
@@ -194,6 +192,8 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
   Future<void> _handleClipboardData(ClipboardData clipboardData) async {
     final settings = _userSettings;
+
+    developer.log('User settings in clipboard cubit: $settings');
 
     if (settings?.incognitoMode ?? false) {
       developer.log(

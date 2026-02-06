@@ -62,8 +62,8 @@ import 'package:lucid_clip/core/services/services.dart' as _i212;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
 import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlight_service.dart'
     as _i1007;
-import 'package:lucid_clip/core/services/tray_manager_service/tray_manager_service.dart'
-    as _i818;
+import 'package:lucid_clip/core/services/tray_manager_service/tray_manager_service_impl.dart'
+    as _i1071;
 import 'package:lucid_clip/core/services/window_controller/method_channel_macos_overlay.dart'
     as _i998;
 import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
@@ -137,8 +137,6 @@ import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation
 import 'package:lucid_clip/features/feedback/presentation/cubit/feedback_cubit.dart'
     as _i311;
 import 'package:lucid_clip/features/settings/data/data.dart' as _i739;
-import 'package:lucid_clip/features/settings/data/data_sources/data_sources.dart'
-    as _i173;
 import 'package:lucid_clip/features/settings/data/data_sources/drift_settings_local_data_source.dart'
     as _i386;
 import 'package:lucid_clip/features/settings/data/data_sources/settings_local_data_source.dart'
@@ -196,10 +194,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
     gh.lazySingleton<_i740.WindowManager>(() => thirdPartyModule.windowManager);
     gh.lazySingleton<_i890.AutoUpdater>(() => thirdPartyModule.autoUpdater);
-    gh.lazySingleton<_i818.TrayManagerService>(
-      () => _i818.TrayManagerService(),
-      dispose: (i) => i.dispose(),
-    );
     gh.lazySingleton<_i677.SidebarCubit>(
       () => _i677.SidebarCubit(),
       dispose: (i) => i.close(),
@@ -247,6 +241,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i15.FeedbackService>(
       () => _i193.WiredashFeedbackService(),
+    );
+    gh.lazySingleton<_i212.TrayManagerService>(
+      () => _i1071.TrayManagerServiceImpl(),
+      dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i500.AppUpdateService>(
       () => _i500.AppUpdateServiceImpl(
@@ -361,11 +359,6 @@ extension GetItInjectableX on _i174.GetIt {
         remote: gh<_i387.EntitlementRemoteDataSource>(),
       ),
     );
-    gh.lazySingleton<_i340.SettingsRepository>(
-      () => _i758.SettingsRepositoryImpl(
-        remoteDataSource: gh<_i173.SettingsRemoteDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i212.CacheService<_i51.SourceAppModel>>(
       () => cacheModule.sourceAppCache(
         gh<_i212.CacheSerializer<_i51.SourceAppModel, String>>(),
@@ -407,12 +400,46 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i212.CacheService<_i100.Uint8List>>(instanceName: 'iconCache'),
       ),
     );
+    gh.lazySingleton<_i340.SettingsRepository>(
+      () => _i758.SettingsRepositoryImpl(
+        local: gh<_i739.SettingsLocalDataSource>(),
+        remote: gh<_i739.SettingsRemoteDataSource>(),
+        iconService: gh<_i212.SourceAppIconService>(),
+      ),
+    );
+    gh.lazySingleton<_i997.SearchCubit>(
+      () => _i997.SearchCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
+        settingsRepository: gh<_i340.SettingsRepository>(),
+      ),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i966.SettingsCubit>(
+      () => _i966.SettingsCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        settingsRepository: gh<_i761.SettingsRepository>(),
+      ),
+      dispose: (i) => i.close(),
+    );
     gh.lazySingleton<_i696.BillingCubit>(
       () => _i696.BillingCubit(
         authRepository: gh<_i895.AuthRepository>(),
         billingRepository: gh<_i1022.BillingRepository>(),
       ),
       dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i340.LocalSettingsRepository>(
+      () => _i958.LocalSettingsRepositoryImpl(
+        settingsRepository: gh<_i340.SettingsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i42.RetentionCleanupService>(
+      () => _i6.RetentionCleanupServiceImpl(
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        settingsRepository: gh<_i340.SettingsRepository>(),
+        authRepository: gh<_i895.AuthRepository>(),
+      ),
     );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager(
@@ -434,11 +461,20 @@ extension GetItInjectableX on _i174.GetIt {
         iconService: gh<_i212.SourceAppIconService>(),
       ),
     );
-    gh.lazySingleton<_i340.LocalSettingsRepository>(
-      () => _i958.LocalSettingsRepositoryImpl(
-        iconService: gh<_i212.SourceAppIconService>(),
-        localDataSource: gh<_i739.SettingsLocalDataSource>(),
+    gh.lazySingleton<_i958.ClipboardCubit>(
+      () => _i958.ClipboardCubit(
+        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
+        authRepository: gh<_i895.AuthRepository>(),
+        clipboardManager: gh<_i108.BaseClipboardManager>(),
+        clipboardRepository: gh<_i42.ClipboardRepository>(),
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        localClipboardOutboxRepository:
+            gh<_i42.LocalClipboardOutboxRepository>(),
+        retentionCleanupService: gh<_i42.RetentionCleanupService>(),
+        retentionTracker: gh<_i169.RetentionTracker>(),
+        settingsRepository: gh<_i761.SettingsRepository>(),
       ),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i68.ClipboardDetailCubit>(
       () => _i68.ClipboardDetailCubit(
@@ -450,44 +486,6 @@ extension GetItInjectableX on _i174.GetIt {
             gh<_i42.LocalClipboardOutboxRepository>(),
         pasteToAppService: gh<_i212.PasteToAppService>(),
       ),
-    );
-    gh.lazySingleton<_i966.SettingsCubit>(
-      () => _i966.SettingsCubit(
-        authRepository: gh<_i922.AuthRepository>(),
-        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-        settingsRepository: gh<_i340.SettingsRepository>(),
-      ),
-      dispose: (i) => i.close(),
-    );
-    gh.lazySingleton<_i42.RetentionCleanupService>(
-      () => _i6.RetentionCleanupServiceImpl(
-        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
-        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-        authRepository: gh<_i895.AuthRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i997.SearchCubit>(
-      () => _i997.SearchCubit(
-        authRepository: gh<_i895.AuthRepository>(),
-        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
-        localSettingsRepository: gh<_i340.LocalSettingsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i958.ClipboardCubit>(
-      () => _i958.ClipboardCubit(
-        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
-        authRepository: gh<_i895.AuthRepository>(),
-        clipboardManager: gh<_i108.BaseClipboardManager>(),
-        clipboardRepository: gh<_i42.ClipboardRepository>(),
-        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
-        localClipboardOutboxRepository:
-            gh<_i42.LocalClipboardOutboxRepository>(),
-        localSettingsRepository: gh<_i761.LocalSettingsRepository>(),
-        remoteSettingsRepository: gh<_i761.SettingsRepository>(),
-        retentionCleanupService: gh<_i42.RetentionCleanupService>(),
-        retentionTracker: gh<_i169.RetentionTracker>(),
-      ),
-      dispose: (i) => i.close(),
     );
     return this;
   }

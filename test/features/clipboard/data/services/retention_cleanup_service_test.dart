@@ -9,8 +9,7 @@ import 'package:mocktail/mocktail.dart';
 class MockLocalClipboardRepository extends Mock
     implements LocalClipboardRepository {}
 
-class MockLocalSettingsRepository extends Mock
-    implements LocalSettingsRepository {}
+class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 class MockEntitlementRepository extends Mock implements EntitlementRepository {}
 
@@ -18,7 +17,7 @@ class MockAuthRepository extends Mock implements AuthRepository {}
 
 void main() {
   late MockLocalClipboardRepository mockLocalClipboardRepository;
-  late MockLocalSettingsRepository mockLocalSettingsRepository;
+  late MockSettingsRepository mockLocalSettingsRepository;
   late MockEntitlementRepository mockEntitlementRepository;
   late MockAuthRepository mockAuthRepository;
   late RetentionCleanupServiceImpl service;
@@ -30,13 +29,13 @@ void main() {
 
   setUp(() {
     mockLocalClipboardRepository = MockLocalClipboardRepository();
-    mockLocalSettingsRepository = MockLocalSettingsRepository();
+    mockLocalSettingsRepository = MockSettingsRepository();
     mockEntitlementRepository = MockEntitlementRepository();
     mockAuthRepository = MockAuthRepository();
 
     service = RetentionCleanupServiceImpl(
       localClipboardRepository: mockLocalClipboardRepository,
-      localSettingsRepository: mockLocalSettingsRepository,
+      settingsRepository: mockLocalSettingsRepository,
       authRepository: mockAuthRepository,
     );
 
@@ -144,7 +143,7 @@ void main() {
         );
 
         when(
-          () => mockLocalSettingsRepository.getSettings('test-user'),
+          () => mockLocalSettingsRepository.load('test-user'),
         ).thenAnswer((_) async => settings);
 
         // Item that is 5 days old - should NOT be deleted
@@ -189,7 +188,7 @@ void main() {
           final now = DateTime.now().toUtc();
 
           when(
-            () => mockLocalSettingsRepository.getSettings('test-user'),
+            () => mockLocalSettingsRepository.load('test-user'),
           ).thenAnswer((_) async => null);
 
           // Item that is 2 days old - should be deleted (exceeds default 1 day)

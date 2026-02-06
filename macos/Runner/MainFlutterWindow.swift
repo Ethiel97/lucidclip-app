@@ -5,6 +5,7 @@ import ApplicationServices
 
 
 class MainFlutterWindow: NSWindow {
+    private var globalClickMonitor: Any?
     override func awakeFromNib() {
         let flutterViewController = FlutterViewController()
         let windowFrame = self.frame
@@ -150,7 +151,29 @@ class MainFlutterWindow: NSWindow {
         }
 
         super.awakeFromNib()
+        startOutsideClickToHide()
     }
+
+      private func startOutsideClickToHide() {
+        globalClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
+          guard let self = self else { return }
+
+          if !self.isVisible { return }
+
+          let mouseLocation = NSEvent.mouseLocation
+
+          if !self.frame.contains(mouseLocation) {
+            self.orderOut(nil)
+          }
+        }
+      }
+
+      deinit {
+        if let m = globalClickMonitor {
+          NSEvent.removeMonitor(m)
+        }
+      }
+
 
     override public func order(_ place: NSWindow.OrderingMode, relativeTo otherWin: Int) {
         super.order(place, relativeTo: otherWin)

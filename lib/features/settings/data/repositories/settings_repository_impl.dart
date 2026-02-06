@@ -12,14 +12,13 @@ import 'package:lucid_clip/features/settings/domain/domain.dart';
 @LazySingleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl({
-    required SettingsLocalDataSource local,
-    required SettingsRemoteDataSource remote,
+    required this.localDataSource,
+    required this.remoteDataSource,
     required this.iconService,
-  }) : _local = local,
-       _remote = remote;
+  });
 
-  final SettingsLocalDataSource _local;
-  final SettingsRemoteDataSource _remote;
+  final SettingsLocalDataSource localDataSource;
+  final SettingsRemoteDataSource remoteDataSource;
   final SourceAppIconService iconService;
 
   SettingsRemoteSubscription? _remoteSub;
@@ -27,7 +26,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Stream<UserSettings?> watchLocal(String userId) {
-    return _local.watchSettings(userId).asyncMap((model) async {
+    return localDataSource.watchSettings(userId).asyncMap((model) async {
       if (model == null) return null;
 
       final entity = model.toEntity();
@@ -55,12 +54,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<UserSettings?> load(String userId) async {
-    var local = await _local.getSettings(userId);
+    var local = await localDataSource.getSettings(userId);
 
     if (local == null) {
       final defaultSettings = _createDefaultSettings(userId);
       await update(defaultSettings);
-      local = await _local.getSettings(userId);
+      local = await localDataSource.getSettings(userId);
     }
 
     // 3) best-effort refresh (do not block UI)
@@ -84,14 +83,14 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<UserSettings?> refresh(String userId) async {
     try {
-      final remote = await _remote.fetchSettings(userId);
+      final remote = await remoteDataSource.fetchSettings(userId);
 
       if (remote == null) {
-        final local = await _local.getSettings(userId);
+        final local = await localDataSource.getSettings(userId);
         return local?.toEntity();
       }
 
-      await _local.upsertSettings(remote);
+      await localDataSource.upsertSettings(remote);
       return remote.toEntity();
     } catch (e, stack) {
       log(
@@ -99,7 +98,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
         stackTrace: stack,
       );
 
-      final local = await _local.getSettings(userId);
+      final local = await localDataSource.getSettings(userId);
 
       if (local != null) {
         return local.toEntity();
@@ -119,11 +118,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final model = UserSettingsModel.fromEntity(updatedSettings);
 
       // Update local first for immediate feedback
-      await _local.upsertSettings(model);
+      await localDataSource.upsertSettings(model);
 
       // Try to sync to remote (best effort)
       try {
-        await _remote.upsertSettings(model.toJson());
+        await remoteDataSource.upsertSettings(model.toJson());
       } catch (e) {
         log(
           'SettingsRepositoryImpl.update: remote sync failed: $e',
@@ -142,7 +141,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   Future<void> startRealtime(String userId) async {
     await stopRealtime(); // avoid duplicates
 
-    _remoteSub = await _remote.subscribeSettings(userId);
+    _remoteSub = await remoteDataSource.subscribeSettings(userId);
 
     _remoteStreamSub = _remoteSub!.stream.listen(
       (model) async {
@@ -151,12 +150,17 @@ class SettingsRepositoryImpl implements SettingsRepository {
           'SettingsRepositoryImpl.startRealtime: '
           'received remote update: $model',
         );
-        await _local.upsertSettings(model);
+        await localDataSource.upsertSettings(model);
       },
-      onError: (_) {
-        log('SettingsRepositoryImpl.startRealtime: remote subscription error');
+      onError: (Object e, Object stack) {
+        log(
+          'SettingsRepositoryImpl.startRealtime: remote subscription error',
+          error: e,
+          stackTrace: stack as StackTrace?,
+        );
         // Important: do NOT crash. You already have refresh() fallback.
       },
+      cancelOnError: false,
     );
   }
 
@@ -170,5 +174,6 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<void> clearLocal(String userId) => _local.deleteSettings(userId);
+  Future<void> clearLocal(String userId) =>
+      localDataSource.deleteSettings(userId);
 }

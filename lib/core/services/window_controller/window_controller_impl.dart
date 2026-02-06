@@ -84,8 +84,6 @@ class WindowControllerImpl implements WindowController {
   @override
   Future<void> showAsOverlay() async {
     try {
-      log('Showing window as overlay');
-
       // Capture the frontmost app before showing LucidClip
       _previousFrontmostApp = await sourceAppProvider.getFrontmostApp();
       log('Previous frontmost app: ${_previousFrontmostApp?.name}');
@@ -101,8 +99,6 @@ class WindowControllerImpl implements WindowController {
       // await windowManager.focus();
       await setVisibleOnAllWorkspaces();
       await setAlwaysOnTop();
-
-      log('Window shown as overlay');
     } catch (e, stackTrace) {
       _isShowing = false;
       log(
@@ -164,7 +160,6 @@ class WindowControllerImpl implements WindowController {
   Future<void> setAlwaysOnTop({bool alwaysOnTop = true}) async {
     try {
       await windowManager.setAlwaysOnTop(alwaysOnTop);
-      log('Always on top set to: $alwaysOnTop');
     } catch (e, stackTrace) {
       log(
         'Failed to set always-on-top',
@@ -182,7 +177,6 @@ class WindowControllerImpl implements WindowController {
         visible,
         visibleOnFullScreen: true,
       );
-      log('Visible on all workspaces set to: $visible');
     } catch (e, stackTrace) {
       log(
         'Failed to set visible on all workspaces',
@@ -211,7 +205,6 @@ class WindowControllerImpl implements WindowController {
   @disposeMethod
   @override
   Future<void> dispose() async {
-    log('Disposing WindowController');
     _isShowing = false;
   }
 

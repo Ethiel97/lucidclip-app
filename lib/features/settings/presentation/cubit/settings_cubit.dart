@@ -66,15 +66,35 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     try {
       // Start local stream first (fast UI updates)
       await _localSubscription?.cancel();
-      _localSubscription = settingsRepository.watchLocal(userId).listen((s) {
-        log('SettingsCubit: local settings updated: $s');
+      _localSubscription = settingsRepository
+          .watchLocal(userId)
+          .listen(
+            (s) {
+              log('SettingsCubit: local settings updated: $s');
 
-        if (s != null) {
-          emit(state.copyWith(settings: state.settings.toSuccess(s)));
-          // Restore private session timer if needed when settings change
-          _checkAndRestorePrivateSession(s);
-        }
-      });
+              if (s != null) {
+                emit(state.copyWith(settings: state.settings.toSuccess(s)));
+                // Restore private session timer if needed when settings change
+                _checkAndRestorePrivateSession(s);
+              }
+            },
+
+            onError: (Object error, StackTrace stack) {
+              log(
+                'SettingsCubit: error watching local settings: $error',
+                stackTrace: stack,
+              );
+              emit(
+                state.copyWith(
+                  settings: state.settings.toError(
+                    ErrorDetails(
+                      message: 'Failed to watch local settings: $error',
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
 
       // Load local + trigger refresh
       // Repository handles default creation if needed

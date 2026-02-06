@@ -137,7 +137,8 @@ class SearchCubit extends Cubit<SearchState> {
         typeMatch = item.type == state.filterType;
       }
 
-      final fileMatch = item.filePath?.contains(normalizedQuery) ?? false;
+      final fileMatch =
+          item.filePath?.toLowerCase().contains(normalizedQuery) ?? false;
       final metaMatch = item.metadata.values.any(
         (v) => v.toString().toLowerCase().contains(normalizedQuery),
       );

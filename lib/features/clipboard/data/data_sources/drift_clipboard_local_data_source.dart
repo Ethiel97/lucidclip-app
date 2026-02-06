@@ -115,8 +115,8 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
     try {
       return _db
           .watchAllEntries(limit: limit)
-          .distinct()
-          .map((rows) => rows.map(_db.entryToModel).toList());
+          .map((rows) => rows.map(_db.entryToModel).toList())
+          .distinct();
     } catch (e) {
       rethrow;
     }

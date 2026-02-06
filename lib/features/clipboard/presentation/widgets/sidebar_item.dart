@@ -67,7 +67,10 @@ class _SidebarItemState extends State<SidebarItem> {
               IconTheme(
                 data: IconThemeData(color: contentColor),
                 child: IconButton(
-                  onPressed: widget.onTap,
+                  style: IconButton.styleFrom(
+                    disabledForegroundColor: contentColor,
+                  ),
+                  onPressed: null,
                   icon: widget.icon,
                   tooltip: isExpanded ? null : widget.label,
                 ),

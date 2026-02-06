@@ -55,6 +55,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
         url: AppConstants.supabaseProjectUrl,
         debug: true,
         anonKey: AppConstants.supabasePublishableKey,
+        realtimeClientOptions: const RealtimeClientOptions(
+          timeout: Duration(seconds: 20),
+        ),
       ),
     ]);
   } catch (e) {

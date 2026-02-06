@@ -219,7 +219,6 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         type: ToastificationType.error,
         style: ToastificationStyle.minimal,
         title: Text(l10n.errorOccurred.sentenceCase),
-        description: const Text('Unable to share this item'),
         autoCloseDuration: const Duration(seconds: 5),
       );
     }

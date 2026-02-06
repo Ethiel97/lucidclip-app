@@ -63,6 +63,8 @@ enum UpgradeSource {
   limitHit('limit_hit'),
   settings('settings'),
   banner('banner'),
+  pinClipboardItem('pin_clipboard_item'),
+  ignoredApps('ignored_apps'),
   proGate('pro_gate');
 
   const UpgradeSource(this.value);

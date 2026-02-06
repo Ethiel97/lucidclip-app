@@ -10,12 +10,12 @@ import 'package:lucid_clip/features/settings/domain/domain.dart';
 class RetentionCleanupServiceImpl implements RetentionCleanupService {
   RetentionCleanupServiceImpl({
     required this.localClipboardRepository,
-    required this.localSettingsRepository,
+    required this.settingsRepository,
     required this.authRepository,
   });
 
   final LocalClipboardRepository localClipboardRepository;
-  final LocalSettingsRepository localSettingsRepository;
+  final SettingsRepository settingsRepository;
   final AuthRepository authRepository;
 
   @override
@@ -25,7 +25,7 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
       final user = await authRepository.getCurrentUser();
       final userId = user?.id ?? 'guest';
 
-      final settings = await localSettingsRepository.getSettings(userId);
+      final settings = await settingsRepository.load(userId);
       final retentionDays = settings?.retentionDays ?? defaultRetentionDays;
 
       final retentionDuration = RetentionDuration.fromDays(retentionDays);

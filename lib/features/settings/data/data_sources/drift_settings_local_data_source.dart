@@ -50,9 +50,9 @@ class DriftSettingsLocalDataSource implements SettingsLocalDataSource {
   Stream<UserSettingsModel?> watchSettings(String userId) {
     return _db
         .watchSettingsByUserId(userId)
-        .distinct((previous, next) => previous?.userId == next?.userId)
         .map((entry) {
           return entry != null ? _db.entryToModel(entry) : null;
-        });
+        })
+        .distinct((previous, next) => previous?.updatedAt == next?.updatedAt);
   }
 }

@@ -17,7 +17,7 @@ class SearchCubit extends Cubit<SearchState> {
   SearchCubit({
     required this.authRepository,
     required this.localClipboardRepository,
-    required this.localSettingsRepository,
+    required this.settingsRepository,
   }) : super(
          SearchState(query: '', searchResults: <ClipboardItem>[].toInitial()),
        ) {
@@ -25,7 +25,7 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   final LocalClipboardRepository localClipboardRepository;
-  final LocalSettingsRepository localSettingsRepository;
+  final SettingsRepository settingsRepository;
   final AuthRepository authRepository;
 
   StreamSubscription<User?>? _authSubscription;
@@ -68,8 +68,8 @@ class SearchCubit extends Cubit<SearchState> {
 
   void _startSettingsWatcherForUser(String userId) {
     _userSettingsSubscription?.cancel();
-    _userSettingsSubscription = localSettingsRepository
-        .watchSettings(userId)
+    _userSettingsSubscription = settingsRepository
+        .watchLocal(userId)
         .listen(
           (settings) {
             final previousMax = _userSettings?.maxHistoryItems;
@@ -125,27 +125,23 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   void _applyFilter(String query) {
-    final normalizedQuery = query.trim().toLowerCase();
-
-    if (normalizedQuery.isEmpty) {
-      emit(state.copyWith(searchResults: _allItems.toSuccess()));
-      return;
-    }
-
+    final normalizedQuery = query.toLowerCase();
     final hasTypeFilter = !state.filterType.isUnknown;
 
     final filtered = _allItems.where((item) {
-      final typeMatch = !hasTypeFilter || item.type == state.filterType;
-
       final contentMatch = item.content.toLowerCase().contains(normalizedQuery);
+
+      var typeMatch = true;
+
+      if (hasTypeFilter) {
+        typeMatch = item.type == state.filterType;
+      }
 
       final fileMatch =
           item.filePath?.toLowerCase().contains(normalizedQuery) ?? false;
-
       final metaMatch = item.metadata.values.any(
         (v) => v.toString().toLowerCase().contains(normalizedQuery),
       );
-
       return typeMatch && (contentMatch || fileMatch || metaMatch);
     }).toList();
 
@@ -174,6 +170,7 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() async {
     await _authSubscription?.cancel();

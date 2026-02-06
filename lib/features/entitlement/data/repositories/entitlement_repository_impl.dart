@@ -82,6 +82,7 @@ class EntitlementRepositoryImpl implements EntitlementRepository {
         );
         // Important: do NOT crash. You already have refresh() fallback.
       },
+      cancelOnError: false,
     );
   }
 

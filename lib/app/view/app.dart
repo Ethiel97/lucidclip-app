@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/routes.dart';
@@ -34,7 +36,7 @@ class _AppState extends State<App> {
       BlocProvider(create: (_) => getIt<BillingCubit>()),
       BlocProvider(create: (_) => getIt<EntitlementCubit>()),
       BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
-      BlocProvider(create: (_) => getIt<SettingsCubit>()..loadSettings()),
+      BlocProvider(create: (_) => getIt<SettingsCubit>()),
       BlocProvider(
         create: (_) => getIt<AccessibilityCubit>()..checkPermission(),
       ),
@@ -89,10 +91,13 @@ class _AppViewState extends State<_AppView> with WindowListener {
 
     //if the user has set shortcuts for displaying the app we can hide on blur
     // otherwise we keep it open since there is no way to bring it back
-    for (final shortcut in shortcuts.entries) {
-      if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
-        await getIt<WindowController>().hide();
-        break;
+
+    if (Platform.isWindows || Platform.isLinux) {
+      for (final shortcut in shortcuts.entries) {
+        if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
+          await getIt<WindowController>().hide();
+          break;
+        }
       }
     }
   }
@@ -127,6 +132,7 @@ class _AppViewState extends State<_AppView> with WindowListener {
             final settings = state.settings.value;
             final themeMode = _getThemeMode(settings?.theme ?? 'dark');
             return Wiredash(
+              environment: AppConstants.isProd ? 'prod' : 'dev',
               theme: WiredashThemeData(
                 brightness: themeMode == ThemeMode.dark
                     ? Brightness.dark

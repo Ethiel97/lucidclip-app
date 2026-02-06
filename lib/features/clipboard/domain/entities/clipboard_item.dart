@@ -226,8 +226,9 @@ extension ClipboardItemHelper on ClipboardItem {
     ClipboardItemType.unknown => ClipboardContentType.unknown,
   };
 
-  String get timeAgo =>
-      Jiffy.parseFromDateTime(createdAt).toUtc().fromNow().sentenceCase;
+  String get timeAgo => Jiffy.parseFromDateTime(
+    lastUsedAt ?? createdAt,
+  ).toUtc().fromNow().sentenceCase;
 
   Duration get durationUntilExpiration {
     final expirationTime = createdAt.add(const Duration(days: 1));

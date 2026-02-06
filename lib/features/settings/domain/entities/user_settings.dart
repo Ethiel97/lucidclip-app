@@ -72,8 +72,8 @@ class UserSettings extends Equatable {
     bool? previewImages,
     bool? previewLinks,
     bool? incognitoMode,
-    int? incognitoSessionDurationMinutes,
-    DateTime? incognitoSessionEndTime,
+    int? Function()? incognitoSessionDurationMinutes,
+    DateTime? Function()? incognitoSessionEndTime,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -92,11 +92,12 @@ class UserSettings extends Equatable {
       previewLinks: previewLinks ?? this.previewLinks,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      incognitoSessionDurationMinutes:
-          incognitoSessionDurationMinutes ??
-          this.incognitoSessionDurationMinutes,
-      incognitoSessionEndTime:
-          incognitoSessionEndTime ?? this.incognitoSessionEndTime,
+      incognitoSessionDurationMinutes: incognitoSessionDurationMinutes != null
+          ? incognitoSessionDurationMinutes()
+          : this.incognitoSessionDurationMinutes,
+      incognitoSessionEndTime: incognitoSessionEndTime != null
+          ? incognitoSessionEndTime()
+          : this.incognitoSessionEndTime,
     );
   }
 

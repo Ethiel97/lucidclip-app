@@ -117,7 +117,7 @@ class SharePlusService implements ShareService {
   }
 
   /// Detects image format from magic bytes
-  /// Returns file extension: 'jpg', 'png', 'gif', or 'png' (default)
+  /// Returns format identifier: 'jpg', 'png', 'gif', or 'png' (default)
   String _detectImageFormat(List<int> imageBytes) {
     if (imageBytes.length >= 2) {
       // Check for JPEG (FF D8)

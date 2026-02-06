@@ -8,9 +8,7 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $ClipboardItemEntriesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
@@ -225,7 +223,6 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -248,14 +245,11 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
     isSnippet,
     metadataJson,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'clipboard_item_entries';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<ClipboardItemEntry> instance, {
@@ -408,7 +402,6 @@ class $ClipboardItemEntriesTable extends ClipboardItemEntries
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
-
   @override
   ClipboardItemEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -519,7 +512,6 @@ class ClipboardItemEntry extends DataClass
   final bool isPinned;
   final bool isSnippet;
   final String? metadataJson;
-
   const ClipboardItemEntry({
     required this.id,
     required this.content,
@@ -541,7 +533,6 @@ class ClipboardItemEntry extends DataClass
     required this.isSnippet,
     this.metadataJson,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -650,7 +641,6 @@ class ClipboardItemEntry extends DataClass
       metadataJson: serializer.fromJson<String?>(json['metadataJson']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -722,7 +712,6 @@ class ClipboardItemEntry extends DataClass
     isSnippet: isSnippet ?? this.isSnippet,
     metadataJson: metadataJson.present ? metadataJson.value : this.metadataJson,
   );
-
   ClipboardItemEntry copyWithCompanion(ClipboardItemEntriesCompanion data) {
     return ClipboardItemEntry(
       id: data.id.present ? data.id.value : this.id,
@@ -811,7 +800,6 @@ class ClipboardItemEntry extends DataClass
     isSnippet,
     metadataJson,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -859,7 +847,6 @@ class ClipboardItemEntriesCompanion
   final Value<bool> isSnippet;
   final Value<String?> metadataJson;
   final Value<int> rowid;
-
   const ClipboardItemEntriesCompanion({
     this.id = const Value.absent(),
     this.content = const Value.absent(),
@@ -882,7 +869,6 @@ class ClipboardItemEntriesCompanion
     this.metadataJson = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-
   ClipboardItemEntriesCompanion.insert({
     required String id,
     required String content,
@@ -911,7 +897,6 @@ class ClipboardItemEntriesCompanion
        type = Value(type),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
-
   static Insertable<ClipboardItemEntry> custom({
     Expression<String>? id,
     Expression<String>? content,
@@ -1107,9 +1092,7 @@ class $ClipboardOutboxEntriesTable extends ClipboardOutboxEntries
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-
   $ClipboardOutboxEntriesTable(this.attachedDatabase, [this._alias]);
-
   static const VerificationMeta _operationIdMeta = const VerificationMeta(
     'operationId',
   );
@@ -1227,7 +1210,6 @@ class $ClipboardOutboxEntriesTable extends ClipboardOutboxEntries
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-
   @override
   List<GeneratedColumn> get $columns => [
     operationId,
@@ -1242,14 +1224,11 @@ class $ClipboardOutboxEntriesTable extends ClipboardOutboxEntries
     lastError,
     createdAt,
   ];
-
   @override
   String get aliasedName => _alias ?? actualTableName;
-
   @override
   String get actualTableName => $name;
   static const String $name = 'clipboard_outbox_entries';
-
   @override
   VerificationContext validateIntegrity(
     Insertable<ClipboardOutboxEntry> instance, {
@@ -1346,7 +1325,6 @@ class $ClipboardOutboxEntriesTable extends ClipboardOutboxEntries
 
   @override
   Set<GeneratedColumn> get $primaryKey => {operationId};
-
   @override
   ClipboardOutboxEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1417,7 +1395,6 @@ class ClipboardOutboxEntry extends DataClass
   final int retryCount;
   final String? lastError;
   final DateTime createdAt;
-
   const ClipboardOutboxEntry({
     required this.operationId,
     required this.entityId,
@@ -1431,7 +1408,6 @@ class ClipboardOutboxEntry extends DataClass
     this.lastError,
     required this.createdAt,
   });
-
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1496,7 +1472,6 @@ class ClipboardOutboxEntry extends DataClass
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
-
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
@@ -1540,7 +1515,6 @@ class ClipboardOutboxEntry extends DataClass
     lastError: lastError.present ? lastError.value : this.lastError,
     createdAt: createdAt ?? this.createdAt,
   );
-
   ClipboardOutboxEntry copyWithCompanion(ClipboardOutboxEntriesCompanion data) {
     return ClipboardOutboxEntry(
       operationId: data.operationId.present
@@ -1595,7 +1569,6 @@ class ClipboardOutboxEntry extends DataClass
     lastError,
     createdAt,
   );
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1627,7 +1600,6 @@ class ClipboardOutboxEntriesCompanion
   final Value<String?> lastError;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
-
   const ClipboardOutboxEntriesCompanion({
     this.operationId = const Value.absent(),
     this.entityId = const Value.absent(),
@@ -1642,7 +1614,6 @@ class ClipboardOutboxEntriesCompanion
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-
   ClipboardOutboxEntriesCompanion.insert({
     required String operationId,
     required String entityId,
@@ -1662,7 +1633,6 @@ class ClipboardOutboxEntriesCompanion
        operationType = Value(operationType),
        deviceId = Value(deviceId),
        createdAt = Value(createdAt);
-
   static Insertable<ClipboardOutboxEntry> custom({
     Expression<String>? operationId,
     Expression<String>? entityId,
@@ -1787,17 +1757,14 @@ class ClipboardOutboxEntriesCompanion
 
 abstract class _$ClipboardDatabase extends GeneratedDatabase {
   _$ClipboardDatabase(QueryExecutor e) : super(e);
-
   $ClipboardDatabaseManager get managers => $ClipboardDatabaseManager(this);
   late final $ClipboardItemEntriesTable clipboardItemEntries =
       $ClipboardItemEntriesTable(this);
   late final $ClipboardOutboxEntriesTable clipboardOutboxEntries =
       $ClipboardOutboxEntriesTable(this);
-
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
-
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     clipboardItemEntries,
@@ -1861,7 +1828,6 @@ class $$ClipboardItemEntriesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnFilters(column),
@@ -1967,7 +1933,6 @@ class $$ClipboardItemEntriesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<String> get id => $composableBuilder(
     column: $table.id,
     builder: (column) => ColumnOrderings(column),
@@ -2073,7 +2038,6 @@ class $$ClipboardItemEntriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
@@ -2346,7 +2310,6 @@ class $$ClipboardOutboxEntriesTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnFilters<String> get operationId => $composableBuilder(
     column: $table.operationId,
     builder: (column) => ColumnFilters(column),
@@ -2412,7 +2375,6 @@ class $$ClipboardOutboxEntriesTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   ColumnOrderings<String> get operationId => $composableBuilder(
     column: $table.operationId,
     builder: (column) => ColumnOrderings(column),
@@ -2478,7 +2440,6 @@ class $$ClipboardOutboxEntriesTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-
   GeneratedColumn<String> get operationId => $composableBuilder(
     column: $table.operationId,
     builder: (column) => column,
@@ -2651,12 +2612,9 @@ typedef $$ClipboardOutboxEntriesTableProcessedTableManager =
 
 class $ClipboardDatabaseManager {
   final _$ClipboardDatabase _db;
-
   $ClipboardDatabaseManager(this._db);
-
   $$ClipboardItemEntriesTableTableManager get clipboardItemEntries =>
       $$ClipboardItemEntriesTableTableManager(_db, _db.clipboardItemEntries);
-
   $$ClipboardOutboxEntriesTableTableManager get clipboardOutboxEntries =>
       $$ClipboardOutboxEntriesTableTableManager(
         _db,

@@ -400,46 +400,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i212.CacheService<_i100.Uint8List>>(instanceName: 'iconCache'),
       ),
     );
-    gh.lazySingleton<_i340.SettingsRepository>(
-      () => _i758.SettingsRepositoryImpl(
-        local: gh<_i739.SettingsLocalDataSource>(),
-        remote: gh<_i739.SettingsRemoteDataSource>(),
-        iconService: gh<_i212.SourceAppIconService>(),
-      ),
-    );
-    gh.lazySingleton<_i997.SearchCubit>(
-      () => _i997.SearchCubit(
-        authRepository: gh<_i895.AuthRepository>(),
-        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
-        settingsRepository: gh<_i340.SettingsRepository>(),
-      ),
-      dispose: (i) => i.close(),
-    );
-    gh.lazySingleton<_i966.SettingsCubit>(
-      () => _i966.SettingsCubit(
-        authRepository: gh<_i895.AuthRepository>(),
-        settingsRepository: gh<_i761.SettingsRepository>(),
-      ),
-      dispose: (i) => i.close(),
-    );
     gh.lazySingleton<_i696.BillingCubit>(
       () => _i696.BillingCubit(
         authRepository: gh<_i895.AuthRepository>(),
         billingRepository: gh<_i1022.BillingRepository>(),
       ),
       dispose: (i) => i.close(),
-    );
-    gh.lazySingleton<_i340.LocalSettingsRepository>(
-      () => _i958.LocalSettingsRepositoryImpl(
-        settingsRepository: gh<_i340.SettingsRepository>(),
-      ),
-    );
-    gh.lazySingleton<_i42.RetentionCleanupService>(
-      () => _i6.RetentionCleanupServiceImpl(
-        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
-        settingsRepository: gh<_i340.SettingsRepository>(),
-        authRepository: gh<_i895.AuthRepository>(),
-      ),
     );
     gh.lazySingleton<_i1016.BaseClipboardManager>(
       () => _i647.FlutterClipboardManager(
@@ -461,6 +427,51 @@ extension GetItInjectableX on _i174.GetIt {
         iconService: gh<_i212.SourceAppIconService>(),
       ),
     );
+    gh.lazySingleton<_i340.SettingsRepository>(
+      () => _i758.SettingsRepositoryImpl(
+        localDataSource: gh<_i739.SettingsLocalDataSource>(),
+        remoteDataSource: gh<_i739.SettingsRemoteDataSource>(),
+        iconService: gh<_i212.SourceAppIconService>(),
+      ),
+    );
+    gh.lazySingleton<_i68.ClipboardDetailCubit>(
+      () => _i68.ClipboardDetailCubit(
+        accessibilityRepository: gh<_i23.AccessibilityRepository>(),
+        clipboardManager: gh<_i108.BaseClipboardManager>(),
+        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        localClipboardOutboxRepository:
+            gh<_i42.LocalClipboardOutboxRepository>(),
+        pasteToAppService: gh<_i212.PasteToAppService>(),
+      ),
+    );
+    gh.lazySingleton<_i997.SearchCubit>(
+      () => _i997.SearchCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        localClipboardRepository: gh<_i782.LocalClipboardRepository>(),
+        settingsRepository: gh<_i340.SettingsRepository>(),
+      ),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i966.SettingsCubit>(
+      () => _i966.SettingsCubit(
+        authRepository: gh<_i895.AuthRepository>(),
+        settingsRepository: gh<_i761.SettingsRepository>(),
+      ),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i340.LocalSettingsRepository>(
+      () => _i958.LocalSettingsRepositoryImpl(
+        settingsRepository: gh<_i340.SettingsRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i42.RetentionCleanupService>(
+      () => _i6.RetentionCleanupServiceImpl(
+        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
+        settingsRepository: gh<_i340.SettingsRepository>(),
+        authRepository: gh<_i895.AuthRepository>(),
+      ),
+    );
     gh.lazySingleton<_i958.ClipboardCubit>(
       () => _i958.ClipboardCubit(
         deviceIdProvider: gh<_i212.DeviceIdProvider>(),
@@ -475,17 +486,6 @@ extension GetItInjectableX on _i174.GetIt {
         settingsRepository: gh<_i761.SettingsRepository>(),
       ),
       dispose: (i) => i.close(),
-    );
-    gh.lazySingleton<_i68.ClipboardDetailCubit>(
-      () => _i68.ClipboardDetailCubit(
-        accessibilityRepository: gh<_i23.AccessibilityRepository>(),
-        clipboardManager: gh<_i108.BaseClipboardManager>(),
-        deviceIdProvider: gh<_i212.DeviceIdProvider>(),
-        localClipboardRepository: gh<_i42.LocalClipboardRepository>(),
-        localClipboardOutboxRepository:
-            gh<_i42.LocalClipboardOutboxRepository>(),
-        pasteToAppService: gh<_i212.PasteToAppService>(),
-      ),
     );
     return this;
   }

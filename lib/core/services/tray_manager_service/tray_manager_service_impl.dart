@@ -433,7 +433,7 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
   /// Open settings page
   Future<void> _openSettings() async {
     try {
-      await windowController.toggle();
+      await windowController.showAsOverlay();
 
       final context = appRouter.navigatorKey.currentContext;
       if (context != null && context.mounted) {
@@ -463,7 +463,7 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
   Future<void> _sendFeedback() async {
     try {
       // First, show the window if it's hidden
-      await windowController.toggle();
+      await windowController.showAsOverlay();
 
       // Request feedback via the FeedbackCubit
       // The listener in the app will handle showing the UI

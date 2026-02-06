@@ -193,8 +193,6 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   Future<void> _handleClipboardData(ClipboardData clipboardData) async {
     final settings = _userSettings;
 
-    developer.log('User settings in clipboard cubit: $settings');
-
     if (settings?.incognitoMode ?? false) {
       developer.log(
         'Incognito mode enabled; skipping clipboard storage.',

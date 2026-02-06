@@ -8,6 +8,7 @@ import 'package:lucid_clip/app/app.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/share/share_module.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
@@ -25,6 +26,7 @@ enum ClipboardMenuAction {
   togglePin,
   deleteItem,
   clearHistory,
+  share,
 }
 
 typedef ClipboardContextMenuItem = ({
@@ -109,6 +111,13 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
           label: l10n.edit.sentenceCase,
           icon: HugeIcons.strokeRoundedEdit01,
         ),
+      // Share - available for all types except unknown
+      if (!item.type.isUnknown)
+        (
+          action: ClipboardMenuAction.share,
+          label: l10n.share.sentenceCase,
+          icon: HugeIcons.strokeRoundedShare08,
+        ),
     ];
   }
 
@@ -181,6 +190,30 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
       clipboardItem: widget.clipboardItem,
       bundleId: _previousApp!.bundleId,
     );
+  }
+
+  Future<void> _handleShare(BuildContext context) async {
+    final item = widget.clipboardItem;
+
+    try {
+      // Determine what to share based on item type
+      if (item.type.isFile && item.filePath != null) {
+        // Share file
+        await Share.shareFile(item.filePath!);
+      } else if (item.type.isImage && item.imageBytes != null) {
+        // Share image from bytes
+        await Share.shareImageBytes(item.imageBytes!);
+      } else if (item.type.isUrl) {
+        // Share URL
+        await Share.shareUrl(item.content);
+      } else {
+        // Share as text (for text and html types)
+        await Share.shareText(item.content);
+      }
+    } catch (e) {
+      // Error is already logged in the service
+      // Could show a toast/snackbar to user if needed
+    }
   }
 
   Widget _buildMenuTile({
@@ -271,6 +304,10 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         context.router.root.push(
           ClipboardEditRoute(clipboardItem: widget.clipboardItem),
         );
+        return;
+
+      case ClipboardMenuAction.share:
+        _handleShare(context);
         return;
     }
   }

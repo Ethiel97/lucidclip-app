@@ -81,6 +81,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   final analyticsService = getIt<AnalyticsService>();
   Analytics.initialize(analyticsService);
 
+  // Initialize share service via DI
+  final shareService = getIt<ShareService>();
+  Share.initialize(shareService);
+
   // Track app opened event (includes first launch detection)
   final retentionTracker = getIt<RetentionTracker>();
   await retentionTracker.trackAppOpened();

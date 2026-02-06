@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,7 @@ import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
+import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum ClipboardMenuAction {
@@ -25,6 +29,7 @@ enum ClipboardMenuAction {
   togglePin,
   deleteItem,
   clearHistory,
+  share,
 }
 
 typedef ClipboardContextMenuItem = ({
@@ -109,6 +114,13 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
           label: l10n.edit.sentenceCase,
           icon: HugeIcons.strokeRoundedEdit01,
         ),
+      // Share - available for all types except unknown
+      if (!item.type.isUnknown)
+        (
+          action: ClipboardMenuAction.share,
+          label: l10n.share.sentenceCase,
+          icon: HugeIcons.strokeRoundedShare08,
+        ),
     ];
   }
 
@@ -183,6 +195,45 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
     );
   }
 
+  Future<void> _handleShare(BuildContext context) async {
+    final item = widget.clipboardItem;
+    final l10n = context.l10n;
+
+    try {
+      // Determine what to share based on item type
+      if (item.type.isFile && item.filePath != null) {
+        // Share file
+        await Share.shareFile(item.filePath!);
+      } else if (item.type.isImage && item.imageBytes != null) {
+        // Share image from bytes
+        await Share.shareImageBytes(item.imageBytes!);
+      } else if (item.type.isUrl) {
+        // Share URL
+        await Share.shareUrl(item.content);
+      } else {
+        // Share as text (for text and html types)
+        await Share.shareText(item.content);
+      }
+    } catch (e) {
+      // Show user-facing error feedback
+      log(
+        '_handleShare: error sharing clipboard item: $e',
+        name: '_ClipboardContextMenuState._handleShare',
+        error: e,
+      );
+
+      if (context.mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.error,
+          style: ToastificationStyle.minimal,
+          title: Text(l10n.errorOccurred.sentenceCase),
+          autoCloseDuration: const Duration(seconds: 5),
+        );
+      }
+    }
+  }
+
   Widget _buildMenuTile({
     required BuildContext context,
     required AppLocalizations l10n,
@@ -220,7 +271,8 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
   }) {
     switch (action) {
       case ClipboardMenuAction.pasteToApp:
-        _handlePasteToApp(context);
+        // Fire-and-forget: menu closes immediately, errors handled in cubit
+        unawaited(_handlePasteToApp(context));
         return;
 
       case ClipboardMenuAction.copyPath:
@@ -271,6 +323,11 @@ class _ClipboardContextMenuState extends State<ClipboardContextMenu> {
         context.router.root.push(
           ClipboardEditRoute(clipboardItem: widget.clipboardItem),
         );
+        return;
+
+      case ClipboardMenuAction.share:
+        // Fire-and-forget: menu closes immediately, errors shown via toast
+        unawaited(_handleShare(context));
         return;
     }
   }

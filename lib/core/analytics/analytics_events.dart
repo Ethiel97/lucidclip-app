@@ -23,6 +23,7 @@ class AnalyticsEvent {
   static const proGateOverlayOpened = 'pro_gate_overlay_opened';
   static const searchUsed = 'search_used';
   static const pasteToAppUsed = 'paste_to_app_used';
+  static const shareUsed = 'share_used';
 
   // Monetization events
   static const freeLimitReached = 'free_limit_reached';
@@ -132,4 +133,12 @@ class AppOpenedParams {
   final DayBucket dayBucket;
 
   Map<String, Object> toMap() => {'day_bucket': dayBucket.value};
+}
+
+class ClipboardItemSharedParams {
+  const ClipboardItemSharedParams({required this.contentType});
+
+  final String contentType;
+
+  Map<String, Object> toMap() => {'content_type': contentType};
 }

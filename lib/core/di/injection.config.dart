@@ -59,6 +59,10 @@ import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_s
 import 'package:lucid_clip/core/services/paste_to_app_service/paste_to_app_service.dart'
     as _i80;
 import 'package:lucid_clip/core/services/services.dart' as _i212;
+import 'package:lucid_clip/core/services/share_service/share_plus_service.dart'
+    as _i705;
+import 'package:lucid_clip/core/services/share_service/share_service.dart'
+    as _i451;
 import 'package:lucid_clip/core/services/source_app_icon_service.dart' as _i401;
 import 'package:lucid_clip/core/services/syntax_highlighter/syntax_highlight_service.dart'
     as _i1007;
@@ -246,6 +250,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1071.TrayManagerServiceImpl(),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i451.ShareService>(() => _i705.SharePlusService());
     gh.lazySingleton<_i500.AppUpdateService>(
       () => _i500.AppUpdateServiceImpl(
         secureStorageService: gh<_i176.SecureStorageService>(),

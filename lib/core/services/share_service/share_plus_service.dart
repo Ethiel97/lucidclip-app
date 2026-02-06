@@ -68,7 +68,7 @@ class SharePlusService implements ShareService {
       final file = XFile(filePath);
 
       await sharePlus.share(
-        ShareParams(text: filePath, subject: subject, files: [file]),
+        ShareParams(subject: subject, files: [file]),
       );
 
       // Track share usage
@@ -93,7 +93,7 @@ class SharePlusService implements ShareService {
       final image = XFile(imagePath);
 
       await sharePlus.share(
-        ShareParams(text: imagePath, subject: subject, files: [image]),
+        ShareParams(subject: subject, files: [image]),
       );
 
       await Analytics.track(
@@ -115,17 +115,17 @@ class SharePlusService implements ShareService {
   Future<void> shareImageBytes(List<int> imageBytes, {String? subject}) async {
     try {
       // Detect image format from bytes
-      var extension = 'png'; // default
+      var fileExtension = 'png'; // default
       if (imageBytes.length >= 2) {
         // Check for common image formats by magic bytes
         if (imageBytes[0] == 0xFF && imageBytes[1] == 0xD8) {
-          extension = 'jpg'; // JPEG
+          fileExtension = 'jpg'; // JPEG
         } else if (imageBytes.length >= 4 &&
             imageBytes[0] == 0x89 &&
             imageBytes[1] == 0x50 &&
             imageBytes[2] == 0x4E &&
             imageBytes[3] == 0x47) {
-          extension = 'png'; // PNG
+          fileExtension = 'png'; // PNG
         } else if (imageBytes.length >= 6 &&
             imageBytes[0] == 0x47 &&
             imageBytes[1] == 0x49 &&
@@ -133,20 +133,20 @@ class SharePlusService implements ShareService {
             imageBytes[3] == 0x38 &&
             (imageBytes[4] == 0x37 || imageBytes[4] == 0x39) &&
             imageBytes[5] == 0x61) {
-          extension = 'gif'; // GIF87a or GIF89a
+          fileExtension = 'gif'; // GIF87a or GIF89a
         }
       }
 
       // Create a temporary file for the image
       final tempDir = Directory.systemTemp;
       final tempFile = File(
-        '${tempDir.path}/shared_image_${DateTime.now().millisecondsSinceEpoch}.$extension',
+        '${tempDir.path}/shared_image_${DateTime.now().millisecondsSinceEpoch}.$fileExtension',
       );
       await tempFile.writeAsBytes(imageBytes);
 
       final image = XFile(tempFile.path);
       await sharePlus.share(
-        ShareParams(text: tempFile.path, subject: subject, files: [image]),
+        ShareParams(subject: subject, files: [image]),
       );
 
       // Clean up the temporary file after a reasonable delay

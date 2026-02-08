@@ -17,13 +17,6 @@ class EntitlementDatabase extends _$EntitlementDatabase {
     return LazyDatabase(() async {
       final dir = await getApplicationSupportDirectory();
       final dbFile = File(p.join(dir.path, 'entitlement_db.sqlite'));
-
-      /* if (dbFile.existsSync()) {
-        if (!AppConstants.isProd) {
-          await dbFile.delete();
-        }
-      }*/
-
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);
       }
@@ -55,9 +48,9 @@ class EntitlementDatabase extends _$EntitlementDatabase {
       pro: Value(model.pro),
       source: Value(model.source),
       status: Value(model.status.name),
-      updatedAt: Value(model.updatedAt),
+      updatedAt: Value(model.updatedAt.toUtc()),
       userId: Value(model.userId),
-      validUntil: Value(model.validUntil),
+      validUntil: Value(model.validUntil?.toUtc()),
     );
   }
 

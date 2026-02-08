@@ -19,31 +19,28 @@ class AuthListener extends StatelessWidget {
       listeners: [
         SafeBlocListener<AuthCubit, AuthState>(
           listenWhen: (previous, current) =>
-              previous.isAuthenticating != current.isAuthenticating,
+              previous.isAuthenticating != current.isAuthenticating ||
+              previous.isAuthenticated != current.isAuthenticated,
           listener: (context, state) {
+            final windowController = getIt<WindowController>();
+            final feedbackService = getIt<FeedbackService>();
+
             if (state.isAuthenticating) {
-              getIt<WindowController>().setSafeAlwaysOnTop(alwaysOnTop: false);
+              windowController.setSafeAlwaysOnTop(alwaysOnTop: false);
               return;
             }
 
-            if (!state.isAuthenticating) {
-              getIt<WindowController>().setSafeAlwaysOnTop();
-            }
-          },
-        ),
-
-        SafeBlocListener<AuthCubit, AuthState>(
-          listenWhen: (previous, current) =>
-              previous.isAuthenticated != current.isAuthenticated,
-          listener: (context, state) {
-            if (state.isAuthenticated) {
+            if (state.isAuthenticated && state.user.value != null) {
               unawaited(
-                getIt<FeedbackService>().setMetadata({
+                feedbackService.setMetadata({
                   'userId': state.user.value?.id,
                   'userEmail': state.user.value?.email,
                 }),
               );
             }
+            windowController
+              ..setSafeAlwaysOnTop()
+              ..showAsOverlay();
           },
         ),
       ],

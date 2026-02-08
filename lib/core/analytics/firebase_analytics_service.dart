@@ -33,15 +33,16 @@ class FirebaseAnalyticsService implements AnalyticsService {
     String eventName, [
     Map<String, Object>? parameters,
   ]) async {
+    if (!isEnabled) {
+      // Skip tracking in disabled environments
+      return;
+    }
+
     log('is enabled: $isEnabled', name: 'FirebaseAnalyticsService');
     log(
       'Tracking event: $eventName, parameters: $parameters',
       name: 'FirebaseAnalyticsService',
     );
-    if (!isEnabled) {
-      // Skip tracking in disabled environments
-      return;
-    }
 
     try {
       // Firebase Analytics has naming restrictions:

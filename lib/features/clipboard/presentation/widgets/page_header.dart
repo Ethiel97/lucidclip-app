@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
-import 'package:lucid_clip/l10n/l10n.dart';
 
 class PageHeader extends StatelessWidget {
   const PageHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
     return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       spacing: AppSpacing.xs,

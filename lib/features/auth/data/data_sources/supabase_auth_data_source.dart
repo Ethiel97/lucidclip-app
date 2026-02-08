@@ -45,7 +45,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
       log('OAuth flow initiated, waiting for deep link callback...');
 
       final deepLinkUri = await _deepLinkService.waitForDeepLink(
-        timeout: const Duration(minutes: 2),
+        timeout: const Duration(minutes: 3),
         filter: (uri) {
           // Filter for our auth callback scheme
           return uri.scheme == 'lucidclip';

@@ -19,10 +19,6 @@
         <string>$(AppIdentifierPrefix)com.lucidclip.app</string>
     </array>
 
-
-    <key>com.apple.security.cs.allow-jit</key>
-    <true/>
-
     <!-- ✅ ADD THIS: Allows your app to be activated by deep links -->
     <key>com.apple.security.temporary-exception.apple-events</key>
     <array>

@@ -47,7 +47,7 @@ class BillingCubit extends HydratedCubit<BillingState> {
                 getCustomerPortal();
               }
             });
-      } else if (user == null) {
+      } else {
         currentUserId = null;
         emit(
           state.copyWith(customerPortal: const ValueWrapper<CustomerPortal>()),

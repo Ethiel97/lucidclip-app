@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:app_links/app_links.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart';
 
 /// Implementation of DeepLinkService for handling deep link callbacks
 @Singleton(as: DeepLinkService)
@@ -73,23 +73,39 @@ class AppLinksDeepLinkService implements DeepLinkService {
     required Duration timeout,
     bool Function(Uri)? filter,
   }) async {
-    if (_lastUri != null && (filter?.call(_lastUri!) ?? true)) {
-      final uri = _lastUri!;
-      _lastUri = null; // Clear after use
-      return uri;
-    }
+    try {
+      if (_lastUri != null && (filter?.call(_lastUri!) ?? true)) {
+        final uri = _lastUri!;
+        _lastUri = null; // Clear after use
+        return uri;
+      }
 
-    // 2️⃣ Initial link (sécurité)
-    final initial = await _appLinks.getInitialLink();
-    if (initial != null && (filter?.call(initial) ?? true)) {
-      return initial;
-    }
+      // 2️⃣ Initial link (sécurité)
+      final initial = await _appLinks.getInitialLink();
+      if (initial != null && (filter?.call(initial) ?? true)) {
+        return initial;
+      }
 
-    // 3️⃣ Attente du stream
-    return linkStream
-        .where((uri) => filter?.call(uri) ?? true)
-        .timeout(timeout)
-        .first;
+      // 3️⃣ Attente du stream
+      return linkStream
+          .where((uri) => filter?.call(uri) ?? true)
+          .timeout(timeout)
+          .first;
+    } on TimeoutException {
+      developer.log(
+        'waitForDeepLink timed out after $timeout',
+        name: 'DeepLinkService',
+      );
+      return null;
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error waiting for deep link',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'DeepLinkService',
+      );
+      return null;
+    }
   }
 
   @disposeMethod

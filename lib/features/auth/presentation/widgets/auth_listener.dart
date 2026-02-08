@@ -38,9 +38,7 @@ class AuthListener extends StatelessWidget {
                 }),
               );
             }
-            windowController
-              ..setSafeAlwaysOnTop()
-              ..showAsOverlay();
+            windowController.setSafeAlwaysOnTop();
           },
         ),
       ],

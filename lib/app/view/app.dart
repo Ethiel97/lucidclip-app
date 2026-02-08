@@ -61,6 +61,8 @@ class _AppViewState extends State<_AppView> with WindowListener {
   final windowController = getIt<WindowController>();
   final clipboardDetailCubit = getIt<ClipboardDetailCubit>();
 
+  late StreamSubscription<Uri?> _deepLinkSubscription;
+
   // Map<String, String>? _lastLoadedShortcuts;
 
   @override
@@ -78,9 +80,12 @@ class _AppViewState extends State<_AppView> with WindowListener {
   }
 
   void _listenToDeepLink() {
-    getIt<DeepLinkService>().linkStream.listen((Uri? uri) {
+    _deepLinkSubscription.cancel();
+    _deepLinkSubscription = getIt<DeepLinkService>().linkStream.listen((
+      Uri? uri,
+    ) {
       if (uri != null) {
-        windowController.showAsOverlay();
+        unawaited(windowController.showAsOverlay());
       }
     });
   }
@@ -94,6 +99,7 @@ class _AppViewState extends State<_AppView> with WindowListener {
 
   @override
   void dispose() {
+    _deepLinkSubscription.cancel();
     windowManager.removeListener(this);
     super.dispose();
   }

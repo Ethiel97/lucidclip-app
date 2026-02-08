@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,8 +7,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/features/clipboard/domain/domain.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
@@ -136,7 +137,7 @@ class _ClipboardViewState extends State<ClipboardView>
             }
 
             if (state.pasteToAppStatus?.isSuccess ?? false) {
-              getIt<WindowController>().hide();
+              unawaited(getIt<WindowController>().hide());
             }
           },
         ),

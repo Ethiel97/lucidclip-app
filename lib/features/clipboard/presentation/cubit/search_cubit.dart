@@ -33,7 +33,7 @@ class SearchCubit extends Cubit<SearchState> {
   StreamSubscription<ClipboardItems>? _localItemsSubscription;
 
   ClipboardItems _allItems = [];
-  String _currentUserId = 'guest';
+  String _currentUserId = 'anonymous';
   UserSettings? _userSettings;
 
   int get _effectiveMaxHistoryItems =>
@@ -47,7 +47,7 @@ class SearchCubit extends Cubit<SearchState> {
     _authSubscription?.cancel();
     _authSubscription = authRepository.authStateChanges.listen(
       (user) {
-        final nextUserId = user?.id ?? 'guest';
+        final nextUserId = user?.id ?? 'anonymous';
         if (nextUserId == _currentUserId && _userSettingsSubscription != null) {
           return;
         }

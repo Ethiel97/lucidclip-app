@@ -1,8 +1,7 @@
 //GENERATED BARREL FILE
 export './app_update/app_update.dart';
 export './cache_service/cache_service.dart';
-export './deep_link_service/deep_link_service.dart';
-export './deep_link_service/deep_link_service_interface.dart';
+export './deep_link_service/deep_link_module.dart';
 export './device_id_provider/device_id_provider.dart';
 export './hotkey_manager_service/hotkey_manager_service.dart';
 export './paste_to_app_service/paste_to_app_service.dart';

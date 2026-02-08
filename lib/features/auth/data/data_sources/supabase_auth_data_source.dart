@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -35,9 +34,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
       final response = await _supabase.auth.signInWithOAuth(
         OAuthProvider.github,
         redirectTo: redirectTo,
-        authScreenLaunchMode: kIsWeb
-            ? LaunchMode.platformDefault
-            : LaunchMode.externalApplication,
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
 
       if (!response) {
@@ -48,10 +45,10 @@ class SupabaseAuthDataSource implements AuthDataSource {
       log('OAuth flow initiated, waiting for deep link callback...');
 
       final deepLinkUri = await _deepLinkService.waitForDeepLink(
-        timeout: const Duration(minutes: 5),
+        timeout: const Duration(minutes: 3),
         filter: (uri) {
           // Filter for our auth callback scheme
-          return uri.scheme == 'lucidclip' && uri.host == 'auth-callback';
+          return uri.scheme == 'lucidclip';
         },
       );
 

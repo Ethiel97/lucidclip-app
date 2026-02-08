@@ -21,7 +21,7 @@ class EntitlementRepositoryImpl implements EntitlementRepository {
 
   @override
   Stream<Entitlement?> watchLocal(String userId) {
-    return _local.watchEntitlement(userId).map((m) => m?.toEntity());
+    return _local.watchEntitlement(userId).map((model) => model?.toEntity());
   }
 
   @override

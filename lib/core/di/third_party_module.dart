@@ -4,7 +4,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/entitlement/data/data.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
@@ -29,7 +28,7 @@ abstract class ThirdPartyModule {
     ),
   );
 
-  @lazySingleton
+  @singleton
   AppLinks get appLinks => AppLinks();
 
   @singleton
@@ -46,7 +45,4 @@ abstract class ThirdPartyModule {
 
   @lazySingleton
   AutoUpdater get autoUpdater => AutoUpdater.instance;
-
-  @Named('analyticsEnabled')
-  bool get analyticsEnable => AppConstants.isProd;
 }

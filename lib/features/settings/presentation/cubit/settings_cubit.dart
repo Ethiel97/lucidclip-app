@@ -32,20 +32,17 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   Timer? _incognitoSessionTimer;
 
   Future<void> _onAuthStateChanged(User? user) async {
-    if (user == null) {
-      await _reset();
+    final effectiveUser = user ?? User.anonymous();
+
+    if (_currentUserId == effectiveUser.id && _localSubscription != null) {
       return;
     }
 
-    if (_currentUserId == user.id && _localSubscription != null) {
-      return;
-    }
-
-    if (_currentUserId != null && _currentUserId != user.id) {
+    if (_currentUserId != null && _currentUserId != effectiveUser.id) {
       await _reset();
     }
 
-    await boot(user.id);
+    await boot(effectiveUser.id, isAnonymous: effectiveUser.isAnonymous);
   }
 
   Future<void> _reset() async {
@@ -58,7 +55,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     emit(const SettingsState());
   }
 
-  Future<void> boot(String userId) async {
+  Future<void> boot(String userId, {bool isAnonymous = false}) async {
     _currentUserId = userId;
 
     emit(state.copyWith(settings: state.settings.toLoading()));
@@ -103,7 +100,9 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       emit(state.copyWith(settings: state.settings.toSuccess(local)));
 
       // Start realtime (instant sync after remote updates)
-      await settingsRepository.startRealtime(userId);
+      if (!isAnonymous) {
+        await settingsRepository.startRealtime(userId);
+      }
     } catch (e) {
       emit(
         state.copyWith(
@@ -118,7 +117,12 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   Future<void> refresh(String userId) async {
     try {
       await settingsRepository.refresh(userId);
-    } catch (_) {
+    } catch (e, stack) {
+      log(
+        'SettingsCubit: error refreshing settings: $e',
+        stackTrace: stack,
+        name: 'SettingsCubit',
+      );
       // silent: UI already has local value; realtime may catch later
     }
   }

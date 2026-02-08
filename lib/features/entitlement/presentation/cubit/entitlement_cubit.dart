@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
 import 'package:lucid_clip/features/entitlement/data/data.dart';
@@ -31,20 +30,22 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
   StreamSubscription<Entitlement?>? _localSubscription;
 
   Future<void> _onAuthStateChanged(User? user) async {
-    if (user == null) {
+    final effectiveUser = user ?? User.anonymous();
+
+    if (effectiveUser.isAnonymous) {
       await _reset();
       return;
     }
 
-    if (_currentUserId == user.id && _localSubscription != null) {
+    if (_currentUserId == effectiveUser.id && _localSubscription != null) {
       return;
     }
 
-    if (_currentUserId != null && _currentUserId != user.id) {
+    if (_currentUserId != null && _currentUserId != effectiveUser.id) {
       await _reset();
     }
 
-    await boot(user.id);
+    await boot(effectiveUser.id);
   }
 
   Future<void> _reset() async {
@@ -65,14 +66,6 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
       await _localSubscription?.cancel();
       _localSubscription = entitlementRepository.watchLocal(userId).listen((e) {
         log('EntitlementCubit: local entitlement updated: $e');
-
-        // Track pro activation when transitioning from non-pro to pro
-        final wasProActive = state.entitlement.value?.isProActive ?? false;
-        final isNowProActive = e?.isProActive ?? false;
-        if (!wasProActive && isNowProActive) {
-          Analytics.track(AnalyticsEvent.proActivated);
-        }
-
         emit(state.copyWith(entitlement: state.entitlement.toSuccess(e)));
       });
 

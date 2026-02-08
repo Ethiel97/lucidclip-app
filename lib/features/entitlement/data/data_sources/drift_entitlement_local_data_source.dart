@@ -41,8 +41,7 @@ class DriftEntitlementLocalDataSource implements EntitlementLocalDataSource {
     try {
       return db
           .watchEntitlementByUserId(userId)
-          .map((entry) => entry != null ? db.entryToModel(entry) : null)
-          .distinct((previous, next) => previous?.id == next?.id);
+          .map((entry) => entry != null ? db.entryToModel(entry) : null);
     } catch (e) {
       rethrow;
     }

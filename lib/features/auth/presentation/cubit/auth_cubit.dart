@@ -62,7 +62,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     try {
       final user = await _authRepository.getCurrentUser();
 
-      if (user != null && user.isNotEmpty) {
+      if (user != null && !user.isAnonymous) {
         emit(state.copyWith(user: state.user.toSuccess(user)));
       } else {
         emit(state.copyWith(user: const ValueWrapper<User?>()));

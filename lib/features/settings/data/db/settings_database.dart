@@ -21,12 +21,6 @@ class SettingsDatabase extends _$SettingsDatabase {
       final dir = await getApplicationSupportDirectory();
       final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
 
-      /* if (dbFile.existsSync()) {
-        if (!AppConstants.isProd) {
-          await dbFile.delete();
-        }
-      }*/
-
       if (!dbFile.parent.existsSync()) {
         await dbFile.parent.create(recursive: true);
       }
@@ -118,7 +112,7 @@ class SettingsDatabase extends _$SettingsDatabase {
       incognitoMode: Value(m.incognitoMode),
       excludedApps: Value(excludedApps),
       createdAt: Value(m.createdAt),
-      updatedAt: Value(m.updatedAt),
+      updatedAt: Value(m.updatedAt.toUtc()),
       incognitoSessionDurationMinutes: Value(m.incognitoSessionDurationMinutes),
       incognitoSessionEndTime: Value(m.incognitoSessionEndTime),
     );

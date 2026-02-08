@@ -48,11 +48,8 @@ class DriftSettingsLocalDataSource implements SettingsLocalDataSource {
 
   @override
   Stream<UserSettingsModel?> watchSettings(String userId) {
-    return _db
-        .watchSettingsByUserId(userId)
-        .map((entry) {
-          return entry != null ? _db.entryToModel(entry) : null;
-        })
-        .distinct((previous, next) => previous?.updatedAt == next?.updatedAt);
+    return _db.watchSettingsByUserId(userId).map((entry) {
+      return entry != null ? _db.entryToModel(entry) : null;
+    });
   }
 }

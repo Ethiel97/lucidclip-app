@@ -41,7 +41,7 @@ class WindowControllerImpl implements WindowController {
     minimumSize: Size(800, 500),
     center: true,
     title: 'LucidClip',
-    skipTaskbar: false,
+    skipTaskbar: true,
     titleBarStyle: TitleBarStyle.hidden,
   );
 
@@ -86,7 +86,6 @@ class WindowControllerImpl implements WindowController {
     try {
       // Capture the frontmost app before showing LucidClip
       _previousFrontmostApp = await sourceAppProvider.getFrontmostApp();
-      log('Previous frontmost app: ${_previousFrontmostApp?.name}');
 
       _isShowing = true;
 

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_service.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 
 /// Firebase Analytics implementation of AnalyticsService.
 ///
@@ -14,14 +15,10 @@ import 'package:lucid_clip/core/analytics/analytics_service.dart';
 /// - Ensures no PII or clipboard content is tracked
 @LazySingleton(as: AnalyticsService)
 class FirebaseAnalyticsService implements AnalyticsService {
-  FirebaseAnalyticsService({
-    required FirebaseAnalytics firebaseAnalytics,
-    @Named('analyticsEnabled') required bool isAnalyticsEnabled,
-  }) : _analytics = firebaseAnalytics,
-       _isEnabled = isAnalyticsEnabled;
+  FirebaseAnalyticsService({required FirebaseAnalytics firebaseAnalytics})
+    : _analytics = firebaseAnalytics;
 
   final FirebaseAnalytics _analytics;
-  final bool _isEnabled;
 
   /// Whether analytics is enabled based on the current environment
   ///
@@ -29,7 +26,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
   /// - In production mode (AppConstants.isProd == true), OR
   /// - Explicitly enabled in debug via enabledInDebug parameter
   @override
-  bool get isEnabled => _isEnabled;
+  bool get isEnabled => AppConstants.isProd;
 
   @override
   Future<void> track(
@@ -39,6 +36,14 @@ class FirebaseAnalyticsService implements AnalyticsService {
     if (!isEnabled) {
       // Skip tracking in disabled environments
       return;
+    }
+
+    if (!AppConstants.isProd) {
+      log('is enabled: $isEnabled', name: 'FirebaseAnalyticsService');
+      log(
+        'Tracking event: $eventName, parameters: $parameters',
+        name: 'FirebaseAnalyticsService',
+      );
     }
 
     try {

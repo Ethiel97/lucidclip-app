@@ -7,20 +7,26 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
+import 'package:lucid_clip/features/entitlement/entitlement.dart';
 
 part 'billing_state.dart';
 
 @lazySingleton
 class BillingCubit extends HydratedCubit<BillingState> {
-  BillingCubit({required this.authRepository, required this.billingRepository})
-    : super(const BillingState()) {
+  BillingCubit({
+    required this.authRepository,
+    required this.billingRepository,
+    required this.entitlementRepository,
+  }) : super(const BillingState()) {
     _boot();
   }
 
   final AuthRepository authRepository;
   final BillingRepository billingRepository;
+  final EntitlementRepository entitlementRepository;
 
   StreamSubscription<User?>? _userSubscription;
+  StreamSubscription<Entitlement?>? _entitlementSubscription;
 
   String? currentUserId;
 
@@ -30,10 +36,18 @@ class BillingCubit extends HydratedCubit<BillingState> {
       // get the current user and get its customer portal if authenticated
       // it should handle cases where the user is already logged in
       // to avoid duplicate calls
-      if (user != null && user.id != currentUserId) {
-        currentUserId = user.id;
-        getCustomerPortal();
-      } else if (user == null) {
+      if (!(user?.isAnonymous ?? true) && user?.id != currentUserId) {
+        currentUserId = user!.id;
+
+        _entitlementSubscription?.cancel();
+        _entitlementSubscription = entitlementRepository
+            .watchLocal(currentUserId!)
+            .listen((entitlement) {
+              if (entitlement?.isProActive ?? false) {
+                getCustomerPortal();
+              }
+            });
+      } else {
         currentUserId = null;
         emit(
           state.copyWith(customerPortal: const ValueWrapper<CustomerPortal>()),
@@ -92,6 +106,7 @@ class BillingCubit extends HydratedCubit<BillingState> {
   @disposeMethod
   @override
   Future<void> close() {
+    _entitlementSubscription?.cancel();
     _userSubscription?.cancel();
     return super.close();
   }

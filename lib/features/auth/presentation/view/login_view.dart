@@ -2,10 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:lucid_clip/core/theme/app_spacing.dart';
+import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
-import 'package:lucid_clip/features/auth/presentation/presentation.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/auth/auth.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 import 'package:toastification/toastification.dart';
@@ -205,7 +205,7 @@ class _GitHubSignInButton extends StatelessWidget {
       buildWhen: (p, c) => p.isAuthenticating != c.isAuthenticating,
       builder: (context, state) => SizedBox(
         width: double.infinity,
-        height: 52,
+        height: 48,
         child: ElevatedButton(
           onPressed: state.isAuthenticating
               ? null

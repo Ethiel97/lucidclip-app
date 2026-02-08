@@ -2,10 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- Network access (required for Supabase) -->
     <key>com.apple.security.network.client</key>
-    <true/>
-    <key>com.apple.security.network.server</key>
     <true/>
 
     <key>com.apple.security.app-sandbox</key>
@@ -20,15 +17,5 @@
      <array>
           <string>$(AppIdentifierPrefix)com.lucidclip.app</string>
      </array>
-
-    <!-- ✅ ADD THIS: Allows your app to be activated by deep links -->
-    <key>com.apple.security.temporary-exception.apple-events</key>
-    <array>
-        <string>com.apple.systemevents</string>
-    </array>
-
-    <!-- ✅ ADD THIS: Allows your app to receive URL events when hidden -->
-    <key>com.apple.security.automation.apple-events</key>
-    <true/>
 </dict>
 </plist>

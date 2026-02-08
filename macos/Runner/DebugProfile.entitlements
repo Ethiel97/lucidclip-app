@@ -6,9 +6,6 @@
     <key>com.apple.security.network.client</key>
     <true/>
 
-    <key>com.apple.security.network.server</key>
-    <true/>
-
     <!-- File access -->
     <key>com.apple.security.files.user-selected.read-write</key>
     <true/>
@@ -18,15 +15,5 @@
     <array>
         <string>$(AppIdentifierPrefix)com.lucidclip.app</string>
     </array>
-
-    <!-- ✅ ADD THIS: Allows your app to be activated by deep links -->
-    <key>com.apple.security.temporary-exception.apple-events</key>
-    <array>
-        <string>com.apple.systemevents</string>
-    </array>
-
-    <!-- ✅ ADD THIS: Allows your app to receive URL events when hidden -->
-    <key>com.apple.security.automation.apple-events</key>
-    <true/>
 </dict>
 </plist>

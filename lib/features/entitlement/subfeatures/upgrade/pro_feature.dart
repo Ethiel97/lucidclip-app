@@ -1,9 +1,3 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lucid_clip/app/app.dart';
-import 'package:lucid_clip/features/auth/auth.dart';
-import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 
 enum ProFeature {
@@ -42,28 +36,4 @@ extension ProFeatureCopy on ProFeature {
   };
 
   String cta(AppLocalizations l10n) => l10n.upgradeToPro;
-}
-
-Future<bool> ensureProAccess({
-  required BuildContext context,
-  required ProFeatureRequestSource source,
-  required ProFeature feature,
-}) async {
-  final isAuthenticated = context.read<AuthCubit>().state.isAuthenticated;
-
-  if (!isAuthenticated) {
-    await context.router.root.navigate(const LoginRoute());
-    return false;
-  }
-
-  final isProActive =
-      context.read<EntitlementCubit>().state.entitlement.value?.isProActive ??
-      false;
-
-  if (!isProActive) {
-    context.read<UpgradePromptCubit>().request(feature, source: source);
-    return false;
-  }
-
-  return true;
 }

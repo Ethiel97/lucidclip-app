@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppConstants {
@@ -50,5 +49,5 @@ class AppConstants {
   static const clipboardSidebarWidth = 220.0;
   static const collapsedSidebarWidth = 100.0;
 
-  static const isProd = kReleaseMode || kProfileMode;
+  static const isProd = bool.fromEnvironment('dart.vm.product');
 }

@@ -7,7 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -52,12 +51,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     await Future.wait<void>([
       Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
       Supabase.initialize(
+        anonKey: AppConstants.supabasePublishableKey,
         url: AppConstants.supabaseProjectUrl,
         debug: true,
-        anonKey: AppConstants.supabasePublishableKey,
-        realtimeClientOptions: const RealtimeClientOptions(
-          timeout: Duration(seconds: 20),
-        ),
       ),
     ]);
   } catch (e) {
@@ -76,24 +72,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await configureDependencies();
 
-  // Initialize analytics service via DI
-
-  final analyticsService = getIt<AnalyticsService>();
-  Analytics.initialize(analyticsService);
-
-  // Initialize share service via DI
-  final shareService = getIt<ShareService>();
-  Share.initialize(shareService);
-
-  // Track app opened event (includes first launch detection)
-  final retentionTracker = getIt<RetentionTracker>();
-  await retentionTracker.trackAppOpened();
-
-  await Future.wait<void>([
-    getIt<HotkeyManagerService>().registerDefaultHotkeys(),
-    getIt<WindowController>().bootstrapWindow(),
-  ]);
-
+  getIt<DeepLinkService>();
+  unawaited(getIt<HotkeyManagerService>().registerDefaultHotkeys());
+  await Future.wait<void>([getIt<WindowController>().bootstrapWindow()]);
   // Only clear app data in development when explicitly needed
   // await clearAppData();
 

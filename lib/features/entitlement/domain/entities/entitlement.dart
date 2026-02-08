@@ -38,7 +38,7 @@ class Entitlement extends Equatable {
 
   bool get isProActive {
     final now = DateTime.now().toUtc();
-    final isStatusActive = status == EntitlementStatus.active;
+    final isStatusActive = status.isActive;
     final isNotExpired =
         validUntil?.toUtc() == null ||
         (validUntil?.toUtc().isAfter(now) ?? false);
@@ -46,4 +46,12 @@ class Entitlement extends Equatable {
   }
 }
 
-enum EntitlementStatus { inactive, revoked, pastDue, canceled, active }
+enum EntitlementStatus {
+  inactive,
+  revoked,
+  pastDue,
+  canceled,
+  active;
+
+  bool get isActive => this == EntitlementStatus.active;
+}

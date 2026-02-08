@@ -115,6 +115,8 @@ class UserSettings extends Equatable {
         'incognitoSessionEndTime: $incognitoSessionEndTime)';
   }
 
+  bool get isAnonymous => userId == 'anonymous';
+
   @override
   List<Object?> get props => [
     excludedApps,

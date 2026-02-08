@@ -56,11 +56,9 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
   Timer? _periodicCleanupTimer;
 
   UserSettings? _userSettings;
-  String _currentUserId = 'guest';
+  String _currentUserId = 'anonymous';
 
   final List<ClipboardData> _pendingClipboardEvents = <ClipboardData>[];
-
-  bool get isAuthenticated => _currentUserId != 'guest';
 
   int get _effectiveMaxHistoryItems =>
       _userSettings?.maxHistoryItems ?? MaxHistorySize.size30.value;
@@ -81,7 +79,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     _authSubscription?.cancel();
     _authSubscription = authRepository.authStateChanges.listen(
       (user) {
-        _currentUserId = user?.id ?? 'guest';
+        _currentUserId = (user?.isAnonymous ?? true) ? 'anonymous' : user!.id;
         _startSettingsWatcherForUser(_currentUserId);
       },
       onError: (Object error, StackTrace stackTrace) {

@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/core/widgets/widgets.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
-import 'package:lucid_clip/features/entitlement/entitlement.dart';
-import 'package:lucid_clip/features/settings/presentation/presentation.dart';
-import 'package:lucid_clip/l10n/l10n.dart';
-import 'package:recase/recase.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 
 class PageHeader extends StatelessWidget {
   const PageHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       spacing: AppSpacing.xs,
       children: [
-        const Expanded(child: SearchField()),
-        const ClipboardItemTypeFilter(),
-        const IncognitoModeToggleButton(),
-        ProGateOverlay(
+        Expanded(child: SearchField()),
+        ClipboardItemTypeFilter(),
+        IncognitoModeToggleButton(),
+        /* ProGateOverlay(
           badgeOffset: const Offset(32, -14),
           onUpgradeTap: () {
             context.read<UpgradePromptCubit>().request(ProFeature.autoSync);
@@ -33,13 +25,6 @@ class PageHeader extends StatelessWidget {
               side: BorderSide(color: Theme.of(context).colorScheme.outline),
             ),
             onPressed: () async {
-              /*  final isAuthorized = await ensureProAccess(
-                context: context,
-                source: ProFeatureRequestSource.autoSync,
-                feature: ProFeature.autoSync,
-              );
-              if (!isAuthorized) return;*/
-
               //TODO(Ethiel): Implement sync functionality
             },
             icon: const HugeIcon(
@@ -48,7 +33,7 @@ class PageHeader extends StatelessWidget {
             ),
             label: Text(l10n.sync.sentenceCase),
           ),
-        ),
+        ),*/
       ],
     );
   }

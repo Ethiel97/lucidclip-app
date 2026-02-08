@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/routes.dart';
+import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -56,6 +58,10 @@ class _AppView extends StatefulWidget {
 class _AppViewState extends State<_AppView> with WindowListener {
   final TrayManagerService _trayService = getIt<TrayManagerService>();
   final HotkeyManagerService _hotkeyService = getIt<HotkeyManagerService>();
+  final windowController = getIt<WindowController>();
+  final clipboardDetailCubit = getIt<ClipboardDetailCubit>();
+
+  StreamSubscription<Uri?>? _deepLinkSubscription;
 
   // Map<String, String>? _lastLoadedShortcuts;
 
@@ -64,7 +70,23 @@ class _AppViewState extends State<_AppView> with WindowListener {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       windowManager.addListener(this);
+      _listenToDeepLink();
       _trayService.startWatchingClipboard();
+
+      Analytics.initialize(getIt<AnalyticsService>());
+      Share.initialize(getIt<ShareService>());
+      unawaited(getIt<RetentionTracker>().trackAppOpened());
+    });
+  }
+
+  void _listenToDeepLink() {
+    _deepLinkSubscription?.cancel();
+    _deepLinkSubscription = getIt<DeepLinkService>().linkStream.listen((
+      Uri? uri,
+    ) {
+      if (uri != null) {
+        unawaited(windowController.showAsOverlay());
+      }
     });
   }
 
@@ -77,6 +99,7 @@ class _AppViewState extends State<_AppView> with WindowListener {
 
   @override
   void dispose() {
+    _deepLinkSubscription?.cancel();
     windowManager.removeListener(this);
     super.dispose();
   }
@@ -85,18 +108,21 @@ class _AppViewState extends State<_AppView> with WindowListener {
   Future<void> onWindowBlur() async {
     super.onWindowBlur();
 
-    getIt<ClipboardDetailCubit>().clearSelection();
+    clipboardDetailCubit.clearSelection();
 
     final shortcuts = getIt<SettingsCubit>().state.shortcuts;
+    final isAuthenticating = getIt<AuthCubit>().state.isAuthenticating;
 
-    //if the user has set shortcuts for displaying the app we can hide on blur
-    // otherwise we keep it open since there is no way to bring it back
+    if (!isAuthenticating) {
+      //if the user has set shortcuts for displaying the app we can hide on blur
+      // otherwise we keep it open since there is no way to bring it back
 
-    if (Platform.isWindows || Platform.isLinux) {
-      for (final shortcut in shortcuts.entries) {
-        if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
-          await getIt<WindowController>().hide();
-          break;
+      if (!Platform.isMacOS) {
+        for (final shortcut in shortcuts.entries) {
+          if (ShortcutAction.fromKey(shortcut.key)?.isToggleWindow ?? false) {
+            await windowController.hide();
+            break;
+          }
         }
       }
     }
@@ -105,7 +131,7 @@ class _AppViewState extends State<_AppView> with WindowListener {
   @override
   Future<void> onWindowClose() async {
     // Hide window instead of closing when close button is clicked
-    await getIt<WindowController>().hide();
+    await windowController.hide();
   }
 
   @override

@@ -17,6 +17,10 @@ class User extends Equatable {
     return const User(id: '', email: null);
   }
 
+  factory User.anonymous() {
+    return const User(id: 'anonymous', email: null);
+  }
+
   /// User ID from Supabase Auth
   final String id;
 
@@ -43,6 +47,8 @@ class User extends Equatable {
 
   /// Check if user is not empty
   bool get isNotEmpty => !isEmpty;
+
+  bool get isAnonymous => id == 'anonymous';
 
   @override
   List<Object?> get props => [

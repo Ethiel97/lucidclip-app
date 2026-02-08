@@ -29,14 +29,6 @@ class AppConstants {
       dotenv.env['FIREBASE_API_KEY'] ??
       const String.fromEnvironment('FIREBASE_API_KEY');
 
-  static final githubClientId =
-      dotenv.env['GITHUB_CLIENT_ID'] ??
-      const String.fromEnvironment('GITHUB_CLIENT_ID');
-
-  static final githubClientSecret =
-      dotenv.env['GITHUB_CLIENT_SECRET'] ??
-      const String.fromEnvironment('GITHUB_CLIENT_SECRET');
-
   static final monthlyProductId =
       dotenv.env['LUCID_MONTHLY_PRODUCT_ID'] ??
       const String.fromEnvironment('LUCID_MONTHLY_PRODUCT_ID');

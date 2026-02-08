@@ -64,7 +64,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
     // 3) best-effort refresh (do not block UI)
     // ignore: unawaited_futures
-    refresh(userId);
+    if (!local.toEntity().isAnonymous) {
+      unawaited(refresh(userId));
+    }
 
     return local.toEntity();
   }
@@ -122,11 +124,14 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       // Try to sync to remote (best effort)
       try {
-        await remoteDataSource.upsertSettings(model.toJson());
-      } catch (e) {
+        if (!settings.isAnonymous) {
+          await remoteDataSource.upsertSettings(model.toJson());
+        }
+      } catch (e, stack) {
         log(
           'SettingsRepositoryImpl.update: remote sync failed: $e',
           name: 'SettingsRepository',
+          stackTrace: stack,
         );
         // Don't throw - local update succeeded
       }

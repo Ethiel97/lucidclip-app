@@ -50,8 +50,6 @@ import 'package:lucid_clip/core/services/app_update/app_update_service.dart'
     as _i500;
 import 'package:lucid_clip/core/services/deep_link_service/deep_link_service.dart'
     as _i28;
-import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart'
-    as _i995;
 import 'package:lucid_clip/core/services/device_id_provider/secure_installation_id_provider.dart'
     as _i457;
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
@@ -134,6 +132,7 @@ import 'package:lucid_clip/features/entitlement/data/data_sources/supabase_entit
 import 'package:lucid_clip/features/entitlement/data/repositories/entitlement_repository_impl.dart'
     as _i669;
 import 'package:lucid_clip/features/entitlement/domain/domain.dart' as _i311;
+import 'package:lucid_clip/features/entitlement/entitlement.dart' as _i850;
 import 'package:lucid_clip/features/entitlement/presentation/cubit/entitlement_cubit.dart'
     as _i9;
 import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation/cubit/upgrade_prompt_cubit.dart'
@@ -172,6 +171,7 @@ extension GetItInjectableX on _i174.GetIt {
     final thirdPartyModule = _$ThirdPartyModule();
     final cacheModule = _$CacheModule();
     final dioModule = _$DioModule();
+    gh.singleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
     gh.singleton<_i387.EntitlementDatabase>(
       () => thirdPartyModule.entitlementDatabase,
     );
@@ -195,7 +195,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => thirdPartyModule.flutterSecureStorage,
     );
-    gh.lazySingleton<_i327.AppLinks>(() => thirdPartyModule.appLinks);
     gh.lazySingleton<_i740.WindowManager>(() => thirdPartyModule.windowManager);
     gh.lazySingleton<_i890.AutoUpdater>(() => thirdPartyModule.autoUpdater);
     gh.lazySingleton<_i677.SidebarCubit>(
@@ -223,10 +222,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i80.PasteToAppService>(
       () => _i80.MethodChannelPasteToAppService(),
     );
-    gh.factory<bool>(
-      () => thirdPartyModule.analyticsEnable,
-      instanceName: 'analyticsEnabled',
-    );
     gh.lazySingleton<_i407.SecureStorageService>(
       () => _i923.FlutterSecureStorageService(),
       dispose: (i) => i.dispose(),
@@ -237,6 +232,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i387.EntitlementLocalDataSource>(
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
+    );
+    gh.lazySingleton<_i616.AnalyticsService>(
+      () => _i666.FirebaseAnalyticsService(
+        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
+      ),
     );
     gh.lazySingleton<_i936.RetentionTracker>(
       () => _i936.RetentionTracker(
@@ -251,6 +251,10 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i451.ShareService>(() => _i705.SharePlusService());
+    gh.singleton<_i212.DeepLinkService>(
+      () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i500.AppUpdateService>(
       () => _i500.AppUpdateServiceImpl(
         secureStorageService: gh<_i176.SecureStorageService>(),
@@ -280,12 +284,14 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i995.DeepLinkService>(
-      () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
-      dispose: (i) => i.dispose(),
-    );
     gh.lazySingleton<_i72.SettingsLocalDataSource>(
       () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
+    );
+    gh.lazySingleton<_i212.CacheService<_i100.Uint8List>>(
+      () => cacheModule.iconCache(
+        gh<_i212.CacheSerializer<_i100.Uint8List, List<int>>>(),
+      ),
+      instanceName: 'iconCache',
     );
     gh.lazySingleton<_i13.AuthDataSource>(
       () => _i647.SupabaseAuthDataSource(
@@ -293,18 +299,6 @@ extension GetItInjectableX on _i174.GetIt {
         secureStorage: gh<_i407.SecureStorageService>(),
         deepLinkService: gh<_i212.DeepLinkService>(),
       ),
-    );
-    gh.lazySingleton<_i616.AnalyticsService>(
-      () => _i666.FirebaseAnalyticsService(
-        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
-        isAnalyticsEnabled: gh<bool>(instanceName: 'analyticsEnabled'),
-      ),
-    );
-    gh.lazySingleton<_i212.CacheService<_i100.Uint8List>>(
-      () => cacheModule.iconCache(
-        gh<_i212.CacheSerializer<_i100.Uint8List, List<int>>>(),
-      ),
-      instanceName: 'iconCache',
     );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
@@ -409,6 +403,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i696.BillingCubit(
         authRepository: gh<_i895.AuthRepository>(),
         billingRepository: gh<_i1022.BillingRepository>(),
+        entitlementRepository: gh<_i850.EntitlementRepository>(),
       ),
       dispose: (i) => i.close(),
     );

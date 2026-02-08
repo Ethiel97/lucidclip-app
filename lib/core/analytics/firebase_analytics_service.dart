@@ -38,11 +38,13 @@ class FirebaseAnalyticsService implements AnalyticsService {
       return;
     }
 
-    log('is enabled: $isEnabled', name: 'FirebaseAnalyticsService');
-    log(
-      'Tracking event: $eventName, parameters: $parameters',
-      name: 'FirebaseAnalyticsService',
-    );
+    if (!AppConstants.isProd) {
+      log('is enabled: $isEnabled', name: 'FirebaseAnalyticsService');
+      log(
+        'Tracking event: $eventName, parameters: $parameters',
+        name: 'FirebaseAnalyticsService',
+      );
+    }
 
     try {
       // Firebase Analytics has naming restrictions:

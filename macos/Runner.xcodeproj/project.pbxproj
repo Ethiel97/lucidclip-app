@@ -649,6 +649,7 @@
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = lucidclip;
 			};
 			name = "Profile-production";
 		};
@@ -784,6 +785,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = lucidclip;
 			};
 			name = "Debug-production";
 		};
@@ -812,6 +814,7 @@
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = lucidclip;
 			};
 			name = "Release-production";
 		};
@@ -904,11 +907,12 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.staging;
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = "lucidclip-staging";
 			};
 			name = "Debug-staging";
 		};
@@ -1013,11 +1017,12 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.dev;
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = "lucidclip-dev";
 			};
 			name = "Debug-development";
 		};
@@ -1115,10 +1120,11 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.dev;
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = "lucidclip-dev";
 			};
 			name = "Release-development";
 		};
@@ -1216,10 +1222,11 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.staging;
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = "lucidclip-staging";
 			};
 			name = "Release-staging";
 		};
@@ -1317,10 +1324,11 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.dev;
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = "lucidclip-dev";
 			};
 			name = "Profile-development";
 		};
@@ -1418,10 +1426,11 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lucidclip.staging;
 				PRODUCT_NAME = "$(FLAVOR_APP_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+				URL_SCHEME = "lucidclip-staging";
 			};
 			name = "Profile-staging";
 		};

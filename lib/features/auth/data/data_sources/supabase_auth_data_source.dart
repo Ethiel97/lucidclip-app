@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
@@ -188,6 +189,6 @@ class SupabaseAuthDataSource implements AuthDataSource {
     // For macOS and Windows desktop apps, we use a custom scheme
     // This should match the URL scheme configured in Info.plist (macOS)
     // and main.cpp (Windows)
-    return 'lucidclip://auth-callback';
+    return '${AppConstants.oAuthRedirectScheme}://auth-callback';
   }
 }

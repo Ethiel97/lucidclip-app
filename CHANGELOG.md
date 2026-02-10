@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.6.0...v1.6.1) (2026-02-10)
+
+
+### Bug Fixes
+
+* add notarization and zipping steps for macOS app release process ([#110](https://github.com/Ethiel97/lucidclip-app/issues/110)) ([37bfb26](https://github.com/Ethiel97/lucidclip-app/commit/37bfb26998d72286d16d411dc24f136913add5c7))
+
 ## [1.6.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.5.0...v1.6.0) (2026-02-10)
 
 

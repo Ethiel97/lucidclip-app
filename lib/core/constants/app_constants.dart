@@ -44,6 +44,11 @@ class AppConstants {
     'SECURE_STORAGE_ENCRYPTION_KEY',
   );
 
+  static const sentryDsn = String.fromEnvironment(
+    'SENTRY_DSN',
+    defaultValue: '',
+  );
+
   static const clipboardItemDetailsViewWidth = 380.0;
   static const clipboardSidebarWidth = 220.0;
   static const collapsedSidebarWidth = 100.0;

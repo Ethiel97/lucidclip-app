@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
 import 'package:lucid_clip/features/auth/data/data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
@@ -88,12 +89,19 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
       return userModel;
     } on AuthException catch (e) {
-      log('Auth error during GitHub sign in: ${e.message}');
+      await Observability.captureException(
+        e,
+        hint: {'operation': 'github_oauth'},
+      );
       throw AuthenticationException(
         'Failed to sign in with GitHub: ${e.message}',
       );
     } catch (e, stack) {
-      log('Unexpected error during GitHub sign in: $e', stackTrace: stack);
+      await Observability.captureException(
+        e,
+        stackTrace: stack,
+        hint: {'operation': 'github_oauth'},
+      );
       throw AuthenticationException('An unexpected error occurred: $e');
     } finally {
       await _authSubscription?.cancel();
@@ -107,7 +115,10 @@ class SupabaseAuthDataSource implements AuthDataSource {
       await _supabase.auth.signOut();
       await _clearLocalData();
     } catch (e) {
-      log('Error during sign out: $e');
+      await Observability.captureException(
+        e,
+        hint: {'operation': 'signout'},
+      );
       throw AuthenticationException('An error occurred during sign out: $e');
     }
   }

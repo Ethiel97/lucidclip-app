@@ -1,149 +1,74 @@
-import 'dart:convert';
-
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:encrypt_shared_preferences/provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
 
+// encryption key of 16 characters
+const secureStorageEncryptionKey = 'lucidclip1234567';
+
 @LazySingleton(as: SecureStorageService)
-class FlutterSecureStorageService implements SecureStorageService {
-  // Constructor initializes immediately -
-  // no async needed for FlutterSecureStorage
-  FlutterSecureStorageService() {
-    _secureStorage = const FlutterSecureStorage(
-      aOptions: _androidOptions,
-      iOptions: _iosOptions,
-      mOptions: _macOsOptions,
-    );
-    _isInitialized = true;
-  }
+class PrefsSecureStorageService implements SecureStorageService {
+  const PrefsSecureStorageService({required this.prefs});
 
-  late final FlutterSecureStorage _secureStorage;
-  bool _isInitialized = false;
+  final EncryptedSharedPreferences prefs;
 
-  static const AndroidOptions _androidOptions = AndroidOptions(
-    sharedPreferencesName: 'lucid_clip_secure_storage',
-    preferencesKeyPrefix: 'lucid_clip_',
-  );
+  static const _namespace = 'lucidclip.';
 
-  static const MacOsOptions _macOsOptions = MacOsOptions(
-    accountName: 'lucid_clip_keychain',
-    accessibility: KeychainAccessibility.first_unlock_this_device,
-  );
-
-  static const IOSOptions _iosOptions = IOSOptions(
-    accountName: 'wallinice_keychain',
-    accessibility: KeychainAccessibility.first_unlock_this_device,
-  );
+  String _k(String key) => '$_namespace$key';
 
   @override
-  bool get isInitialized => _isInitialized;
-
-  @override
-  Future<void> initialize() async {
-    // Already initialized in constructor,
-    // but keep method for interface compliance
-  }
+  Future<void> initialize() async {}
 
   @override
   Future<void> write({required String key, required String value}) async {
-    await _secureStorage.write(key: key, value: value);
+    await prefs.setString(_k(key), value);
   }
 
   @override
   Future<String?> read({required String key}) async {
-    return _secureStorage.read(key: key);
-  }
-
-  @override
-  Future<Map<String, String>> readAll() async {
-    return _secureStorage.readAll();
+    return prefs.getString(_k(key));
   }
 
   @override
   Future<bool> containsKey(String key) async {
-    return _secureStorage.containsKey(key: key);
+    return (await read(key: key)) != null;
   }
 
   @override
   Future<void> delete({required String key}) async {
-    await _secureStorage.delete(key: key);
+    await prefs.remove(_k(key));
   }
 
   @override
   Future<void> deleteAll() async {
-    await _secureStorage.deleteAll();
+    final keys = prefs
+        .getKeys()
+        .where((k) => k.startsWith(_namespace))
+        .toList();
+    for (final k in keys) {
+      await prefs.remove(k);
+    }
   }
 
   @override
   Future<Set<String>> getAllKeys() async {
-    final allData = await _secureStorage.readAll();
-    return allData.keys.toSet();
+    return prefs
+        .getKeys()
+        .where((k) => k.startsWith(_namespace))
+        .map((k) => k.substring(_namespace.length))
+        .toSet();
+  }
+
+  @override
+  Future<Map<String, String>> readAll() async {
+    final out = <String, String>{};
+    for (final k in prefs.getKeys().where((k) => k.startsWith(_namespace))) {
+      final v = prefs.getString(k);
+      if (v != null) out[k.substring(_namespace.length)] = v;
+    }
+    return out;
   }
 
   @override
   @disposeMethod
-  Future<void> dispose() async {
-    // FlutterSecureStorage doesn't require explicit disposal
-    _isInitialized = false;
-  }
-
-  // Helper methods for common storage patterns
-
-  /// Store JSON data as a string
-  Future<void> writeJson({
-    required String key,
-    required Map<String, dynamic> json,
-  }) async {
-    final jsonString = jsonEncode(json);
-    await write(key: key, value: jsonString);
-  }
-
-  /// Read JSON data from storage
-  Future<Map<String, dynamic>?> readJson({required String key}) async {
-    final jsonString = await read(key: key);
-    if (jsonString == null) return null;
-
-    try {
-      return jsonDecode(jsonString) as Map<String, dynamic>;
-    } catch (e) {
-      // Invalid JSON, return null
-      return null;
-    }
-  }
-
-  /// Store a boolean value
-  Future<void> writeBool({required String key, required bool value}) async {
-    await write(key: key, value: value.toString());
-  }
-
-  /// Read a boolean value
-  Future<bool?> readBool({required String key}) async {
-    final value = await read(key: key);
-    if (value == null) return null;
-    return value.toLowerCase() == 'true';
-  }
-
-  /// Store an integer value
-  Future<void> writeInt({required String key, required int value}) async {
-    await write(key: key, value: value.toString());
-  }
-
-  /// Read an integer value
-  Future<int?> readInt({required String key}) async {
-    final value = await read(key: key);
-    if (value == null) return null;
-    return int.tryParse(value);
-  }
-
-  /// Store a double value
-  Future<void> writeDouble({required String key, required double value}) async {
-    await write(key: key, value: value.toString());
-  }
-
-  /// Read a double value
-  Future<double?> readDouble({required String key}) async {
-    final value = await read(key: key);
-    if (value == null) return null;
-    return double.tryParse(value);
-  }
+  Future<void> dispose() async {}
 }

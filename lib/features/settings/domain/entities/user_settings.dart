@@ -7,8 +7,8 @@ import 'package:lucid_clip/core/platform/platform.dart';
 //
 
 const defaultMaxHistoryItems = 30;
-const defaultRetentionDays = 3;
-const defaultSyncIntervalMinutes = 30;
+const defaultRetentionDays = 7;
+const defaultSyncIntervalMinutes = 60;
 
 class UserSettings extends Equatable {
   const UserSettings({

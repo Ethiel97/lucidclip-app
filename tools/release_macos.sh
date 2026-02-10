@@ -36,25 +36,61 @@ flutter clean
 flutter pub get
 flutter build macos --release --flavor production -t lib/main_production.dart --dart-define-from-file=.env
 
-# ====== 2) SIGN APP ======
+# ====== 2) SIGN & NOTARIZE APP (The Missing Step) ======
 echo "==> Signing .app"
+# Note: Added --entitlements. Ensure you have this file (standard in Flutter macos/Runner/).
+# If you don't have it, remove the flag, but Hardened Runtime usually requires it.
+ENTITLEMENTS="$PROJECT_ROOT/macos/Runner/Release.entitlements"
+
 codesign --deep --force --options runtime \
+  -d --entitlements "$ENTITLEMENTS" \
   --sign "$CERT_ID" \
   "$BUILD_APP"
 
 codesign --verify --deep --strict --verbose=2 "$BUILD_APP"
 
-# ====== 3) CREATE DMG (hdiutil) ======
-echo "==> Creating DMG"
-rm -f "$DMG_PATH"
-hdiutil create -volname "$APP_NAME" -srcfolder "$BUILD_APP" -ov -format UDZO "$DMG_PATH"
+echo "==> Zipping App for Notarization"
+ZIP_PATH="$PROJECT_ROOT/build/macos/LucidClip.zip"
+ditto -c -k --keepParent "$BUILD_APP" "$ZIP_PATH"
 
-# ====== 4) NOTARIZE + STAPLE ======
+echo "==> Notarizing APP (Step 1/2)"
+xcrun notarytool submit "$ZIP_PATH" --keychain-profile "$NOTARY_PROFILE" --wait
+
+echo "==> Stapling Ticket to APP"
+xcrun stapler staple "$BUILD_APP"
+# Now $BUILD_APP has the ticket inside it!
+
+# ====== 3) CREATE DMG (using the STAPLED app) ======
+echo "==> Creating DMG"
+
+# (Optional: Use the staging folder method discussed previously to fix the icon issue)
+# For brevity, using your original simple command here:
+create-dmg \
+  --background "$PROJECT_ROOT/assets/installer/macos/dmg_background.tiff" \
+  --volname "${APP_NAME} Installer" \
+  --volicon "$PROJECT_ROOT/assets/installer/macos/logo.icns" \
+  --window-size 800 500 \
+  --window-pos 200 120 \
+  --icon-size 128 \
+  --icon "${APP_NAME}.app" 170 250 \
+  --app-drop-link 580 250 \
+  --hide-extension "${APP_NAME}.app" \
+  --hide-extension "Applications" \
+  --no-internet-enable \
+  --hdiutil-quiet \
+  "$DMG_PATH" \
+  "$BUILD_APP"
+
+# ====== 4) NOTARIZE & STAPLE DMG (Step 2/2) ======
 echo "==> Notarizing DMG"
 xcrun notarytool submit "$DMG_PATH" --keychain-profile "$NOTARY_PROFILE" --wait
 
-echo "==> Stapling ticket"
+echo "==> Stapling Ticket to DMG"
 xcrun stapler staple "$DMG_PATH"
+
+# Validate
+echo "==> Validating..."
+spctl -a -vv "$BUILD_APP"
 xcrun stapler validate "$DMG_PATH"
 
 # ====== 5) COPY TO UPDATES REPO ======

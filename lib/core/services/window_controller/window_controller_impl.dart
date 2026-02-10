@@ -85,7 +85,13 @@ class WindowControllerImpl implements WindowController {
   Future<void> showAsOverlay() async {
     try {
       // Capture the frontmost app before showing LucidClip
-      _previousFrontmostApp = await sourceAppProvider.getFrontmostApp();
+      try {
+        _previousFrontmostApp = await sourceAppProvider
+            .getFrontmostApp()
+            .timeout(const Duration(milliseconds: sourceAppProviderTimeoutMs));
+      } catch (_) {
+        // Ignore errors in getting the frontmost app; it's not critical
+      }
 
       _isShowing = true;
 

@@ -7,6 +7,7 @@ import 'package:lucid_clip/features/clipboard/clipboard.dart';
 
 final Map<String, Uint8List> _sourceAppIconCache = {};
 const _sourceAppDisplaySize = 18;
+const sourceAppProviderTimeoutMs = 2500;
 
 extension SourceAppHelper on SourceApp {
   Widget getIconWidget(ColorScheme colorScheme) {
@@ -18,7 +19,7 @@ extension SourceAppHelper on SourceApp {
       );
 
       return Transform.scale(
-        scale: 1.26,
+        scale: 1.2,
         child: CachedClipboardImage.memory(
           bytes: cachedBytes,
           width: _sourceAppDisplaySize.toDouble(),

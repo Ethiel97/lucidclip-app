@@ -137,7 +137,6 @@ void main() {
         // Pro user with 7 days retention
         final settings = UserSettings(
           userId: 'test-user',
-          retentionDays: 7,
           createdAt: now,
           updatedAt: now,
         );

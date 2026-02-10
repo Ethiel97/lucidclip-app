@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:encrypt_shared_preferences/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,6 +11,7 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/storage/storage.dart';
 import 'package:lucid_clip/firebase_options.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -49,11 +51,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   // Add cross-flavor configuration here
   try {
     await Future.wait<void>([
+      EncryptedSharedPreferences.initialize(secureStorageEncryptionKey),
       Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
       Supabase.initialize(
         anonKey: AppConstants.supabasePublishableKey,
         url: AppConstants.supabaseProjectUrl,
-        debug: true,
+        debug: !AppConstants.isProd,
       ),
     ]);
   } catch (e) {

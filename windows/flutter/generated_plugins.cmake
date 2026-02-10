@@ -6,9 +6,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   auto_updater_windows
   clipboard
+  clipboard_watcher
   firebase_auth
   firebase_core
-  flutter_secure_storage_windows
   hotkey_manager_windows
   pasteboard
   permission_handler_windows

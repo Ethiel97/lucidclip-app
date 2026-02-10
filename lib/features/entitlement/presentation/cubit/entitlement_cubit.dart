@@ -95,7 +95,7 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
 
       unawaited(
         Observability.breadcrumb(
-          'Error loading entitlements: $error',
+          'Error loading entitlements',
           category: 'entitlement',
           level: ObservabilityLevel.error,
         ),

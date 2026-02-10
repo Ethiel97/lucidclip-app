@@ -133,12 +133,12 @@ void main() {
       verify(() => mockService.isEnabled).called(1);
     });
 
-    test('should return false when service is not initialized', () {
+    test('should return false when service is not initialized', () async {
       // Arrange
       // Reset the facade by setting service to null
       // Note: This is a bit hacky but necessary for this test
       // In a real scenario, you might want to add a reset method for testing
-      Observability.initialize(null as ObservabilityService);
+      await Observability.close();
 
       // Act
       final isEnabled = Observability.isEnabled;
@@ -149,7 +149,7 @@ void main() {
 
     test('should handle null service gracefully for all operations', () async {
       // Arrange
-      Observability.initialize(null as ObservabilityService);
+      await Observability.close();
 
       // Act & Assert - should not throw
       await Observability.captureException(Exception('test'));

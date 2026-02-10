@@ -32,6 +32,7 @@ class Observability {
   /// Initializes the observability facade with a service implementation.
   ///
   /// Must be called once during app startup before using other methods.
+  /// ignore: use_setters_to_change_properties
   static void initialize(ObservabilityService service) {
     _service = service;
   }
@@ -145,5 +146,6 @@ class Observability {
   /// Call this before app termination to ensure all events are sent.
   static Future<void> close() async {
     await _service?.close();
+    _service = null;
   }
 }

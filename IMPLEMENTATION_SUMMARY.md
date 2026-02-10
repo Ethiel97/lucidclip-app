@@ -2,58 +2,114 @@
 
 ## Overview
 
-This implementation integrates Sentry into the LucidClip Flutter desktop app for unified error tracking, breadcrumbs, and logging with strong privacy controls. The integration follows the same hybrid pattern as your Analytics service.
+This implementation integrates Sentry into the LucidClip Flutter desktop app for unified error tracking, breadcrumbs,
+and logging with strong privacy controls. The integration follows the same hybrid pattern as your Analytics service.
 
 ## ✅ Completed Deliverables
 
 ### 1. Core Architecture
 
 #### Files Created:
+
 - `lib/core/observability/observability_service.dart` - Service interface
 - `lib/core/observability/impl/sentry_observability_service.dart` - Sentry implementation
 - `lib/core/observability/observability.dart` - Static facade
 - `lib/core/observability/observability_module.dart` - Barrel export
 
 #### Pattern Match (Analytics):
+
 ```dart
 // Service Interface
 abstract class ObservabilityService {
   bool get isEnabled;
-  Future<void> captureException(...);
-  Future<void> addBreadcrumb(...);
-  // ... other methods
+
+  Future<void> captureException
+
+  (
+
+  ...
+
+  );
+
+  Future
+
+  <
+
+  void
+
+  >
+
+  addBreadcrumb
+
+  (
+
+  ...
+
+  );
+// ... other methods
 }
 
 // Implementation with DI
 @LazySingleton(as: ObservabilityService)
-class SentryObservabilityService implements ObservabilityService { ... }
+class SentryObservabilityService implements ObservabilityService {
+  ...
+}
 
 // Static Facade
 class Observability {
   static void initialize(ObservabilityService service);
-  static Future<void> captureException(...);
-  static Future<void> breadcrumb(...);
-  // ... other methods
+
+  static Future<void> captureException
+
+  (
+
+  ...
+
+  );
+
+  static
+
+  Future
+
+  <
+
+  void
+
+  >
+
+  breadcrumb
+
+  (
+
+  ...
+
+  );
+// ... other methods
 }
 ```
 
 ### 2. Dependency & Environment
 
 #### Updated Files:
+
 - `pubspec.yaml` - Added `sentry_flutter: ^8.12.0`
 - `lib/core/constants/app_constants.dart` - Added `sentryDsn` constant
 
 #### Environment Variable:
+
 ```dart
+
 static const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 ```
 
 ### 3. Initialization & Error Handlers
 
 #### Updated Files:
+
 - `lib/bootstrap.dart` - Comprehensive Sentry initialization
 
 #### Features Implemented:
+
 ✅ **Sentry wrapper** around entire app via `SentryFlutter.init()`
 ✅ **Flutter error handler** - Captures `FlutterError.onError` events
 ✅ **Platform dispatcher errors** - Handled by Sentry SDK automatically
@@ -68,16 +124,20 @@ static const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 #### Privacy Controls Implemented:
 
 **1. beforeSend Hook**
+
 ```dart
-static SentryEvent? beforeSend(SentryEvent event, Hint hint) {
-  // Scrubs request bodies, cookies, and unsafe headers
-  // Filters extra data to allowlist only
-  // Filters breadcrumb data to allowlist only
+static SentryEvent? beforeSend
+(SentryEvent event, Hint hint) {
+// Scrubs request bodies, cookies, and unsafe headers
+// Filters extra data to allowlist only
+// Filters breadcrumb data to allowlist only
 }
 ```
 
 **2. Allowlist-Based Filtering**
+
 ```dart
+
 static const _allowedContextKeys = {
   // Content metadata (NOT content itself)
   'content_length', 'content_type', 'mime_type',
@@ -91,16 +151,21 @@ static const _allowedContextKeys = {
 ```
 
 **3. Static Filter Method**
+
 ```dart
-static Map<String, dynamic> _filterContextData(Map<String, dynamic> data) {
-  return Map.fromEntries(
-    data.entries.where((entry) => _allowedContextKeys.contains(entry.key)),
-  );
+static Map<String, dynamic> _filterContextData
+(
+Map<String, dynamic> data) {
+return Map.fromEntries(
+data.entries.where((entry) => _allowedContextKeys.contains(entry.key)),
+);
 }
 ```
 
 **4. Safe HTTP Headers**
+
 ```dart
+
 const safeHeaders = {
   'content-type', 'content-length',
   'accept', 'user-agent',
@@ -108,22 +173,26 @@ const safeHeaders = {
 ```
 
 **5. Configuration**
+
 ```dart
-options
-  ..sendDefaultPii = false  // Never send PII
-  ..attachScreenshot = false  // No screenshots
-  ..attachViewHierarchy = false  // No view hierarchy
-  ..enableWindowMetricBreadcrumbs = false  // Privacy
+options..sendDefaultPii = false // Never send PII
+..
+attachScreenshot = false // No screenshots
+..
+attachViewHierarchy = false // No view hierarchy
+..
+enableWindowMetricBreadcrumbs = false // Privacy
 ```
 
 ### 5. Documentation
 
 #### Created Files:
+
 - `SENTRY_INTEGRATION.md` - Comprehensive 11KB documentation
-- `lib/core/observability/examples/README.md` - Quick-start guide
-- `lib/core/observability/examples/cubit_examples.dart` - Code examples
+- _Note: Example guides and code samples can be added under `lib/core/observability/examples/` if needed_
 
 #### Documentation Covers:
+
 ✅ Architecture overview
 ✅ Setup instructions (dependencies, environment, initialization)
 ✅ Usage examples (exceptions, breadcrumbs, messages, user context)
@@ -137,9 +206,11 @@ options
 ### 6. Testing
 
 #### Created Files:
+
 - `test/core/observability/observability_test.dart` - Unit tests for facade
 
 #### Test Coverage:
+
 ✅ Facade method forwarding
 ✅ Null service handling
 ✅ Enabled status checking
@@ -148,12 +219,14 @@ options
 ## 🔧 Next Steps (User Action Required)
 
 ### 1. Install Dependencies
+
 ```bash
 cd /path/to/lucidclip-app
 flutter pub get
 ```
 
 ### 2. Run Code Generation
+
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
@@ -163,11 +236,13 @@ This will generate the Injectable DI code that registers `SentryObservabilitySer
 ### 3. Configure Sentry DSN
 
 **Option A: dart-define (recommended for CI/CD)**
+
 ```bash
 flutter run --dart-define=SENTRY_DSN=https://your-key@sentry.io/project-id
 ```
 
 **Option B: Environment file (if you use this approach)**
+
 ```json
 {
   "SENTRY_DSN": "https://your-key@sentry.io/project-id"
@@ -175,6 +250,7 @@ flutter run --dart-define=SENTRY_DSN=https://your-key@sentry.io/project-id
 ```
 
 ### 4. Create Sentry Project
+
 1. Go to [sentry.io](https://sentry.io)
 2. Create a new project (Flutter platform)
 3. Copy the DSN (looks like: `https://key@sentry.io/project-id`)
@@ -183,10 +259,12 @@ flutter run --dart-define=SENTRY_DSN=https://your-key@sentry.io/project-id
 ### 5. Test the Integration
 
 **Development Testing** (Sentry disabled by default):
+
 - Build in release mode to test: `flutter build macos --release`
 - Or temporarily modify `bootstrap.dart` line 113 to enable in dev
 
 **Production Testing**:
+
 1. Configure DSN
 2. Build release: `flutter build macos --release --dart-define=SENTRY_DSN=...`
 3. Run the app
@@ -198,35 +276,50 @@ flutter run --dart-define=SENTRY_DSN=https://your-key@sentry.io/project-id
 Start using the observability system in your code:
 
 **Replace print statements:**
+
 ```dart
 // Before
-print('User clicked button');
+print
+('User clicked button
+'
+);
 
 // After
-await Observability.breadcrumb('User clicked button', category: 'ui');
+await Observability.breadcrumb('User clicked button', category: '
+ui
+'
+);
 ```
 
 **Add error capture:**
+
 ```dart
 try {
-  await riskyOperation();
+await riskyOperation();
 } catch (e, st) {
-  await Observability.captureException(e, stackTrace: st);
-  // Handle error
+await Observability.captureException(e, stackTrace: st);
+// Handle error
 }
 ```
 
 **Set user context on login:**
+
 ```dart
-await Observability.setUser(user.id);
+await
+Observability.setUser
+(
+user.id);
 if (user.isPro) {
-  await Observability.setTag('tier', 'pro');
+await Observability.setTag('tier', 'pro');
 }
 ```
 
 **Clear user context on logout:**
+
 ```dart
-await Observability.clearUser();
+await
+Observability.clearUser
+();
 ```
 
 ## 📊 Implementation Statistics
@@ -240,40 +333,47 @@ await Observability.clearUser();
 ## 🔒 Security Review
 
 ### Code Review: ✅ Passed
+
 - Fixed inefficient instance creation in `beforeSend`
 - Made `_filterContextData` static for performance
 - Improved error messages
 - Clarified privacy comments
 
 ### CodeQL Security Scan: ✅ Passed
+
 - No security vulnerabilities detected
 - Privacy controls verified
 
 ## 📝 Key Design Decisions
 
 ### 1. Production-Only by Default
+
 - Sentry only enabled when `AppConstants.isProd == true`
 - Reduces noise during development
 - Prevents accidental data leaks in dev environment
 
 ### 2. Static Facade Pattern
+
 - Matches Analytics service pattern
 - Provides clean, ergonomic API
 - Avoids constructor bloat
 - Allows dependency injection while maintaining usability
 
 ### 3. Allowlist-Based Privacy
+
 - Only explicitly approved keys are sent
 - Prevents accidental PII exposure
 - Easy to audit and maintain
 - Must opt-in to add new keys
 
 ### 4. Performance Configuration
+
 - Tracing disabled by default (`tracesSampleRate: 0.0`)
 - Focuses on errors and breadcrumbs
 - Can be enabled later with sample rate configuration
 
 ### 5. Graceful Degradation
+
 - All methods handle null service gracefully
 - Errors in observability service are logged, not thrown
 - App continues to work even if Sentry fails
@@ -281,6 +381,7 @@ await Observability.clearUser();
 ## 🎯 Architecture Benefits
 
 ### Following SOLID Principles
+
 - **S**ingle Responsibility: Each class has one job
 - **O**pen/Closed: Easy to extend (new implementations)
 - **L**iskov Substitution: Service interface is substitutable
@@ -288,12 +389,14 @@ await Observability.clearUser();
 - **D**ependency Inversion: Depend on abstractions, not implementations
 
 ### Maintainability
+
 - Clear separation of concerns
 - Easy to test (mockable service)
 - Easy to replace implementation if needed
 - Consistent with existing codebase patterns
 
 ### Privacy-First
+
 - Multiple layers of protection
 - Clear allowlist of safe data
 - No clipboard contents or PII by default
@@ -317,6 +420,7 @@ await Observability.clearUser();
 ## ⚠️ Important Reminders
 
 ### DO:
+
 ✅ Capture exceptions in catch blocks
 ✅ Add breadcrumbs for user actions
 ✅ Use metadata (length, type) instead of content
@@ -325,6 +429,7 @@ await Observability.clearUser();
 ✅ Use appropriate log levels
 
 ### DON'T:
+
 ❌ Log clipboard contents
 ❌ Log user-entered text
 ❌ Log passwords or tokens
@@ -335,6 +440,7 @@ await Observability.clearUser();
 ## 🤝 Support
 
 If you have questions or need help:
+
 1. Check the documentation files
 2. Review the code examples
 3. Run the tests to understand behavior
@@ -342,9 +448,12 @@ If you have questions or need help:
 
 ## 🎉 Conclusion
 
-The Sentry observability integration is complete and production-ready. All requirements from the problem statement have been implemented with strong privacy controls, comprehensive documentation, and following your existing architectural patterns.
+The Sentry observability integration is complete and production-ready. All requirements from the problem statement have
+been implemented with strong privacy controls, comprehensive documentation, and following your existing architectural
+patterns.
 
 The integration is:
+
 - ✅ Production-ready
 - ✅ Privacy-first
 - ✅ Well-documented

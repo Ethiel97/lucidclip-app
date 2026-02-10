@@ -57,11 +57,25 @@ class SentryObservabilityService implements ObservabilityService {
     if (!isEnabled) return;
 
     try {
-      await Sentry.captureException(
-        exception,
-        stackTrace: stackTrace,
-        hint: hint != null ? Hint.withMap(hint) : null,
-      );
+      if (hint != null && hint.isNotEmpty) {
+        final filteredContext = _filterContextData(hint);
+
+        await Sentry.configureScope((scope) {
+          if (filteredContext.isNotEmpty) {
+            for (final entry in filteredContext.entries) {
+              scope.setContexts(entry.key, entry.value);
+            }
+          }
+        });
+
+        await Sentry.captureException(
+          exception,
+          stackTrace: stackTrace,
+          hint: Hint.withMap(hint),
+        );
+      } else {
+        await Sentry.captureException(exception, stackTrace: stackTrace);
+      }
     } catch (e, st) {
       developer.log(
         'Failed to capture exception in Sentry',

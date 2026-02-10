@@ -1,10 +1,12 @@
 # Sentry Observability Integration
 
-This document describes the Sentry observability integration for LucidClip, providing unified error tracking, breadcrumbs, and logging with privacy-first constraints.
+This document describes the Sentry observability integration for LucidClip, providing unified error tracking,
+breadcrumbs, and logging with privacy-first constraints.
 
 ## Architecture
 
 The observability system follows the same hybrid pattern as Analytics:
+
 1. **Interface**: `ObservabilityService` - Domain service contract
 2. **Implementation**: `SentryObservabilityService` - Sentry-based implementation with privacy controls
 3. **Injectable Registration**: `@LazySingleton(as: ObservabilityService)` annotation
@@ -28,11 +30,13 @@ Run `flutter pub get` to install.
 Add the Sentry DSN to your environment configuration:
 
 **For dart-define approach:**
+
 ```bash
 --dart-define=SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
 ```
 
 **For environment files (if using):**
+
 ```json
 {
   "SENTRY_DSN": "https://your-sentry-dsn@sentry.io/project-id"
@@ -40,7 +44,9 @@ Add the Sentry DSN to your environment configuration:
 ```
 
 The DSN is configured in `lib/core/constants/app_constants.dart`:
+
 ```dart
+
 static const sentryDsn = String.fromEnvironment('SENTRY_DSN', defaultValue: '');
 ```
 
@@ -56,7 +62,15 @@ Sentry is automatically initialized in `lib/bootstrap.dart` when the app starts:
 The `Observability` facade is initialized in `bootstrap.dart` after dependency injection:
 
 ```dart
-Observability.initialize(getIt<ObservabilityService>());
+Observability.initialize
+(
+getIt
+<
+ObservabilityService
+>
+(
+)
+);
 ```
 
 ## Usage
@@ -67,14 +81,16 @@ Observability.initialize(getIt<ObservabilityService>());
 import 'package:lucid_clip/core/observability/observability_module.dart';
 
 try {
-  await riskyOperation();
-} catch (e, st) {
-  await Observability.captureException(
-    e,
-    stackTrace: st,
-    hint: {'operation': 'riskyOperation'},
-  );
-  // Handle error gracefully
+await riskyOperation();
+} catch
+(e, st) {await
+Observability.captureException
+(
+e,
+stackTrace: st,
+hint: {'operation': 'riskyOperation'},
+);
+// Handle error gracefully
 }
 ```
 
@@ -84,30 +100,37 @@ Breadcrumbs create a trail of events leading up to errors:
 
 ```dart
 // User action breadcrumb
-await Observability.breadcrumb(
-  'User clicked search button',
-  category: 'user_action',
-  level: 'info',
+await
+Observability.breadcrumb
+('User clicked search button
+'
+,category: 'user_action',
+level: 'info',
 );
 
 // Clipboard capture breadcrumb (privacy-safe metadata only)
 await Observability.breadcrumb(
-  'Clipboard item captured',
-  category: 'clipboard',
-  data: {
-    'content_type': 'text',
-    'content_length': 150,
-    'source': 'keyboard_shortcut',
-  },
-  level: 'info',
+'Clipboard item captured',
+category: 'clipboard',
+data: {
+'content_type': 'text',
+'content_length': 150,
+'source': 'keyboard_shortcut',
+},
+level: 'info',
 );
 
 // Navigation breadcrumb
 await Observability.breadcrumb(
-  'Navigated to settings',
-  category: 'navigation',
-  data: {'route': '/settings'},
-  level: 'info',
+'Navigated to settings',
+category: 'navigation',
+data: {'route': '/settings'},
+level
+:
+'
+info
+'
+,
 );
 ```
 
@@ -116,13 +139,15 @@ await Observability.breadcrumb(
 Send standalone log messages as events:
 
 ```dart
-await Observability.message(
-  'Failed to sync clipboard history',
-  level: 'warning',
-  extras: {
-    'item_count': 42,
-    'duration_ms': 1500,
-  },
+await
+Observability.message
+('Failed to sync clipboard history
+'
+,level: 'warning',
+extras: {
+'item_count': 42,
+'duration_ms': 1500,
+},
 );
 ```
 
@@ -132,16 +157,24 @@ Set user context (userId only by default for privacy):
 
 ```dart
 // On login
-await Observability.setUser(user.id);
+await
+Observability.setUser
+(
+user.id);
 
 // With optional email (use cautiously)
 await Observability.setUser(
-  user.id,
-  email: user.email, // Only if user consented
+user.id,
+email: user.email, // Only if user consented
 );
 
 // On logout
-await Observability.clearUser();
+await
+Observability
+.
+clearUser
+(
+);
 ```
 
 ### Tags and Context
@@ -150,12 +183,19 @@ Add custom tags for filtering:
 
 ```dart
 // Set subscription tier
-await Observability.setTag('subscription_tier', 'pro');
+await
+Observability.setTag
+('subscription_tier
+'
+,
+'pro
+'
+);
 
 // Set custom context
 await Observability.setContext('app_state', {
-  'screen': 'clipboard_history',
-  'item_count': items.length,
+'screen': 'clipboard_history',
+'item_count': items.length,
 });
 ```
 
@@ -176,14 +216,17 @@ The integration includes strong privacy controls:
 The following metadata keys are safe and allowed:
 
 **Content metadata** (NOT the content itself):
+
 - `content_length`, `content_type`, `mime_type`
 - `file_extension`, `source`, `category`, `flags`
 - `item_count`, `duration_ms`
 
 **UI/Navigation context**:
+
 - `screen`, `route`, `action`, `feature`
 
 **System context**:
+
 - `platform`, `os_version`, `app_version`, `locale`
 
 Any other keys will be filtered out automatically.
@@ -193,6 +236,7 @@ Any other keys will be filtered out automatically.
 To add a new safe context key, update `_allowedContextKeys` in `sentry_observability_service.dart`:
 
 ```dart
+
 static const _allowedContextKeys = {
   // ... existing keys ...
   'your_new_safe_key',
@@ -223,7 +267,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
     try {
       final item = await _repository.captureCurrentClipboard();
-      
+
       // Success breadcrumb with safe metadata
       await Observability.breadcrumb(
         'Clipboard item captured successfully',
@@ -296,27 +340,38 @@ Future<User> fetchUser(String userId) async {
 Replace debug logging with breadcrumbs or messages:
 
 ### Before:
+
 ```dart
-print('User navigated to settings');
-log('Clipboard item captured: ${item.content}'); // ❌ Logs sensitive data
+print
+('User navigated to settings
+'
+);log('Clipboard item captured: ${item.content}'); // ❌ Logs sensitive data
 ```
 
 ### After:
+
 ```dart
-await Observability.breadcrumb(
-  'User navigated to settings',
-  category: 'navigation',
-  level: 'debug',
+await
+Observability.breadcrumb
+('User navigated to settings
+'
+,category: 'navigation',
+level: 'debug',
 );
 
 await Observability.breadcrumb(
-  'Clipboard item captured',
-  category: 'clipboard',
-  data: {
-    'content_type': item.type.name,
-    'content_length': item.content.length, // ✅ Metadata only
-  },
-  level: 'info',
+'Clipboard item captured',
+category: 'clipboard',
+data: {
+'content_type': item.type.name,
+'content_length': item.content.length, // ✅ Metadata only
+},
+level
+:
+'
+info
+'
+,
 );
 ```
 
@@ -400,6 +455,7 @@ The context keys may not be in the allowlist. Add them to `_allowedContextKeys` 
 ### Clipboard content appearing in events
 
 This should never happen due to our privacy controls. If it does:
+
 1. Check that you're not adding clipboard content to breadcrumb/event data
 2. Verify the `beforeSend` hook is active
 3. Review and update the allowlist
@@ -411,36 +467,36 @@ This should never happen due to our privacy controls. If it does:
 ```dart
 class Observability {
   static void initialize(ObservabilityService service);
+
   static bool get isEnabled;
-  
-  static Future<void> captureException(
-    dynamic exception, {
+
+  static Future<void> captureException(dynamic exception, {
     StackTrace? stackTrace,
     Map<String, dynamic>? hint,
   });
-  
-  static Future<void> breadcrumb(
-    String message, {
+
+  static Future<void> breadcrumb(String message, {
     String? category,
     Map<String, dynamic>? data,
     String? level,
   });
-  
-  static Future<void> message(
-    String message, {
+
+  static Future<void> message(String message, {
     String? level,
     Map<String, dynamic>? extras,
   });
-  
-  static Future<void> setUser(
-    String userId, {
+
+  static Future<void> setUser(String userId, {
     String? email,
     Map<String, String>? extras,
   });
-  
+
   static Future<void> clearUser();
+
   static Future<void> setTag(String key, String value);
+
   static Future<void> setContext(String key, Map<String, dynamic> value);
+
   static Future<void> close();
 }
 ```

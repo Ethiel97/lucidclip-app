@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/constants/app_constants.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
-import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
 import 'package:lucid_clip/features/auth/data/data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
@@ -15,23 +14,41 @@ class SupabaseAuthDataSource implements AuthDataSource {
   SupabaseAuthDataSource({
     required SupabaseClient supabaseClient,
     required SecureStorageService secureStorage,
-    required DeepLinkService deepLinkService,
   }) : _supabase = supabaseClient,
-       _secureStorage = secureStorage,
-       _deepLinkService = deepLinkService;
+       _secureStorage = secureStorage;
 
   final SupabaseClient _supabase;
   final SecureStorageService _secureStorage;
-  final DeepLinkService _deepLinkService;
+  StreamSubscription<AuthState>? _authSubscription;
 
   @override
   Future<UserModel?> signInWithGitHub() async {
     try {
       final redirectTo = _getRedirectUrl();
-
       log('Starting GitHub OAuth with redirect: $redirectTo');
 
-      // Launch OAuth flow
+      final completer = Completer<UserModel?>();
+
+      // Listen for the auth state change just once.
+      _authSubscription = _supabase.auth.onAuthStateChange.listen(
+        (data) {
+          final session = data.session;
+          if (session != null && !completer.isCompleted) {
+            log('Auth state changed, user signed in: ${session.user.email}');
+            final userModel = UserModel.fromSupabaseUser(session.user);
+            completer.complete(userModel);
+          }
+        },
+        onError: (Object error) {
+          if (!completer.isCompleted) {
+            completer.completeError(
+              AuthenticationException('Auth state change error: $error'),
+            );
+          }
+        },
+      );
+
+      // Launch OAuth flow. Supabase will handle the deep link internally.
       final response = await _supabase.auth.signInWithOAuth(
         OAuthProvider.github,
         redirectTo: redirectTo,
@@ -39,40 +56,27 @@ class SupabaseAuthDataSource implements AuthDataSource {
       );
 
       if (!response) {
-        log('GitHub OAuth failed or was cancelled');
+        log('GitHub OAuth failed or was cancelled by user.');
         return null;
       }
 
-      log('OAuth flow initiated, waiting for deep link callback...');
+      log('OAuth flow initiated, waiting for auth state change...');
 
-      final deepLinkUri = await _deepLinkService.waitForDeepLink(
-        timeout: const Duration(minutes: 3),
-        filter: (uri) {
-          // Filter for our auth callback scheme
-          return uri.scheme == 'lucidclip';
+      // Wait for the onAuthStateChange listener to complete.
+      final userModel = await completer.future.timeout(
+        const Duration(minutes: 3),
+        onTimeout: () {
+          log('Sign in timed out waiting for auth state change.');
+          return null;
         },
       );
 
-      if (deepLinkUri == null) {
-        log('Deep link callback timeout or cancelled');
-        return null;
-      }
-
-      log('Deep link received: $deepLinkUri');
-      // Extract the session from the deep link URI
-      // Supabase sends the session info as query parameters or fragment
-
-      await _handleAuthCallback(deepLinkUri);
-
-      // Get the current user after session is established
-      final currentUser = _supabase.auth.currentUser;
-      if (currentUser == null) {
-        log('No user found after OAuth completion');
+      if (userModel == null) {
+        log('No user model received after auth flow.');
         return null;
       }
 
       final accessToken = _supabase.auth.currentSession?.accessToken;
-
       if (accessToken != null) {
         await _secureStorage.write(
           key: SecureStorageConstants.authToken,
@@ -80,10 +84,9 @@ class SupabaseAuthDataSource implements AuthDataSource {
         );
       }
 
-      // Store user information in secure storage
-      await _storeUserData(currentUser);
+      await _storeUserData(_supabase.auth.currentUser);
 
-      return UserModel.fromSupabaseUser(currentUser);
+      return userModel;
     } on AuthException catch (e) {
       log('Auth error during GitHub sign in: ${e.message}');
       throw AuthenticationException(
@@ -92,25 +95,9 @@ class SupabaseAuthDataSource implements AuthDataSource {
     } catch (e, stack) {
       log('Unexpected error during GitHub sign in: $e', stackTrace: stack);
       throw AuthenticationException('An unexpected error occurred: $e');
-    }
-  }
-
-  /// Handle the OAuth callback from the deep link
-  Future<void> _handleAuthCallback(Uri uri) async {
-    try {
-      // The URI will contain either query parameters or a fragment
-      // with the access_token and other session data
-      final uriString = uri.toString();
-
-      log('Processing auth callback URI: $uriString');
-
-      // Supabase Flutter SDK can handle the callback URL
-      await _supabase.auth.getSessionFromUrl(uri);
-
-      log('Session established from callback');
-    } catch (e, stack) {
-      log('Error handling auth callback: $e', stackTrace: stack);
-      throw AuthenticationException('Failed to process auth callback: $e');
+    } finally {
+      await _authSubscription?.cancel();
+      _authSubscription = null;
     }
   }
 
@@ -163,8 +150,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   /// Store user data in secure storage
-  Future<void> _storeUserData(User user) async {
+  Future<void> _storeUserData(User? user) async {
     try {
+      if (user == null) {
+        log('No user data to store in secure storage');
+        return;
+      }
       await _secureStorage.write(
         key: SecureStorageConstants.userId,
         value: user.id,

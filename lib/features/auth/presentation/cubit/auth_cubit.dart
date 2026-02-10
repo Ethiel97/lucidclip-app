@@ -88,7 +88,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     try {
       final user = await _authRepository.signInWithGitHub();
 
-      if (user != null && user.isNotEmpty) {
+      if (user != null && !user.isAnonymous) {
         emit(state.copyWith(user: state.user.toSuccess(user)));
         log('Successfully signed in with GitHub: ${user.email}');
       } else {

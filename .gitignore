@@ -26,6 +26,7 @@ migrate_working_dir/
 .env.production
 .env.test
 *.env
+env.*.json
 
 
 # Visual Studio Code related
@@ -39,7 +40,6 @@ migrate_working_dir/
 
 # Flutter/Dart/Pub related
 **/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies

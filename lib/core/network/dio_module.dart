@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/network/network.dart';
 
 @module
@@ -9,7 +8,6 @@ abstract class DioModule {
   Dio dio(DioAuthInterceptor authInterceptor) {
     final dio = Dio()
       ..options = BaseOptions(
-        baseUrl: AppConstants.apiBaseUrl,
         validateStatus: (status) {
           return status != null && (status >= 200 && status <= 429);
         },

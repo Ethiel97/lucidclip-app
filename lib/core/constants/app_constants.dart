@@ -46,7 +46,6 @@ class AppConstants {
 
   static const sentryDsn = String.fromEnvironment(
     'SENTRY_DSN',
-    defaultValue: '',
   );
 
   static const clipboardItemDetailsViewWidth = 380.0;

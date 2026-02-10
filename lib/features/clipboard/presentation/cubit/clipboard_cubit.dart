@@ -155,15 +155,20 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
               ),
             );
 
-            await Observability.captureException(
-              error,
-              stackTrace: stackTrace,
-              hint: {'operation': 'watch_local_items'},
+            unawaited(
+              Observability.captureException(
+                error,
+                stackTrace: stackTrace,
+                hint: {'operation': 'watch_local_clipboard_items'},
+              ),
             );
-            await Observability.breadcrumb(
-              'Local clipboard watch failed',
-              category: 'clipboard',
-              level: ObservabilityLevel.error,
+
+            unawaited(
+              Observability.breadcrumb(
+                'Local clipboard watch failed',
+                category: 'clipboard',
+                level: ObservabilityLevel.error,
+              ),
             );
           },
         );
@@ -285,13 +290,15 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         maxItems: _effectiveMaxHistoryItems,
       );
     } catch (e, stackTrace) {
-      await Observability.captureException(
-        e,
-        stackTrace: stackTrace,
-        hint: {
-          'operation': 'upsert_clipboard_item',
-          'item_count': state.clipboardItems.valueOrNull?.length ?? 0,
-        },
+      unawaited(
+        Observability.captureException(
+          e,
+          stackTrace: stackTrace,
+          hint: {
+            'operation': 'upsert_clipboard_item',
+            'item_count': state.clipboardItems.value?.length ?? 0,
+          },
+        ),
       );
     }
   }
@@ -309,23 +316,36 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       await localClipboardOutboxRepository.enqueue(op);
     } catch (e, stackTrace) {
-      await Observability.captureException(
-        e,
-        stackTrace: stackTrace,
-        hint: {'operation': 'enqueue_outbox'},
+      unawaited(
+        Observability.captureException(
+          e,
+          stackTrace: stackTrace,
+          hint: {'operation': 'enqueue_outbox'},
+        ),
       );
     }
   }
 
   void _performCleanup() {
-    retentionCleanupService.cleanupExpiredItems().catchError(
-      (Object error, StackTrace stackTrace) => developer.log(
+    retentionCleanupService.cleanupExpiredItems().catchError((
+      Object error,
+      StackTrace stackTrace,
+    ) {
+      developer.log(
         'Failed to perform cleanup',
         error: error,
         stackTrace: stackTrace,
         name: 'ClipboardCubit',
-      ),
-    );
+      );
+
+      unawaited(
+        Observability.captureException(
+          error,
+          stackTrace: stackTrace,
+          hint: {'operation': 'retention periodic_cleanup'},
+        ),
+      );
+    });
   }
 
   void _startPeriodicCleanup() {

@@ -53,30 +53,17 @@ void main() {
       const level = ObservabilityLevel.info;
 
       when(
-        () => mockService.addBreadcrumb(
-          message,
-          category: category,
-          data: data,
-          level: level,
-        ),
+        () =>
+            mockService.addBreadcrumb(message, category: category, data: data),
       ).thenAnswer((_) async {});
 
       // Act
-      await Observability.breadcrumb(
-        message,
-        category: category,
-        data: data,
-        level: level,
-      );
+      await Observability.breadcrumb(message, category: category, data: data);
 
       // Assert
       verify(
-        () => mockService.addBreadcrumb(
-          message,
-          category: category,
-          data: data,
-          level: level,
-        ),
+        () =>
+            mockService.addBreadcrumb(message, category: category, data: data),
       ).called(1);
     });
 
@@ -87,27 +74,15 @@ void main() {
       final extras = {'tier': 'pro'};
 
       when(
-        () => mockService.setUser(
-          userId,
-          email: email,
-          extras: extras,
-        ),
+        () => mockService.setUser(userId, email: email, extras: extras),
       ).thenAnswer((_) async {});
 
       // Act
-      await Observability.setUser(
-        userId,
-        email: email,
-        extras: extras,
-      );
+      await Observability.setUser(userId, email: email, extras: extras);
 
       // Assert
       verify(
-        () => mockService.setUser(
-          userId,
-          email: email,
-          extras: extras,
-        ),
+        () => mockService.setUser(userId, email: email, extras: extras),
       ).called(1);
     });
 
@@ -180,7 +155,6 @@ void main() {
       // Act & Assert - should not throw
       await Observability.captureException(Exception('test'));
       await Observability.breadcrumb('test');
-      await Observability.message('test');
       await Observability.setUser('user-id');
       await Observability.clearUser();
       await Observability.setTag('key', 'value');

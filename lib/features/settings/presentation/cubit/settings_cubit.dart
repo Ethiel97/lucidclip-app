@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
@@ -88,6 +89,22 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
                       message: 'Failed to watch local settings: $error',
                     ),
                   ),
+                ),
+              );
+
+              unawaited(
+                Observability.captureException(
+                  error,
+                  stackTrace: stack,
+                  hint: {'operation': 'watch_local_settings'},
+                ),
+              );
+
+              unawaited(
+                Observability.breadcrumb(
+                  'Local clipboard watch failed',
+                  category: 'clipboard',
+                  level: ObservabilityLevel.error,
                 ),
               );
             },

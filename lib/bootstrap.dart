@@ -8,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/observability/impl/sentry_observability_service.dart';
-import 'package:lucid_clip/core/observability/observability.dart';
-import 'package:lucid_clip/core/observability/observability_service.dart';
+import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/firebase_options.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -53,10 +51,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       log(details.exceptionAsString(), stackTrace: details.stack);
       // Capture in Sentry
       unawaited(
-        Sentry.captureException(
-          details.exception,
-          stackTrace: details.stack,
-        ),
+        Sentry.captureException(details.exception, stackTrace: details.stack),
       );
     };
 
@@ -124,32 +119,33 @@ Future<void> _initializeSentry(Future<void> Function() appRunner) async {
     );
   }
 
-  await SentryFlutter.init(
-    (options) {
-      options
-        ..dsn = AppConstants.sentryDsn
-        ..environment = _getEnvironmentName()
-        ..release = packageInfo != null
-            ? '${packageInfo.version}+${packageInfo.buildNumber}'
-            : 'unknown' // Fallback to ensure version tracking always occurs
-        // Privacy: beforeSend hook to scrub sensitive data
-        ..beforeSend = SentryObservabilityService.beforeSend
-        // Only capture errors, not performance traces by default
-        ..tracesSampleRate = 0.0
-        // Enable breadcrumbs for debugging context
-        ..enableAutoSessionTracking = true
-        ..attachScreenshot = false // Privacy: no screenshots
-        ..attachViewHierarchy = false // Privacy: no view hierarchy
-        // Diagnostic logging in debug
-        ..debug = false
-        // Desktop-specific options
-        ..enableWindowMetricBreadcrumbs = false // Privacy
-        ..sendDefaultPii = false // Privacy: never send PII
-        ..maxBreadcrumbs = 50
-        ..maxAttachmentSize = 1024 * 1024; // 1MB limit
-    },
-    appRunner: appRunner,
-  );
+  await SentryFlutter.init((options) {
+    options
+      ..dsn = AppConstants.sentryDsn
+      ..environment = _getEnvironmentName()
+      ..release = packageInfo != null
+          ? '${packageInfo.version}+${packageInfo.buildNumber}'
+          : 'unknown' // Fallback to ensure version tracking always occurs
+      // Privacy: beforeSend hook to scrub sensitive data
+      ..beforeSend = SentryObservabilityService.beforeSend
+      // Only capture errors, not performance traces by default
+      ..tracesSampleRate = 0.0
+      // Enable breadcrumbs for debugging context
+      ..enableAutoSessionTracking = true
+      ..attachScreenshot =
+          false // Privacy: no screenshots
+      ..attachViewHierarchy =
+          false // Privacy: no view hierarchy
+      // Diagnostic logging in debug
+      ..debug = false
+      // Desktop-specific options
+      ..enableWindowMetricBreadcrumbs =
+          false // Privacy
+      ..sendDefaultPii =
+          false // Privacy: never send PII
+      ..maxBreadcrumbs = 50
+      ..maxAttachmentSize = 1024 * 1024; // 1MB limit
+  }, appRunner: appRunner);
 }
 
 /// Determines the environment name for Sentry.

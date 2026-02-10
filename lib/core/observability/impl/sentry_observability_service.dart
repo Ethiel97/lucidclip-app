@@ -1,9 +1,8 @@
 import 'dart:developer' as developer;
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/observability/observability_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-import '../observability_service.dart';
 
 /// Sentry-based implementation of [ObservabilityService].
 ///
@@ -111,13 +110,7 @@ class SentryObservabilityService implements ObservabilityService {
 
     try {
       await Sentry.configureScope((scope) {
-        scope.setUser(
-          SentryUser(
-            id: userId,
-            email: email,
-            data: extras,
-          ),
-        );
+        scope.setUser(SentryUser(id: userId, email: email, data: extras));
       });
     } catch (e, st) {
       developer.log(
@@ -165,6 +158,7 @@ class SentryObservabilityService implements ObservabilityService {
     }
   }
 
+  @disposeMethod
   @override
   Future<void> close() async {
     if (!isEnabled) return;
@@ -192,20 +186,13 @@ class SentryObservabilityService implements ObservabilityService {
   }
 
   /// Converts ObservabilityLevel to SentryLevel enum.
-  SentryLevel _toSentryLevel(ObservabilityLevel level) {
-    switch (level) {
-      case ObservabilityLevel.debug:
-        return SentryLevel.debug;
-      case ObservabilityLevel.info:
-        return SentryLevel.info;
-      case ObservabilityLevel.warning:
-        return SentryLevel.warning;
-      case ObservabilityLevel.error:
-        return SentryLevel.error;
-      case ObservabilityLevel.fatal:
-        return SentryLevel.fatal;
-    }
-  }
+  SentryLevel _toSentryLevel(ObservabilityLevel level) => switch (level) {
+    ObservabilityLevel.debug => SentryLevel.debug,
+    ObservabilityLevel.info => SentryLevel.info,
+    ObservabilityLevel.warning => SentryLevel.warning,
+    ObservabilityLevel.error => SentryLevel.error,
+    ObservabilityLevel.fatal => SentryLevel.fatal,
+  };
 
   /// Creates a beforeSend callback for Sentry initialization.
   ///
@@ -213,36 +200,28 @@ class SentryObservabilityService implements ObservabilityService {
   /// It's designed to catch any data that might slip through other filters.
   static SentryEvent? beforeSend(SentryEvent event, Hint hint) {
     // Scrub request data if present
-    if (event.request != null) {
-      event = event.copyWith(
-        request: event.request!.copyWith(
-          data: null, // Remove request body
-          cookies: null, // Remove cookies
-          headers: _filterHeaders(event.request!.headers),
-        ),
-      );
-    }
 
-    // Filter extra data to allowlisted keys only
-    if (event.extra != null) {
-      event = event.copyWith(
-        extra: _filterContextData(event.extra!),
+    var enrichedEvent = event;
+
+    if (event.request != null) {
+      enrichedEvent = event.copyWith(
+        request: event.request?.copyWith(
+          headers: _filterHeaders(event.request?.headers),
+        ),
       );
     }
 
     // Scrub breadcrumb data
     if (event.breadcrumbs != null) {
-      event = event.copyWith(
-        breadcrumbs: event.breadcrumbs!.map((b) {
+      enrichedEvent = event.copyWith(
+        breadcrumbs: event.breadcrumbs?.map((b) {
           if (b.data == null) return b;
-          return b.copyWith(
-            data: _filterContextData(b.data!),
-          );
+          return b.copyWith(data: _filterContextData(b.data!));
         }).toList(),
       );
     }
 
-    return event;
+    return enrichedEvent;
   }
 
   /// Filters HTTP headers to only include safe ones.
@@ -257,8 +236,9 @@ class SentryObservabilityService implements ObservabilityService {
     };
 
     return Map.fromEntries(
-      headers.entries
-          .where((entry) => safeHeaders.contains(entry.key.toLowerCase())),
+      headers.entries.where(
+        (entry) => safeHeaders.contains(entry.key.toLowerCase()),
+      ),
     );
   }
 }

@@ -48,25 +48,16 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   /// Handle auth state changes from the stream
-  void _onAuthStateChanged(User? user) async {
+  Future<void> _onAuthStateChanged(User? user) async {
     if (user != null && user.isNotEmpty) {
       emit(state.copyWith(user: state.user.toSuccess(user)));
       // Set user context for observability
       await Observability.setUser(user.id);
-      await Observability.breadcrumb(
-        'User authenticated',
-        category: 'auth',
-        level: ObservabilityLevel.info,
-      );
+      await Observability.breadcrumb('User authenticated', category: 'auth');
     } else {
       emit(state.copyWith(user: const ValueWrapper<User?>()));
-      // Clear user context on signout
       await Observability.clearUser();
-      await Observability.breadcrumb(
-        'User signed out',
-        category: 'auth',
-        level: ObservabilityLevel.info,
-      );
+      await Observability.breadcrumb('User signed out', category: 'auth');
     }
   }
 
@@ -81,10 +72,6 @@ class AuthCubit extends HydratedCubit<AuthState> {
         emit(state.copyWith(user: const ValueWrapper<User?>()));
       }
     } catch (e) {
-      await Observability.captureException(
-        e,
-        hint: {'operation': 'check_auth_status'},
-      );
       emit(
         state.copyWith(
           user: state.user.toError(
@@ -92,6 +79,13 @@ class AuthCubit extends HydratedCubit<AuthState> {
               message: 'Failed to check authentication status',
             ),
           ),
+        ),
+      );
+
+      unawaited(
+        Observability.captureException(
+          e,
+          hint: {'operation': 'check_auth_status'},
         ),
       );
     }
@@ -106,10 +100,12 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       if (user != null && !user.isAnonymous) {
         emit(state.copyWith(user: state.user.toSuccess(user)));
-        await Observability.breadcrumb(
-          'GitHub sign-in successful',
-          category: 'auth',
-          level: ObservabilityLevel.info,
+
+        unawaited(
+          Observability.breadcrumb(
+            'GitHub sign-in successful',
+            category: 'auth',
+          ),
         );
       } else {
         emit(
@@ -123,20 +119,23 @@ class AuthCubit extends HydratedCubit<AuthState> {
         );
       }
     } catch (e) {
-      await Observability.captureException(
-        e,
-        hint: {'operation': 'github_signin'},
-      );
-      await Observability.breadcrumb(
-        'GitHub sign-in failed',
-        category: 'auth',
-        level: ObservabilityLevel.error,
-      );
       emit(
         state.copyWith(
           user: state.user.toError(
             ErrorDetails(message: 'Failed to sign in with GitHub: $e'),
           ),
+        ),
+      );
+
+      unawaited(
+        Observability.captureException(e, hint: {'operation': 'github_signin'}),
+      );
+
+      unawaited(
+        Observability.breadcrumb(
+          'GitHub sign-in failed',
+          category: 'auth',
+          level: ObservabilityLevel.error,
         ),
       );
     }
@@ -150,16 +149,16 @@ class AuthCubit extends HydratedCubit<AuthState> {
       await _authRepository.signOut();
       emit(state.copyWith(logoutResult: state.logoutResult.toSuccess(null)));
     } catch (e) {
-      await Observability.captureException(
-        e,
-        hint: {'operation': 'signout'},
-      );
       emit(
         state.copyWith(
           logoutResult: state.logoutResult.toError(
             ErrorDetails(message: 'Failed to sign out: $e'),
           ),
         ),
+      );
+
+      unawaited(
+        Observability.captureException(e, hint: {'operation': 'signout'}),
       );
     }
   }

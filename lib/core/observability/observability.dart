@@ -1,4 +1,4 @@
-import 'observability_service.dart';
+import 'package:lucid_clip/core/observability/observability_service.dart';
 
 /// Static facade for observability operations.
 ///

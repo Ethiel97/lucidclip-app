@@ -4,8 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/app.dart';
-import 'package:lucid_clip/core/di/di.dart';
-import 'package:lucid_clip/core/feedback/feedback_module.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -84,8 +82,6 @@ class LogoutConfirmationListener extends StatelessWidget {
           listener: (context, state) {
             // Clear state when user becomes unauthenticated
             context.read<AuthCubit>().clearState();
-
-            unawaited(getIt<FeedbackService>().clearMetadata());
           },
         ),
       ],

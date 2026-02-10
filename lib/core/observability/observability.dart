@@ -81,44 +81,20 @@ class Observability {
   ///     'content_type': 'text',
   ///     'content_length': textLength,
   ///   },
-  ///   level: 'info',
+  ///   level: ObservabilityLevel.info,
   /// );
   /// ```
   static Future<void> breadcrumb(
     String message, {
     String? category,
     Map<String, dynamic>? data,
-    String? level,
+    ObservabilityLevel level = ObservabilityLevel.info,
   }) async {
     await _service?.addBreadcrumb(
       message,
       category: category,
       data: data,
       level: level,
-    );
-  }
-
-  /// Captures a standalone log message.
-  ///
-  /// Use this for important messages that should be tracked as events.
-  ///
-  /// Example:
-  /// ```dart
-  /// await Observability.message(
-  ///   'Failed to sync clipboard history',
-  ///   level: 'warning',
-  ///   extras: {'item_count': itemCount},
-  /// );
-  /// ```
-  static Future<void> message(
-    String message, {
-    String? level,
-    Map<String, dynamic>? extras,
-  }) async {
-    await _service?.captureMessage(
-      message,
-      level: level,
-      extras: extras,
     );
   }
 
@@ -162,25 +138,6 @@ class Observability {
   /// ```
   static Future<void> setTag(String key, String value) async {
     await _service?.setTag(key, value);
-  }
-
-  /// Sets custom context data.
-  ///
-  /// Context provides additional structured information for events.
-  /// Only allowlisted keys will be included for privacy.
-  ///
-  /// Example:
-  /// ```dart
-  /// await Observability.setContext('app_state', {
-  ///   'screen': 'clipboard_history',
-  ///   'item_count': items.length,
-  /// });
-  /// ```
-  static Future<void> setContext(
-    String key,
-    Map<String, dynamic> value,
-  ) async {
-    await _service?.setContext(key, value);
   }
 
   /// Closes the observability service and flushes pending events.

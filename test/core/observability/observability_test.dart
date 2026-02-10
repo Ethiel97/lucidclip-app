@@ -50,7 +50,7 @@ void main() {
       const message = 'Test breadcrumb';
       const category = 'test';
       final data = {'key': 'value'};
-      const level = 'info';
+      const level = ObservabilityLevel.info;
 
       when(
         () => mockService.addBreadcrumb(
@@ -76,37 +76,6 @@ void main() {
           category: category,
           data: data,
           level: level,
-        ),
-      ).called(1);
-    });
-
-    test('should forward captureMessage to service', () async {
-      // Arrange
-      const message = 'Test message';
-      const level = 'warning';
-      final extras = {'extra': 'data'};
-
-      when(
-        () => mockService.captureMessage(
-          message,
-          level: level,
-          extras: extras,
-        ),
-      ).thenAnswer((_) async {});
-
-      // Act
-      await Observability.message(
-        message,
-        level: level,
-        extras: extras,
-      );
-
-      // Assert
-      verify(
-        () => mockService.captureMessage(
-          message,
-          level: level,
-          extras: extras,
         ),
       ).called(1);
     });
@@ -167,20 +136,6 @@ void main() {
       verify(() => mockService.setTag(key, value)).called(1);
     });
 
-    test('should forward setContext to service', () async {
-      // Arrange
-      const key = 'app_state';
-      final value = {'screen': 'home', 'item_count': 42};
-
-      when(() => mockService.setContext(key, value)).thenAnswer((_) async {});
-
-      // Act
-      await Observability.setContext(key, value);
-
-      // Assert
-      verify(() => mockService.setContext(key, value)).called(1);
-    });
-
     test('should forward close to service', () async {
       // Arrange
       when(() => mockService.close()).thenAnswer((_) async {});
@@ -229,7 +184,6 @@ void main() {
       await Observability.setUser('user-id');
       await Observability.clearUser();
       await Observability.setTag('key', 'value');
-      await Observability.setContext('key', {});
       await Observability.close();
     });
   });

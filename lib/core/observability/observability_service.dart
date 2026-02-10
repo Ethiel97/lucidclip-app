@@ -1,3 +1,21 @@
+/// Severity level for log messages and breadcrumbs.
+enum ObservabilityLevel {
+  /// Debug-level information (verbose)
+  debug,
+
+  /// Informational messages
+  info,
+
+  /// Warning messages
+  warning,
+
+  /// Error messages
+  error,
+
+  /// Fatal/critical errors
+  fatal,
+}
+
 /// Service contract for application observability (errors, breadcrumbs, logs).
 ///
 /// This interface defines the contract for error tracking and logging
@@ -35,26 +53,12 @@ abstract class ObservabilityService {
   /// - [message]: Human-readable breadcrumb message
   /// - [category]: Optional category (e.g., 'navigation', 'user_action', 'http')
   /// - [data]: Optional additional structured data
-  /// - [level]: Optional severity level (debug, info, warning, error)
+  /// - [level]: Severity level
   Future<void> addBreadcrumb(
     String message, {
     String? category,
     Map<String, dynamic>? data,
-    String? level,
-  });
-
-  /// Captures a standalone log message.
-  ///
-  /// Use this to send important log messages as events.
-  ///
-  /// Parameters:
-  /// - [message]: The log message
-  /// - [level]: Optional severity level (debug, info, warning, error, fatal)
-  /// - [extras]: Optional additional context data
-  Future<void> captureMessage(
-    String message, {
-    String? level,
-    Map<String, dynamic>? extras,
+    ObservabilityLevel level = ObservabilityLevel.info,
   });
 
   /// Sets user information for tracking.
@@ -86,15 +90,6 @@ abstract class ObservabilityService {
   /// - [key]: Tag key
   /// - [value]: Tag value
   Future<void> setTag(String key, String value);
-
-  /// Sets custom context data.
-  ///
-  /// Context provides additional structured data attached to events.
-  ///
-  /// Parameters:
-  /// - [key]: Context key/namespace
-  /// - [value]: Context data as a map
-  Future<void> setContext(String key, Map<String, dynamic> value);
 
   /// Closes the observability service and flushes pending events.
   ///

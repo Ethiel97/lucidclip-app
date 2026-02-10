@@ -78,7 +78,7 @@ class SentryObservabilityService implements ObservabilityService {
     String message, {
     String? category,
     Map<String, dynamic>? data,
-    String? level,
+    ObservabilityLevel level = ObservabilityLevel.info,
   }) async {
     if (!isEnabled) return;
 
@@ -87,44 +87,13 @@ class SentryObservabilityService implements ObservabilityService {
         message: message,
         category: category,
         data: data != null ? _filterContextData(data) : null,
-        level: _parseSentryLevel(level),
+        level: _toSentryLevel(level),
         timestamp: DateTime.now(),
       );
       await Sentry.addBreadcrumb(breadcrumb);
     } catch (e, st) {
       developer.log(
         'Failed to add breadcrumb in Sentry',
-        error: e,
-        stackTrace: st,
-        name: 'SentryObservabilityService',
-      );
-    }
-  }
-
-  @override
-  Future<void> captureMessage(
-    String message, {
-    String? level,
-    Map<String, dynamic>? extras,
-  }) async {
-    if (!isEnabled) return;
-
-    try {
-      await Sentry.captureMessage(
-        message,
-        level: _parseSentryLevel(level),
-        withScope: (scope) {
-          if (extras != null) {
-            final filtered = _filterContextData(extras);
-            for (final entry in filtered.entries) {
-              scope.setExtra(entry.key, entry.value);
-            }
-          }
-        },
-      );
-    } catch (e, st) {
-      developer.log(
-        'Failed to capture message in Sentry',
         error: e,
         stackTrace: st,
         name: 'SentryObservabilityService',
@@ -197,24 +166,6 @@ class SentryObservabilityService implements ObservabilityService {
   }
 
   @override
-  Future<void> setContext(String key, Map<String, dynamic> value) async {
-    if (!isEnabled) return;
-
-    try {
-      await Sentry.configureScope((scope) {
-        scope.setContexts(key, _filterContextData(value));
-      });
-    } catch (e, st) {
-      developer.log(
-        'Failed to set context in Sentry',
-        error: e,
-        stackTrace: st,
-        name: 'SentryObservabilityService',
-      );
-    }
-  }
-
-  @override
   Future<void> close() async {
     if (!isEnabled) return;
 
@@ -240,24 +191,19 @@ class SentryObservabilityService implements ObservabilityService {
     );
   }
 
-  /// Parses a string level into a SentryLevel enum.
-  SentryLevel _parseSentryLevel(String? level) {
-    if (level == null) return SentryLevel.info;
-
-    switch (level.toLowerCase()) {
-      case 'debug':
+  /// Converts ObservabilityLevel to SentryLevel enum.
+  SentryLevel _toSentryLevel(ObservabilityLevel level) {
+    switch (level) {
+      case ObservabilityLevel.debug:
         return SentryLevel.debug;
-      case 'info':
+      case ObservabilityLevel.info:
         return SentryLevel.info;
-      case 'warning':
-      case 'warn':
+      case ObservabilityLevel.warning:
         return SentryLevel.warning;
-      case 'error':
+      case ObservabilityLevel.error:
         return SentryLevel.error;
-      case 'fatal':
+      case ObservabilityLevel.fatal:
         return SentryLevel.fatal;
-      default:
-        return SentryLevel.info;
     }
   }
 

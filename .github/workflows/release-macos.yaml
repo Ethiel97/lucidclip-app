@@ -121,6 +121,39 @@ jobs:
           APP="build/macos/Build/Products/Release-production/LucidClip.app"
           codesign --deep --force --options runtime --entitlements "$ENTITLEMENTS" --sign "Developer ID Application" "$APP"
           codesign --verify --deep --strict --verbose=2 "$APP"
+      
+
+      # 1. Zippage (Requis pour l'envoi au service de notarisation)
+      - name: Zip .app for Notarization
+        shell: bash
+        run: |
+          APP_PATH="build/macos/Build/Products/Release-production/LucidClip.app"
+          ZIP_PATH="build/macos/Build/Products/Release-production/LucidClip.zip"
+          
+          ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
+
+      - name: Notarize .app
+        shell: bash
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASS: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          ZIP_PATH="build/macos/Build/Products/Release-production/LucidClip.zip"
+          
+          xcrun notarytool submit "$ZIP_PATH" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASS" \
+            --team-id "$TEAM_ID" \
+            --wait
+
+      - name: Staple .app
+        shell: bash
+        run: |
+          APP_PATH="build/macos/Build/Products/Release-production/LucidClip.app"
+          
+          xcrun stapler staple "$APP_PATH"
+      
 
       # ---------- Create DMG ----------
 
@@ -153,7 +186,6 @@ jobs:
             --hide-extension "Applications" \
             --no-internet-enable \
             --hdiutil-quiet \
-            --text-color="#FFFFFF" \
             "$DMG" \
             "$APP"
           

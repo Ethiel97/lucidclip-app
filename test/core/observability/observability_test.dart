@@ -50,7 +50,6 @@ void main() {
       const message = 'Test breadcrumb';
       const category = 'test';
       final data = {'key': 'value'};
-      const level = ObservabilityLevel.info;
 
       when(
         () =>

@@ -30,7 +30,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
-  flutter_dotenv: ^6.0.0
   flutter_highlight: ^0.7.0
   flutter_localizations:
     sdk: flutter
@@ -84,7 +83,9 @@ flutter:
   generate: true
 
   assets:
-    - .env
+    - env.prod.json
+    - env.dev.json
+    - env.staging.json
     - assets/images/
     - assets/icons/
 

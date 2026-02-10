@@ -17,6 +17,7 @@ import firebase_crashlytics
 import hotkey_manager_macos
 import package_info_plus
 import pasteboard
+import path_provider_foundation
 import screen_retriever_macos
 import share_plus
 import shared_preferences_foundation
@@ -39,6 +40,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   HotkeyManagerMacosPlugin.register(with: registry.registrar(forPlugin: "HotkeyManagerMacosPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
   PasteboardPlugin.register(with: registry.registrar(forPlugin: "PasteboardPlugin"))
+  PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   ScreenRetrieverMacosPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverMacosPlugin"))
   SharePlusMacosPlugin.register(with: registry.registrar(forPlugin: "SharePlusMacosPlugin"))
   SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))

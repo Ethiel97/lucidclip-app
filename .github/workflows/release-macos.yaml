@@ -21,9 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create .env file
+      - name: Create empty env files (required by Flutter build)
         run: |
-          touch .env
+          touch env.prod.json
+          touch env.dev.json
+          touch env.staging.json
+          
+          echo '{}' > env.prod.json
+          echo '{}' > env.dev.json
+          echo '{}' > env.staging.json
+
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2

@@ -85,6 +85,10 @@ class _AppViewState extends State<_AppView> with WindowListener {
       Uri? uri,
     ) {
       if (uri != null) {
+        // Ignore auth callbacks, as they are handled by the auth service
+        if (uri.toString().contains('auth-callback')) {
+          return;
+        }
         unawaited(windowController.showAsOverlay());
       }
     });

@@ -73,7 +73,7 @@ import 'package:lucid_clip/core/services/window_controller/method_channel_macos_
 import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
     as _i1036;
 import 'package:lucid_clip/core/storage/impl/prefs_secure_storage_service.dart'
-    as _i923;
+    as _i573;
 import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
 import 'package:lucid_clip/features/accessibility/accessibility.dart' as _i23;
@@ -224,14 +224,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i80.PasteToAppService>(
       () => _i80.MethodChannelPasteToAppService(),
     );
+    gh.lazySingleton<_i896.AccessibilityDataSource>(
+      () => _i896.MethodChannelAccessibilityDataSource(),
+    );
     gh.lazySingleton<_i407.SecureStorageService>(
-      () => _i923.PrefsSecureStorageService(
+      () => _i573.PrefsSecureStorageService(
         prefs: gh<_i930.EncryptedSharedPreferences>(),
       ),
       dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i896.AccessibilityDataSource>(
-      () => _i896.MethodChannelAccessibilityDataSource(),
     );
     gh.lazySingleton<_i387.EntitlementLocalDataSource>(
       () =>
@@ -291,18 +291,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i72.SettingsLocalDataSource>(
       () => _i386.DriftSettingsLocalDataSource(gh<_i684.SettingsDatabase>()),
     );
+    gh.lazySingleton<_i13.AuthDataSource>(
+      () => _i647.SupabaseAuthDataSource(
+        supabaseClient: gh<_i454.SupabaseClient>(),
+        secureStorage: gh<_i407.SecureStorageService>(),
+      ),
+    );
     gh.lazySingleton<_i212.CacheService<_i100.Uint8List>>(
       () => cacheModule.iconCache(
         gh<_i212.CacheSerializer<_i100.Uint8List, List<int>>>(),
       ),
       instanceName: 'iconCache',
-    );
-    gh.lazySingleton<_i13.AuthDataSource>(
-      () => _i647.SupabaseAuthDataSource(
-        supabaseClient: gh<_i454.SupabaseClient>(),
-        secureStorage: gh<_i407.SecureStorageService>(),
-        deepLinkService: gh<_i212.DeepLinkService>(),
-      ),
     );
     gh.singleton<_i70.RemoteSyncClient>(
       () => _i1033.SupabaseRemoteSync(supabase: gh<_i454.SupabaseClient>()),
@@ -322,14 +321,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.LocalClipboardStoreImpl(gh<_i669.ClipboardLocalDataSource>()),
       dispose: (i) => i.clear(),
     );
-    gh.lazySingleton<_i922.AuthRepository>(
-      () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
-    );
     gh.lazySingleton<_i782.LocalClipboardOutboxRepository>(
       () => _i373.LocalClipboardOutboxImpl(
         gh<_i669.ClipboardOutboxLocalDataSource>(),
       ),
       dispose: (i) => i.clear(),
+    );
+    gh.lazySingleton<_i922.AuthRepository>(
+      () => _i409.AuthRepositoryImpl(dataSource: gh<_i13.AuthDataSource>()),
     );
     gh.lazySingleton<_i361.Dio>(
       () => dioModule.dio(gh<_i183.DioAuthInterceptor>()),
@@ -338,6 +337,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => cacheModule.sourceAppJsonSerializer(
         gh<_i212.CacheService<_i100.Uint8List>>(instanceName: 'iconCache'),
       ),
+    );
+    gh.lazySingleton<_i408.AuthCubit>(
+      () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i509.SettingsRemoteDataSource>(
       () => _i175.SupabaseSettingsRemoteDataSource(
@@ -351,10 +354,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i183.HttpClient>(
       () => _i762.DioNetworkClient(gh<_i361.Dio>()),
-    );
-    gh.lazySingleton<_i408.AuthCubit>(
-      () => _i408.AuthCubit(authRepository: gh<_i922.AuthRepository>()),
-      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i311.EntitlementRepository>(
       () => _i669.EntitlementRepositoryImpl(

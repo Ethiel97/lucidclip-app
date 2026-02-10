@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.5.0...v1.6.0) (2026-02-10)
+
+
+### Features
+
+* Improve clipboard detection and remove keychain access ([#108](https://github.com/Ethiel97/lucidclip-app/issues/108)) ([a8caf31](https://github.com/Ethiel97/lucidclip-app/commit/a8caf310c9e937aaf1ec1a1cb4bf07e95a713596))
+
 ## [1.5.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.4.1...v1.5.0) (2026-02-08)
 
 

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
 import 'package:lucid_clip/features/entitlement/data/data.dart';
@@ -75,12 +76,28 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
 
       // Start realtime (upgrade instantly after webhook)
       await entitlementRepository.startRealtime(userId);
-    } catch (e) {
+    } catch (error, stackTrace) {
       emit(
         state.copyWith(
           entitlement: state.entitlement.toError(
-            ErrorDetails(message: 'Failed to load entitlements: $e'),
+            ErrorDetails(message: 'Failed to load entitlements: $error'),
           ),
+        ),
+      );
+
+      unawaited(
+        Observability.captureException(
+          error,
+          stackTrace: stackTrace,
+          hint: {'operation': 'load_entitlements'},
+        ),
+      );
+
+      unawaited(
+        Observability.breadcrumb(
+          'Error loading entitlements',
+          category: 'entitlement',
+          level: ObservabilityLevel.error,
         ),
       );
     }

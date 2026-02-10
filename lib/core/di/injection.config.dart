@@ -42,6 +42,10 @@ import 'package:lucid_clip/core/network/impl/supabase_remote_sync.dart'
     as _i1033;
 import 'package:lucid_clip/core/network/network.dart' as _i183;
 import 'package:lucid_clip/core/network/remote_sync_client.dart' as _i70;
+import 'package:lucid_clip/core/observability/impl/sentry_observability_service.dart'
+    as _i915;
+import 'package:lucid_clip/core/observability/observability_service.dart'
+    as _i683;
 import 'package:lucid_clip/core/platform/platform.dart' as _i830;
 import 'package:lucid_clip/core/platform/source_app/method_channel_source_app_provider.dart'
     as _i740;
@@ -223,6 +227,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i80.PasteToAppService>(
       () => _i80.MethodChannelPasteToAppService(),
+    );
+    gh.lazySingleton<_i683.ObservabilityService>(
+      () => _i915.SentryObservabilityService(),
+      dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i896.AccessibilityDataSource>(
       () => _i896.MethodChannelAccessibilityDataSource(),

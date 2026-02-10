@@ -38,12 +38,6 @@ class Assets {
   const Assets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
-  static const String envDev = 'env.dev.json';
-  static const String envProd = 'env.prod.json';
-  static const String envStaging = 'env.staging.json';
-
-  /// List of all assets
-  static List<String> get values => [envDev, envProd, envStaging];
 }
 
 class AssetGenImage {

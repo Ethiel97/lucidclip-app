@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
@@ -143,7 +144,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
           (items) {
             emit(state.copyWith(clipboardItems: items.toSuccess()));
           },
-          onError: (Object error, StackTrace stackTrace) {
+          onError: (Object error, StackTrace stackTrace) async {
             emit(
               state.copyWith(
                 clipboardItems: state.clipboardItems.toError(
@@ -154,11 +155,20 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
               ),
             );
 
-            developer.log(
-              'Error watching local clipboard items',
-              error: error,
-              stackTrace: stackTrace,
-              name: 'ClipboardCubit',
+            unawaited(
+              Observability.captureException(
+                error,
+                stackTrace: stackTrace,
+                hint: {'operation': 'watch_local_clipboard_items'},
+              ),
+            );
+
+            unawaited(
+              Observability.breadcrumb(
+                'Local clipboard watch failed',
+                category: 'clipboard',
+                level: ObservabilityLevel.error,
+              ),
             );
           },
         );
@@ -177,12 +187,16 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         }
         await _handleClipboardData(clipboardData);
       },
-      onError: (Object error, StackTrace stackTrace) {
-        developer.log(
-          'Error watching clipboard stream',
-          error: error,
+      onError: (Object error, StackTrace stackTrace) async {
+        await Observability.captureException(
+          error,
           stackTrace: stackTrace,
-          name: 'ClipboardCubit',
+          hint: {'operation': 'watch_clipboard_stream'},
+        );
+        await Observability.breadcrumb(
+          'Clipboard stream watch failed',
+          category: 'clipboard',
+          level: ObservabilityLevel.error,
         );
       },
     );
@@ -276,11 +290,15 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         maxItems: _effectiveMaxHistoryItems,
       );
     } catch (e, stackTrace) {
-      developer.log(
-        'Failed to upsert clipboard item to local repository',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
+      unawaited(
+        Observability.captureException(
+          e,
+          stackTrace: stackTrace,
+          hint: {
+            'operation': 'upsert_clipboard_item',
+            'item_count': state.clipboardItems.value?.length ?? 0,
+          },
+        ),
       );
     }
   }
@@ -298,24 +316,36 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       await localClipboardOutboxRepository.enqueue(op);
     } catch (e, stackTrace) {
-      developer.log(
-        'Failed to enqueue outbox operation',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'ClipboardCubit',
+      unawaited(
+        Observability.captureException(
+          e,
+          stackTrace: stackTrace,
+          hint: {'operation': 'enqueue_outbox'},
+        ),
       );
     }
   }
 
   void _performCleanup() {
-    retentionCleanupService.cleanupExpiredItems().catchError(
-      (Object error, StackTrace stackTrace) => developer.log(
+    retentionCleanupService.cleanupExpiredItems().catchError((
+      Object error,
+      StackTrace stackTrace,
+    ) {
+      developer.log(
         'Failed to perform cleanup',
         error: error,
         stackTrace: stackTrace,
         name: 'ClipboardCubit',
-      ),
-    );
+      );
+
+      unawaited(
+        Observability.captureException(
+          error,
+          stackTrace: stackTrace,
+          hint: {'operation': 'retention periodic_cleanup'},
+        ),
+      );
+    });
   }
 
   void _startPeriodicCleanup() {

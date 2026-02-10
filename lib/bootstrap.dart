@@ -118,7 +118,10 @@ Future<void> _initializeSentry(Future<void> Function() appRunner) async {
   try {
     packageInfo = await PackageInfo.fromPlatform();
   } catch (e) {
-    log('Failed to get package info: $e');
+    log(
+      'Failed to get package info for Sentry release tracking. '
+      'Version info will not be included in Sentry events. Error: $e',
+    );
   }
 
   await SentryFlutter.init(
@@ -128,7 +131,7 @@ Future<void> _initializeSentry(Future<void> Function() appRunner) async {
         ..environment = _getEnvironmentName()
         ..release = packageInfo != null
             ? '${packageInfo.version}+${packageInfo.buildNumber}'
-            : null
+            : 'unknown' // Fallback to ensure version tracking always occurs
         // Privacy: beforeSend hook to scrub sensitive data
         ..beforeSend = SentryObservabilityService.beforeSend
         // Only capture errors, not performance traces by default

@@ -123,9 +123,9 @@ class _ClipboardCubitExample {
       //   category: 'clipboard',
       //   data: {
       //     'content_type': item.type.name,
-      //     'content_length': item.content.length, // ✅ Length is safe
+      //     'content_length': item.content.length, // ✅ Safe: only the length, not the content
       //     'source': 'keyboard_shortcut',
-      //     // ❌ NEVER: 'content': item.content
+      //     // ❌ NEVER log the actual content: 'content': item.content
       //   },
       //   level: 'info',
       // );

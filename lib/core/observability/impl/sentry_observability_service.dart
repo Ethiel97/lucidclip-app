@@ -234,7 +234,7 @@ class SentryObservabilityService implements ObservabilityService {
   ///
   /// This is a critical privacy feature that prevents accidental
   /// leaking of sensitive data like clipboard contents or PII.
-  Map<String, dynamic> _filterContextData(Map<String, dynamic> data) {
+  static Map<String, dynamic> _filterContextData(Map<String, dynamic> data) {
     return Map.fromEntries(
       data.entries.where((entry) => _allowedContextKeys.contains(entry.key)),
     );
@@ -279,20 +279,18 @@ class SentryObservabilityService implements ObservabilityService {
 
     // Filter extra data to allowlisted keys only
     if (event.extra != null) {
-      final service = SentryObservabilityService();
       event = event.copyWith(
-        extra: service._filterContextData(event.extra!),
+        extra: _filterContextData(event.extra!),
       );
     }
 
     // Scrub breadcrumb data
     if (event.breadcrumbs != null) {
-      final service = SentryObservabilityService();
       event = event.copyWith(
         breadcrumbs: event.breadcrumbs!.map((b) {
           if (b.data == null) return b;
           return b.copyWith(
-            data: service._filterContextData(b.data!),
+            data: _filterContextData(b.data!),
           );
         }).toList(),
       );

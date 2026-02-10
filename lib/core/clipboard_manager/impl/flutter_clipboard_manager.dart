@@ -16,7 +16,7 @@ class FlutterClipboardManager extends ClipboardListener
     implements BaseClipboardManager {
   FlutterClipboardManager({required this.sourceAppProvider});
 
-  // Timer? _pollingTimer; // <--- No more Timer
+  bool _isChecking = false;
   String? _lastContentHash;
   final _controller = StreamController<ClipboardData>.broadcast();
   final SourceAppProvider sourceAppProvider;
@@ -31,6 +31,7 @@ class FlutterClipboardManager extends ClipboardListener
 
   @override
   Future<void> onClipboardChanged() async {
+    if (_isChecking) return;
     await _checkClipboardChange();
   }
 
@@ -50,6 +51,9 @@ class FlutterClipboardManager extends ClipboardListener
   }
 
   Future<void> _checkClipboardChange() async {
+    if (_isChecking) return;
+    _isChecking = true;
+
     try {
       final content = await getClipboardContent();
 
@@ -70,6 +74,8 @@ class FlutterClipboardManager extends ClipboardListener
         name: 'FlutterClipboardManager',
         stackTrace: stack,
       );
+    } finally {
+      _isChecking = false;
     }
   }
 
@@ -138,7 +144,12 @@ class FlutterClipboardManager extends ClipboardListener
         };
       }
     } catch (e, stack) {
-      log('Error getting source app: $e at $stack');
+      log(
+        'Error getting source app: $e at $stack',
+        name: 'FlutterClipboardManager.getClipboardContent',
+        error: e,
+        stackTrace: stack,
+      );
     }
 
     final withHash = data.copyWith(contentHash: data.computedContentHash);

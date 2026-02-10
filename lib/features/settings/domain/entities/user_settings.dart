@@ -19,7 +19,7 @@ class UserSettings extends Equatable {
     this.theme = 'dark',
     this.shortcuts = const {},
     this.autoSync = false,
-    this.syncIntervalMinutes = 5,
+    this.syncIntervalMinutes = defaultSyncIntervalMinutes,
     this.maxHistoryItems = defaultMaxHistoryItems,
     this.retentionDays = defaultRetentionDays,
     this.showSourceApp = true,

@@ -119,7 +119,7 @@ jobs:
         run: |
           ENTITLEMENTS="macos/Runner/Release.entitlements"
           APP="build/macos/Build/Products/Release-production/LucidClip.app"
-          codesign --deep --force --options --entitlements "$ENTITLEMENTS" runtime --sign "Developer ID Application" "$APP"
+          codesign --deep --force --options runtime --entitlements "$ENTITLEMENTS" --sign "Developer ID Application" "$APP"
           codesign --verify --deep --strict --verbose=2 "$APP"
 
       # ---------- Create DMG ----------
@@ -135,8 +135,8 @@ jobs:
           VERSION="${{ steps.ver.outputs.version }}"
           DMG="${{ steps.ver.outputs.dmg }}"
           
-          cp assets/macos/installer/dmg_background.tiff dmg_background.tiff
-          cp assets/macos/installer/logo.icns logo.icns
+          cp assets/installer/macos/dmg_background.tiff dmg_background.tiff
+          cp assets/installer/macos/logo.icns logo.icns
           
           rm -f "$DMG"
           

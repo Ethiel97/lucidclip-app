@@ -72,7 +72,7 @@ import 'package:lucid_clip/core/services/window_controller/method_channel_macos_
     as _i998;
 import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
     as _i1036;
-import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
+import 'package:lucid_clip/core/storage/impl/prefs_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;

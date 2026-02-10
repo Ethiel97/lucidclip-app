@@ -43,7 +43,7 @@ echo "==> Signing .app"
 ENTITLEMENTS="$PROJECT_ROOT/macos/Runner/Release.entitlements"
 
 codesign --deep --force --options runtime \
-  -d --entitlements "$ENTITLEMENTS" \
+  --entitlements "$ENTITLEMENTS" \
   --sign "$CERT_ID" \
   "$BUILD_APP"
 

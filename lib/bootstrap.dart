@@ -11,7 +11,6 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
-import 'package:lucid_clip/core/storage/storage.dart';
 import 'package:lucid_clip/firebase_options.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -51,7 +50,9 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   // Add cross-flavor configuration here
   try {
     await Future.wait<void>([
-      EncryptedSharedPreferences.initialize(secureStorageEncryptionKey),
+      EncryptedSharedPreferences.initialize(
+        AppConstants.secureStorageEncryptionKey,
+      ),
       Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
       Supabase.initialize(
         anonKey: AppConstants.supabasePublishableKey,

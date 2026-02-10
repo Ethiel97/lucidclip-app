@@ -2,9 +2,6 @@ import 'package:encrypt_shared_preferences/provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
 
-// encryption key of 16 characters
-const secureStorageEncryptionKey = 'lucidclip1234567';
-
 @LazySingleton(as: SecureStorageService)
 class PrefsSecureStorageService implements SecureStorageService {
   const PrefsSecureStorageService({required this.prefs});

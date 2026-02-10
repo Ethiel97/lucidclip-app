@@ -8,9 +8,6 @@ abstract class SecureStorageService {
   /// Initialize the secure storage service
   Future<void> initialize();
 
-  /// Check if the secure storage service is initialized
-  bool get isInitialized;
-
   /// Store a string value with a key securely
   Future<void> write({required String key, required String value});
 

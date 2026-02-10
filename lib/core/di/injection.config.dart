@@ -14,9 +14,9 @@ import 'dart:typed_data' as _i100;
 import 'package:app_links/app_links.dart' as _i327;
 import 'package:auto_updater/auto_updater.dart' as _i890;
 import 'package:dio/dio.dart' as _i361;
+import 'package:encrypt_shared_preferences/provider.dart' as _i930;
 import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:lucid_clip/core/analytics/analytics_module.dart' as _i169;
@@ -50,6 +50,8 @@ import 'package:lucid_clip/core/services/app_update/app_update_service.dart'
     as _i500;
 import 'package:lucid_clip/core/services/deep_link_service/deep_link_service.dart'
     as _i28;
+import 'package:lucid_clip/core/services/deep_link_service/deep_link_service_interface.dart'
+    as _i995;
 import 'package:lucid_clip/core/services/device_id_provider/secure_installation_id_provider.dart'
     as _i457;
 import 'package:lucid_clip/core/services/hotkey_manager_service/hotkey_manager_service_impl.dart'
@@ -70,7 +72,7 @@ import 'package:lucid_clip/core/services/window_controller/method_channel_macos_
     as _i998;
 import 'package:lucid_clip/core/services/window_controller/window_controller_impl.dart'
     as _i1036;
-import 'package:lucid_clip/core/storage/impl/flutter_secure_storage_service.dart'
+import 'package:lucid_clip/core/storage/impl/prefs_secure_storage_service.dart'
     as _i923;
 import 'package:lucid_clip/core/storage/secure_storage_service.dart' as _i176;
 import 'package:lucid_clip/core/storage/storage.dart' as _i407;
@@ -192,8 +194,8 @@ extension GetItInjectableX on _i174.GetIt {
       () => thirdPartyModule.firebaseAnalytics,
     );
     gh.lazySingleton<_i454.SupabaseClient>(() => thirdPartyModule.supabase);
-    gh.lazySingleton<_i558.FlutterSecureStorage>(
-      () => thirdPartyModule.flutterSecureStorage,
+    gh.lazySingleton<_i930.EncryptedSharedPreferences>(
+      () => thirdPartyModule.encryptedSharedPreferences,
     );
     gh.lazySingleton<_i740.WindowManager>(() => thirdPartyModule.windowManager);
     gh.lazySingleton<_i890.AutoUpdater>(() => thirdPartyModule.autoUpdater);
@@ -223,7 +225,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i80.MethodChannelPasteToAppService(),
     );
     gh.lazySingleton<_i407.SecureStorageService>(
-      () => _i923.FlutterSecureStorageService(),
+      () => _i923.PrefsSecureStorageService(
+        prefs: gh<_i930.EncryptedSharedPreferences>(),
+      ),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i896.AccessibilityDataSource>(
@@ -251,10 +255,6 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i451.ShareService>(() => _i705.SharePlusService());
-    gh.singleton<_i212.DeepLinkService>(
-      () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
-      dispose: (i) => i.dispose(),
-    );
     gh.lazySingleton<_i500.AppUpdateService>(
       () => _i500.AppUpdateServiceImpl(
         secureStorageService: gh<_i176.SecureStorageService>(),
@@ -282,6 +282,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i55.AccessibilityRepositoryImpl(
         dataSource: gh<_i23.AccessibilityDataSource>(),
       ),
+      dispose: (i) => i.dispose(),
+    );
+    gh.singleton<_i995.DeepLinkService>(
+      () => _i28.AppLinksDeepLinkService(appLinks: gh<_i327.AppLinks>()),
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i72.SettingsLocalDataSource>(

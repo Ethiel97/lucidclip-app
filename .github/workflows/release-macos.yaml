@@ -117,18 +117,46 @@ jobs:
       - name: Codesign .app
         shell: bash
         run: |
+          ENTITLEMENTS="macos/Runner/Release.entitlements"
           APP="build/macos/Build/Products/Release-production/LucidClip.app"
-          codesign --deep --force --options runtime --sign "Developer ID Application" "$APP"
+          codesign --deep --force --options runtime --entitlements "$ENTITLEMENTS" --sign "Developer ID Application" "$APP"
           codesign --verify --deep --strict --verbose=2 "$APP"
 
       # ---------- Create DMG ----------
-      - name: Create DMG (versioned)
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Create DMG (Drag to Applications)
         shell: bash
         run: |
           APP="build/macos/Build/Products/Release-production/LucidClip.app"
+          APP_NAME="LucidClip"
+          VERSION="${{ steps.ver.outputs.version }}"
           DMG="${{ steps.ver.outputs.dmg }}"
+          
+          cp assets/installer/macos/dmg_background.tiff dmg_background.tiff
+          cp assets/installer/macos/logo.icns logo.icns
+          
           rm -f "$DMG"
-          hdiutil create -volname "LucidClip" -srcfolder "$APP" -ov -format UDZO "$DMG"
+          
+          create-dmg \
+            --background dmg_background.tiff \
+            --volname "${APP_NAME}" \
+            --volicon logo.icns \
+            --window-size 800 500 \
+            --window-pos 200 120 \
+            --icon-size 128 \
+            --icon "${APP_NAME}.app" 170 250 \
+            --app-drop-link 580 250 \
+            --hide-extension "${APP_NAME}.app" \
+            --hide-extension "Applications" \
+            --no-internet-enable \
+            --hdiutil-quiet \
+            --text-color="#FFFFFF" \
+            "$DMG" \
+            "$APP"
+          
           ls -lh "$DMG"
 
       # ---------- Notarize + Staple ----------

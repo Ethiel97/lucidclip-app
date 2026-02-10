@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.7.0...v1.8.0) (2026-02-10)
+
+
+### Features
+
+* **observability:** Integrate Sentry observability with privacy-first controls ([f9a1842](https://github.com/Ethiel97/lucidclip-app/commit/f9a184298036b257e48bb5614155e4632e56625a))
+
 ## [1.7.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.6.1...v1.7.0) (2026-02-10)
 
 

@@ -83,9 +83,6 @@ flutter:
   generate: true
 
   assets:
-    - env.prod.json
-    - env.dev.json
-    - env.staging.json
     - assets/images/
     - assets/icons/
 

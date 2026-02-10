@@ -19,6 +19,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   final SupabaseClient _supabase;
   final SecureStorageService _secureStorage;
+  StreamSubscription<AuthState>? _authSubscription;
 
   @override
   Future<UserModel?> signInWithGitHub() async {
@@ -29,7 +30,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
       final completer = Completer<UserModel?>();
 
       // Listen for the auth state change just once.
-      final authSubscription = _supabase.auth.onAuthStateChange.listen(
+      _authSubscription = _supabase.auth.onAuthStateChange.listen(
         (data) {
           final session = data.session;
           if (session != null && !completer.isCompleted) {
@@ -56,7 +57,6 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
       if (!response) {
         log('GitHub OAuth failed or was cancelled by user.');
-        await authSubscription.cancel();
         return null;
       }
 
@@ -71,8 +71,6 @@ class SupabaseAuthDataSource implements AuthDataSource {
         },
       );
 
-      await authSubscription.cancel();
-
       if (userModel == null) {
         log('No user model received after auth flow.');
         return null;
@@ -86,7 +84,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
         );
       }
 
-      await _storeUserData(_supabase.auth.currentUser!);
+      await _storeUserData(_supabase.auth.currentUser);
 
       return userModel;
     } on AuthException catch (e) {
@@ -97,6 +95,9 @@ class SupabaseAuthDataSource implements AuthDataSource {
     } catch (e, stack) {
       log('Unexpected error during GitHub sign in: $e', stackTrace: stack);
       throw AuthenticationException('An unexpected error occurred: $e');
+    } finally {
+      await _authSubscription?.cancel();
+      _authSubscription = null;
     }
   }
 
@@ -149,8 +150,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   /// Store user data in secure storage
-  Future<void> _storeUserData(User user) async {
+  Future<void> _storeUserData(User? user) async {
     try {
+      if (user == null) {
+        log('No user data to store in secure storage');
+        return;
+      }
       await _secureStorage.write(
         key: SecureStorageConstants.userId,
         value: user.id,

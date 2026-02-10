@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.6.1...v1.7.0) (2026-02-10)
+
+
+### Features
+
+* refactor environment variable handling and improve GitHub OAuth flow ([5bdbd51](https://github.com/Ethiel97/lucidclip-app/commit/5bdbd51c5952eb2be98a20ea0377c08319bb4c00))
+
 ## [1.6.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.6.0...v1.6.1) (2026-02-10)
 
 

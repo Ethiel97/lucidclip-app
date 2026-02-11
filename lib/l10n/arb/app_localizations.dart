@@ -1282,7 +1282,7 @@ abstract class AppLocalizations {
   /// **'Enable or disable incognito mode'**
   String get toggleIncognitoShortcutDescription;
 
-  /// Label for the Quick Access section
+  /// Label for the quick access feature that allows toggling the window with a keyboard shortcut
   ///
   /// In en, this message translates to:
   /// **'Toggle LucidClip anytime with {shortcut}'**

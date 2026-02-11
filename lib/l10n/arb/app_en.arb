@@ -943,7 +943,7 @@
   },
   "toggleWindowQuickAccess": "Toggle LucidClip anytime with {shortcut}",
   "@toggleWindowQuickAccess": {
-    "description": "Label for the Quick Access section",
+    "description": "Label for the quick access feature that allows toggling the window with a keyboard shortcut",
     "placeholders": {
       "shortcut": {
         "type": "String",

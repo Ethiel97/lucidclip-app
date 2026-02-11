@@ -64,5 +64,6 @@ class OnboardingState extends Equatable {
     hasSeenToggleWindowShortcutTip,
     hasUsedToggleWindowShortcut,
     toggleWindowShortcutReminderCount,
+    showToggleWindowShortcutTipNow,
   ];
 }

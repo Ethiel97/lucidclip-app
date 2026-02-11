@@ -38,7 +38,7 @@ class _AppState extends State<App> {
       BlocProvider(create: (_) => getIt<AuthCubit>()),
       BlocProvider(create: (_) => getIt<BillingCubit>()),
       BlocProvider(create: (_) => getIt<EntitlementCubit>()),
-      BlocProvider(create: (_) => getIt<OnboardingCubit>()),
+      BlocProvider(create: (_) => getIt<OnboardingCubit>()..boot()),
       BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
       BlocProvider(create: (_) => getIt<SettingsCubit>()),
       BlocProvider(

@@ -33,11 +33,8 @@ class SecureInstallationIdProvider implements DeviceIdProvider {
       }
 
       return installationId;
-    } catch (e) {
-      Observability.captureException(
-        e,
-        stackTrace: StackTrace.current,
-      ).unawaited();
+    } catch (e, stackTrace) {
+      Observability.captureException(e, stackTrace: stackTrace).unawaited();
 
       // In case of any error, generate a new ID but do not persist it
       return _uuid.v4();

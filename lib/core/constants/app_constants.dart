@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class AppConstants {
   const AppConstants._();
 
@@ -44,13 +46,15 @@ class AppConstants {
     'SECURE_STORAGE_ENCRYPTION_KEY',
   );
 
-  static const sentryDsn = String.fromEnvironment(
-    'SENTRY_DSN',
-  );
+  static const sentryDsn = String.fromEnvironment('SENTRY_DSN');
 
   static const clipboardItemDetailsViewWidth = 380.0;
   static const clipboardSidebarWidth = 220.0;
   static const collapsedSidebarWidth = 100.0;
 
   static const isProd = bool.fromEnvironment('dart.vm.product');
+
+  static final toggleWindowShortcut = Platform.isMacOS
+      ? 'Cmd + Shift + L'
+      : 'Ctrl + Shift + L';
 }

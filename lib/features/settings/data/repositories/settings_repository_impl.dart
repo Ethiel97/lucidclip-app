@@ -11,6 +11,10 @@ import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
 
+String toggleWindowShortcut = Platform.isMacOS
+    ? 'Cmd + Shift + L'
+    : 'Ctrl + Shift + L';
+
 @LazySingleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl({
@@ -71,11 +75,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     userId: userId,
     createdAt: DateTime.now().toUtc(),
     updatedAt: DateTime.now().toUtc(),
-    shortcuts: {
-      'toggle_window': Platform.isMacOS
-          ? 'Cmd + Shift + L'
-          : 'Ctrl + Shift + L',
-    },
+    shortcuts: {'toggle_window': toggleWindowShortcut},
   );
 
   @override

@@ -12,6 +12,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
+  String get accessibilityPermissionDescription =>
+      'LucidClip needs permission to control your Mac in order to perform this action.';
+
+  @override
+  String get accessibilityPermissionRequired => 'Permission Required';
+
+  @override
   String get account => 'Account';
 
   @override
@@ -39,10 +46,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get couldNotPasteToApp =>
-      'Sorry! We couldn\'t paste to the app. Please try again.';
-
-  @override
   String appNoLongerTrackedDescription(String appName) {
     return 'ClipboardItem from $appName will no longer be saved. You can change this in the Settings.';
   }
@@ -55,16 +58,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appendToClipboard => 'Append to Clipboard';
-
-  @override
-  String get accessibilityPermissionRequired => 'Permission Required';
-
-  @override
-  String get accessibilityPermissionDescription =>
-      'LucidClip needs permission to control your Mac in order to perform this action.';
-
-  @override
-  String get grantPermission => 'Grant Permission';
 
   @override
   String appsCount(int count) {
@@ -186,6 +179,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyToClipboard => 'Copy to Clipboard';
 
   @override
+  String get couldNotPasteToApp =>
+      'Sorry! We couldn\'t paste to the app. Please try again.';
+
+  @override
   String get counterAppBarTitle => 'Counter';
 
   @override
@@ -253,6 +250,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get github => 'GitHub';
+
+  @override
+  String get grantPermission => 'Grant Permission';
 
   @override
   String get hideWindow => 'Hide Window';
@@ -498,6 +498,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proSubscription => 'Pro';
 
   @override
+  String get quickAccess => 'Quick Access';
+
+  @override
   String get quit => 'Quit';
 
   @override
@@ -700,6 +703,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get toggleIncognitoShortcutDescription =>
       'Enable or disable incognito mode';
+
+  @override
+  String toggleWindowQuickAccess(String shortcut) {
+    return 'Toggle LucidClip anytime with $shortcut';
+  }
 
   @override
   String get toggleWindowShortcut => 'Toggle window (Shortcut)';

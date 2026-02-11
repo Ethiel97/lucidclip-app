@@ -16,6 +16,7 @@ import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/feedback/feedback.dart';
+import 'package:lucid_clip/features/onboarding/onboarding.dart';
 import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/arb/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -37,6 +38,7 @@ class _AppState extends State<App> {
       BlocProvider(create: (_) => getIt<AuthCubit>()),
       BlocProvider(create: (_) => getIt<BillingCubit>()),
       BlocProvider(create: (_) => getIt<EntitlementCubit>()),
+      BlocProvider(create: (_) => getIt<OnboardingCubit>()),
       BlocProvider(create: (_) => getIt<UpgradePromptCubit>()),
       BlocProvider(create: (_) => getIt<SettingsCubit>()),
       BlocProvider(

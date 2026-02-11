@@ -8,6 +8,7 @@ import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/utils/hotkey_utils.dart';
 import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/onboarding/onboarding.dart';
 import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 
 /// Implementation of HotkeyManagerService using hotkey_manager package
@@ -260,6 +261,8 @@ class HotkeyManagerServiceImpl implements HotkeyManagerService {
   Future<void> _handleToggleWindow() async {
     try {
       await getIt<WindowController>().toggle();
+
+      getIt<OnboardingCubit>().onToggleWindowShortcutUsed();
     } catch (e, stackTrace) {
       developer.log(
         'Error toggling window',

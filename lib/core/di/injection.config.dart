@@ -145,6 +145,8 @@ import 'package:lucid_clip/features/entitlement/subfeatures/upgrade/presentation
     as _i324;
 import 'package:lucid_clip/features/feedback/presentation/cubit/feedback_cubit.dart'
     as _i311;
+import 'package:lucid_clip/features/onboarding/presentation/cubit/onboarding_cubit.dart'
+    as _i998;
 import 'package:lucid_clip/features/settings/data/data.dart' as _i739;
 import 'package:lucid_clip/features/settings/data/data_sources/drift_settings_local_data_source.dart'
     as _i386;
@@ -213,6 +215,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i311.FeedbackCubit>(
       () => _i311.FeedbackCubit(),
+      dispose: (i) => i.close(),
+    );
+    gh.lazySingleton<_i998.OnboardingCubit>(
+      () => _i998.OnboardingCubit(),
       dispose: (i) => i.close(),
     );
     gh.lazySingleton<_i212.HotkeyManagerService>(

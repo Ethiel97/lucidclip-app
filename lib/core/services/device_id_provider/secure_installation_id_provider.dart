@@ -1,4 +1,6 @@
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
+import 'package:lucid_clip/core/observability/observability.dart';
 import 'package:lucid_clip/core/storage/secure_storage_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,13 +20,27 @@ class SecureInstallationIdProvider implements DeviceIdProvider {
 
   @override
   Future<String> getInstallationId() async {
-    var installationId = await _secureStorageService.read(key: _key);
+    try {
+      Observability.breadcrumb(
+        'Fetching installation ID from secure storage',
+      ).unawaited();
 
-    if (installationId == null || installationId.isEmpty) {
-      installationId = _uuid.v4();
-      await _secureStorageService.write(key: _key, value: installationId);
+      var installationId = await _secureStorageService.read(key: _key);
+
+      if (installationId == null || installationId.isEmpty) {
+        installationId = _uuid.v4();
+        await _secureStorageService.write(key: _key, value: installationId);
+      }
+
+      return installationId;
+    } catch (e) {
+      Observability.captureException(
+        e,
+        stackTrace: StackTrace.current,
+      ).unawaited();
+
+      // In case of any error, generate a new ID but do not persist it
+      return _uuid.v4();
     }
-
-    return installationId;
   }
 }

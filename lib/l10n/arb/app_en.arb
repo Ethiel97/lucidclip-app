@@ -4,6 +4,14 @@
   "@about": {
     "description": "Label for the About section"
   },
+  "accessibilityPermissionDescription": "LucidClip needs permission to control your Mac in order to perform this action.",
+  "@accessibilityPermissionDescription": {
+    "description": "Description text for accessibility permission dialog"
+  },
+  "accessibilityPermissionRequired": "Permission Required",
+  "@accessibilityPermissionRequired": {
+    "description": "Title for accessibility permission dialog"
+  },
   "account": "Account",
   "@account": {
     "description": "Label for the Account section"
@@ -53,10 +61,6 @@
       }
     }
   },
-  "couldNotPasteToApp": "Sorry! We couldn't paste to the app. Please try again.",
-  "@couldNotPasteToApp": {
-    "description": "Error message shown when unable to paste to a specific app"
-  },
   "appNoLongerTrackedDescription": "ClipboardItem from {appName} will no longer be saved. You can change this in the Settings.",
   "@appNoLongerTrackedDescription": {
     "description": "Description shown when an app is no longer tracked",
@@ -80,18 +84,6 @@
   "appendToClipboard": "Append to Clipboard",
   "@appendToClipboard": {
     "description": "Button text to append content to the clipboard"
-  },
-  "accessibilityPermissionRequired": "Permission Required",
-  "@accessibilityPermissionRequired": {
-    "description": "Title for accessibility permission dialog"
-  },
-  "accessibilityPermissionDescription": "LucidClip needs permission to control your Mac in order to perform this action.",
-  "@accessibilityPermissionDescription": {
-    "description": "Description text for accessibility permission dialog"
-  },
-  "grantPermission": "Grant Permission",
-  "@grantPermission": {
-    "description": "Button text to grant accessibility permission"
   },
   "appsCount": "{count, plural, =0 {No apps} =1 {1 app} other {{count} apps}}",
   "@appsCount": {
@@ -244,6 +236,10 @@
   "@copyToClipboard": {
     "description": "Button text to copy content to the clipboard"
   },
+  "couldNotPasteToApp": "Sorry! We couldn't paste to the app. Please try again.",
+  "@couldNotPasteToApp": {
+    "description": "Error message shown when unable to paste to a specific app"
+  },
   "counterAppBarTitle": "Counter",
   "@counterAppBarTitle": {
     "description": "Text shown in the AppBar of the Counter Page"
@@ -329,6 +325,10 @@
     "description": "Label for the General settings"
   },
   "github": "GitHub",
+  "grantPermission": "Grant Permission",
+  "@grantPermission": {
+    "description": "Button text to grant accessibility permission"
+  },
   "hideWindow": "Hide Window",
   "@hideWindow": {
     "description": "Tray menu item to hide the window"
@@ -649,6 +649,10 @@
   "@proSubscription": {
     "description": "Label for Pro subscription"
   },
+  "quickAccess": "Quick Access",
+  "@quickAccess": {
+    "description": "Label for the Quick Access section"
+  },
   "quit": "Quit",
   "@quit": {
     "description": "Tray menu item to exit the application"
@@ -936,6 +940,17 @@
   "toggleIncognitoShortcutDescription": "Enable or disable incognito mode",
   "@toggleIncognitoShortcutDescription": {
     "description": "Description for toggle incognito shortcut"
+  },
+  "toggleWindowQuickAccess": "Toggle LucidClip anytime with {shortcut}",
+  "@toggleWindowQuickAccess": {
+    "description": "Label for the Quick Access section",
+    "placeholders": {
+      "shortcut": {
+        "type": "String",
+        "description": "Keyboard shortcut for toggling LucidClip",
+        "example": "⌘⇧L"
+      }
+    }
   },
   "toggleWindowShortcut": "Toggle window (Shortcut)",
   "@toggleWindowShortcut": {

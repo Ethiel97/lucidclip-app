@@ -100,6 +100,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about;
 
+  /// Description text for accessibility permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'LucidClip needs permission to control your Mac in order to perform this action.'**
+  String get accessibilityPermissionDescription;
+
+  /// Title for accessibility permission dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get accessibilityPermissionRequired;
+
   /// Label for the Account section
   ///
   /// In en, this message translates to:
@@ -142,12 +154,6 @@ abstract class AppLocalizations {
   /// **'{appName} no longer tracked'**
   String appNoLongerTracked(String appName);
 
-  /// Error message shown when unable to paste to a specific app
-  ///
-  /// In en, this message translates to:
-  /// **'Sorry! We couldn\'t paste to the app. Please try again.'**
-  String get couldNotPasteToApp;
-
   /// Description shown when an app is no longer tracked
   ///
   /// In en, this message translates to:
@@ -171,24 +177,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Append to Clipboard'**
   String get appendToClipboard;
-
-  /// Title for accessibility permission dialog
-  ///
-  /// In en, this message translates to:
-  /// **'Permission Required'**
-  String get accessibilityPermissionRequired;
-
-  /// Description text for accessibility permission dialog
-  ///
-  /// In en, this message translates to:
-  /// **'LucidClip needs permission to control your Mac in order to perform this action.'**
-  String get accessibilityPermissionDescription;
-
-  /// Button text to grant accessibility permission
-  ///
-  /// In en, this message translates to:
-  /// **'Grant Permission'**
-  String get grantPermission;
 
   /// Label showing the number of apps with pluralization
   ///
@@ -394,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Copy to Clipboard'**
   String get copyToClipboard;
 
+  /// Error message shown when unable to paste to a specific app
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry! We couldn\'t paste to the app. Please try again.'**
+  String get couldNotPasteToApp;
+
   /// Text shown in the AppBar of the Counter Page
   ///
   /// In en, this message translates to:
@@ -513,6 +507,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'GitHub'**
   String get github;
+
+  /// Button text to grant accessibility permission
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Permission'**
+  String get grantPermission;
 
   /// Tray menu item to hide the window
   ///
@@ -910,6 +910,12 @@ abstract class AppLocalizations {
   /// **'Pro'**
   String get proSubscription;
 
+  /// Label for the Quick Access section
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Access'**
+  String get quickAccess;
+
   /// Tray menu item to exit the application
   ///
   /// In en, this message translates to:
@@ -1275,6 +1281,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable or disable incognito mode'**
   String get toggleIncognitoShortcutDescription;
+
+  /// Label for the Quick Access section
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle LucidClip anytime with {shortcut}'**
+  String toggleWindowQuickAccess(String shortcut);
 
   /// Label for toggle window shortcut
   ///

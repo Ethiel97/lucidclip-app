@@ -202,7 +202,10 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
       // Build the main menu
       final menu = Menu(
         items: [
-          MenuItem(key: 'show_hide', label: 'Show/Hide Window'),
+          MenuItem(
+            key: 'show_hide',
+            label: 'Show/Hide Window => $toggleWindowShortcut',
+          ),
           MenuItem.separator(),
           MenuItem.submenu(
             key: 'private_session',

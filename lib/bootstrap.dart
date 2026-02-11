@@ -100,6 +100,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
 /// Initializes Sentry with privacy-first configuration.
 Future<void> _initializeSentry(Future<void> Function() appRunner) async {
+  if (!AppConstants.isProd || AppConstants.sentryDsn.isEmpty) {
+    log('Sentry DSN not configured. Skipping Sentry initialization.');
+    await appRunner();
+    return;
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // Get package info for release tracking
@@ -123,7 +129,7 @@ Future<void> _initializeSentry(Future<void> Function() appRunner) async {
       // Privacy: beforeSend hook to scrub sensitive data
       ..beforeSend = SentryObservabilityService.beforeSend
       // Only capture errors, not performance traces by default
-      ..tracesSampleRate = 0.2
+      ..tracesSampleRate = 0.1
       // Enable breadcrumbs for debugging context
       ..enableAutoSessionTracking = true
       ..attachScreenshot =

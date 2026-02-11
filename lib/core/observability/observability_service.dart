@@ -51,7 +51,8 @@ abstract class ObservabilityService {
   ///
   /// Parameters:
   /// - [message]: Human-readable breadcrumb message
-  /// - [category]: Optional category (e.g., 'navigation', 'user_action', 'http')
+  /// - [category]: Optional category (e.g., 'navigation',
+  /// 'user_action', 'http')
   /// - [data]: Optional additional structured data
   /// - [level]: Severity level
   Future<void> addBreadcrumb(

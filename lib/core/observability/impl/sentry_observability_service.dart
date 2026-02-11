@@ -215,24 +215,20 @@ class SentryObservabilityService implements ObservabilityService {
   static SentryEvent? beforeSend(SentryEvent event, Hint hint) {
     // Scrub request data if present
 
-    var enrichedEvent = event;
+    final enrichedEvent = event;
 
     if (event.request != null) {
-      enrichedEvent = event.copyWith(
-        request: event.request?.copyWith(
-          headers: _filterHeaders(event.request?.headers),
-        ),
-      );
+      enrichedEvent.request = event.request
+        ?..headers = _filterHeaders(event.request?.headers) ?? {};
     }
 
     // Scrub breadcrumb data
     if (event.breadcrumbs != null) {
-      enrichedEvent = event.copyWith(
-        breadcrumbs: event.breadcrumbs?.map((b) {
-          if (b.data == null) return b;
-          return b.copyWith(data: _filterContextData(b.data!));
-        }).toList(),
-      );
+      enrichedEvent.breadcrumbs = event.breadcrumbs?.map((b) {
+        if (b.data == null) return b;
+
+        return b..data = _filterContextData(b.data!);
+      }).toList();
     }
 
     return enrichedEvent;

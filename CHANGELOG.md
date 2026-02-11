@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.8.1...v1.8.2) (2026-02-11)
+
+
+### Bug Fixes
+
+* improve Sentry initialization and update observability logging ([#120](https://github.com/Ethiel97/lucidclip-app/issues/120)) ([88296e3](https://github.com/Ethiel97/lucidclip-app/commit/88296e34ad0804468fb78c12d31facc7d6baa10d))
+
 ## [1.8.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.8.0...v1.8.1) (2026-02-11)
 
 

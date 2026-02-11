@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.8.0...v1.8.1) (2026-02-11)
+
+
+### Bug Fixes
+
+* add future extensions for unawaited futures and improve analytics tracking ([#118](https://github.com/Ethiel97/lucidclip-app/issues/118)) ([4dd6848](https://github.com/Ethiel97/lucidclip-app/commit/4dd684833802d5231572b060f0809828fb760111))
+
 ## [1.8.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.7.0...v1.8.0) (2026-02-10)
 
 

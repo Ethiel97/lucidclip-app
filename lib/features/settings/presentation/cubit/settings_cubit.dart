@@ -46,10 +46,6 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       return;
     }
 
-    if (_currentUserId == effectiveUser.id && _localSubscription != null) {
-      return;
-    }
-
     if (_currentUserId != null && _currentUserId != effectiveUser.id) {
       await _reset();
     }
@@ -110,8 +106,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
               ).unawaited();
 
               Observability.breadcrumb(
-                'Local clipboard watch failed',
-                category: 'clipboard',
+                'Local settings watch failed',
+                category: 'settings',
                 level: ObservabilityLevel.error,
               ).unawaited();
             },
@@ -123,24 +119,8 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
       emit(state.copyWith(settings: state.settings.toSuccess(local)));
 
-      // Start realtime (instant sync after remote updates)
-
-      //log userId, isAnonymous and state.settings.value.isAnonymous
-      log(
-        'SettingsCubit.boot: userId=$userId, isAnonymous=$isAnonymous,'
-        ' settings.isAnonymous=${state.settings.value?.isAnonymous}',
-      );
-
       if (!isAnonymous) {
-        log(
-          'SettingsCubit.boot: Starting refresh  and realtime for user $userId',
-        );
         await settingsRepository.refresh(userId);
-
-        log(
-          'SettingsCubit.boot: Finished refresh, '
-          'starting realtime for user $userId',
-        );
         await settingsRepository.startRealtime(userId);
       }
     } catch (e) {

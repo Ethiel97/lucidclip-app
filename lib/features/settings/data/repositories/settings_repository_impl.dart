@@ -83,8 +83,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       Observability.breadcrumb(
         'Refreshing user settings',
-        category: 'settings',
-        data: {'userId': userId},
+        category: 'refresh_settings',
       ).unawaited();
 
       final remote = await remoteDataSource.fetchSettings(userId);
@@ -105,7 +104,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       Observability.captureException(
         e,
         stackTrace: stack,
-        hint: {'operation': 'refresh_settings', 'userId': userId},
+        hint: {'operation': 'refresh_settings'},
       ).unawaited();
 
       final local = await localDataSource.getSettings(userId);
@@ -123,12 +122,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       Observability.breadcrumb(
         'Updating user settings',
-        category: 'settings',
-        data: {
-          'userId': settings.userId,
-          'shortcuts': settings.shortcuts.keys.toList(),
-          'excludedAppsCount': settings.excludedApps.length,
-        },
+        category: 'update_settings',
       ).unawaited();
 
       final updatedSettings = settings.copyWith(
@@ -155,7 +149,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
         Observability.captureException(
           e,
           stackTrace: stack,
-          hint: {'operation': 'update_settings', 'userId': settings.userId},
+          hint: {'operation': 'update_settings'},
         ).unawaited();
         // Don't throw - local update succeeded
       }

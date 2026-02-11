@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.8.2...v1.9.0) (2026-02-11)
+
+
+### Features
+
+* **onboarding:** implement onboarding functionality with toggle window shortcut ([#122](https://github.com/Ethiel97/lucidclip-app/issues/122)) ([f2e280a](https://github.com/Ethiel97/lucidclip-app/commit/f2e280a0fbf37096b9b65050b62686bf58f07fc9))
+
 ## [1.8.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.8.1...v1.8.2) (2026-02-11)
 
 

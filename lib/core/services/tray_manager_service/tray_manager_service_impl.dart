@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/app/app.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
@@ -202,7 +203,12 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
       // Build the main menu
       final menu = Menu(
         items: [
-          MenuItem(key: 'show_hide', label: 'Show/Hide Window'),
+          MenuItem(
+            key: 'show_hide',
+            label:
+                '${l10n?.showHideWindow ?? 'Show/Hide Window'} '
+                '=> $AppConstants.toggleWindowShortcut',
+          ),
           MenuItem.separator(),
           MenuItem.submenu(
             key: 'private_session',

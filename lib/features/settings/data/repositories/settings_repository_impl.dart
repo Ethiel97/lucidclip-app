@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/extensions/future_extensions.dart';
 import 'package:lucid_clip/core/observability/observability.dart';
@@ -71,11 +71,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     userId: userId,
     createdAt: DateTime.now().toUtc(),
     updatedAt: DateTime.now().toUtc(),
-    shortcuts: {
-      'toggle_window': Platform.isMacOS
-          ? 'Cmd + Shift + L'
-          : 'Ctrl + Shift + L',
-    },
+    shortcuts: {'toggle_window': AppConstants.toggleWindowShortcut},
   );
 
   @override

@@ -11,36 +11,37 @@ import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/features/feedback/feedback.dart';
+import 'package:lucid_clip/features/onboarding/onboarding.dart';
 
 @RoutePage()
 class LucidClipPage extends StatelessWidget {
   const LucidClipPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => getIt<ClipboardCubit>()),
-        BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
-        BlocProvider(create: (_) => getIt<SearchCubit>()),
-        BlocProvider(create: (_) => getIt<SidebarCubit>()),
-      ],
-      child: Scaffold(
-        body: AutoTabsRouter(
-          routes: [
-            const ClipboardRoute(),
-            //TODO(Ethiel): Enable snippets when feature is ready
-            // const SnippetsRoute(),
-            const AccountRoute(),
-            SettingsRoute(),
-          ],
-          builder: (context, child) {
-            final (isEntitlementLoaded, isProUser) = context.select(
-              (EntitlementCubit cubit) =>
-                  (cubit.state.isEntitlementLoaded, cubit.state.isProActive),
-            );
+  Widget build(BuildContext context) => MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => getIt<ClipboardCubit>()),
+      BlocProvider(create: (_) => getIt<ClipboardDetailCubit>()),
+      BlocProvider(create: (_) => getIt<SearchCubit>()),
+      BlocProvider(create: (_) => getIt<SidebarCubit>()),
+    ],
+    child: Scaffold(
+      body: AutoTabsRouter(
+        routes: [
+          const ClipboardRoute(),
+          //TODO(Ethiel): Enable snippets when feature is ready
+          // const SnippetsRoute(),
+          const AccountRoute(),
+          SettingsRoute(),
+        ],
+        builder: (context, child) {
+          final (isEntitlementLoaded, isProUser) = context.select(
+            (EntitlementCubit cubit) =>
+                (cubit.state.isEntitlementLoaded, cubit.state.isProActive),
+          );
 
-            return AuthListener(
+          return AuthListener(
+            child: OnboardingListener(
               child: FeedbackListener(
                 child: EntitlementListener(
                   child: LogoutConfirmationListener(
@@ -78,10 +79,10 @@ class LucidClipPage extends StatelessWidget {
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
-    );
-  }
+    ),
+  );
 }

@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/extensions/future_extensions.dart';
+import 'package:lucid_clip/core/observability/observability.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
@@ -62,12 +64,6 @@ class SettingsRepositoryImpl implements SettingsRepository {
       return defaultSettings;
     }
 
-    // 3) best-effort refresh (do not block UI)
-    // ignore: unawaited_futures
-    if (!local.toEntity().isAnonymous) {
-      unawaited(refresh(userId));
-    }
-
     return local.toEntity();
   }
 
@@ -85,6 +81,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<UserSettings?> refresh(String userId) async {
     try {
+      Observability.breadcrumb(
+        'Refreshing user settings',
+        category: 'settings',
+        data: {'userId': userId},
+      ).unawaited();
+
       final remote = await remoteDataSource.fetchSettings(userId);
 
       if (remote == null) {
@@ -100,6 +102,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
         stackTrace: stack,
       );
 
+      Observability.captureException(
+        e,
+        stackTrace: stack,
+        hint: {'operation': 'refresh_settings', 'userId': userId},
+      ).unawaited();
+
       final local = await localDataSource.getSettings(userId);
 
       if (local != null) {
@@ -113,6 +121,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<void> update(UserSettings settings) async {
     try {
+      Observability.breadcrumb(
+        'Updating user settings',
+        category: 'settings',
+        data: {
+          'userId': settings.userId,
+          'shortcuts': settings.shortcuts.keys.toList(),
+          'excludedAppsCount': settings.excludedApps.length,
+        },
+      ).unawaited();
+
       final updatedSettings = settings.copyWith(
         updatedAt: DateTime.now().toUtc(),
       );
@@ -133,11 +151,22 @@ class SettingsRepositoryImpl implements SettingsRepository {
           name: 'SettingsRepository',
           stackTrace: stack,
         );
+
+        Observability.captureException(
+          e,
+          stackTrace: stack,
+          hint: {'operation': 'update_settings', 'userId': settings.userId},
+        ).unawaited();
         // Don't throw - local update succeeded
       }
     } on NetworkException {
       rethrow;
     } catch (e) {
+      Observability.captureException(
+        e,
+        hint: {'operation': 'update_settings', 'userId': settings.userId},
+      ).unawaited();
+
       throw CacheException('Failed to update settings: $e');
     }
   }

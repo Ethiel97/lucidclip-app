@@ -77,13 +77,11 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
     try {
       await clipboardManager.setClipboardContent(item.toInfrastructure());
     } catch (e, stackTrace) {
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stackTrace,
-          hint: {'operation': 'copy_to_clipboard'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stackTrace,
+        hint: {'operation': 'copy_to_clipboard'},
+      ).unawaited();
     }
   }
 
@@ -114,21 +112,17 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
     } catch (e, stack) {
       emit(state.copyWith(pasteToAppStatus: state.pasteToAppStatus.toError()));
 
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stack,
-          hint: {'operation': 'paste_to_app'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stack,
+        hint: {'operation': 'paste_to_app'},
+      ).unawaited();
 
-      unawaited(
-        Observability.breadcrumb(
-          'Paste to app failed',
-          category: 'clipboard',
-          level: ObservabilityLevel.error,
-        ),
-      );
+      Observability.breadcrumb(
+        'Paste to app failed',
+        category: 'clipboard',
+        level: ObservabilityLevel.error,
+      ).unawaited();
     }
   }
 
@@ -192,13 +186,11 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         ),
       );
 
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stack,
-          hint: {'operation': 'edit_clipboard_item'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stack,
+        hint: {'operation': 'edit_clipboard_item'},
+      ).unawaited();
     }
   }
 
@@ -229,13 +221,11 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         ),
       );
 
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stack,
-          hint: {'operation': 'delete_clipboard_item'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stack,
+        hint: {'operation': 'delete_clipboard_item'},
+      ).unawaited();
     }
   }
 
@@ -281,13 +271,11 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
 
       await localClipboardOutboxRepository.enqueue(op);
     } catch (e, stack) {
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stack,
-          hint: {'operation': 'enqueue_outbox'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stack,
+        hint: {'operation': 'enqueue_outbox'},
+      ).unawaited();
     }
   }
 

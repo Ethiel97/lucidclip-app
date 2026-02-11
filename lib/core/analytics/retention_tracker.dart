@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/storage/storage.dart';
 
 /// Service to track app launch and retention metrics
@@ -25,13 +26,13 @@ class RetentionTracker {
         key: _firstLaunchKey,
         value: now.toIso8601String(),
       );
-      await Analytics.track(AnalyticsEvent.appFirstLaunch);
+      Analytics.track(AnalyticsEvent.appFirstLaunch).unawaited();
 
       // Track app_opened with d0 bucket
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.appOpened,
         const AppOpenedParams(dayBucket: DayBucket.d0).toMap(),
-      );
+      ).unawaited();
     } else {
       // Calculate days since first launch
       final firstLaunch = DateTime.parse(firstLaunchStr);
@@ -41,10 +42,10 @@ class RetentionTracker {
         daysSinceFirstLaunch,
       );
 
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.appOpened,
         AppOpenedParams(dayBucket: dayBucket).toMap(),
-      );
+      ).unawaited();
     }
 
     // Update last launch timestamp

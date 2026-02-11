@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/data/data.dart';
@@ -52,12 +53,15 @@ class AuthCubit extends HydratedCubit<AuthState> {
     if (user != null && user.isNotEmpty) {
       emit(state.copyWith(user: state.user.toSuccess(user)));
       // Set user context for observability
-      await Observability.setUser(user.id);
-      await Observability.breadcrumb('User authenticated', category: 'auth');
+      Observability.setUser(user.id, email: user.email).unawaited();
+      Observability.breadcrumb(
+        'User authenticated',
+        category: 'auth',
+      ).unawaited();
     } else {
       emit(state.copyWith(user: const ValueWrapper<User?>()));
-      await Observability.clearUser();
-      await Observability.breadcrumb('User signed out', category: 'auth');
+      Observability.clearUser().unawaited();
+      Observability.breadcrumb('User signed out', category: 'auth').unawaited();
     }
   }
 
@@ -82,12 +86,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
         ),
       );
 
-      unawaited(
-        Observability.captureException(
-          e,
-          hint: {'operation': 'check_auth_status'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        hint: {'operation': 'check_auth_status'},
+      ).unawaited();
     }
   }
 
@@ -127,17 +129,16 @@ class AuthCubit extends HydratedCubit<AuthState> {
         ),
       );
 
-      unawaited(
-        Observability.captureException(e, hint: {'operation': 'github_signin'}),
-      );
+      Observability.captureException(
+        e,
+        hint: {'operation': 'github_signin'},
+      ).unawaited();
 
-      unawaited(
-        Observability.breadcrumb(
-          'GitHub sign-in failed',
-          category: 'auth',
-          level: ObservabilityLevel.error,
-        ),
-      );
+      Observability.breadcrumb(
+        'GitHub sign-in failed',
+        category: 'auth',
+        level: ObservabilityLevel.error,
+      ).unawaited();
     }
   }
 
@@ -157,9 +158,10 @@ class AuthCubit extends HydratedCubit<AuthState> {
         ),
       );
 
-      unawaited(
-        Observability.captureException(e, hint: {'operation': 'signout'}),
-      );
+      Observability.captureException(
+        e,
+        hint: {'operation': 'signout'},
+      ).unawaited();
     }
   }
 

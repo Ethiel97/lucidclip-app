@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/clipboard_manager/clipboard_manager.dart';
 import 'package:lucid_clip/core/errors/errors.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
@@ -155,21 +156,17 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
               ),
             );
 
-            unawaited(
-              Observability.captureException(
-                error,
-                stackTrace: stackTrace,
-                hint: {'operation': 'watch_local_clipboard_items'},
-              ),
-            );
+            Observability.captureException(
+              error,
+              stackTrace: stackTrace,
+              hint: {'operation': 'watch_local_clipboard_items'},
+            ).unawaited();
 
-            unawaited(
-              Observability.breadcrumb(
-                'Local clipboard watch failed',
-                category: 'clipboard',
-                level: ObservabilityLevel.error,
-              ),
-            );
+            Observability.breadcrumb(
+              'Local clipboard watch failed',
+              category: 'clipboard',
+              level: ObservabilityLevel.error,
+            ).unawaited();
           },
         );
   }
@@ -188,16 +185,16 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         await _handleClipboardData(clipboardData);
       },
       onError: (Object error, StackTrace stackTrace) async {
-        await Observability.captureException(
+        Observability.captureException(
           error,
           stackTrace: stackTrace,
           hint: {'operation': 'watch_clipboard_stream'},
-        );
-        await Observability.breadcrumb(
+        ).unawaited();
+        Observability.breadcrumb(
           'Clipboard stream watch failed',
           category: 'clipboard',
           level: ObservabilityLevel.error,
-        );
+        ).unawaited();
       },
     );
   }
@@ -255,7 +252,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         await _enqueueOutboxCopy(updatedItem.id);
 
         // Track clipboard item used (duplicate/re-copy)
-        await Analytics.track(AnalyticsEvent.clipboardItemUsed);
+        Analytics.track(AnalyticsEvent.clipboardItemUsed).unawaited();
       }
       return;
     }
@@ -268,12 +265,12 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
     await _enqueueOutboxCopy(newItem.id);
 
     // Track clipboard item captured (new item)
-    await Analytics.track(AnalyticsEvent.clipboardItemCaptured);
+    Analytics.track(AnalyticsEvent.clipboardItemCaptured).unawaited();
 
     // Track first clipboard capture
     final isFirstCapture = await retentionTracker.isFirstClipboardCapture();
     if (isFirstCapture) {
-      await Analytics.track(AnalyticsEvent.clipboardFirstItemCaptured);
+      Analytics.track(AnalyticsEvent.clipboardFirstItemCaptured).unawaited();
     }
   }
 
@@ -290,16 +287,14 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         maxItems: _effectiveMaxHistoryItems,
       );
     } catch (e, stackTrace) {
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stackTrace,
-          hint: {
-            'operation': 'upsert_clipboard_item',
-            'item_count': state.clipboardItems.value?.length ?? 0,
-          },
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stackTrace,
+        hint: {
+          'operation': 'upsert_clipboard_item',
+          'item_count': state.clipboardItems.value?.length ?? 0,
+        },
+      ).unawaited();
     }
   }
 
@@ -316,13 +311,11 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
 
       await localClipboardOutboxRepository.enqueue(op);
     } catch (e, stackTrace) {
-      unawaited(
-        Observability.captureException(
-          e,
-          stackTrace: stackTrace,
-          hint: {'operation': 'enqueue_outbox'},
-        ),
-      );
+      Observability.captureException(
+        e,
+        stackTrace: stackTrace,
+        hint: {'operation': 'enqueue_outbox'},
+      ).unawaited();
     }
   }
 
@@ -338,13 +331,11 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         name: 'ClipboardCubit',
       );
 
-      unawaited(
-        Observability.captureException(
-          error,
-          stackTrace: stackTrace,
-          hint: {'operation': 'retention periodic_cleanup'},
-        ),
-      );
+      Observability.captureException(
+        error,
+        stackTrace: stackTrace,
+        hint: {'operation': 'retention periodic_cleanup'},
+      ).unawaited();
     });
   }
 

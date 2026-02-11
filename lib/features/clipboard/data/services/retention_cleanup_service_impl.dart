@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
@@ -59,12 +60,12 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
             deletedCount++;
 
             // Track item auto-deleted due to retention
-            await Analytics.track(
+            Analytics.track(
               AnalyticsEvent.itemAutoDeleted,
               const ItemAutoDeletedParams(
                 reason: DeletionReason.retention,
               ).toMap(),
-            );
+            ).unawaited();
 
             developer.log(
               'Deleted expired clipboard item: ${item.id}',

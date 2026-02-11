@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
 import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/firebase_options.dart';
@@ -30,13 +31,11 @@ class AppBlocObserver extends BlocObserver {
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
     log('onError(${bloc.runtimeType}, $error, $stackTrace)');
     // Also capture in observability
-    unawaited(
-      Observability.captureException(
-        error,
-        stackTrace: stackTrace,
-        hint: {'bloc': bloc.runtimeType.toString()},
-      ),
-    );
+    Observability.captureException(
+      error,
+      stackTrace: stackTrace,
+      hint: {'bloc': bloc.runtimeType.toString()},
+    ).unawaited();
     super.onError(bloc, error, stackTrace);
   }
 }
@@ -101,12 +100,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
 /// Initializes Sentry with privacy-first configuration.
 Future<void> _initializeSentry(Future<void> Function() appRunner) async {
-  // Skip Sentry in development/debug mode
-  if (!AppConstants.isProd || AppConstants.sentryDsn.isEmpty) {
-    log('Sentry disabled (non-production or no DSN)');
-    await appRunner();
-    return;
-  }
+  WidgetsFlutterBinding.ensureInitialized();
 
   // Get package info for release tracking
   PackageInfo? packageInfo;
@@ -129,7 +123,7 @@ Future<void> _initializeSentry(Future<void> Function() appRunner) async {
       // Privacy: beforeSend hook to scrub sensitive data
       ..beforeSend = SentryObservabilityService.beforeSend
       // Only capture errors, not performance traces by default
-      ..tracesSampleRate = 0.0
+      ..tracesSampleRate = 0.2
       // Enable breadcrumbs for debugging context
       ..enableAutoSessionTracking = true
       ..attachScreenshot =
@@ -141,8 +135,7 @@ Future<void> _initializeSentry(Future<void> Function() appRunner) async {
       // Desktop-specific options
       ..enableWindowMetricBreadcrumbs =
           false // Privacy
-      ..sendDefaultPii =
-          false // Privacy: never send PII
+      ..sendDefaultPii = true
       ..maxBreadcrumbs = 50
       ..maxAttachmentSize = 1024 * 1024; // 1MB limit
   }, appRunner: appRunner);

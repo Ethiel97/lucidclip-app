@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
 import 'package:lucid_clip/features/auth/domain/domain.dart';
@@ -85,21 +86,17 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
         ),
       );
 
-      unawaited(
-        Observability.captureException(
-          error,
-          stackTrace: stackTrace,
-          hint: {'operation': 'load_entitlements'},
-        ),
-      );
+      Observability.captureException(
+        error,
+        stackTrace: stackTrace,
+        hint: {'operation': 'load_entitlements'},
+      ).unawaited();
 
-      unawaited(
-        Observability.breadcrumb(
-          'Error loading entitlements',
-          category: 'entitlement',
-          level: ObservabilityLevel.error,
-        ),
-      );
+      Observability.breadcrumb(
+        'Error loading entitlements',
+        category: 'entitlement',
+        level: ObservabilityLevel.error,
+      ).unawaited();
     }
   }
 

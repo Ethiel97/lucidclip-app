@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/features/accessibility/accessibility.dart';
 
 part 'accessibility_state.dart';
@@ -57,7 +58,9 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
   /// Request accessibility permission and show the custom dialog
   Future<void> requestPermission() async {
     // Track permission requested event
-    unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityRequested));
+    Analytics.track(
+      AnalyticsEvent.permissionAccessibilityRequested,
+    ).unawaited();
     emit(state.copyWith(showPermissionDialog: true));
   }
 
@@ -70,15 +73,15 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
 
       // Track permission granted if successful
       if (state.hasPermission) {
-        unawaited(
-          Analytics.track(AnalyticsEvent.permissionAccessibilityGranted),
-        );
+        Analytics.track(
+          AnalyticsEvent.permissionAccessibilityGranted,
+        ).unawaited();
       } else {
         // Permission was requested but not granted (user may
         // have closed system dialog)
-        unawaited(
-          Analytics.track(AnalyticsEvent.permissionAccessibilityDenied),
-        );
+        Analytics.track(
+          AnalyticsEvent.permissionAccessibilityDenied,
+        ).unawaited();
       }
     } catch (e, stack) {
       log(
@@ -90,7 +93,7 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
       emit(state.copyWith(hasPermission: false));
 
       // Track permission denied on error (system-level failure)
-      unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityDenied));
+      Analytics.track(AnalyticsEvent.permissionAccessibilityDenied).unawaited();
     }
   }
 
@@ -99,7 +102,7 @@ class AccessibilityCubit extends HydratedCubit<AccessibilityState> {
     emit(state.copyWith(showPermissionDialog: false));
 
     // Track permission denied when user cancels
-    unawaited(Analytics.track(AnalyticsEvent.permissionAccessibilityDenied));
+    Analytics.track(AnalyticsEvent.permissionAccessibilityDenied).unawaited();
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
@@ -130,7 +131,7 @@ class _UpgradePaywallSheetState extends State<UpgradePaywallSheet> {
                           UpgradeClickedParams(
                             source: _upgradeSourceFromContext(context),
                           ).toMap(),
-                        );
+                        ).unawaited();
 
                         context.read<BillingCubit>().startCheckout(
                           productId: _selected.productId,

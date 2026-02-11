@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/services/share_service/share_service.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -31,10 +32,10 @@ class SharePlusService implements ShareService {
       await _sharePlus.share(ShareParams(text: text, subject: subject));
 
       // Track share usage
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.shareUsed,
         const ClipboardItemSharedParams(contentType: 'text').toMap(),
-      );
+      ).unawaited();
     } catch (e, stack) {
       developer.log(
         'Error sharing text: $e',
@@ -52,10 +53,10 @@ class SharePlusService implements ShareService {
       await _sharePlus.share(ShareParams(text: url, subject: subject));
 
       // Track share usage
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.shareUsed,
         const ClipboardItemSharedParams(contentType: 'url').toMap(),
-      );
+      ).unawaited();
     } catch (e, stack) {
       developer.log(
         'Error sharing URL: $e',
@@ -75,10 +76,10 @@ class SharePlusService implements ShareService {
       await _sharePlus.share(ShareParams(subject: subject, files: [file]));
 
       // Track share usage
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.shareUsed,
         const ClipboardItemSharedParams(contentType: 'file').toMap(),
-      );
+      ).unawaited();
     } catch (e, stack) {
       developer.log(
         'Error sharing file: $e',
@@ -97,10 +98,10 @@ class SharePlusService implements ShareService {
 
       await _sharePlus.share(ShareParams(subject: subject, files: [image]));
 
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.shareUsed,
         const ClipboardItemSharedParams(contentType: 'image').toMap(),
-      );
+      ).unawaited();
     } catch (e, stack) {
       developer.log(
         'Error sharing image: $e',
@@ -160,10 +161,10 @@ class SharePlusService implements ShareService {
       await _sharePlus.share(ShareParams(subject: subject, files: [image]));
 
       // Track share usage only on success
-      await Analytics.track(
+      Analytics.track(
         AnalyticsEvent.shareUsed,
         const ClipboardItemSharedParams(contentType: 'image').toMap(),
-      );
+      ).unawaited();
     } catch (e, stack) {
       // Log and rethrow
       developer.log(

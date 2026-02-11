@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/utils/utils.dart';
@@ -34,6 +35,16 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
 
   Future<void> _onAuthStateChanged(User? user) async {
     final effectiveUser = user ?? User.anonymous();
+
+    final isSameUser =
+        _currentUserId == effectiveUser.id && _localSubscription != null;
+    if (isSameUser) {
+      log(
+        'SettingsCubit: Auth state changed but user is '
+        'the same (${effectiveUser.id}), no action needed.',
+      );
+      return;
+    }
 
     if (_currentUserId == effectiveUser.id && _localSubscription != null) {
       return;
@@ -92,21 +103,17 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
                 ),
               );
 
-              unawaited(
-                Observability.captureException(
-                  error,
-                  stackTrace: stack,
-                  hint: {'operation': 'watch_local_settings'},
-                ),
-              );
+              Observability.captureException(
+                error,
+                stackTrace: stack,
+                hint: {'operation': 'watch_local_settings'},
+              ).unawaited();
 
-              unawaited(
-                Observability.breadcrumb(
-                  'Local clipboard watch failed',
-                  category: 'clipboard',
-                  level: ObservabilityLevel.error,
-                ),
-              );
+              Observability.breadcrumb(
+                'Local clipboard watch failed',
+                category: 'clipboard',
+                level: ObservabilityLevel.error,
+              ).unawaited();
             },
           );
 
@@ -117,7 +124,23 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
       emit(state.copyWith(settings: state.settings.toSuccess(local)));
 
       // Start realtime (instant sync after remote updates)
+
+      //log userId, isAnonymous and state.settings.value.isAnonymous
+      log(
+        'SettingsCubit.boot: userId=$userId, isAnonymous=$isAnonymous,'
+        ' settings.isAnonymous=${state.settings.value?.isAnonymous}',
+      );
+
       if (!isAnonymous) {
+        log(
+          'SettingsCubit.boot: Starting refresh  and realtime for user $userId',
+        );
+        await settingsRepository.refresh(userId);
+
+        log(
+          'SettingsCubit.boot: Finished refresh, '
+          'starting realtime for user $userId',
+        );
         await settingsRepository.startRealtime(userId);
       }
     } catch (e) {

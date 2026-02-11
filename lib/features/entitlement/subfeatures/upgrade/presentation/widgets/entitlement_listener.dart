@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/di/di.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
@@ -28,8 +27,8 @@ class EntitlementListener extends StatelessWidget {
             final l10n = context.l10n;
             final settingsCubit = context.read<SettingsCubit>();
 
-            unawaited(getIt<WindowController>().showAsOverlay());
-            unawaited(Analytics.track(AnalyticsEvent.proActivated));
+            getIt<WindowController>().showAsOverlay().unawaited();
+            Analytics.track(AnalyticsEvent.proActivated).unawaited();
 
             // ensure max history items is at least 5000 for Pro users
             if (settingsCubit.state.maxHistoryItems <

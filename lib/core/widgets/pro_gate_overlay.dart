@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
@@ -61,7 +62,9 @@ class ProGateOverlay extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 // Track overlay opened event
-                Analytics.track(AnalyticsEvent.proGateOverlayOpened);
+                Analytics.track(
+                  AnalyticsEvent.proGateOverlayOpened,
+                ).unawaited();
                 onUpgradeTap?.call();
               },
               borderRadius: BorderRadius.circular(12),

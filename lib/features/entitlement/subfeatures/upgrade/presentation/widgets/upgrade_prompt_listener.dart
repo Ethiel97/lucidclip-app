@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/app_routes.gr.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
@@ -45,12 +44,10 @@ class UpgradePromptListener extends StatelessWidget {
         final source = state.source;
         final upgradeSource = mapProFeatureSourceToUpgradeSource(source);
 
-        unawaited(
-          Analytics.track(
-            AnalyticsEvent.upgradePromptShown,
-            UpgradePromptShownParams(source: upgradeSource).toMap(),
-          ),
-        );
+        Analytics.track(
+          AnalyticsEvent.upgradePromptShown,
+          UpgradePromptShownParams(source: upgradeSource).toMap(),
+        ).unawaited();
 
         await showDialog<void>(
           context: context,

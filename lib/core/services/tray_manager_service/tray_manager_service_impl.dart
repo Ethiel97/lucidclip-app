@@ -347,6 +347,8 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
         await _openSettings();
       case 'send_feedback':
         await _sendFeedback();
+      case 'about':
+        await _showAboutDialog();
       case 'quit':
         await _quit();
       default:
@@ -486,6 +488,31 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
     } catch (e, stackTrace) {
       developer.log(
         'Error requesting feedback',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'TrayManagerService',
+      );
+    }
+  }
+
+  /// Show About dialog
+  Future<void> _showAboutDialog() async {
+    try {
+      // Show the window as an overlay if it's hidden
+      await windowController.showAsOverlay();
+
+      // Navigate to settings with the about section
+      await appRouter.navigate(
+        SettingsRoute(section: SettingsSection.about.name),
+      );
+
+      developer.log(
+        'About dialog opened from tray menu',
+        name: 'TrayManagerService',
+      );
+    } catch (e, stackTrace) {
+      developer.log(
+        'Error showing about dialog',
         error: e,
         stackTrace: stackTrace,
         name: 'TrayManagerService',

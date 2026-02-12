@@ -17,7 +17,7 @@ import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 
-//TODO(Ethiel97): Add excluded apps management
+// TODO(Ethiel97): Fix scroll to section
 class SettingsView extends StatefulWidget {
   const SettingsView({required this.section, super.key});
 
@@ -31,13 +31,13 @@ class _SettingsViewState extends State<SettingsView> {
   final ScrollController _scrollController = ScrollController();
 
   final Map<String, GlobalKey> _sectionKeys = {
-    SettingsSection.usage.name: GlobalKey(),
-    SettingsSection.history.name: GlobalKey(),
-    SettingsSection.appearance.name: GlobalKey(),
-    SettingsSection.privacy.name: GlobalKey(),
-    SettingsSection.shortcuts.name: GlobalKey(),
-    SettingsSection.sync.name: GlobalKey(),
-    SettingsSection.about.name: GlobalKey(),
+    SettingsSection.usage.name: GlobalKey(debugLabel: 'usage'),
+    SettingsSection.history.name: GlobalKey(debugLabel: 'history'),
+    SettingsSection.appearance.name: GlobalKey(debugLabel: 'appearance'),
+    SettingsSection.privacy.name: GlobalKey(debugLabel: 'privacy'),
+    SettingsSection.shortcuts.name: GlobalKey(debugLabel: 'shortcuts'),
+    SettingsSection.sync.name: GlobalKey(debugLabel: 'sync'),
+    SettingsSection.about.name: GlobalKey(debugLabel: 'about'),
   };
 
   @override
@@ -68,15 +68,25 @@ class _SettingsViewState extends State<SettingsView> {
 
   void _scrollToSection(String section) {
     final keyContext = _sectionKeys[section]?.currentContext;
-    if (keyContext != null) {
-      // Future.delayed(const Duration(milliseconds: 500), () {
-      if (!keyContext.mounted) return;
+    if (keyContext != null && keyContext.mounted) {
       Scrollable.ensureVisible(
         keyContext,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-      // });
+    } else {
+      // Use a delayed retry to allow accordion expansion
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if (!mounted) return;
+        final retryContext = _sectionKeys[section]?.currentContext;
+        if (retryContext != null && retryContext.mounted) {
+          Scrollable.ensureVisible(
+            retryContext,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
     }
   }
 
@@ -320,6 +330,30 @@ class _SettingsViewState extends State<SettingsView> {
                           }
                         },
                       ),
+                  ],
+                ),
+
+                // About Section
+                SettingsSectionGroupAccordion(
+                  initiallyExpanded: false,
+                  key: _sectionKeys[SettingsSection.about.name],
+                  icon: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
+                  ),
+                  title: l10n.about.sentenceCase,
+                  children: [
+                    SettingsNavigationItem(
+                      title: l10n.aboutLucidClip,
+                      description: l10n.aboutDescription,
+                      valueText: null,
+                      onTap: () async {
+                        await showDialog<void>(
+                          context: context,
+                          barrierColor: Colors.black.withValues(alpha: 0.55),
+                          builder: (_) => const AboutAppDialog(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],

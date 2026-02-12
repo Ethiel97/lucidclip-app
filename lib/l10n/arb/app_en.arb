@@ -4,6 +4,14 @@
   "@about": {
     "description": "Label for the About section"
   },
+  "aboutDescription": "A modern clipboard manager that helps you keep your clipboard history under control.",
+  "@aboutDescription": {
+    "description": "Description text for the About section"
+  },
+  "aboutLucidClip": "About LucidClip",
+  "@aboutLucidClip": {
+    "description": "Title for the About dialog"
+  },
   "accessibilityPermissionDescription": "LucidClip needs permission to control your Mac in order to perform this action.",
   "@accessibilityPermissionDescription": {
     "description": "Description text for accessibility permission dialog"
@@ -23,6 +31,10 @@
   "allTypes": "All Types",
   "@allTypes": {
     "description": "Label for the All Types filter"
+  },
+  "appBuildInfo": "App Build Info",
+  "@appBuildInfo": {
+    "description": "Label for app build info"
   },
   "appExcludedFromTracking": "{appName} excluded from tracking",
   "@appExcludedFromTracking": {
@@ -189,6 +201,10 @@
   "@clipboardHistory": {
     "description": "Tray menu item for clipboard history submenu"
   },
+  "close": "Close",
+  "@close": {
+    "description": "Button text to close a dialog or window"
+  },
   "code": "Code",
   "@code": {
     "description": "Label for Code input"
@@ -236,6 +252,28 @@
   "@copyToClipboard": {
     "description": "Button text to copy content to the clipboard"
   },
+  "copyright": "© {year} LucidClip. All rights reserved.",
+  "@copyright": {
+    "description": "Copyright text",
+    "placeholders": {
+      "year": {
+        "type": "String",
+        "description": "Current year",
+        "example": "2024"
+      }
+    }
+  },
+  "couldNotOpenLink": "Could not open link {link}",
+  "@couldNotOpenLink": {
+    "description": "Error message when a link cannot be opened",
+    "placeholders": {
+      "link": {
+        "type": "String",
+        "description": "The link that could not be opened",
+        "example": "https://example.com"
+      }
+    }
+  },
   "couldNotPasteToApp": "Sorry! We couldn't paste to the app. Please try again.",
   "@couldNotPasteToApp": {
     "description": "Error message shown when unable to paste to a specific app"
@@ -282,6 +320,10 @@
   "errorOccurred": "An error occurred. Please try again later.",
   "@errorOccurred": {
     "description": "Error message shown when an error occurs"
+  },
+  "errorOpeningLink": "Error opening link",
+  "@errorOpeningLink": {
+    "description": "Error message when there is an issue opening a link"
   },
   "exclude": "Exclude",
   "@exclude": {
@@ -591,6 +633,10 @@
   "privacy": "Privacy",
   "@privacy": {
     "description": "Label for the Privacy settings"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Label for privacy policy link"
   },
   "privateSessionDuration": "Private Session Duration",
   "@privateSessionDuration": {
@@ -925,6 +971,10 @@
   "@tags": {
     "description": "Label for the tags feature"
   },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Label for terms of service link"
+  },
   "textOnly": "Text Only",
   "@textOnly": {
     "description": "Label for the Text Only filter"
@@ -1017,6 +1067,26 @@
   "version": "Version",
   "@version": {
     "description": "Label for the app version"
+  },
+  "versionInfo": "Version {version} (Build {buildNumber})",
+  "@versionInfo": {
+    "description": "Version information with build number",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "description": "App version number",
+        "example": "1.10.0"
+      },
+      "buildNumber": {
+        "type": "String",
+        "description": "App build number",
+        "example": "35"
+      }
+    }
+  },
+  "website": "Website",
+  "@website": {
+    "description": "Label for website link"
   },
   "weeksCount": "{count, plural, =0 {0 week} =1 {1 week} other {{count} weeks}}",
   "@weeksCount": {

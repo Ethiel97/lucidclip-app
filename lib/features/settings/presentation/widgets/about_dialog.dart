@@ -28,6 +28,19 @@ class _AboutAppDialogState extends State<AboutAppDialog> {
     _loadPackageInfo();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_versionInfo.isEmpty && _packageInfo != null) {
+      setState(() {
+        _versionInfo = context.l10n.versionInfo(
+          _packageInfo!.version,
+          _packageInfo!.buildNumber,
+        );
+      });
+    }
+  }
+
   Future<void> _loadPackageInfo() async {
     try {
       final info = await PackageInfo.fromPlatform();
@@ -59,9 +72,7 @@ class _AboutAppDialogState extends State<AboutAppDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                context.l10n.couldNotOpenLink(urlString).sentenceCase,
-              ),
+              content: Text(context.l10n.couldNotOpenLink(urlString)),
               behavior: SnackBarBehavior.floating,
             ),
           );

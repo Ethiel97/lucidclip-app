@@ -177,6 +177,10 @@
   "@clipboardCaptureStarted": {
     "description": "Message shown when clipboard capture has started"
   },
+  "close": "Close",
+  "@close": {
+    "description": "Button text to close a dialog or window"
+  },
   "clipboardFull": "Clipboard full!",
   "@clipboardFull": {
     "description": "Message shown when the clipboard is full"

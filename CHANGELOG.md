@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.9.0...v1.10.0) (2026-02-12)
+
+
+### Features
+
+* **analytics:** add screen tracking events and navigator observer for analytics ([#124](https://github.com/Ethiel97/lucidclip-app/issues/124)) ([58b60a2](https://github.com/Ethiel97/lucidclip-app/commit/58b60a22c6a2bb0475da2e567862650226dc9558))
+
 ## [1.9.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.8.2...v1.9.0) (2026-02-11)
 
 

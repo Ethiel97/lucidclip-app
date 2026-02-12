@@ -31,6 +31,8 @@ class AnalyticsEvent {
   static const upgradePromptShown = 'upgrade_prompt_shown';
   static const upgradeClicked = 'upgrade_clicked';
   static const proActivated = 'pro_activated';
+  static const screenEntered = 'screen_entered';
+  static const screenExited = 'screen_exited';
 
   // Retention events
   static const appOpened = 'app_opened';

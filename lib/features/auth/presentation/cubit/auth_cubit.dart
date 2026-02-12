@@ -98,17 +98,20 @@ class AuthCubit extends HydratedCubit<AuthState> {
     emit(state.copyWith(user: state.user.toLoading()));
 
     try {
+      Observability.breadcrumb(
+        'Initiating GitHub sign-in',
+        category: 'auth',
+      ).unawaited();
+
       final user = await _authRepository.signInWithGitHub();
 
       if (user != null && !user.isAnonymous) {
         emit(state.copyWith(user: state.user.toSuccess(user)));
 
-        unawaited(
-          Observability.breadcrumb(
-            'GitHub sign-in successful',
-            category: 'auth',
-          ),
-        );
+        Observability.breadcrumb(
+          'GitHub sign-in successful',
+          category: 'auth',
+        ).unawaited();
       } else {
         emit(
           state.copyWith(
@@ -149,7 +152,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
 
       await _authRepository.signOut();
       emit(state.copyWith(logoutResult: state.logoutResult.toSuccess(null)));
-    } catch (e) {
+    } catch (e, stack) {
       emit(
         state.copyWith(
           logoutResult: state.logoutResult.toError(
@@ -161,6 +164,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       Observability.captureException(
         e,
         hint: {'operation': 'signout'},
+        stackTrace: stack,
       ).unawaited();
     }
   }

@@ -261,7 +261,7 @@ class ClipboardDetailCubit extends Cubit<ClipboardDetailState> {
         operationType: operationType,
         userId: clipboardItem.userId.isNotEmpty
             ? clipboardItem.userId
-            : 'guest',
+            : 'anonymous',
 
         createdAt: now,
         // Recommandé si ton entity le supporte :

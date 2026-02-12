@@ -24,7 +24,7 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
     try {
       // Get current user
       final user = await authRepository.getCurrentUser();
-      final userId = user?.id ?? 'guest';
+      final userId = user?.id ?? 'anonymous';
 
       final settings = await settingsRepository.load(userId);
       final retentionDays = settings?.retentionDays ?? defaultRetentionDays;

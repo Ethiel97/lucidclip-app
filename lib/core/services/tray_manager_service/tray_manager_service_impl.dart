@@ -207,7 +207,7 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
             key: 'show_hide',
             label:
                 '${l10n?.showHideWindow ?? 'Show/Hide Window'} '
-                '=> $AppConstants.toggleWindowShortcut',
+                '=> ${AppConstants.toggleWindowShortcut}',
           ),
           MenuItem.separator(),
           MenuItem.submenu(

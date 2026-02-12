@@ -125,11 +125,13 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   Future<void> _clearLocalData() async {
-    await _secureStorage.delete(key: SecureStorageConstants.authToken);
-    await _secureStorage.delete(key: SecureStorageConstants.userId);
-    await _secureStorage.delete(key: SecureStorageConstants.userEmail);
-    await _secureStorage.delete(key: SecureStorageConstants.user);
-    log('Local user data cleared.');
+    try {
+      await _secureStorage.delete(key: SecureStorageConstants.authToken);
+      await _secureStorage.delete(key: SecureStorageConstants.userId);
+      await _secureStorage.delete(key: SecureStorageConstants.userEmail);
+      await _secureStorage.delete(key: SecureStorageConstants.user);
+      log('Local user data cleared.');
+    } catch (_) {}
   }
 
   @override

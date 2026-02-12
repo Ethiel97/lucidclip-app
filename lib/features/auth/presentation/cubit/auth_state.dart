@@ -36,10 +36,7 @@ class AuthState extends Equatable {
       'user.hasData: ${user.hasData}, user.isSuccess: ${user.isSuccess},'
       ' userId: $userId, userEmail: $userEmail',
     );
-    return user.hasData &&
-        user.isSuccess &&
-        (userId?.isNotEmpty ?? false) &&
-        (userEmail?.isNotEmpty ?? false);
+    return user.hasData && user.isSuccess && !(user()?.isAnonymous ?? true);
   }
 
   /// Check if authentication is in progress

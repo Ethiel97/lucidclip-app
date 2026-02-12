@@ -127,6 +127,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       final model = UserSettingsModel.fromEntity(updatedSettings);
 
+      log('SettingsRepositoryImpl.update: updating settings: $model');
+
       // Update local first for immediate feedback
       await localDataSource.upsertSettings(model);
 

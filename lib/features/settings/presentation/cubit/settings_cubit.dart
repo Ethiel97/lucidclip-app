@@ -63,7 +63,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     emit(const SettingsState());
   }
 
-  Future<void> boot(String userId, {bool isAnonymous = false}) async {
+  Future<void> boot(String userId, {bool isAnonymous = true}) async {
     _currentUserId = userId;
 
     emit(state.copyWith(settings: state.settings.toLoading()));

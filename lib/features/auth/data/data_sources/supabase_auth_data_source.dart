@@ -115,9 +115,10 @@ class SupabaseAuthDataSource implements AuthDataSource {
     try {
       await _supabase.auth.signOut();
       await _clearLocalData();
-    } catch (e) {
+    } catch (e, stack) {
       Observability.captureException(
         e,
+        stackTrace: stack,
         hint: {'operation': 'signout'},
       ).unawaited();
       throw AuthenticationException('An error occurred during sign out: $e');
@@ -125,11 +126,15 @@ class SupabaseAuthDataSource implements AuthDataSource {
   }
 
   Future<void> _clearLocalData() async {
-    await _secureStorage.delete(key: SecureStorageConstants.authToken);
-    await _secureStorage.delete(key: SecureStorageConstants.userId);
-    await _secureStorage.delete(key: SecureStorageConstants.userEmail);
-    await _secureStorage.delete(key: SecureStorageConstants.user);
-    log('Local user data cleared.');
+    try {
+      await _secureStorage.delete(key: SecureStorageConstants.authToken);
+      await _secureStorage.delete(key: SecureStorageConstants.userId);
+      await _secureStorage.delete(key: SecureStorageConstants.userEmail);
+      await _secureStorage.delete(key: SecureStorageConstants.user);
+      log('Local user data cleared.');
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
@@ -142,7 +147,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
       }
 
       return UserModel.fromSupabaseUser(currentUser);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Observability.captureException(
+        e,
+        stackTrace: stackTrace,
+        hint: {'operation': 'getCurrentUser'},
+      ).unawaited();
       log('Error getting current user: $e');
       return null;
     }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/app/routes/routes.dart';
@@ -175,7 +176,12 @@ class _AppViewState extends State<_AppView> with WindowListener {
                 themeMode: themeMode,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
-                routerConfig: appRouter.config(),
+                routerConfig: appRouter.config(
+                  navigatorObservers: () => [
+                    NavigatorAnalyticsObserver(),
+                    AutoRouteObserver(),
+                  ],
+                ),
               ),
             );
           },

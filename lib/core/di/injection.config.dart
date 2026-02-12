@@ -21,7 +21,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:lucid_clip/core/analytics/analytics_module.dart' as _i169;
 import 'package:lucid_clip/core/analytics/analytics_service.dart' as _i616;
-import 'package:lucid_clip/core/analytics/firebase_analytics_service.dart'
+import 'package:lucid_clip/core/analytics/impl/firebase_analytics_service.dart'
     as _i666;
 import 'package:lucid_clip/core/analytics/retention_tracker.dart' as _i936;
 import 'package:lucid_clip/core/clipboard_manager/base_clipboard_manager.dart'

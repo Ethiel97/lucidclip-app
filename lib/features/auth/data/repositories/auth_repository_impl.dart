@@ -37,6 +37,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<String?> get currentUserId => _dataSource.authStateChanges
-      .firstWhere((user) => user != null)
-      .then((user) => user?.id ?? 'anonymous');
+      .firstWhere((user) => user != null && user.id != 'anonymous')
+      .then((user) => user?.id);
 }

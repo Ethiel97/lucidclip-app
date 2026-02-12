@@ -115,9 +115,10 @@ class SupabaseAuthDataSource implements AuthDataSource {
     try {
       await _supabase.auth.signOut();
       await _clearLocalData();
-    } catch (e) {
+    } catch (e, stack) {
       Observability.captureException(
         e,
+        stackTrace: stack,
         hint: {'operation': 'signout'},
       ).unawaited();
       throw AuthenticationException('An error occurred during sign out: $e');
@@ -131,7 +132,9 @@ class SupabaseAuthDataSource implements AuthDataSource {
       await _secureStorage.delete(key: SecureStorageConstants.userEmail);
       await _secureStorage.delete(key: SecureStorageConstants.user);
       log('Local user data cleared.');
-    } catch (_) {}
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
@@ -144,7 +147,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
       }
 
       return UserModel.fromSupabaseUser(currentUser);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      Observability.captureException(
+        e,
+        stackTrace: stackTrace,
+        hint: {'operation': 'getCurrentUser'},
+      ).unawaited();
       log('Error getting current user: $e');
       return null;
     }

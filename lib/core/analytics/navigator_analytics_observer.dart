@@ -12,11 +12,13 @@ class NavigatorAnalyticsObserver extends AutoRouteObserver {
 
   @override
   void didInitTabRoute(TabPageRoute route, TabPageRoute? previousRoute) {
+    super.didInitTabRoute(route, previousRoute);
     _logScreenView(route.name, previousRoute?.name);
   }
 
   @override
   void didChangeTabRoute(TabPageRoute route, TabPageRoute previousRoute) {
+    super.didChangeTabRoute(route, previousRoute);
     _logScreenView(route.name, previousRoute.name);
   }
 

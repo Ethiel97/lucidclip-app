@@ -68,25 +68,27 @@ class _SettingsViewState extends State<SettingsView> {
 
   void _scrollToSection(String section) {
     final keyContext = _sectionKeys[section]?.currentContext;
+
     if (keyContext != null && keyContext.mounted) {
-      Scrollable.ensureVisible(
-        keyContext,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scrollable.ensureVisible(
+          keyContext,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      });
     } else {
-      // Use a delayed retry to allow accordion expansion
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (!mounted) return;
-        final retryContext = _sectionKeys[section]?.currentContext;
-        if (retryContext != null && retryContext.mounted) {
+      if (!mounted) return;
+      final retryContext = _sectionKeys[section]?.currentContext;
+      if (retryContext != null && retryContext.mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           Scrollable.ensureVisible(
             retryContext,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
-        }
-      });
+        });
+      }
     }
   }
 

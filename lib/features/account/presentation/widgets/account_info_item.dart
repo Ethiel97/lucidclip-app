@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:lucid_clip/core/theme/theme.dart';
-import 'package:lucid_clip/l10n/l10n.dart';
+import 'package:lucid_clip/core/widgets/copyable_content.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 class AccountInfoItem extends StatelessWidget {
@@ -54,30 +52,16 @@ class AccountInfoItem extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          if (copyable)
-            InkWell(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: value));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(context.l10n.copiedToClipboard(title)),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.sm),
-                child: HugeIcon(
-                  icon: HugeIcons.strokeRoundedCopy01,
-                  size: 18,
-                  color: colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
+
+          CopyableContent(
+            copyable: copyable,
+            title: title,
+            value: value,
+            child: Text(
+              value,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface.toTinyColor().darken(5).color,
               ),
-            ),
-          Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.toTinyColor().darken(5).color,
             ),
           ),
         ],

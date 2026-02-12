@@ -15,7 +15,7 @@ class SettingsNavigationItem extends StatelessWidget {
 
   final String title;
   final String description;
-  final String valueText;
+  final String? valueText;
   final VoidCallback onTap;
   final Widget? leading;
 
@@ -71,26 +71,28 @@ class SettingsNavigationItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.md),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.sm,
-                vertical: AppSpacing.xs,
-              ),
-              decoration: BoxDecoration(
-                color: colorScheme.tertiary,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: 0.5),
+
+            if (valueText != null)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: colorScheme.tertiary,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: colorScheme.outline.withValues(alpha: 0.5),
+                  ),
+                ),
+                child: Text(
+                  valueText!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-              child: Text(
-                valueText,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
             const SizedBox(width: AppSpacing.sm),
             HugeIcon(
               icon: HugeIcons.strokeRoundedArrowRight01,

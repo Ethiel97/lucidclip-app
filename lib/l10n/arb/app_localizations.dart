@@ -100,6 +100,18 @@ abstract class AppLocalizations {
   /// **'About'**
   String get about;
 
+  /// Description text for the About section
+  ///
+  /// In en, this message translates to:
+  /// **'A modern clipboard manager that helps you keep your clipboard history under control.'**
+  String get aboutDescription;
+
+  /// Title for the About dialog
+  ///
+  /// In en, this message translates to:
+  /// **'About LucidClip'**
+  String get aboutLucidClip;
+
   /// Description text for accessibility permission dialog
   ///
   /// In en, this message translates to:
@@ -129,6 +141,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All Types'**
   String get allTypes;
+
+  /// Label for app build info
+  ///
+  /// In en, this message translates to:
+  /// **'App Build Info'**
+  String get appBuildInfo;
 
   /// Label for an app that is excluded from tracking
   ///
@@ -322,6 +340,12 @@ abstract class AppLocalizations {
   /// **'Clipboard History'**
   String get clipboardHistory;
 
+  /// Button text to close a dialog or window
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
   /// Label for Code input
   ///
   /// In en, this message translates to:
@@ -382,6 +406,18 @@ abstract class AppLocalizations {
   /// **'Copy to Clipboard'**
   String get copyToClipboard;
 
+  /// Copyright text
+  ///
+  /// In en, this message translates to:
+  /// **'© {year} LucidClip. All rights reserved.'**
+  String copyright(String year);
+
+  /// Error message when a link cannot be opened
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open link {link}'**
+  String couldNotOpenLink(String link);
+
   /// Error message shown when unable to paste to a specific app
   ///
   /// In en, this message translates to:
@@ -441,6 +477,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred. Please try again later.'**
   String get errorOccurred;
+
+  /// Error message when there is an issue opening a link
+  ///
+  /// In en, this message translates to:
+  /// **'Error opening link'**
+  String get errorOpeningLink;
 
   /// Button text to exclude an app from tracking
   ///
@@ -831,6 +873,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy'**
   String get privacy;
+
+  /// Label for privacy policy link
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
 
   /// Label for private session duration options
   ///
@@ -1258,6 +1306,12 @@ abstract class AppLocalizations {
   /// **'Tags'**
   String get tags;
 
+  /// Label for terms of service link
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
   /// Label for the Text Only filter
   ///
   /// In en, this message translates to:
@@ -1365,6 +1419,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// Version information with build number
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} (Build {buildNumber})'**
+  String versionInfo(String version, String buildNumber);
+
+  /// Label for website link
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get website;
 
   /// Label showing the number of weeks with pluralization
   ///

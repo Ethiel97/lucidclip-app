@@ -12,6 +12,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
+  String get aboutDescription =>
+      'A modern clipboard manager that helps you keep your clipboard history under control.';
+
+  @override
+  String get aboutLucidClip => 'About LucidClip';
+
+  @override
   String get accessibilityPermissionDescription =>
       'LucidClip needs permission to control your Mac in order to perform this action.';
 
@@ -26,6 +33,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allTypes => 'All Types';
+
+  @override
+  String get appBuildInfo => 'App Build Info';
 
   @override
   String appExcludedFromTracking(String appName) {
@@ -147,6 +157,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clipboardHistory => 'Clipboard History';
 
   @override
+  String get close => 'Close';
+
+  @override
   String get code => 'Code';
 
   @override
@@ -177,6 +190,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copyToClipboard => 'Copy to Clipboard';
+
+  @override
+  String copyright(String year) {
+    return '© $year LucidClip. All rights reserved.';
+  }
+
+  @override
+  String couldNotOpenLink(String link) {
+    return 'Could not open link $link';
+  }
 
   @override
   String get couldNotPasteToApp =>
@@ -217,6 +240,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorOccurred => 'An error occurred. Please try again later.';
+
+  @override
+  String get errorOpeningLink => 'Error opening link';
 
   @override
   String get exclude => 'Exclude';
@@ -452,6 +478,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacy => 'Privacy';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
 
   @override
   String get privateSessionDuration => 'Private Session Duration';
@@ -692,6 +721,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tags => 'Tags';
 
   @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
   String get textOnly => 'Text Only';
 
   @override
@@ -752,6 +784,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String versionInfo(String version, String buildNumber) {
+    return 'Version $version (Build $buildNumber)';
+  }
+
+  @override
+  String get website => 'Website';
 
   @override
   String weeksCount(int count) {

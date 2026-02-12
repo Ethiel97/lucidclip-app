@@ -502,7 +502,7 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
       await windowController.showAsOverlay();
 
       // Navigate to settings with the about section
-      getIt<AppRouter>().navigate(
+      await appRouter.navigate(
         SettingsRoute(section: SettingsSection.about.name),
       );
 

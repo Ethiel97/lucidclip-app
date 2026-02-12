@@ -322,6 +322,29 @@ class _SettingsViewState extends State<SettingsView> {
                       ),
                   ],
                 ),
+
+                // About Section
+                SettingsSectionGroupAccordion(
+                  initiallyExpanded: false,
+                  key: _sectionKeys[SettingsSection.about.name],
+                  icon: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
+                  ),
+                  title: l10n.about.sentenceCase,
+                  children: [
+                    SettingsNavigationItem(
+                      title: l10n.aboutLucidClip,
+                      description: l10n.aboutDescription,
+                      onTap: () async {
+                        await showDialog<void>(
+                          context: context,
+                          barrierColor: Colors.black.withValues(alpha: 0.55),
+                          builder: (_) => const AboutAppDialog(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ],
             );
           },

@@ -1,4 +1,5 @@
 //GENERATED BARREL FILE
+export 'about_dialog.dart';
 export 'ignored_apps_tile.dart';
 export 'incognito_mode_toggle_button.dart';
 export 'settings_dropdown_item.dart';

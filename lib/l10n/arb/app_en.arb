@@ -1018,6 +1018,53 @@
   "@version": {
     "description": "Label for the app version"
   },
+  "versionInfo": "Version {version} (Build {buildNumber})",
+  "@versionInfo": {
+    "description": "Version information with build number",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "description": "App version number",
+        "example": "1.10.0"
+      },
+      "buildNumber": {
+        "type": "String",
+        "description": "App build number",
+        "example": "35"
+      }
+    }
+  },
+  "aboutLucidClip": "About LucidClip",
+  "@aboutLucidClip": {
+    "description": "Title for the About dialog"
+  },
+  "aboutDescription": "A modern clipboard manager that helps you keep your clipboard history under control.",
+  "@aboutDescription": {
+    "description": "Description text for the About section"
+  },
+  "copyright": "© {year} LucidClip. All rights reserved.",
+  "@copyright": {
+    "description": "Copyright text",
+    "placeholders": {
+      "year": {
+        "type": "String",
+        "description": "Current year",
+        "example": "2024"
+      }
+    }
+  },
+  "website": "Website",
+  "@website": {
+    "description": "Label for website link"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Label for privacy policy link"
+  },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Label for terms of service link"
+  },
   "weeksCount": "{count, plural, =0 {0 week} =1 {1 week} other {{count} weeks}}",
   "@weeksCount": {
     "description": "Label showing the number of weeks with pluralization",

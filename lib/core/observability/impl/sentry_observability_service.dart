@@ -39,10 +39,13 @@ class SentryObservabilityService implements ObservabilityService {
     'action',
     'feature',
     // System context
+    'operation',
     'platform',
     'os_version',
     'app_version',
     'locale',
+    'email',
+    'userId',
   };
 
   @override

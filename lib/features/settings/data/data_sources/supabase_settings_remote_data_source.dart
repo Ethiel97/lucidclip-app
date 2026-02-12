@@ -84,6 +84,7 @@ class _SupabaseSettingsRemoteSubscription
   }
 
   @override
+  @disposeMethod
   Future<void> cancel() async {
     await _sub?.cancel();
     await _controller.close();

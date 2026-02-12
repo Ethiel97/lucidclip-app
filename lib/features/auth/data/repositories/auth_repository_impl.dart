@@ -13,7 +13,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User?> signInWithGitHub() async {
     final userModel = await _dataSource.signInWithGitHub();
-    return userModel?.toEntity();
+    return userModel?.toEntity() ?? User.anonymous();
   }
 
   @override
@@ -24,7 +24,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User?> getCurrentUser() async {
     final userModel = await _dataSource.getCurrentUser();
-    return userModel?.toEntity();
+    return userModel?.toEntity() ?? User.anonymous();
   }
 
   @override
@@ -37,6 +37,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<String?> get currentUserId => _dataSource.authStateChanges
-      .firstWhere((user) => user != null)
+      .firstWhere((user) => user != null && user.id != 'anonymous')
       .then((user) => user?.id);
 }

@@ -73,7 +73,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       if (user != null && !user.isAnonymous) {
         emit(state.copyWith(user: state.user.toSuccess(user)));
       } else {
-        emit(state.copyWith(user: const ValueWrapper<User?>()));
+        emit(state.copyWith(user: User.anonymous().toInitial()));
       }
     } catch (e) {
       emit(
@@ -115,7 +115,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
       } else {
         emit(
           state.copyWith(
-            user: state.user.toError(
+            user: User.anonymous().toError(
               const ErrorDetails(
                 message: 'GitHub sign in was cancelled or failed',
               ),
@@ -126,7 +126,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
     } catch (e) {
       emit(
         state.copyWith(
-          user: state.user.toError(
+          user: User.anonymous().toError(
             ErrorDetails(message: 'Failed to sign in with GitHub: $e'),
           ),
         ),
@@ -170,7 +170,7 @@ class AuthCubit extends HydratedCubit<AuthState> {
   }
 
   void clearState() {
-    emit(const AuthState());
+    emit(AuthState(user: User.anonymous().toInitial()));
   }
 
   Future<void> requestLogout() async {

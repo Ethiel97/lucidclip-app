@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.10.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.10.0...v1.10.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* Add About section with version info and app links ([#130](https://github.com/Ethiel97/lucidclip-app/issues/130)) ([6da6442](https://github.com/Ethiel97/lucidclip-app/commit/6da6442e30c1c0268297a1e6515d834d3027ccc7))
+* **auth:** update user handling to default to anonymous user ([#129](https://github.com/Ethiel97/lucidclip-app/issues/129)) ([9578716](https://github.com/Ethiel97/lucidclip-app/commit/9578716b8570e96a6e86cf4cd4f23249e54f01bc))
+* improve version info localization and section scrolling reliability ([#132](https://github.com/Ethiel97/lucidclip-app/issues/132)) ([88cc320](https://github.com/Ethiel97/lucidclip-app/commit/88cc320c6b8c28ee944d4a4db151bb0ba7e5f74a))
+
 ## [1.10.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.9.0...v1.10.0) (2026-02-12)
 
 

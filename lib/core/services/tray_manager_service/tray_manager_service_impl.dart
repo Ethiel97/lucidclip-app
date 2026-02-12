@@ -120,16 +120,10 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
   }
 
   /// Get the appropriate tray icon path for the current platform
-  String _getTrayIconPath() {
-    if (Platform.isMacOS) {
-      return 'assets/icons/icon_white.png';
-    } else if (Platform.isWindows) {
-      return 'assets/icons/icon.ico';
-    } else {
-      // Fallback for Linux or other platforms
-      return 'assets/icons/icon_white.png';
-    }
-  }
+  String _getTrayIconPath() => switch (Platform.operatingSystem) {
+    'windows' => 'assets/icons/icon.ico',
+    _ => 'assets/icons/icon_white.png', // Fallback for macOS and Linux
+  };
 
   /// Update the tray menu with current clipboard items
   @override
@@ -142,6 +136,16 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
       final settingsCubit = getIt<SettingsCubit>();
       final isIncognito =
           settingsCubit.state.settings.value?.incognitoMode ?? false;
+
+      final toggleWindowShortcut =
+          settingsCubit.state.settings.value?.shortcuts.entries
+              .firstWhere(
+                (entry) =>
+                    ShortcutAction.fromKey(entry.key)?.isToggleWindow ?? false,
+                orElse: () => const MapEntry('', ''),
+              )
+              .value ??
+          AppConstants.toggleWindowShortcut;
 
       // Get localized strings if context is available
       final l10n = appRouter.navigatorKey.currentContext?.l10n;
@@ -207,7 +211,7 @@ class TrayManagerServiceImpl with TrayListener implements TrayManagerService {
             key: 'show_hide',
             label:
                 '${l10n?.showHideWindow ?? 'Show/Hide Window'} '
-                '=> ${AppConstants.toggleWindowShortcut}',
+                '=> $toggleWindowShortcut',
           ),
           MenuItem.separator(),
           MenuItem.submenu(

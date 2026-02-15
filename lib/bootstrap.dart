@@ -79,7 +79,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
     HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: HydratedStorageDirectory(
-        (await getTemporaryDirectory()).path,
+        (await getApplicationSupportDirectory()).path,
       ),
     );
 

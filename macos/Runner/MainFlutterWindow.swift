@@ -28,28 +28,35 @@ class MainFlutterWindow: NSWindow {
                 let app = NSWorkspace.shared.frontmostApplication
                 let bundleId = app?.bundleIdentifier ?? ""
                 let name = app?.localizedName ?? ""
+                let icon = app?.icon
 
-                let iconB64: String? = {
-                    guard let icon = app?.icon else {
-                        return nil
-                    }
-                    guard let tiff = icon.tiffRepresentation else {
-                        return nil
-                    }
-                    guard let bitmap = NSBitmapImageRep(data: tiff) else {
-                        return nil
-                    }
-                    guard let png = bitmap.representation(using: .png, properties: [:]) else {
-                        return nil
-                    }
-                    return png.base64EncodedString()
-                }()
+                // Move heavy image processing to background thread to avoid blocking main thread
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let iconB64: String? = {
+                        guard let icon = icon else {
+                            return nil
+                        }
+                        guard let tiff = icon.tiffRepresentation else {
+                            return nil
+                        }
+                        guard let bitmap = NSBitmapImageRep(data: tiff) else {
+                            return nil
+                        }
+                        guard let png = bitmap.representation(using: .png, properties: [:]) else {
+                            return nil
+                        }
+                        return png.base64EncodedString()
+                    }()
 
-                result([
-                    "bundle_id": bundleId,
-                    "name": name,
-                    "icon": iconB64 as Any
-                ])
+                    // Return result on main thread as required by Flutter method channel
+                    DispatchQueue.main.async {
+                        result([
+                            "bundle_id": bundleId,
+                            "name": name,
+                            "icon": iconB64 as Any
+                        ])
+                    }
+                }
 
             default:
                 result(FlutterMethodNotImplemented)

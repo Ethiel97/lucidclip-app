@@ -1,6 +1,6 @@
 name: lucid_clip
 description: Modern clipboard manager app
-version: 1.10.2+37
+version: 1.11.0+38
 publish_to: none
 
 environment:

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.10.2...v1.11.0) (2026-02-15)
+
+
+### Features
+
+* optimize stream subscriptions and refactor side effects architecture ([#142](https://github.com/Ethiel97/lucidclip-app/issues/142)) ([3efc011](https://github.com/Ethiel97/lucidclip-app/commit/3efc011d28133b2d0f6243fcf05d80b79f1f612c))
+
 ## [1.10.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.10.1...v1.10.2) (2026-02-15)
 
 

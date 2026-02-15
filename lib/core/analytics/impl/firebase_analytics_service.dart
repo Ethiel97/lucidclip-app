@@ -5,6 +5,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_service.dart';
 import 'package:lucid_clip/core/constants/constants.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 
 /// Firebase Analytics implementation of AnalyticsService.
 ///
@@ -54,7 +55,9 @@ class FirebaseAnalyticsService implements AnalyticsService {
       final sanitizedName = _sanitizeEventName(eventName);
 
       // Track the event using Firebase Analytics
-      await _analytics.logEvent(name: sanitizedName, parameters: parameters);
+      _analytics
+          .logEvent(name: sanitizedName, parameters: parameters)
+          .unawaited();
     } catch (e) {
       // Silently fail - analytics errors should not crash the app
       log(
@@ -73,7 +76,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
     try {
       // Set user ID in Firebase Analytics
       // Note: Only use hashed/anonymous identifiers, never PII
-      await _analytics.setUserId(id: userId);
+      _analytics.setUserId(id: userId).unawaited();
     } catch (e) {
       log(
         'Analytics error identifying user: $e',
@@ -90,7 +93,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
 
     try {
       // Clear user identification
-      await _analytics.setUserId();
+      _analytics.setUserId().unawaited();
     } catch (e) {
       log(
         'Analytics error clearing identity: $e',

@@ -100,7 +100,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
 /// Initializes Sentry with privacy-first configuration.
 Future<void> _initializeSentry(Future<void> Function() appRunner) async {
-  if (!AppConstants.isProd || AppConstants.sentryDsn.isEmpty) {
+  if (AppConstants.sentryDsn.isEmpty) {
     log('Sentry DSN not configured. Skipping Sentry initialization.');
     await appRunner();
     return;

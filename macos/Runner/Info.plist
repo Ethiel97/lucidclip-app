@@ -52,7 +52,7 @@
     <key>SUEnableAutomaticChecks</key>
     <true/>
     <key>SUScheduledCheckInterval</key>
-    <integer>21600</integer>
+    <integer>14400</integer>
     <key>SUFeedURL</key>
     <string>https://updates.lucidclip.app/macos/appcast.xml</string>
     <key>SUAllowsAutomaticUpdates</key>

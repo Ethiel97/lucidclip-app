@@ -65,7 +65,7 @@ class SentryObservabilityService implements ObservabilityService {
         final filteredContext = _filterContextData(hint);
         // Use withScope parameter to avoid blocking configureScope call
 
-        await Sentry.captureException(
+        Sentry.captureException(
           exception,
           stackTrace: stackTrace,
           withScope: (scope) {
@@ -76,15 +76,15 @@ class SentryObservabilityService implements ObservabilityService {
             }
           },
           hint: Hint.withMap(hint),
-        );
+        ).unawaited();
       } else {
-        await Sentry.captureException(exception, stackTrace: stackTrace);
+        Sentry.captureException(exception, stackTrace: stackTrace).unawaited();
       }
-    } catch (e, st) {
+    } catch (e, stack) {
       developer.log(
         'Failed to capture exception in Sentry',
         error: e,
-        stackTrace: st,
+        stackTrace: stack,
         name: 'SentryObservabilityService',
       );
     }
@@ -108,11 +108,11 @@ class SentryObservabilityService implements ObservabilityService {
         timestamp: DateTime.now(),
       );
       Sentry.addBreadcrumb(breadcrumb).unawaited();
-    } catch (e, st) {
+    } catch (e, stack) {
       developer.log(
         'Failed to add breadcrumb in Sentry',
         error: e,
-        stackTrace: st,
+        stackTrace: stack,
         name: 'SentryObservabilityService',
       );
     }
@@ -124,19 +124,21 @@ class SentryObservabilityService implements ObservabilityService {
     String? email,
     Map<String, String>? extras,
   }) async {
-    if (!isEnabled) return;
+    try {
+      if (!isEnabled) return;
 
       // Use configureScope in a non-blocking way by not awaiting it
       // This prevents blocking the main thread while still setting the user
       Sentry.configureScope((scope) {
-      await Sentry.configureScope((scope) {
-        scope.setUser(SentryUser(id: userId, email: email, data: extras));
+        scope
+            .setUser(SentryUser(id: userId, email: email, data: extras))
+            .unawaited();
       });
-    } catch (e, st) {
+    } catch (e, stack) {
       developer.log(
         'Failed to set user in Sentry',
         error: e,
-        stackTrace: st,
+        stackTrace: stack,
         name: 'SentryObservabilityService',
       );
     }
@@ -144,19 +146,17 @@ class SentryObservabilityService implements ObservabilityService {
 
   @override
   Future<void> clearUser() async {
-    if (!isEnabled) return;
+    try {
+      if (!isEnabled) return;
 
-      // Use configureScope in a non-blocking way by not awaiting it
-      // This prevents blocking the main thread while still clearing the user
       Sentry.configureScope((scope) {
-      await Sentry.configureScope((scope) {
-        scope.setUser(null);
+        scope.setUser(null).unawaited();
       });
-    } catch (e, st) {
+    } catch (e, stack) {
       developer.log(
         'Failed to clear user in Sentry',
         error: e,
-        stackTrace: st,
+        stackTrace: stack,
         name: 'SentryObservabilityService',
       );
     }
@@ -164,19 +164,19 @@ class SentryObservabilityService implements ObservabilityService {
 
   @override
   Future<void> setTag(String key, String value) async {
-    if (!isEnabled) return;
+    try {
+      if (!isEnabled) return;
 
       // Use configureScope in a non-blocking way by not awaiting it
       // This prevents blocking the main thread while still setting the tag
       Sentry.configureScope((scope) {
-      await Sentry.configureScope((scope) {
-        scope.setTag(key, value);
+        scope.setTag(key, value).unawaited();
       });
-    } catch (e, st) {
+    } catch (e, stack) {
       developer.log(
         'Failed to set tag in Sentry',
         error: e,
-        stackTrace: st,
+        stackTrace: stack,
         name: 'SentryObservabilityService',
       );
     }
@@ -188,12 +188,12 @@ class SentryObservabilityService implements ObservabilityService {
     if (!isEnabled) return;
 
     try {
-      await Sentry.close();
-    } catch (e, st) {
+      Sentry.close().unawaited();
+    } catch (e, stack) {
       developer.log(
         'Failed to close Sentry',
         error: e,
-        stackTrace: st,
+        stackTrace: stack,
         name: 'SentryObservabilityService',
       );
     }

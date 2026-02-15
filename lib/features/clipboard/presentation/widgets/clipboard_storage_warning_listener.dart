@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucid_clip/core/widgets/widgets.dart';
-import 'package:lucid_clip/features/clipboard/presentation/presentation.dart';
+import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
-import 'package:lucid_clip/features/settings/presentation/presentation.dart';
+import 'package:lucid_clip/features/settings/settings.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 

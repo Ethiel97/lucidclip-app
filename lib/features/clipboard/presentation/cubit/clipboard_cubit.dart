@@ -249,7 +249,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
       await _upsertClipboardItem(updatedItem);
 
       if (shouldEnqueueCopyOp) {
-        await _enqueueOutboxCopy(updatedItem.id);
+        _enqueueOutboxCopy(updatedItem.id).unawaited();
 
         // Track clipboard item used (duplicate/re-copy)
         Analytics.track(AnalyticsEvent.clipboardItemUsed).unawaited();
@@ -262,7 +262,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         .copyWith(lastUsedAt: now);
 
     await _upsertClipboardItem(newItem);
-    await _enqueueOutboxCopy(newItem.id);
+    _enqueueOutboxCopy(newItem.id).unawaited();
 
     // Track clipboard item captured (new item)
     Analytics.track(AnalyticsEvent.clipboardItemCaptured).unawaited();
@@ -336,7 +336,7 @@ class ClipboardCubit extends HydratedCubit<ClipboardState> {
         stackTrace: stackTrace,
         hint: {'operation': 'retention periodic_cleanup'},
       ).unawaited();
-    });
+    }).unawaited();
   }
 
   void _startPeriodicCleanup() {

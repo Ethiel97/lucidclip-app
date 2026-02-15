@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
+import 'package:lucid_clip/core/observability/observability.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
@@ -44,7 +45,6 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
       // This is much more efficient than fetching all items
       final items = await localClipboardRepository.getPotentiallyExpiredItems(
         cutoffDate: cutoffDate,
-        fetchMode: FetchMode.withoutIcons,
       );
 
       // Evaluate and delete expired items
@@ -73,6 +73,12 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
             );
           }
         } catch (e, stack) {
+          Observability.captureException(
+            e,
+            stackTrace: stack,
+            hint: {'operation': 'evaluateRetention'},
+          ).unawaited();
+
           developer.log(
             'Failed to evaluate retention for item ${item.id}: $e',
             name: 'RetentionCleanupService',

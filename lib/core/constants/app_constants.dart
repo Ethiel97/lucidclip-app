@@ -21,7 +21,13 @@ class AppConstants {
     'SUPABASE_API_KEY',
   );
 
-  static const firebaseApiKey = String.fromEnvironment('FIREBASE_API_KEY');
+  static const firebaseApiKeyWindows = String.fromEnvironment(
+    'FIREBASE_API_KEY_WINDOWS',
+  );
+
+  static const firebaseApiKeyMacos = String.fromEnvironment(
+    'FIREBASE_API_KEY_MACOS',
+  );
 
   static const monthlyProductId = String.fromEnvironment(
     'LUCID_MONTHLY_PRODUCT_ID',

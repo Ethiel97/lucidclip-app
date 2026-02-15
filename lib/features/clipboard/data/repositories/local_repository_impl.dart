@@ -6,12 +6,15 @@ import 'package:lucid_clip/core/errors/errors.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:lucid_clip/features/clipboard/domain/domain.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: LocalClipboardRepository)
 class LocalClipboardStoreImpl implements LocalClipboardRepository {
   LocalClipboardStoreImpl(this._localDataSource);
 
   final ClipboardLocalDataSource _localDataSource;
+
+  final Map<int, Stream<List<ClipboardItem>>> _watchLocalCache = {};
 
   @override
   Future<void> upsert(ClipboardItem item) async {
@@ -197,9 +200,18 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
       // is synchronous and lightweight
       // Heavy work (JSON decode, base64)
       // is already done in entryToModel on the DB isolate
-      return _localDataSource.watchAll(limit: limit).map((records) {
-        return records.map((r) => r.toEntity()).toList();
-      });
+
+      return _watchLocalCache
+          .putIfAbsent(limit, () {
+            return _localDataSource
+                .watchAll(limit: limit)
+                .debounceTime(const Duration(milliseconds: 100))
+                .map((records) {
+                  return records.map((r) => r.toEntity()).toList();
+                });
+          })
+          .distinct()
+          .shareReplay(maxSize: 1);
     } catch (e) {
       throw CacheException('Failed to watch all clipboard items: $e');
     }
@@ -209,6 +221,8 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Future<void> clear() async {
     await _localDataSource.clear();
+
+    _watchLocalCache.clear();
   }
 
   @override
@@ -231,7 +245,7 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
       ).unawaited();
 
       // Get all items only when we need to delete the oldest
-      final items = await getAll(fetchMode: FetchMode.withoutIcons);
+      final items = await getAll();
 
       final oldestUnpinned = items
           .where((e) => !e.isPinned)

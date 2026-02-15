@@ -10,6 +10,7 @@ import 'package:lucid_clip/core/platform/platform.dart';
 import 'package:lucid_clip/core/services/services.dart';
 import 'package:lucid_clip/features/settings/data/data.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
@@ -26,32 +27,40 @@ class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRemoteSubscription? _remoteSub;
   StreamSubscription<UserSettingsModel>? _remoteStreamSub;
 
+  final Map<String, Stream<UserSettings?>> _watchCache = {};
+
   @override
   Stream<UserSettings?> watchLocal(String userId) {
-    return localDataSource.watchSettings(userId).asyncMap((model) async {
-      if (model == null) return null;
+    return _watchCache.putIfAbsent(
+      userId,
+      () => localDataSource
+          .watchSettings(userId)
+          .asyncMap((model) async {
+            if (model == null) return null;
 
-      final entity = model.toEntity();
+            final entity = model.toEntity();
 
-      try {
-        final excluded = entity.excludedApps;
-        if (excluded.isEmpty) return entity;
+            try {
+              final excluded = entity.excludedApps;
+              if (excluded.isEmpty) return entity;
 
-        final updatedExcludedApps = <SourceApp>[];
-        for (final app in excluded) {
-          try {
-            final icon = await iconService.getIcon(app.bundleId);
-            updatedExcludedApps.add(app.copyWith(icon: icon ?? app.icon));
-          } catch (_) {
-            updatedExcludedApps.add(app);
-          }
-        }
+              final updatedExcludedApps = <SourceApp>[];
+              for (final app in excluded) {
+                try {
+                  final icon = await iconService.getIcon(app.bundleId);
+                  updatedExcludedApps.add(app.copyWith(icon: icon ?? app.icon));
+                } catch (_) {
+                  updatedExcludedApps.add(app);
+                }
+              }
 
-        return entity.copyWith(excludedApps: updatedExcludedApps);
-      } catch (_) {
-        return entity;
-      }
-    });
+              return entity.copyWith(excludedApps: updatedExcludedApps);
+            } catch (_) {
+              return entity;
+            }
+          })
+          .shareReplay(maxSize: 1),
+    );
   }
 
   @override
@@ -200,6 +209,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<void> clearLocal(String userId) =>
-      localDataSource.deleteSettings(userId);
+  Future<void> clearLocal(String userId) async {
+    await localDataSource.deleteSettings(userId);
+    _watchCache.remove(userId);
+  }
 }

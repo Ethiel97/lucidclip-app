@@ -53,6 +53,7 @@ class EntitlementCubit extends HydratedCubit<EntitlementState> {
   Future<void> _reset() async {
     await entitlementRepository.stopRealtime();
     await _localSubscription?.cancel();
+    await entitlementRepository.clearLocal(_currentUserId!);
     _localSubscription = null;
     _currentUserId = null;
     emit(const EntitlementState());

@@ -11,6 +11,7 @@ import 'package:lucid_clip/core/di/di.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_module.dart';
 import 'package:lucid_clip/core/services/services.dart';
+import 'package:lucid_clip/core/storage/storage.dart';
 import 'package:lucid_clip/firebase_options.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
@@ -30,13 +31,13 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
     log('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    super.onError(bloc, error, stackTrace);
     // Also capture in observability
     Observability.captureException(
       error,
       stackTrace: stackTrace,
       hint: {'bloc': bloc.runtimeType.toString()},
     ).unawaited();
-    super.onError(bloc, error, stackTrace);
   }
 }
 
@@ -57,17 +58,21 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
     Bloc.observer = const AppBlocObserver();
 
-    // Add cross-flavor configuration here
+    await EncryptedSharedPreferences.initialize(
+      AppConstants.secureStorageEncryptionKey,
+    );
+    final encryptedPrefs = EncryptedSharedPreferences.getInstance();
+
     try {
       await Future.wait<void>([
-        EncryptedSharedPreferences.initialize(
-          AppConstants.secureStorageEncryptionKey,
-        ),
         Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
         Supabase.initialize(
           anonKey: AppConstants.supabasePublishableKey,
-          url: AppConstants.supabaseProjectUrl,
+          authOptions: FlutterAuthClientOptions(
+            localStorage: EncryptedSupabaseStorage(encryptedPrefs),
+          ),
           debug: !AppConstants.isProd,
+          url: AppConstants.supabaseProjectUrl,
         ),
       ]);
     } catch (e) {

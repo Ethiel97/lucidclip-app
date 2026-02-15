@@ -8,10 +8,6 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   DriftClipboardLocalDataSource(this._db);
 
   final ClipboardDatabase _db;
-  
-  // Cache/share the stream across multiple subscribers
-  Stream<List<ClipboardItemModel>>? _cachedWatchAllStream;
-  int? _cachedLimit;
 
   @override
   Future<void> put(ClipboardItemModel item) async {
@@ -133,21 +129,10 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   @override
   Stream<List<ClipboardItemModel>> watchAll({required int limit}) {
     try {
-      // Return cached stream if limit hasn't changed
-      if (_cachedWatchAllStream != null && _cachedLimit == limit) {
-        return _cachedWatchAllStream!;
-      }
-
-      // Create new shared stream
-      _cachedLimit = limit;
-      _cachedWatchAllStream = _db
+      return _db
           .watchAllEntries(limit: limit)
           .debounceTime(const Duration(milliseconds: 100))
-          .map((rows) => rows.map(_db.entryToModel).toList())
-          .distinct()
-          .shareReplay(maxSize: 1); // Share stream and replay last value
-
-      return _cachedWatchAllStream!;
+          .map((rows) => rows.map(_db.entryToModel).toList());
     } catch (e) {
       rethrow;
     }

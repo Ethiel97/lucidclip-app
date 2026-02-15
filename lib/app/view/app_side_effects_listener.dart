@@ -16,24 +16,22 @@ class AppSideEffectsListener extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        ...AccessibilitySideEffects.listeners(),
-        ...AuthSideEffects.listeners(),
-        ...BillingSideEffects.listeners(),
-        ...ClipboardSideEffects.listeners(),
-        ...EntitlementSideEffects.listeners(),
-        ...FeedbackSideEffects.listeners(),
-        ...LogoutSideEffects.listeners(),
-        ...OnboardingSideEffects.listeners(),
-        ...SourceAppPrivacyControlSideEffects.listeners(),
-        ...UpgradePromptSideEffects.listeners(
-          monthlyProductId: AppConstants.monthlyProductId,
-          yearlyProductId: AppConstants.yearlyProductId,
-        ),
-      ],
-      child: child,
-    );
-  }
+  Widget build(BuildContext context) => MultiBlocListener(
+    listeners: [
+      ...AccessibilitySideEffects.listeners(),
+      ...AuthSideEffects.listeners(),
+      ...BillingSideEffects.listeners(),
+      ...ClipboardSideEffects.listeners(),
+      ...EntitlementSideEffects.listeners(),
+      ...FeedbackSideEffects.listeners(),
+      ...LogoutSideEffects.listeners(),
+      ...OnboardingSideEffects.listeners(),
+      ...SourceAppPrivacyControlSideEffects.listeners(),
+      ...UpgradePromptSideEffects.listeners(
+        monthlyProductId: AppConstants.monthlyProductId,
+        yearlyProductId: AppConstants.yearlyProductId,
+      ),
+    ],
+    child: child,
+  );
 }

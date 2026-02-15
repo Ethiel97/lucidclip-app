@@ -208,6 +208,11 @@ class StorageIndicator extends StatelessWidget {
                               label: Text(
                                 textAlign: TextAlign.start,
                                 l10n.upgradeToPro,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.2,
+                                  color: colorScheme.primary,
+                                ),
                               ),
                             ),
                         ],

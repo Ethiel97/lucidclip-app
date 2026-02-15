@@ -123,14 +123,31 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
         await settingsRepository.refresh(userId);
         await settingsRepository.startRealtime(userId);
       }
-    } catch (e) {
+    } catch (refreshError, refreshStack) {
       emit(
         state.copyWith(
           settings: state.settings.toError(
-            ErrorDetails(message: 'Failed to load settings: $e'),
+            ErrorDetails(message: 'Failed to load settings: $refreshError'),
           ),
         ),
       );
+
+      log(
+        'SettingsCubit: failed to refresh settings from remote, '
+        'continuing with local: $refreshError',
+        stackTrace: refreshStack,
+      );
+
+      Observability.captureException(
+        refreshError,
+        stackTrace: refreshStack,
+        hint: {'operation': 'boot_refresh_settings', 'userId': userId},
+      ).unawaited();
+      Observability.breadcrumb(
+        'Settings refresh failed during boot, using local settings',
+        category: 'settings',
+        level: ObservabilityLevel.warning,
+      ).unawaited();
     }
   }
 

@@ -79,25 +79,21 @@ class AppTheme {
     dialogTheme: _lightDialogTheme,
 
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: AppColors.surfaceElevated.withValues(alpha: 0.92),
+      backgroundColor: AppColors.primary.withValues(alpha: 0.92),
       elevation: 6,
       behavior: SnackBarBehavior.floating,
-
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
         side: BorderSide(color: AppColors.borderSubtle.withValues(alpha: 0.35)),
       ),
 
       contentTextStyle: AppTextStyle.bodySmall.copyWith(
-        color: AppColors.textPrimary,
+        color: Colors.white,
         height: 1.25,
       ),
-
-      actionTextColor: AppColors.primary,
-      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.12),
-
-      closeIconColor: AppColors.textMuted,
-
+      actionTextColor: Colors.white,
+      actionBackgroundColor: AppColors.primary.darken().withValues(alpha: 0.85),
+      closeIconColor: Colors.white,
       // Spacing feels better on desktop
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
@@ -181,22 +177,20 @@ class AppTheme {
     dialogTheme: _dialogTheme,
     snackBarTheme: SnackBarThemeData(
       showCloseIcon: true,
-      closeIconColor: AppColors.textSecondary,
-      backgroundColor: AppColors.surface2.toTinyColor().lighten().color,
+      closeIconColor: Colors.white,
+      backgroundColor: AppColors.surface2.toTinyColor().lighten(4).color,
       contentTextStyle: AppTextStyle.bodyMedium.copyWith(
-        color: AppColors.textPrimary,
+        color: Colors.white,
         fontSize: 13,
       ),
-
-      actionTextColor: AppColors.primary,
+      actionTextColor: Colors.white,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-
         side: BorderSide(color: AppColors.borderSubtle.withValues(alpha: 0.5)),
       ),
       elevation: 4,
-      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.2),
+      actionBackgroundColor: AppColors.primary.withValues(alpha: 0.8),
     ),
   );
 

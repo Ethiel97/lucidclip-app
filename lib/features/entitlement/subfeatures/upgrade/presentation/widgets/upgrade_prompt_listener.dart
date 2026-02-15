@@ -9,21 +9,13 @@ import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/billing/billing.dart';
 import 'package:lucid_clip/features/entitlement/entitlement.dart';
 
-class UpgradePromptListener extends StatelessWidget {
-  const UpgradePromptListener({
-    required this.child,
-    required this.monthlyProductId,
-    required this.yearlyProductId,
-    super.key,
-  });
-
-  final Widget child;
-  final String monthlyProductId;
-  final String yearlyProductId;
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeBlocListener<UpgradePromptCubit, UpgradePromptState>(
+class UpgradePromptSideEffects {
+  static List<SafeBlocListener<UpgradePromptCubit, UpgradePromptState>>
+  listeners({
+    required String monthlyProductId,
+    required String yearlyProductId,
+  }) => [
+    SafeBlocListener<UpgradePromptCubit, UpgradePromptState>(
       listenWhen: (previous, current) =>
           previous.requestedFeature != current.requestedFeature,
       listener: (context, state) async {
@@ -56,13 +48,13 @@ class UpgradePromptListener extends StatelessWidget {
           builder: (_) => Center(
             child: UpgradePaywallSheet(
               feature: feature,
+
               monthlyProductId: monthlyProductId,
               yearlyProductId: yearlyProductId,
             ),
           ),
         );
       },
-      child: child,
-    );
-  }
+    ),
+  ];
 }

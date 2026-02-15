@@ -66,9 +66,15 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
       // Wait for the onAuthStateChange listener to complete.
       final userModel = await completer.future.timeout(
-        const Duration(minutes: 3),
+        const Duration(seconds: 120),
         onTimeout: () {
           log('Sign in timed out waiting for auth state change.');
+
+          Observability.captureException(
+            TimeoutException('GitHub OAuth sign-in timed out'),
+            hint: {'operation': 'github_oauth_timeout'},
+          ).unawaited();
+
           return null;
         },
       );

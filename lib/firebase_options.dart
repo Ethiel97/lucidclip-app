@@ -50,17 +50,17 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static final FirebaseOptions macos = FirebaseOptions(
-    apiKey: AppConstants.firebaseApiKey,
-    appId: '1:913076611910:ios:2740763da59b4709aa5347',
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: AppConstants.firebaseApiKeyMacos,
+    appId: '1:913076611910:ios:b101f7bee9c1d8b0aa5347',
     messagingSenderId: '913076611910',
     projectId: 'lucidclip',
     storageBucket: 'lucidclip.firebasestorage.app',
-    iosBundleId: 'com.devEnthusiast.lucidClip',
+    iosBundleId: 'com.lucidclip.app',
   );
 
-  static final FirebaseOptions windows = FirebaseOptions(
-    apiKey: AppConstants.firebaseApiKey,
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: AppConstants.firebaseApiKeyWindows,
     appId: '1:913076611910:web:c833372e6bfc4764aa5347',
     messagingSenderId: '913076611910',
     projectId: 'lucidclip',

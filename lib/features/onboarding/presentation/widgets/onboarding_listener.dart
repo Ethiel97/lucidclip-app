@@ -9,44 +9,40 @@ import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:recase/recase.dart';
 import 'package:toastification/toastification.dart';
 
-class OnboardingListener extends StatelessWidget {
-  const OnboardingListener({required this.child, super.key});
+class OnboardingSideEffects {
+  static List<SafeBlocListener<OnboardingCubit, OnboardingState>>
+  listeners() => [
+    SafeBlocListener<OnboardingCubit, OnboardingState>(
+      listenWhen: (previous, current) =>
+          previous.showToggleWindowShortcutTipNow !=
+              current.showToggleWindowShortcutTipNow &&
+          current.showToggleWindowShortcutTipNow,
+      listener: (context, state) {
+        final l10n = context.l10n;
+        final textTheme = Theme.of(context).textTheme;
+        final colorScheme = Theme.of(context).colorScheme;
 
-  final Widget child;
+        final settingsCubit = context.read<SettingsCubit>();
 
-  @override
-  Widget build(BuildContext context) =>
-      SafeBlocListener<OnboardingCubit, OnboardingState>(
-        listenWhen: (previous, current) =>
-            previous.showToggleWindowShortcutTipNow !=
-                current.showToggleWindowShortcutTipNow &&
-            current.showToggleWindowShortcutTipNow,
-        listener: (context, state) {
-          final l10n = context.l10n;
-          final textTheme = Theme.of(context).textTheme;
-          final colorScheme = Theme.of(context).colorScheme;
+        final userToggleWindowShortcut =
+            settingsCubit.state.shortcuts[ShortcutAction.toggleWindow.key] ??
+            AppConstants.toggleWindowShortcut;
 
-          final settingsCubit = context.read<SettingsCubit>();
+        toastification.show(
+          pauseOnHover: true,
+          context: context,
+          title: Text(l10n.quickAccess.sentenceCase),
+          description: Text(
+            l10n.toggleWindowQuickAccess('`$userToggleWindowShortcut`'),
+            style: textTheme.bodyMedium?.copyWith(color: colorScheme.primary),
+          ),
+          autoCloseDuration: tipAutoCloseDuration,
+          alignment: Alignment.topRight,
+          style: ToastificationStyle.flat,
+        );
 
-          final userToggleWindowShortcut =
-              settingsCubit.state.shortcuts[ShortcutAction.toggleWindow.key] ??
-              AppConstants.toggleWindowShortcut;
-
-          toastification.show(
-            pauseOnHover: true,
-            context: context,
-            title: Text(l10n.quickAccess.sentenceCase),
-            description: Text(
-              l10n.toggleWindowQuickAccess('`$userToggleWindowShortcut`'),
-              style: textTheme.bodyMedium?.copyWith(color: colorScheme.primary),
-            ),
-            autoCloseDuration: tipAutoCloseDuration,
-            alignment: Alignment.topRight,
-            style: ToastificationStyle.flat,
-          );
-
-          context.read<OnboardingCubit>().markToggleWindowShortcutTipSeen();
-        },
-        child: child,
-      );
+        context.read<OnboardingCubit>().markToggleWindowShortcutTipSeen();
+      },
+    ),
+  ];
 }

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/features/entitlement/data/data.dart';
 import 'package:lucid_clip/features/entitlement/domain/domain.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: EntitlementRepository)
 class EntitlementRepositoryImpl implements EntitlementRepository {
@@ -19,10 +20,17 @@ class EntitlementRepositoryImpl implements EntitlementRepository {
   EntitlementRemoteSubscription? _remoteSub;
   StreamSubscription<EntitlementModel>? _remoteStreamSub;
 
+  final Map<String, Stream<Entitlement?>> _watchLocalCache = {};
+
   @override
-  Stream<Entitlement?> watchLocal(String userId) {
-    return _local.watchEntitlement(userId).map((model) => model?.toEntity());
-  }
+  Stream<Entitlement?> watchLocal(String userId) =>
+      _watchLocalCache.putIfAbsent(
+        userId,
+        () => _local
+            .watchEntitlement(userId)
+            .map((model) => model?.toEntity())
+            .shareReplay(maxSize: 1),
+      );
 
   @override
   Future<Entitlement?> load(String userId) async {
@@ -96,5 +104,8 @@ class EntitlementRepositoryImpl implements EntitlementRepository {
   }
 
   @override
-  Future<void> clearLocal(String userId) => _local.clear(userId);
+  Future<void> clearLocal(String userId) async {
+    await _local.clear(userId);
+    _watchLocalCache.remove(userId);
+  }
 }

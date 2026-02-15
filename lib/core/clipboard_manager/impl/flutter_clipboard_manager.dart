@@ -191,7 +191,16 @@ class FlutterClipboardManager extends ClipboardListener
   }
 
   @override
-  Stream<ClipboardData> watchClipboard() => _controller.stream;
+  Stream<ClipboardData> watchClipboard() => _controller.stream
+      .distinct((prev, next) => prev.contentHash == next.contentHash)
+      .handleError((Object error, Object stack) {
+        log(
+          'Error in watchClipboard stream',
+          error: error,
+          stackTrace: stack as StackTrace,
+          name: 'FlutterClipboardManager.watchClipboard',
+        );
+      });
 
   @override
   Future<bool> hasContent() async {

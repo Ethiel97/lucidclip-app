@@ -40,7 +40,7 @@ dependencies:
   injectable: ^2.7.1+4
   intl: ^0.20.2
   jiffy: ^6.4.4
-  json_annotation: ^4.9.0
+  json_annotation: ^4.10.0
   melos: ^7.4.0
   metalink_flutter: ^2.0.1
   package_info_plus: ^9.0.0

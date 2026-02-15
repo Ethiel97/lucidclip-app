@@ -45,17 +45,26 @@
 	<string>NSApplication</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>LucidClip needs permission to send events to paste content into other applications.</string>
+
 	<key>com.apple.security.network.client</key>
 	<true/>
+
 	<key>SUPublicEDKey</key>
     <string>1tA+MXDqdFHzBP/dQQJithBQaoTVvUZ6BCbqbz90RCE=</string>
+
     <key>SUEnableAutomaticChecks</key>
     <true/>
+
     <key>SUScheduledCheckInterval</key>
-    <integer>14400</integer>
+    <integer>43200</integer>
+
     <key>SUFeedURL</key>
     <string>https://updates.lucidclip.app/macos/appcast.xml</string>
+
     <key>SUAllowsAutomaticUpdates</key>
     <true/>
+
+    <key>SUAutomaticallyUpdate</key>
+    <false/>
 </dict>
 </plist>

@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:injectable/injectable.dart';
+import 'package:lucid_clip/core/extensions/extensions.dart';
 import 'package:lucid_clip/core/observability/observability_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -106,7 +107,7 @@ class SentryObservabilityService implements ObservabilityService {
         level: _toSentryLevel(level),
         timestamp: DateTime.now(),
       );
-      await Sentry.addBreadcrumb(breadcrumb);
+      Sentry.addBreadcrumb(breadcrumb).unawaited();
     } catch (e, st) {
       developer.log(
         'Failed to add breadcrumb in Sentry',

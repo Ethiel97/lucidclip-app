@@ -9,28 +9,31 @@ import 'package:path_provider/path_provider.dart'; // pour ClipboardItemModel
 
 part 'clipboard_database.g.dart';
 
+const clipboardDbName = 'clipboard_db.sqlite';
+
 @DriftDatabase(tables: [ClipboardItemEntries, ClipboardOutboxEntries])
 class ClipboardDatabase extends _$ClipboardDatabase {
   ClipboardDatabase([QueryExecutor? executor])
     : super(executor ?? _openConnection());
 
-  static QueryExecutor _openConnection() {
-    return LazyDatabase(() async {
-      final dir = await getApplicationSupportDirectory();
-      final dbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
+  static QueryExecutor _openConnection() => LazyDatabase(() async {
+    final dir = await getApplicationSupportDirectory();
+    final dbFile = File(p.join(dir.path, clipboardDbName));
 
-      /*if (dbFile.existsSync()) {
-        if (!AppConstants.isProd) {
-          await dbFile.delete();
-        }
-      }*/
+    if (!dbFile.parent.existsSync()) {
+      await dbFile.parent.create(recursive: true);
+    }
 
-      if (!dbFile.parent.existsSync()) {
-        await dbFile.parent.create(recursive: true);
-      }
-      return NativeDatabase(dbFile);
-    });
-  }
+    // This replaces all your manual DriftIsolate.spawn logic
+    return NativeDatabase.createInBackground(
+      dbFile,
+      setup: (db) {
+        db
+          ..execute('PRAGMA journal_mode=WAL;')
+          ..execute('PRAGMA synchronous=NORMAL;');
+      },
+    );
+  });
 
   @override
   int get schemaVersion => 2;

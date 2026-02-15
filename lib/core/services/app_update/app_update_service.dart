@@ -19,7 +19,7 @@ class AppUpdateServiceImpl implements AppUpdateService {
   });
 
   static const String _kLastCheckKey = 'app_update_last_check';
-  static const Duration _minInterval = Duration(hours: 4);
+  static const Duration _minInterval = Duration(hours: 12);
 
   final AutoUpdater autoUpdater;
 

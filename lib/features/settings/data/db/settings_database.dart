@@ -11,22 +11,29 @@ import 'package:path_provider/path_provider.dart';
 
 part 'settings_database.g.dart';
 
+const settingsDbName = 'settings_db.sqlite';
+
 @DriftDatabase(tables: [UserSettingsEntries])
 class SettingsDatabase extends _$SettingsDatabase {
   SettingsDatabase([QueryExecutor? executor])
     : super(executor ?? _openConnection());
 
-  static QueryExecutor _openConnection() {
-    return LazyDatabase(() async {
-      final dir = await getApplicationSupportDirectory();
-      final dbFile = File(p.join(dir.path, 'settings_db.sqlite'));
+  static QueryExecutor _openConnection() => LazyDatabase(() async {
+    final dir = await getApplicationSupportDirectory();
+    final dbFile = File(p.join(dir.path, settingsDbName));
 
-      if (!dbFile.parent.existsSync()) {
-        await dbFile.parent.create(recursive: true);
-      }
-      return NativeDatabase(dbFile);
-    });
-  }
+    if (!dbFile.parent.existsSync()) {
+      await dbFile.parent.create(recursive: true);
+    }
+    return NativeDatabase.createInBackground(
+      dbFile,
+      setup: (db) {
+        db
+          ..execute('PRAGMA journal_mode=WAL;')
+          ..execute('PRAGMA synchronous=NORMAL;');
+      },
+    );
+  });
 
   @override
   int get schemaVersion => 1;

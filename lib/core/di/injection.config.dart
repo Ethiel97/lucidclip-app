@@ -22,7 +22,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:lucid_clip/core/analytics/analytics_module.dart' as _i169;
 import 'package:lucid_clip/core/analytics/analytics_service.dart' as _i616;
 import 'package:lucid_clip/core/analytics/impl/firebase_analytics_service.dart'
-    as _i666;
+    as _i587;
 import 'package:lucid_clip/core/analytics/retention_tracker.dart' as _i936;
 import 'package:lucid_clip/core/clipboard_manager/base_clipboard_manager.dart'
     as _i1016;
@@ -238,6 +238,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i915.SentryObservabilityService(),
       dispose: (i) => i.close(),
     );
+    gh.lazySingleton<_i616.AnalyticsService>(
+      () => _i587.FirebaseAnalyticsService(
+        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
+      ),
+    );
     gh.lazySingleton<_i896.AccessibilityDataSource>(
       () => _i896.MethodChannelAccessibilityDataSource(),
     );
@@ -250,11 +255,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i387.EntitlementLocalDataSource>(
       () =>
           _i39.DriftEntitlementLocalDataSource(gh<_i387.EntitlementDatabase>()),
-    );
-    gh.lazySingleton<_i616.AnalyticsService>(
-      () => _i666.FirebaseAnalyticsService(
-        firebaseAnalytics: gh<_i398.FirebaseAnalytics>(),
-      ),
     );
     gh.lazySingleton<_i936.RetentionTracker>(
       () => _i936.RetentionTracker(

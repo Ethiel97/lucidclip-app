@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.11.0...v1.11.1) (2026-02-15)
+
+
+### Bug Fixes
+
+* **release:** add GitHub token authentication for Sparkle CLI download in macOS workflow ([#144](https://github.com/Ethiel97/lucidclip-app/issues/144)) ([d023e09](https://github.com/Ethiel97/lucidclip-app/commit/d023e091c8120ff90b1cee360c7a4f1240b62879))
+
 ## [1.11.0](https://github.com/Ethiel97/lucidclip-app/compare/v1.10.2...v1.11.0) (2026-02-15)
 
 

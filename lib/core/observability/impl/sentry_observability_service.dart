@@ -63,19 +63,21 @@ class SentryObservabilityService implements ObservabilityService {
       if (hint != null && hint.isNotEmpty) {
         final filteredContext = _filterContextData(hint);
 
-        await Sentry.configureScope((scope) {
+        // Use withScope to avoid blocking the main thread
+        await Sentry.withScope((scope) async {
           if (filteredContext.isNotEmpty) {
             for (final entry in filteredContext.entries) {
               scope.setContexts(entry.key, entry.value);
             }
           }
-        });
 
-        await Sentry.captureException(
-          exception,
-          stackTrace: stackTrace,
-          hint: Hint.withMap(hint),
-        );
+          await Sentry.captureException(
+            exception,
+            stackTrace: stackTrace,
+            hint: Hint.withMap(hint),
+            withScope: scope,
+          );
+        });
       } else {
         await Sentry.captureException(exception, stackTrace: stackTrace);
       }
@@ -126,9 +128,8 @@ class SentryObservabilityService implements ObservabilityService {
     if (!isEnabled) return;
 
     try {
-      await Sentry.configureScope((scope) {
-        scope.setUser(SentryUser(id: userId, email: email, data: extras));
-      });
+      // Use direct Sentry.setUser() to avoid blocking the main thread
+      await Sentry.setUser(SentryUser(id: userId, email: email, data: extras));
     } catch (e, st) {
       developer.log(
         'Failed to set user in Sentry',
@@ -144,9 +145,8 @@ class SentryObservabilityService implements ObservabilityService {
     if (!isEnabled) return;
 
     try {
-      await Sentry.configureScope((scope) {
-        scope.setUser(null);
-      });
+      // Use direct Sentry.setUser(null) to avoid blocking the main thread
+      await Sentry.setUser(null);
     } catch (e, st) {
       developer.log(
         'Failed to clear user in Sentry',
@@ -162,9 +162,8 @@ class SentryObservabilityService implements ObservabilityService {
     if (!isEnabled) return;
 
     try {
-      await Sentry.configureScope((scope) {
-        scope.setTag(key, value);
-      });
+      // Use direct Sentry.setTag() to avoid blocking the main thread
+      await Sentry.setTag(key, value);
     } catch (e, st) {
       developer.log(
         'Failed to set tag in Sentry',

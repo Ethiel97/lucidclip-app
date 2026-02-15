@@ -211,10 +211,13 @@ jobs:
 
       # ---------- Sparkle tools ----------
       - name: Download Sparkle (CLI tools)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           # 1. Get the download URL for the latest 'Sparkle-VERSION.tar.xz'
-          DOWNLOAD_URL=$(curl -s https://api.github.com/repos/sparkle-project/Sparkle/releases/latest | \
+          DOWNLOAD_URL=$(curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/sparkle-project/Sparkle/releases/latest | \
             jq -r '.assets[] | select(.name | test("Sparkle-[0-9.]+\\.tar\\.xz$")) | .browser_download_url')
           
           echo "Downloading from: $DOWNLOAD_URL"

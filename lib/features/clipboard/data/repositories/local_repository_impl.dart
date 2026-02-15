@@ -193,11 +193,10 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Stream<List<ClipboardItem>> watchAll({required int limit}) {
     try {
-      return _localDataSource.watchAll(limit: limit).asyncMap((records) async {
-        final items = records.map((r) => r.toEntity()).toList();
-
-        return items;
-        // return items.withEnrichedSourceApps();
+      // Use map instead of asyncMap since toEntity() is synchronous and lightweight
+      // Heavy work (JSON decode, base64) is already done in entryToModel on the DB isolate
+      return _localDataSource.watchAll(limit: limit).map((records) {
+        return records.map((r) => r.toEntity()).toList();
       });
     } catch (e) {
       throw CacheException('Failed to watch all clipboard items: $e');

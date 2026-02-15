@@ -1,12 +1,17 @@
 // dart
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
+import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: ClipboardLocalDataSource)
 class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
-  const DriftClipboardLocalDataSource(this._db);
+  DriftClipboardLocalDataSource(this._db);
 
   final ClipboardDatabase _db;
+  
+  // Cache/share the stream across multiple subscribers
+  Stream<List<ClipboardItemModel>>? _cachedWatchAllStream;
+  int? _cachedLimit;
 
   @override
   Future<void> put(ClipboardItemModel item) async {
@@ -128,10 +133,21 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   @override
   Stream<List<ClipboardItemModel>> watchAll({required int limit}) {
     try {
-      return _db
+      // Return cached stream if limit hasn't changed
+      if (_cachedWatchAllStream != null && _cachedLimit == limit) {
+        return _cachedWatchAllStream!;
+      }
+
+      // Create new shared stream
+      _cachedLimit = limit;
+      _cachedWatchAllStream = _db
           .watchAllEntries(limit: limit)
+          .debounceTime(const Duration(milliseconds: 100))
           .map((rows) => rows.map(_db.entryToModel).toList())
-          .distinct();
+          .distinct()
+          .shareReplay(maxSize: 1); // Share stream and replay last value
+
+      return _cachedWatchAllStream!;
     } catch (e) {
       rethrow;
     }

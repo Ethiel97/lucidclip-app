@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:drift/drift.dart';
+import 'package:drift/isolate.dart';
 import 'package:drift/native.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:path/path.dart' as p;
@@ -14,21 +16,32 @@ class ClipboardDatabase extends _$ClipboardDatabase {
   ClipboardDatabase([QueryExecutor? executor])
     : super(executor ?? _openConnection());
 
+  static DriftIsolate? _isolate;
+
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dir = await getApplicationSupportDirectory();
-      final dbFile = File(p.join(dir.path, 'clipboard_db.sqlite'));
+      // Create an isolate for database operations
+      _isolate ??= await _createDriftIsolate();
+      return _isolate!.connect();
+    });
+  }
 
-      /*if (dbFile.existsSync()) {
-        if (!AppConstants.isProd) {
-          await dbFile.delete();
-        }
-      }*/
+  static Future<DriftIsolate> _createDriftIsolate() async {
+    // Get the database file path on the main isolate
+    final dir = await getApplicationSupportDirectory();
+    final dbPath = p.join(dir.path, 'clipboard_db.sqlite');
 
-      if (!dbFile.parent.existsSync()) {
-        await dbFile.parent.create(recursive: true);
-      }
-      return NativeDatabase(dbFile);
+    // Ensure parent directory exists
+    final dbFile = File(dbPath);
+    if (!dbFile.parent.existsSync()) {
+      await dbFile.parent.create(recursive: true);
+    }
+
+    // Spawn the isolate with the database path
+    return await DriftIsolate.spawn(() {
+      return DatabaseConnection(
+        NativeDatabase(File(dbPath)),
+      );
     });
   }
 

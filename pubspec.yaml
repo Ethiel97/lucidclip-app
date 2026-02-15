@@ -51,6 +51,7 @@ dependencies:
   permission_handler: ^12.0.1
   proper_filesize: ^1.0.2
   recase: ^4.1.0
+  rxdart: ^0.28.0
   screen_retriever: ^0.2.0
   sentry_flutter: ^9.12.0
   share_plus: ^12.0.1

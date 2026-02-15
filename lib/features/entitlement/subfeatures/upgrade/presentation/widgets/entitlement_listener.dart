@@ -11,84 +11,73 @@ import 'package:lucid_clip/features/settings/presentation/cubit/cubit.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:toastification/toastification.dart';
 
-class EntitlementListener extends StatelessWidget {
-  const EntitlementListener({required this.child, super.key});
+class EntitlementSideEffects {
+  static List<SafeBlocListener<EntitlementCubit, EntitlementState>>
+  listeners() => [
+    // listens to Pro activation to update settings
+    // accordingly and show a welcome toast
+    SafeBlocListener<EntitlementCubit, EntitlementState>(
+      listenWhen: (prev, curr) => !prev.isProActive && curr.isProActive,
+      listener: (context, state) {
+        final l10n = context.l10n;
+        final settingsCubit = context.read<SettingsCubit>();
 
-  final Widget child;
+        getIt<WindowController>().showAsOverlay().unawaited();
+        Analytics.track(AnalyticsEvent.proActivated).unawaited();
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        /// listens to Pro activation to update settings accordingly
-        SafeBlocListener<EntitlementCubit, EntitlementState>(
-          listenWhen: (prev, curr) => !prev.isProActive && curr.isProActive,
-          listener: (context, state) {
-            final l10n = context.l10n;
-            final settingsCubit = context.read<SettingsCubit>();
+        // ensure max history items is at least 5000 for Pro users
+        if (settingsCubit.state.maxHistoryItems <
+            MaxHistorySize.size5000.value) {
+          settingsCubit.updateMaxHistoryItems(MaxHistorySize.size5000.value);
+        }
 
-            getIt<WindowController>().showAsOverlay().unawaited();
-            Analytics.track(AnalyticsEvent.proActivated).unawaited();
+        final retentionDuration = RetentionDuration.fromDays(
+          settingsCubit.state.retentionDays,
+        );
 
-            // ensure max history items is at least 5000 for Pro users
-            if (settingsCubit.state.maxHistoryItems <
-                MaxHistorySize.size5000.value) {
-              settingsCubit.updateMaxHistoryItems(
-                MaxHistorySize.size5000.value,
-              );
-            }
+        // ensure retention days is at least 7 days for Pro users
+        if (retentionDuration.duration.inDays <
+            RetentionDuration.sevenDays.duration.inDays) {
+          settingsCubit.updateRetentionDays(
+            RetentionDuration.sevenDays.duration.inDays,
+          );
+        }
 
-            final retentionDuration = RetentionDuration.fromDays(
-              settingsCubit.state.retentionDays,
-            );
+        //show a toast to welcome user to Pro
+        toastification.show(
+          context: context,
+          type: ToastificationType.info,
+          style: ToastificationStyle.minimal,
+          title: Text(l10n.welcomeToPro),
+          description: Text(l10n.youNowHavePro),
+          autoCloseDuration: const Duration(seconds: 10),
+        );
+      },
+    ),
 
-            // ensure retention days is at least 7 days for Pro users
-            if (retentionDuration.duration.inDays <
-                RetentionDuration.sevenDays.duration.inDays) {
-              settingsCubit.updateRetentionDays(
-                RetentionDuration.sevenDays.duration.inDays,
-              );
-            }
+    /// listens to Pro deactivation to update settings accordingly
+    SafeBlocListener<EntitlementCubit, EntitlementState>(
+      listenWhen: (prev, curr) => prev.isProActive && !curr.isProActive,
+      listener: (context, state) {
+        final settingsCubit = context.read<SettingsCubit>();
 
-            //show a toast to welcome user to Pro
-            toastification.show(
-              context: context,
-              type: ToastificationType.info,
-              style: ToastificationStyle.minimal,
-              title: Text(l10n.welcomeToPro),
-              description: Text(l10n.youNowHavePro),
-              autoCloseDuration: const Duration(seconds: 10),
-            );
-          },
-        ),
+        // ensure max history items is at most 30 for free users
+        if (settingsCubit.state.maxHistoryItems > MaxHistorySize.size30.value) {
+          settingsCubit.updateMaxHistoryItems(MaxHistorySize.size30.value);
+        }
 
-        /// listens to Pro deactivation to update settings accordingly
-        SafeBlocListener<EntitlementCubit, EntitlementState>(
-          listenWhen: (prev, curr) => prev.isProActive && !curr.isProActive,
-          listener: (context, state) {
-            final settingsCubit = context.read<SettingsCubit>();
+        final retentionDuration = RetentionDuration.fromDays(
+          settingsCubit.state.retentionDays,
+        );
 
-            // ensure max history items is at most 30 for free users
-            if (settingsCubit.state.maxHistoryItems >
-                MaxHistorySize.size30.value) {
-              settingsCubit.updateMaxHistoryItems(MaxHistorySize.size30.value);
-            }
-
-            final retentionDuration = RetentionDuration.fromDays(
-              settingsCubit.state.retentionDays,
-            );
-
-            // ensure retention days is at most 3 days for free users
-            if (retentionDuration.duration.inDays >
-                RetentionDuration.threeDays.duration.inDays) {
-              settingsCubit.updateRetentionDays(
-                RetentionDuration.threeDays.duration.inDays,
-              );
-            }
-          },
-        ),
-      ],
-      child: child,
-    );
-  }
+        // ensure retention days is at most 7 days for free users
+        if (retentionDuration.duration.inDays >
+            RetentionDuration.sevenDays.duration.inDays) {
+          settingsCubit.updateRetentionDays(
+            RetentionDuration.sevenDays.duration.inDays,
+          );
+        }
+      },
+    ),
+  ];
 }

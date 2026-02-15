@@ -6,61 +6,50 @@ import 'package:lucid_clip/features/settings/presentation/presentation.dart';
 import 'package:lucid_clip/l10n/l10n.dart';
 import 'package:toastification/toastification.dart';
 
-class SourceAppPrivacyControlListener extends StatelessWidget {
-  const SourceAppPrivacyControlListener({required this.child, super.key});
+class SourceAppPrivacyControlSideEffects {
+  static List<SafeBlocListener<SettingsCubit, SettingsState>> listeners() => [
+    SafeBlocListener<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) =>
+          previous.excludeAppResult != current.excludeAppResult,
+      listener: (context, state) {
+        if (state.excludeAppResult.isSuccess) {
+          final app = state.excludeAppResult.data;
+          final l10n = context.l10n;
 
-  final Widget child;
+          toastification.show(
+            context: context,
+            type: ToastificationType.success,
+            style: ToastificationStyle.minimal,
+            title: Text(l10n.appNoLongerTracked(app.name)),
+            description: Text(l10n.appNoLongerTrackedDescription(app.name)),
+            autoCloseDuration: const Duration(seconds: 10),
+          );
+        }
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
+        context.read<ClipboardDetailCubit>().clearSelection();
+      },
+    ),
 
-    return MultiBlocListener(
-      listeners: [
-        SafeBlocListener<SettingsCubit, SettingsState>(
-          listenWhen: (previous, current) =>
-              previous.excludeAppResult != current.excludeAppResult,
-          listener: (context, state) {
-            if (state.excludeAppResult.isSuccess) {
-              final app = state.excludeAppResult.data;
-              toastification.show(
-                context: context,
-                type: ToastificationType.success,
-                style: ToastificationStyle.minimal,
-                title: Text(l10n.appNoLongerTracked(app.name)),
-                description: Text(l10n.appNoLongerTrackedDescription(app.name)),
-                autoCloseDuration: const Duration(seconds: 10),
-              );
-            }
+    SafeBlocListener<SettingsCubit, SettingsState>(
+      listenWhen: (previous, current) =>
+          previous.includeAppResult != current.includeAppResult,
+      listener: (context, state) {
+        if (state.includeAppResult.isSuccess) {
+          final app = state.includeAppResult.data;
+          final l10n = context.l10n;
 
-            context.read<ClipboardDetailCubit>().clearSelection();
-          },
-        ),
+          toastification.show(
+            context: context,
+            type: ToastificationType.success,
+            style: ToastificationStyle.minimal,
+            title: Text(l10n.trackingResumedForApp(app.name)),
+            description: Text(l10n.trackingResumedForAppDescription(app.name)),
+            autoCloseDuration: const Duration(seconds: 10),
+          );
+        }
 
-        SafeBlocListener<SettingsCubit, SettingsState>(
-          listenWhen: (previous, current) =>
-              previous.includeAppResult != current.includeAppResult,
-          listener: (context, state) {
-            if (state.includeAppResult.isSuccess) {
-              final app = state.includeAppResult.data;
-              toastification.show(
-                context: context,
-                type: ToastificationType.success,
-                style: ToastificationStyle.minimal,
-                title: Text(l10n.trackingResumedForApp(app.name)),
-                description: Text(
-                  l10n.trackingResumedForAppDescription(app.name),
-                ),
-                autoCloseDuration: const Duration(seconds: 10),
-              );
-            }
-
-            context.read<ClipboardDetailCubit>().clearSelection();
-          },
-        ),
-      ],
-
-      child: child,
-    );
-  }
+        context.read<ClipboardDetailCubit>().clearSelection();
+      },
+    ),
+  ];
 }

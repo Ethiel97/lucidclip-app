@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.10.2](https://github.com/Ethiel97/lucidclip-app/compare/v1.10.1...v1.10.2) (2026-02-15)
+
+
+### Bug Fixes
+
+* **clipboard:** Isolate database operations and optimize watchAll stream ([#141](https://github.com/Ethiel97/lucidclip-app/issues/141)) ([d930658](https://github.com/Ethiel97/lucidclip-app/commit/d930658579627efdc16991eefd8b13efc5dfd3d1))
+* **macos:** move app icon processing to background thread ([#136](https://github.com/Ethiel97/lucidclip-app/issues/136)) ([03da92b](https://github.com/Ethiel97/lucidclip-app/commit/03da92b852a9b087db5ee1e13b5ad0751fa11576))
+* sentry non blocking scope ([#137](https://github.com/Ethiel97/lucidclip-app/issues/137)) ([47bb898](https://github.com/Ethiel97/lucidclip-app/commit/47bb8987f5f6a2b87ec567bcc70ee17a91d43f22))
+* **theme:** Implement safe Google Fonts loading with system fallback ([#139](https://github.com/Ethiel97/lucidclip-app/issues/139)) ([f9965e9](https://github.com/Ethiel97/lucidclip-app/commit/f9965e9d07aa4e6266b5838d1c6caafae3d410bf))
+
+
+### Performance Improvements
+
+* **clipboard:** Optimize retention cleanup and capacity checks ([#138](https://github.com/Ethiel97/lucidclip-app/issues/138)) ([00ffb26](https://github.com/Ethiel97/lucidclip-app/commit/00ffb26989c0382574899d89879c56e5a6a78894))
+* **observability:** make Sentry scope operations non-blocking ([#134](https://github.com/Ethiel97/lucidclip-app/issues/134)) ([49f5388](https://github.com/Ethiel97/lucidclip-app/commit/49f53887320a0677001fbdccdd8d2c74f6236a26))
+
 ## [1.10.1](https://github.com/Ethiel97/lucidclip-app/compare/v1.10.0...v1.10.1) (2026-02-12)
 
 

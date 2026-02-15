@@ -6,15 +6,51 @@ abstract class AppTextStyle {
   // Base font families
   // =========================
 
+  /// Safely loads a Google Font with fallback to system font if network fails.
+  /// 
+  /// This helper prevents app crashes when Google Fonts CDN is unreachable
+  /// (e.g., no internet connection, DNS issues, network timeout).
+  /// 
+  /// If the font fails to load, it falls back to the default system font
+  /// with the same styling parameters.
+  static TextStyle _safeGoogleFont({
+    required TextStyle Function() fontLoader,
+    required FontWeight fontWeight,
+    required double height,
+    required double letterSpacing,
+  }) {
+    try {
+      return fontLoader();
+    } catch (e) {
+      // Font loading failed (network error, DNS issue, etc.)
+      // Return a fallback TextStyle with the same properties
+      return TextStyle(
+        fontWeight: fontWeight,
+        height: height,
+        letterSpacing: letterSpacing,
+      );
+    }
+  }
+
   /// UI / Body / Labels (cross-platform safe)
-  static final TextStyle _sans = GoogleFonts.inter(
+  static final TextStyle _sans = _safeGoogleFont(
+    fontLoader: () => GoogleFonts.inter(
+      fontWeight: FontWeight.w400,
+      height: 1.4,
+      letterSpacing: 0,
+    ),
     fontWeight: FontWeight.w400,
     height: 1.4,
     letterSpacing: 0,
   );
 
   /// Display / Headings
-  static final TextStyle _display = GoogleFonts.manrope(
+  static final TextStyle _display = _safeGoogleFont(
+    fontLoader: () => GoogleFonts.manrope(
+      fontWeight: FontWeight.w600,
+      height: 1.2,
+      letterSpacing: -0.4,
+    ),
     fontWeight: FontWeight.w600,
     height: 1.2,
     letterSpacing: -0.4,

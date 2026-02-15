@@ -80,13 +80,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
       final accessToken = _supabase.auth.currentSession?.accessToken;
       if (accessToken != null) {
-        await _secureStorage.write(
-          key: SecureStorageConstants.authToken,
-          value: accessToken,
-        );
+        _secureStorage
+            .write(key: SecureStorageConstants.authToken, value: accessToken)
+            .unawaited();
       }
 
-      await _storeUserData(_supabase.auth.currentUser);
+      _storeUserData(_supabase.auth.currentUser).unawaited();
 
       return userModel;
     } on AuthException catch (e) {
@@ -114,7 +113,7 @@ class SupabaseAuthDataSource implements AuthDataSource {
   Future<void> signOut() async {
     try {
       await _supabase.auth.signOut();
-      await _clearLocalData();
+      _clearLocalData().unawaited();
     } catch (e, stack) {
       Observability.captureException(
         e,
@@ -127,10 +126,12 @@ class SupabaseAuthDataSource implements AuthDataSource {
 
   Future<void> _clearLocalData() async {
     try {
-      await _secureStorage.delete(key: SecureStorageConstants.authToken);
-      await _secureStorage.delete(key: SecureStorageConstants.userId);
-      await _secureStorage.delete(key: SecureStorageConstants.userEmail);
-      await _secureStorage.delete(key: SecureStorageConstants.user);
+      Future.wait([
+        _secureStorage.delete(key: SecureStorageConstants.authToken),
+        _secureStorage.delete(key: SecureStorageConstants.userId),
+        _secureStorage.delete(key: SecureStorageConstants.userEmail),
+        _secureStorage.delete(key: SecureStorageConstants.user),
+      ]).unawaited();
       log('Local user data cleared.');
     } catch (_) {
       rethrow;

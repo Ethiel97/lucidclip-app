@@ -193,8 +193,10 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   @override
   Stream<List<ClipboardItem>> watchAll({required int limit}) {
     try {
-      // Use map instead of asyncMap since toEntity() is synchronous and lightweight
-      // Heavy work (JSON decode, base64) is already done in entryToModel on the DB isolate
+      // Use map instead of asyncMap since toEntity()
+      // is synchronous and lightweight
+      // Heavy work (JSON decode, base64)
+      // is already done in entryToModel on the DB isolate
       return _localDataSource.watchAll(limit: limit).map((records) {
         return records.map((r) => r.toEntity()).toList();
       });

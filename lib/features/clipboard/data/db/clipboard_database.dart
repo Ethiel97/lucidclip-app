@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:drift/drift.dart';
-import 'package:drift/isolate.dart';
 import 'package:drift/native.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
 import 'package:path/path.dart' as p;
@@ -11,39 +9,31 @@ import 'package:path_provider/path_provider.dart'; // pour ClipboardItemModel
 
 part 'clipboard_database.g.dart';
 
+const clipboardDbName = 'clipboard_db.sqlite';
+
 @DriftDatabase(tables: [ClipboardItemEntries, ClipboardOutboxEntries])
 class ClipboardDatabase extends _$ClipboardDatabase {
   ClipboardDatabase([QueryExecutor? executor])
     : super(executor ?? _openConnection());
 
-  static DriftIsolate? _isolate;
-
-  static QueryExecutor _openConnection() {
-    return LazyDatabase(() async {
-      // Create an isolate for database operations
-      _isolate ??= await _createDriftIsolate();
-      return _isolate!.connect();
-    });
-  }
-
-  static Future<DriftIsolate> _createDriftIsolate() async {
-    // Get the database file path on the main isolate
+  static QueryExecutor _openConnection() => LazyDatabase(() async {
     final dir = await getApplicationSupportDirectory();
-    final dbPath = p.join(dir.path, 'clipboard_db.sqlite');
+    final dbFile = File(p.join(dir.path, clipboardDbName));
 
-    // Ensure parent directory exists
-    final dbFile = File(dbPath);
     if (!dbFile.parent.existsSync()) {
       await dbFile.parent.create(recursive: true);
     }
 
-    // Spawn the isolate with the database path
-    return await DriftIsolate.spawn(() {
-      return DatabaseConnection(
-        NativeDatabase(File(dbPath)),
-      );
-    });
-  }
+    // This replaces all your manual DriftIsolate.spawn logic
+    return NativeDatabase.createInBackground(
+      dbFile,
+      setup: (db) {
+        db
+          ..execute('PRAGMA journal_mode=WAL;')
+          ..execute('PRAGMA synchronous=NORMAL;');
+      },
+    );
+  });
 
   @override
   int get schemaVersion => 2;

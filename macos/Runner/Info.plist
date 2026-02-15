@@ -50,13 +50,11 @@
 	<true/>
 
 	<key>SUPublicEDKey</key>
-    <string>1tA+MXDqdFHzBP/dQQJithBQaoTVvUZ6BCbqbz90RCE=</string>
-
-    <key>SUEnableAutomaticChecks</key>
+    <false/>
     <true/>
 
     <key>SUScheduledCheckInterval</key>
-    <integer>43200</integer>
+    <false/>
 
     <key>SUFeedURL</key>
     <string>https://updates.lucidclip.app/macos/appcast.xml</string>

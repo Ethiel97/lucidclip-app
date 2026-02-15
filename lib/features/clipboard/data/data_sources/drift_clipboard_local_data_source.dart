@@ -1,7 +1,6 @@
 // dart
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/features/clipboard/data/data.dart';
-import 'package:rxdart/rxdart.dart';
 
 @LazySingleton(as: ClipboardLocalDataSource)
 class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
@@ -131,7 +130,6 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
     try {
       return _db
           .watchAllEntries(limit: limit)
-          .debounceTime(const Duration(milliseconds: 100))
           .map((rows) => rows.map(_db.entryToModel).toList());
     } catch (e) {
       rethrow;

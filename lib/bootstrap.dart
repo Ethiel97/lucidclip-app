@@ -49,9 +49,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     FlutterError.onError = (details) {
       log(details.exceptionAsString(), stackTrace: details.stack);
       // Capture in Sentry
-      unawaited(
-        Sentry.captureException(details.exception, stackTrace: details.stack),
-      );
+      Sentry.captureException(
+        details.exception,
+        stackTrace: details.stack,
+      ).unawaited();
     };
 
     Bloc.observer = const AppBlocObserver();
@@ -89,7 +90,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     Observability.initialize(getIt<ObservabilityService>());
 
     getIt<DeepLinkService>();
-    unawaited(getIt<HotkeyManagerService>().registerDefaultHotkeys());
+    getIt<HotkeyManagerService>().registerDefaultHotkeys().unawaited();
     await Future.wait<void>([getIt<WindowController>().bootstrapWindow()]);
     // Only clear app data in development when explicitly needed
     // await clearAppData();

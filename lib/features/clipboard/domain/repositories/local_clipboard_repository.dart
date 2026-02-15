@@ -32,6 +32,13 @@ abstract class LocalClipboardRepository {
     FetchMode fetchMode = FetchMode.withIcons,
   });
 
+  Future<int> getCount();
+
+  Future<List<ClipboardItem>> getPotentiallyExpiredItems({
+    required DateTime cutoffDate,
+    FetchMode fetchMode = FetchMode.withoutIcons,
+  });
+
   Future<List<ClipboardItem>> getUnsynced({
     FetchMode fetchMode = FetchMode.withIcons,
   });

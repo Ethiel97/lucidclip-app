@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:injectable/injectable.dart';
 import 'package:lucid_clip/core/analytics/analytics_module.dart';
 import 'package:lucid_clip/core/extensions/extensions.dart';
+import 'package:lucid_clip/core/observability/observability.dart';
 import 'package:lucid_clip/features/auth/auth.dart';
 import 'package:lucid_clip/features/clipboard/clipboard.dart';
 import 'package:lucid_clip/features/settings/domain/domain.dart';
@@ -31,25 +32,24 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
 
       final retentionDuration = RetentionDuration.fromDays(retentionDays);
 
-      // Get all clipboard items
-      final items = await localClipboardRepository.getAll(
-        fetchMode: FetchMode.withoutIcons,
-      );
-
       // Create retention expiration policy
       final policy = RetentionExpirationPolicy(
         now: DateTime.now,
         retentionDuration: retentionDuration,
       );
 
+      // Calculate cutoff date - items created before this date may be expired
+      final cutoffDate = DateTime.now().subtract(retentionDuration.duration);
+
+      // Get only items that could potentially be expired
+      // This is much more efficient than fetching all items
+      final items = await localClipboardRepository.getPotentiallyExpiredItems(
+        cutoffDate: cutoffDate,
+      );
+
       // Evaluate and delete expired items
       var deletedCount = 0;
       for (final item in items) {
-        // Never delete pinned or snippet items
-        if (item.isPinned || item.isSnippet) {
-          continue;
-        }
-
         // Evaluate retention expiration
         try {
           final expiration = policy.evaluate(item: item);
@@ -73,6 +73,12 @@ class RetentionCleanupServiceImpl implements RetentionCleanupService {
             );
           }
         } catch (e, stack) {
+          Observability.captureException(
+            e,
+            stackTrace: stack,
+            hint: {'operation': 'evaluateRetention'},
+          ).unawaited();
+
           developer.log(
             'Failed to evaluate retention for item ${item.id}: $e',
             name: 'RetentionCleanupService',

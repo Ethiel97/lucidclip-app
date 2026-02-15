@@ -100,6 +100,43 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
   }
 
   @override
+  Future<int> getCount() async {
+    try {
+      return await _localDataSource.getCountNonDeleted();
+    } catch (e) {
+      throw CacheException('Failed to get clipboard items count: $e');
+    }
+  }
+
+  @override
+  Future<List<ClipboardItem>> getPotentiallyExpiredItems({
+    required DateTime cutoffDate,
+    FetchMode fetchMode = FetchMode.withoutIcons,
+  }) async {
+    try {
+      final records = await _localDataSource.getPotentiallyExpiredItems(
+        cutoffDate: cutoffDate,
+      );
+      final items = records.map((r) => r.toEntity()).toList();
+
+      if (fetchMode.excludesIcons) {
+        return items;
+      }
+
+      return items.withEnrichedSourceApps();
+    } catch (e, stack) {
+      log(
+        'Error in getPotentiallyExpiredItems: $e',
+        stackTrace: stack,
+        name: 'LocalClipboardStoreImpl',
+      );
+      throw CacheException(
+        'Failed to get potentially expired clipboard items: $e',
+      );
+    }
+  }
+
+  @override
   Future<List<ClipboardItem>> getUnsynced({
     FetchMode fetchMode = FetchMode.withIcons,
   }) async {
@@ -181,9 +218,9 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
     if (maxItems <= 0) {
       return;
     }
-    final items = await getAll();
+    final count = await getCount();
 
-    final atCapacity = items.length >= maxItems;
+    final atCapacity = count >= maxItems;
 
     if (atCapacity) {
       // Track that free limit was reached
@@ -191,6 +228,9 @@ class LocalClipboardStoreImpl implements LocalClipboardRepository {
         AnalyticsEvent.freeLimitReached,
         const FreeLimitReachedParams(limitType: LimitType.historySize).toMap(),
       ).unawaited();
+
+      // Get all items only when we need to delete the oldest
+      final items = await getAll(fetchMode: FetchMode.withoutIcons);
 
       final oldestUnpinned = items
           .where((e) => !e.isPinned)

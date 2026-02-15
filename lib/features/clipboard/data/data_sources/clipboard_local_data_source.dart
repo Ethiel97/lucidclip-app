@@ -13,6 +13,12 @@ abstract class ClipboardLocalDataSource {
 
   Future<Set<String>> getAllContentHashes();
 
+  Future<int> getCountNonDeleted();
+
+  Future<List<ClipboardItemModel>> getPotentiallyExpiredItems({
+    required DateTime cutoffDate,
+  });
+
   Future<List<ClipboardItemModel>> getUnsynced();
 
   Future<void> updateSyncStatus(String id, {required bool isSynced});

@@ -63,18 +63,18 @@ class SentryObservabilityService implements ObservabilityService {
     try {
       if (hint != null && hint.isNotEmpty) {
         final filteredContext = _filterContextData(hint);
-
-        await Sentry.configureScope((scope) {
-          if (filteredContext.isNotEmpty) {
-            for (final entry in filteredContext.entries) {
-              scope.setContexts(entry.key, entry.value);
-            }
-          }
-        });
+        // Use withScope parameter to avoid blocking configureScope call
 
         await Sentry.captureException(
           exception,
           stackTrace: stackTrace,
+          withScope: (scope) {
+            if (filteredContext.isNotEmpty) {
+              for (final entry in filteredContext.entries) {
+                scope.setContexts(entry.key, entry.value);
+              }
+            }
+          },
           hint: Hint.withMap(hint),
         );
       } else {
@@ -126,7 +126,9 @@ class SentryObservabilityService implements ObservabilityService {
   }) async {
     if (!isEnabled) return;
 
-    try {
+      // Use configureScope in a non-blocking way by not awaiting it
+      // This prevents blocking the main thread while still setting the user
+      Sentry.configureScope((scope) {
       await Sentry.configureScope((scope) {
         scope.setUser(SentryUser(id: userId, email: email, data: extras));
       });
@@ -144,7 +146,9 @@ class SentryObservabilityService implements ObservabilityService {
   Future<void> clearUser() async {
     if (!isEnabled) return;
 
-    try {
+      // Use configureScope in a non-blocking way by not awaiting it
+      // This prevents blocking the main thread while still clearing the user
+      Sentry.configureScope((scope) {
       await Sentry.configureScope((scope) {
         scope.setUser(null);
       });
@@ -162,7 +166,9 @@ class SentryObservabilityService implements ObservabilityService {
   Future<void> setTag(String key, String value) async {
     if (!isEnabled) return;
 
-    try {
+      // Use configureScope in a non-blocking way by not awaiting it
+      // This prevents blocking the main thread while still setting the tag
+      Sentry.configureScope((scope) {
       await Sentry.configureScope((scope) {
         scope.setTag(key, value);
       });

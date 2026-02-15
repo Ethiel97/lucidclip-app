@@ -118,7 +118,9 @@ class ClipboardDatabase extends _$ClipboardDatabase {
 
   Future<Set<String>> getAllContentHashes() async {
     final table = clipboardItemEntries;
-    final query = selectOnly(table)..addColumns([table.contentHash]);
+    final query = selectOnly(table)
+      ..addColumns([table.contentHash])
+      ..where(table.deletedAt.isNull());
     final rows = await query.get();
 
     return rows
@@ -126,6 +128,33 @@ class ClipboardDatabase extends _$ClipboardDatabase {
         .whereType<String>()
         .toSet();
   }
+
+  Future<int> getCountNonDeleted() async {
+    final query = selectOnly(clipboardItemEntries)
+      ..addColumns([clipboardItemEntries.id.count()])
+      ..where(clipboardItemEntries.deletedAt.isNull());
+    final result = await query.getSingleOrNull();
+    return result?.read(clipboardItemEntries.id.count()) ?? 0;
+  }
+
+  Future<List<ClipboardItemEntry>> getPotentiallyExpiredItems({
+    required DateTime cutoffDate,
+  }) =>
+      (select(clipboardItemEntries)
+            ..where(
+              (t) =>
+                  t.deletedAt.isNull() &
+                  t.isPinned.equals(false) &
+                  t.isSnippet.equals(false) &
+                  t.createdAt.isSmallerThanValue(cutoffDate),
+            )
+            ..orderBy([
+              (t) => OrderingTerm(
+                expression: t.createdAt,
+                mode: OrderingMode.desc,
+              ),
+            ]))
+          .get();
 
   // Mapping helpers : entry <-> model
 

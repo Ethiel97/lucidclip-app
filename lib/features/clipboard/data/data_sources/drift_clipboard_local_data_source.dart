@@ -68,6 +68,21 @@ class DriftClipboardLocalDataSource implements ClipboardLocalDataSource {
   Future<Set<String>> getAllContentHashes() => _db.getAllContentHashes();
 
   @override
+  Future<int> getCountNonDeleted() => _db.getCountNonDeleted();
+
+  @override
+  Future<List<ClipboardItemModel>> getPotentiallyExpiredItems({
+    required DateTime cutoffDate,
+  }) async {
+    try {
+      final rows = await _db.getPotentiallyExpiredItems(cutoffDate: cutoffDate);
+      return rows.map(_db.entryToModel).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<ClipboardItemModel>> getUnsynced() async {
     try {
       final rows = await _db.getUnsyncedEntries();
